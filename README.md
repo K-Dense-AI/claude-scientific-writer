@@ -11,6 +11,7 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
 - 📄 **Document Manipulation**: Work with various document formats (docx, pdf, pptx, xlsx)
 - 🤖 **LaTeX Support**: Generates publication-ready LaTeX documents with BibTeX citations
 - 📊 **Progress Tracking**: Real-time logging and transparent workflow execution
+- 📦 **Data File Integration**: Automatically process and incorporate data files and images into your papers
 
 ## Quick Start
 
@@ -81,9 +82,12 @@ paper_outputs/20241027_143022_neurips_attention/
 │   └── v2_draft.tex        # Revised version
 ├── references/
 │   └── references.bib      # BibTeX bibliography
-├── figures/
-│   └── figure_01.pdf
-├── data/
+├── figures/                 # Images copied from data/ folder
+│   ├── figure_01.png       # Your image files
+│   └── plot_results.svg
+├── data/                    # Data files copied from data/ folder
+│   ├── dataset.csv         # Your data files
+│   └── results.json
 └── final/
     ├── manuscript.pdf      # Final compiled PDF
     └── manuscript.tex      # Final LaTeX source
@@ -128,6 +132,71 @@ The assistant will:
 ```
 > Format these 10 citations in IEEE style: [paste citations]
 ```
+
+## Data File Integration
+
+The scientific writer can automatically process and incorporate data files and images from the `data/` folder at the project root. This feature makes it easy to include your research data, plots, and figures in your papers.
+
+### How It Works
+
+1. **Place Files in the Data Folder**: Add any files (CSV, JSON, images, etc.) to the `data/` folder in the project root
+2. **Automatic Detection**: The tool automatically detects files when you start or continue working on a paper
+3. **Smart Routing**: 
+   - **Data files** (CSV, TXT, JSON, Excel, etc.) → copied to `paper_outputs/<paper>/data/`
+   - **Images** (PNG, JPG, SVG, GIF, etc.) → copied to `paper_outputs/<paper>/figures/`
+4. **Context Integration**: File information is automatically provided to Claude as context
+5. **Auto-Cleanup**: Original files are deleted from the `data/` folder after successful copying
+
+### Supported File Types
+
+**Images** (automatically placed in `figures/`):
+- PNG, JPG/JPEG, GIF, SVG, BMP, TIFF, WebP, ICO
+
+**Data Files** (automatically placed in `data/`):
+- CSV, TSV, Excel (XLSX, XLS)
+- JSON, XML
+- TXT, MD
+- Any other non-image files
+
+### Example Workflow
+
+```bash
+# 1. Add your files to the data folder
+cp my_plot.png data/
+cp results.csv data/
+cp analysis.json data/
+
+# 2. Run the scientific writer
+python scientific_writer.py
+
+# 3. Start or continue a paper
+> Continue working on the paper, incorporate the new data
+
+# The tool will automatically:
+# - Detect the 3 files
+# - Copy my_plot.png to figures/
+# - Copy results.csv and analysis.json to data/
+# - Delete the originals from data/
+# - Inform Claude about available files
+```
+
+### Console Output
+
+When files are processed, you'll see:
+
+```
+📦 Found 3 file(s) in data folder. Processing...
+   ✓ Copied 2 data file(s) to data/
+   ✓ Copied 1 image(s) to figures/
+   ✓ Deleted original files from data folder
+```
+
+### Tips
+
+- **Use descriptive filenames**: Claude will see the filenames, so use clear, descriptive names
+- **Images as figures**: Images are automatically recognized and can be referenced in your paper
+- **Data context**: Claude will be aware of data files and can help analyze or describe them
+- **Batch processing**: Add multiple files at once - they'll all be processed together
 
 ## Available Skills
 
@@ -175,6 +244,7 @@ For detailed skill documentation, see [SKILLS.md](SKILLS.md).
 3. **Specify format**: Citation style preferences, document format
 4. **Iterate**: Ask for revisions or clarifications as needed
 5. **Use files**: Reference existing files for review or editing tasks
+6. **Add data files**: Place your data files and images in the `data/` folder - they'll be automatically incorporated into your paper
 
 ## Configuration
 
@@ -213,6 +283,7 @@ claude-scientific-writer/
 │       ├── peer-review/
 │       ├── research-lookup/
 │       └── document-skills/
+├── data/                        # Place your data files here (auto-processed)
 ├── paper_outputs/               # Generated papers (auto-created)
 ├── scientific_writer.py         # Main CLI application
 ├── requirements.txt             # Python dependencies
