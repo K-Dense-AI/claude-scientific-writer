@@ -71,7 +71,7 @@ Located in `scripts/`:
    - Predefined prompt types (scientific, medical, data viz, etc.)
    - Custom prompt support
    - Multiple model support
-   - OpenAI integration
+   - OpenRouter integration (Claude Sonnet 4.5 default)
 
 3. **convert_literature.py**
    - Scientific literature conversion
@@ -137,7 +137,7 @@ Located in `assets/`:
    - Access to 100+ AI models through OpenRouter
    - Multiple preset prompts (scientific, medical, data viz)
    - Custom prompt support
-   - Models: GPT-4, Claude 3.5, Gemini, and more
+   - Default: Claude Sonnet 4.5 (best for scientific vision)
    - Choose best model for each task
 
 2. **Azure Integration**
@@ -185,7 +185,7 @@ python scripts/batch_convert.py input_dir/ output_dir/ --extensions .pdf .docx -
 ```bash
 export OPENROUTER_API_KEY="sk-or-v1-..."
 python scripts/convert_with_ai.py paper.pdf output.md \
-  --model anthropic/claude-3.5-sonnet \
+  --model anthropic/claude-sonnet-4.5 \
   --prompt-type scientific
 ```
 
@@ -235,7 +235,7 @@ client = OpenAI(
 )
 md = MarkItDown(
     llm_client=client,
-    llm_model="openai/gpt-4o"  # or anthropic/claude-3.5-sonnet
+    llm_model="anthropic/claude-sonnet-4.5"  # or openai/gpt-4o
 )
 result = md.convert("presentation.pptx")
 ```

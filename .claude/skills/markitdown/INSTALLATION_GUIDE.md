@@ -172,8 +172,9 @@ echo 'export OPENROUTER_API_KEY="sk-or-v1-..."' >> ~/.zshrc   # macOS
 - Simple OpenAI-compatible interface
 
 **Popular Models for Image Description:**
-- `openai/gpt-4o` - Best vision understanding
+- `anthropic/claude-sonnet-4.5` - **Recommended** - Best for scientific vision
 - `anthropic/claude-3.5-sonnet` - Excellent technical analysis
+- `openai/gpt-4o` - Good vision understanding
 - `google/gemini-pro-vision` - Cost-effective option
 
 See https://openrouter.ai/models for complete model list and pricing.

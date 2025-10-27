@@ -74,7 +74,7 @@ client = OpenAI(
 
 md = MarkItDown(
     llm_client=client,
-    llm_model="openai/gpt-4o"  # or anthropic/claude-3.5-sonnet
+    llm_model="anthropic/claude-sonnet-4.5"  # recommended for vision
 )
 result = md.convert("presentation.pptx")
 ```
@@ -136,7 +136,7 @@ export OPENROUTER_API_KEY="sk-or-v1-..."
 python scripts/convert_with_ai.py paper.pdf output.md --prompt-type scientific
 
 # Use different models
-python scripts/convert_with_ai.py image.png output.md --model anthropic/claude-3.5-sonnet
+python scripts/convert_with_ai.py image.png output.md --model anthropic/claude-sonnet-4.5
 
 # Use custom prompt
 python scripts/convert_with_ai.py image.png output.md --custom-prompt "Describe this diagram"

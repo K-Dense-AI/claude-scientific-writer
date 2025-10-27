@@ -51,7 +51,7 @@ client = OpenAI(
 
 md = MarkItDown(
     llm_client=client,
-    llm_model="openai/gpt-4o"  # or anthropic/claude-3.5-sonnet
+    llm_model="anthropic/claude-sonnet-4.5"  # recommended for vision
 )
 result = md.convert("slides.pptx")
 ```
@@ -111,7 +111,7 @@ client = OpenAI(
 
 md = MarkItDown(
     llm_client=client,
-    llm_model="anthropic/claude-3.5-sonnet",  # or openai/gpt-4o
+    llm_model="anthropic/claude-sonnet-4.5",  # recommended for scientific vision
     llm_prompt="Describe scientific figures with technical precision"
 )
 result = md.convert("paper.pdf")
@@ -128,16 +128,16 @@ Analyze this data visualization. Describe:
 
 md = MarkItDown(
     llm_client=client,
-    llm_model="openai/gpt-4o",
+    llm_model="anthropic/claude-sonnet-4.5",
     llm_prompt=prompt
 )
 ```
 
 ### Available Models via OpenRouter
+- `anthropic/claude-sonnet-4.5` - **Claude Sonnet 4.5 (recommended for scientific vision)**
+- `anthropic/claude-3.5-sonnet` - Claude 3.5 Sonnet (vision)
 - `openai/gpt-4o` - GPT-4 Omni (vision)
 - `openai/gpt-4-vision` - GPT-4 Vision
-- `anthropic/claude-3.5-sonnet` - Claude 3.5 Sonnet (vision)
-- `anthropic/claude-3-opus` - Claude 3 Opus (vision)
 - `google/gemini-pro-vision` - Gemini Pro Vision
 
 See https://openrouter.ai/models for full list
@@ -257,8 +257,8 @@ Options:
 python scripts/convert_with_ai.py INPUT OUTPUT [OPTIONS]
 
 Options:
-  --api-key KEY              OpenAI API key
-  --model gpt-4o             Model name
+  --api-key KEY              OpenRouter API key
+  --model MODEL              Model name (default: anthropic/claude-sonnet-4.5)
   --prompt-type TYPE         Preset prompt (scientific, medical, etc.)
   --custom-prompt TEXT       Custom prompt
   --list-prompts             Show available prompts

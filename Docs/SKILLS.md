@@ -108,7 +108,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 **Capabilities**:
 - Convert 15+ file formats to Markdown (PDF, DOCX, PPTX, XLSX, images, audio, etc.)
-- AI-enhanced image descriptions using OpenAI models
+- AI-enhanced image descriptions using Claude Sonnet 4.5
 - OCR for scanned documents and images
 - Speech-to-text transcription for audio files
 - YouTube video transcription extraction

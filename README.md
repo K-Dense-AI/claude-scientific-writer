@@ -9,7 +9,7 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
 - 🔍 **Research Lookup**: Real-time research information using Perplexity's Sonar Pro model via OpenRouter
 - 📝 **Peer Review**: Receive constructive feedback on scientific drafts
 - 📄 **Document Conversion**: Convert 15+ file formats to Markdown using MarkItDown (PDF, DOCX, PPTX, XLSX, images, audio, etc.)
-- 🖼️ **AI-Enhanced Processing**: AI-powered image descriptions and document analysis using OpenRouter models
+- 🖼️ **AI-Enhanced Processing**: AI-powered image descriptions and document analysis using Claude Sonnet 4.5
 - 🤖 **LaTeX Support**: Generates publication-ready LaTeX documents with BibTeX citations
 - 📊 **Progress Tracking**: Real-time logging and transparent workflow execution
 - 📦 **Data File Integration**: Automatically process and incorporate data files and images into your papers
@@ -40,7 +40,7 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
 
 **Document Processing & Analysis**
 - 🗂️ Convert research PDFs, presentations, and documents to clean Markdown
-- 🖼️ Extract and describe figures from papers using AI vision models
+- 🖼️ Extract and describe figures from papers using Claude Sonnet 4.5 vision
 - 📊 Process experimental data and integrate it into your manuscript
 - 🎤 Transcribe research talks and convert slides to written content
 
@@ -259,7 +259,7 @@ OpenRouter is an API gateway that provides:
 ### Where OpenRouter is Used
 
 1. **Research Lookup**: Perplexity Sonar Pro for real-time research queries
-2. **AI-Enhanced Document Conversion**: GPT-4o, Claude 3.5 Sonnet, or Gemini for detailed image descriptions in PDFs and presentations
+2. **AI-Enhanced Document Conversion**: Claude Sonnet 4.5 (recommended), GPT-4o, or Gemini for detailed image descriptions in PDFs and presentations
 
 ### Setup
 
@@ -277,8 +277,8 @@ Get your API key at: https://openrouter.ai/keys
 | Task | Recommended Model | Provider |
 |------|-------------------|----------|
 | Research Lookup | `perplexity/sonar-pro` | Perplexity |
-| Scientific Image Analysis | `anthropic/claude-3.5-sonnet` | Anthropic |
-| Presentation Conversion | `openai/gpt-4o` | OpenAI |
+| Scientific Image Analysis | `anthropic/claude-sonnet-4.5` | Anthropic |
+| Presentation Conversion | `anthropic/claude-sonnet-4.5` | Anthropic |
 | Cost-Effective OCR | `google/gemini-pro-vision` | Google |
 
 **💡 Cost-Saving Tip**: To save costs on Perplexity research lookups, you can specify cheaper Sonar models (like `perplexity/sonar` or `perplexity/sonar-reasoning`) in your prompts. For example: "Use sonar model to research..." instead of the default Sonar Pro.
@@ -391,7 +391,7 @@ The CLI comes with specialized skills loaded from `.claude/skills/`:
 
 #### MarkItDown - Universal File Converter
 - Convert 15+ file formats to Markdown (PDF, DOCX, PPTX, XLSX, images, audio, YouTube URLs)
-- AI-enhanced image descriptions using OpenRouter (GPT-4o, Claude, Gemini)
+- AI-enhanced image descriptions using Claude Sonnet 4.5 (via OpenRouter)
 - OCR for scanned documents
 - Speech-to-text transcription
 - Batch processing with parallel execution
@@ -420,7 +420,7 @@ For detailed skill documentation, see [SKILLS.md](SKILLS.md).
 5. **Use files**: Reference existing files for review or editing tasks
 6. **Prepare your data first**: The writer does NOT run experiments or download data - place all your experimental results, figures, plots, and documentation in the `data/` folder before starting
 7. **Convert documents**: Convert PDFs, presentations, and other documents to Markdown for easy processing
-8. **Choose AI models**: Specify preferred models (GPT-4o, Claude, Gemini) for AI-enhanced features
+8. **Choose AI models**: Specify preferred models for AI-enhanced features (default: Claude Sonnet 4.5 for vision)
 
 ## Configuration
 

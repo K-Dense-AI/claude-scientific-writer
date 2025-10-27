@@ -18,10 +18,10 @@ This MarkItDown skill has been configured to use **OpenRouter** instead of direc
 
 | Model | Provider | Use Case | Vision Support |
 |-------|----------|----------|----------------|
-| `openai/gpt-4o` | OpenAI | Best overall vision understanding | ✅ |
-| `openai/gpt-4-vision` | OpenAI | GPT-4 with vision | ✅ |
+| `anthropic/claude-sonnet-4.5` | Anthropic | **Recommended** - Best overall for scientific analysis | ✅ |
 | `anthropic/claude-3.5-sonnet` | Anthropic | Excellent technical analysis | ✅ |
-| `anthropic/claude-3-opus` | Anthropic | Most capable Claude model | ✅ |
+| `openai/gpt-4o` | OpenAI | Strong vision understanding | ✅ |
+| `openai/gpt-4-vision` | OpenAI | GPT-4 with vision | ✅ |
 | `google/gemini-pro-vision` | Google | Cost-effective option | ✅ |
 
 See https://openrouter.ai/models for the complete list.
@@ -64,7 +64,7 @@ client = OpenAI(
 # Create MarkItDown with AI support
 md = MarkItDown(
     llm_client=client,
-    llm_model="openai/gpt-4o"  # Choose your model
+    llm_model="anthropic/claude-sonnet-4.5"  # Choose your model
 )
 
 # Convert with AI-enhanced descriptions
@@ -82,12 +82,12 @@ All skill scripts have been updated to use OpenRouter:
 # Set API key
 export OPENROUTER_API_KEY="sk-or-v1-..."
 
-# Convert with default model (openai/gpt-4o)
+# Convert with default model (Claude Sonnet 4.5)
 python scripts/convert_with_ai.py paper.pdf output.md --prompt-type scientific
 
-# Use Claude 3.5 Sonnet
+# Use GPT-4o as alternative
 python scripts/convert_with_ai.py paper.pdf output.md \
-  --model anthropic/claude-3.5-sonnet \
+  --model openai/gpt-4o \
   --prompt-type scientific
 
 # Use Gemini Pro Vision (cost-effective)
@@ -102,24 +102,24 @@ python scripts/convert_with_ai.py --list-prompts
 ### Choosing the Right Model
 
 ```bash
-# For scientific papers - use Claude for technical analysis
+# For scientific papers - use Claude Sonnet 4.5 for technical analysis
 python scripts/convert_with_ai.py research.pdf output.md \
-  --model anthropic/claude-3.5-sonnet \
+  --model anthropic/claude-sonnet-4.5 \
   --prompt-type scientific
 
-# For presentations - use GPT-4o for vision
+# For presentations - use Claude Sonnet 4.5 for vision
 python scripts/convert_with_ai.py slides.pptx output.md \
-  --model openai/gpt-4o \
+  --model anthropic/claude-sonnet-4.5 \
   --prompt-type presentation
 
-# For data visualizations - use GPT-4o
+# For data visualizations - use Claude Sonnet 4.5
 python scripts/convert_with_ai.py charts.pdf output.md \
-  --model openai/gpt-4o \
+  --model anthropic/claude-sonnet-4.5 \
   --prompt-type data_viz
 
-# For medical images - use Claude for detailed analysis
+# For medical images - use Claude Sonnet 4.5 for detailed analysis
 python scripts/convert_with_ai.py xray.jpg output.md \
-  --model anthropic/claude-3-opus \
+  --model anthropic/claude-sonnet-4.5 \
   --prompt-type medical
 ```
 
@@ -138,10 +138,10 @@ client = OpenAI(
     base_url="https://openrouter.ai/api/v1"
 )
 
-# Use GPT-4o for image descriptions
+# Use Claude Sonnet 4.5 for image descriptions
 md = MarkItDown(
     llm_client=client,
-    llm_model="openai/gpt-4o"
+    llm_model="anthropic/claude-sonnet-4.5"
 )
 
 result = md.convert("document.pptx")
@@ -163,24 +163,24 @@ client = OpenAI(
 # Use different models for different file types
 def convert_with_best_model(filepath):
     if filepath.endswith('.pdf'):
-        # Use Claude for technical PDFs
+        # Use Claude Sonnet 4.5 for technical PDFs
         md = MarkItDown(
             llm_client=client,
-            llm_model="anthropic/claude-3.5-sonnet",
+            llm_model="anthropic/claude-sonnet-4.5",
             llm_prompt="Describe scientific figures with technical precision"
         )
     elif filepath.endswith('.pptx'):
-        # Use GPT-4o for presentations
+        # Use Claude Sonnet 4.5 for presentations
         md = MarkItDown(
             llm_client=client,
-            llm_model="openai/gpt-4o",
+            llm_model="anthropic/claude-sonnet-4.5",
             llm_prompt="Describe slide content and visual elements"
         )
     else:
-        # Use Gemini for cost-effectiveness
+        # Use Claude Sonnet 4.5 as default
         md = MarkItDown(
             llm_client=client,
-            llm_model="google/gemini-pro-vision"
+            llm_model="anthropic/claude-sonnet-4.5"
         )
     
     return md.convert(filepath)
@@ -200,7 +200,7 @@ client = OpenAI(
     base_url="https://openrouter.ai/api/v1"
 )
 
-# Scientific analysis with Claude
+# Scientific analysis with Claude Sonnet 4.5
 scientific_prompt = """
 Analyze this scientific figure. Provide:
 1. Type of visualization and methodology
@@ -212,11 +212,11 @@ Be precise and use scientific terminology.
 
 md_scientific = MarkItDown(
     llm_client=client,
-    llm_model="anthropic/claude-3.5-sonnet",
+    llm_model="anthropic/claude-sonnet-4.5",
     llm_prompt=scientific_prompt
 )
 
-# Visual analysis with GPT-4
+# Visual analysis with Claude Sonnet 4.5
 visual_prompt = """
 Describe this image comprehensively:
 1. Main visual elements and composition
@@ -227,7 +227,7 @@ Describe this image comprehensively:
 
 md_visual = MarkItDown(
     llm_client=client,
-    llm_model="openai/gpt-4o",
+    llm_model="anthropic/claude-sonnet-4.5",
     llm_prompt=visual_prompt
 )
 ```
@@ -236,23 +236,25 @@ md_visual = MarkItDown(
 
 ### For Scientific Content
 
-**Recommended: anthropic/claude-3.5-sonnet**
+**Recommended: anthropic/claude-sonnet-4.5**
 - Excellent at technical analysis
-- Strong reasoning capabilities
-- Good at understanding scientific figures
-- Detailed explanations
+- Superior reasoning capabilities
+- Best at understanding scientific figures
+- Most detailed and accurate explanations
+- Advanced vision capabilities
 
 **Alternative: openai/gpt-4o**
-- Best vision understanding
+- Good vision understanding
 - Fast processing
 - Good at charts and graphs
 
 ### For Presentations
 
-**Recommended: openai/gpt-4o**
+**Recommended: anthropic/claude-sonnet-4.5**
 - Superior vision capabilities
-- Great at understanding slide layouts
+- Excellent at understanding slide layouts
 - Fast and reliable
+- Best technical comprehension
 
 ### For Cost-Effectiveness
 
@@ -266,8 +268,8 @@ md_visual = MarkItDown(
 OpenRouter pricing varies by model. Check current rates at https://openrouter.ai/models
 
 **Tips for Cost Optimization:**
-1. Use cheaper models for simple images
-2. Reserve premium models (GPT-4o, Claude Opus) for complex diagrams
+1. Use Claude Sonnet 4.5 for best quality on complex scientific content
+2. Use cheaper models (Gemini) for simple images
 3. Batch process similar content with the same model
 4. Use appropriate prompts to get better results in fewer retries
 
