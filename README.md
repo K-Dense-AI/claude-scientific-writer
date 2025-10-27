@@ -71,15 +71,20 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
    ```bash
    curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
-
-3. **Install dependencies:**
    
-   Use the setup script (recommended):
+   After installation, restart your shell or run:
    ```bash
-   bash setup.sh
+   source $HOME/.cargo/env
+   ```
+
+3. **Install dependencies with uv:**
+   
+   Create a virtual environment and install dependencies:
+   ```bash
+   uv sync
    ```
    
-   Or manually with uv:
+   Or install into your current Python environment:
    ```bash
    uv pip install -e .
    ```
@@ -102,8 +107,19 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
 
 Run the scientific writer CLI:
 
+**If you used `uv sync`:**
+```bash
+uv run python scientific_writer.py
+```
+
+**If you installed with `uv pip install -e .`:**
 ```bash
 python scientific_writer.py
+```
+
+**Or use the installed script directly:**
+```bash
+scientific-writer
 ```
 
 ### Intelligent Paper Detection
@@ -447,7 +463,6 @@ claude-scientific-writer/
 ├── paper_outputs/               # Generated papers (auto-created)
 ├── scientific_writer.py         # Main CLI application
 ├── pyproject.toml               # Python dependencies (managed by uv)
-├── setup.sh                     # Setup script
 ├── claude.md                    # System instructions
 ├── SKILLS.md                    # Detailed skills documentation
 ├── .env                         # API keys (create this)
@@ -470,6 +485,11 @@ Make sure you've either:
 ### Import Errors
 
 Ensure all dependencies are installed:
+```bash
+uv sync
+```
+
+Or if installing without a virtual environment:
 ```bash
 uv pip install -e .
 ```
