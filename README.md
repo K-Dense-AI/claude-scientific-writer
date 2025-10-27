@@ -281,6 +281,8 @@ Get your API key at: https://openrouter.ai/keys
 | Presentation Conversion | `openai/gpt-4o` | OpenAI |
 | Cost-Effective OCR | `google/gemini-pro-vision` | Google |
 
+**💡 Cost-Saving Tip**: To save costs on Perplexity research lookups, you can specify cheaper Sonar models (like `perplexity/sonar` or `perplexity/sonar-reasoning`) in your prompts. For example: "Use sonar model to research..." instead of the default Sonar Pro.
+
 See the complete model list at: https://openrouter.ai/models
 
 ### Example Usage
@@ -438,7 +440,7 @@ permission_mode="bypassPermissions"  # Options: "bypassPermissions", "acceptEdit
 
 ### System Instructions
 
-The agent's behavior is defined in `claude.md`, which includes:
+The agent's behavior is defined in `CLAUDE.md`, which includes:
 - Workflow protocols
 - File organization standards
 - Progress logging requirements
@@ -463,7 +465,7 @@ claude-scientific-writer/
 ├── paper_outputs/               # Generated papers (auto-created)
 ├── scientific_writer.py         # Main CLI application
 ├── pyproject.toml               # Python dependencies (managed by uv)
-├── claude.md                    # System instructions
+├── CLAUDE.md                    # System instructions
 ├── SKILLS.md                    # Detailed skills documentation
 ├── .env                         # API keys (create this)
 └── README.md                    # This file

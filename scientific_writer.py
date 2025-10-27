@@ -29,14 +29,14 @@ def get_api_key():
 
 
 def load_system_instructions(cwd):
-    """Load system instructions from claude.md file."""
-    instructions_file = cwd / "claude.md"
+    """Load system instructions from CLAUDE.md file."""
+    instructions_file = cwd / "CLAUDE.md"
     
     if instructions_file.exists():
         with open(instructions_file, 'r', encoding='utf-8') as f:
             return f.read()
     else:
-        # Fallback if claude.md doesn't exist
+        # Fallback if CLAUDE.md doesn't exist
         return (
             "You are a scientific writing assistant. Follow best practices for "
             "scientific communication and always present a plan before execution."
@@ -242,7 +242,7 @@ async def main():
     # Ensure paper_outputs folder exists
     output_folder = ensure_output_folder(cwd)
     
-    # Load system instructions from claude.md
+    # Load system instructions from CLAUDE.md
     system_instructions = load_system_instructions(cwd)
     
     # Add conversation continuity instruction  
