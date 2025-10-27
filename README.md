@@ -14,6 +14,42 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
 - 📊 **Progress Tracking**: Real-time logging and transparent workflow execution
 - 📦 **Data File Integration**: Automatically process and incorporate data files and images into your papers
 
+## What You Can Do
+
+**Write Papers for Any Venue**
+- ✨ Generate papers for **any conference or journal** with publicly available LaTeX templates (NeurIPS, ICML, Nature, Science, IEEE, ACM, arXiv, etc.)
+- 🎯 Automatically tailor writing style, structure, and citations to match venue requirements
+- 📏 Respect page limits, formatting constraints, and specific submission guidelines
+
+**Intelligent Writing Assistant**
+- 🔬 Adapt technical depth and terminology based on your specific **research subtopic** (e.g., computer vision vs. NLP, molecular biology vs. ecology)
+- 💡 Get **strategic recommendations** for strengthening your paper (additional experiments, missing comparisons, literature gaps)
+- 🎨 Receive suggestions for impactful visualizations and figure improvements
+- ✍️ Refine arguments, improve clarity, and enhance scientific rigor
+
+**Convert & Repurpose Content**
+- 📄➡️📊 **Transform papers into conference posters** with optimized layout and visual design
+- 📑 Convert between formats: full paper ↔ short paper ↔ extended abstract ↔ poster
+- 🔄 Adapt existing work for different venues (e.g., workshop paper → main conference submission)
+
+**Comprehensive Workflow Support**
+- 📚 Conduct systematic **literature reviews** with citation management
+- 🔍 Perform **real-time research lookups** for the latest developments in your field
+- 👥 Get **peer review feedback** before submission to identify weaknesses
+- 📝 Generate **LaTeX posters** (A0, A1, 36×48") with professional design
+
+**Document Processing & Analysis**
+- 🗂️ Convert research PDFs, presentations, and documents to clean Markdown
+- 🖼️ Extract and describe figures from papers using AI vision models
+- 📊 Process experimental data and integrate it into your manuscript
+- 🎤 Transcribe research talks and convert slides to written content
+
+**Smart Automation**
+- ⚡ Automatically format references in any citation style (APA, MLA, Chicago, Nature, IEEE, etc.)
+- 🔗 Verify and validate citations against reporting standards
+- 📋 Generate complete BibTeX bibliographies with proper formatting
+- 🎯 Ensure compliance with CONSORT, PRISMA, STROBE, and other reporting guidelines
+
 ## Quick Start
 
 ### Prerequisites
@@ -102,10 +138,13 @@ paper_outputs/20241027_143022_neurips_attention/
 > Create a NeurIPS paper on efficient attention mechanisms in transformers
 ```
 
+**Important**: Place your experimental results, figures, plots, and any project documentation in the `data/` folder before starting. The writer will not download data or perform experiments/analysis by itself - it requires you to provide these materials.
+
 The assistant will:
 - Create a complete LaTeX document following NeurIPS format
 - Perform literature research for each section
-- Write Introduction, Methods, Results, Discussion sections
+- Write Introduction, Methods, Results, Discussion sections based on your provided data
+- Incorporate your figures and results from the `data/` folder
 - Generate proper BibTeX citations
 - Compile to PDF
 - Provide real-time progress updates
@@ -194,6 +233,8 @@ When converting documents with AI enhancement, you can specify which model to us
 The assistant will automatically use the appropriate OpenRouter model for optimal results.
 
 ## Data File Integration
+
+**Important**: The scientific writer does **not** download data, run experiments, or perform statistical analysis. You must provide all experimental results, figures, plots, and supporting documentation yourself.
 
 The scientific writer can automatically process and incorporate data files and images from the `data/` folder at the project root. This feature makes it easy to include your research data, plots, and figures in your papers.
 
@@ -314,7 +355,7 @@ For detailed skill documentation, see [SKILLS.md](SKILLS.md).
 3. **Specify format**: Citation style preferences, document format
 4. **Iterate**: Ask for revisions or clarifications as needed
 5. **Use files**: Reference existing files for review or editing tasks
-6. **Add data files**: Place your data files and images in the `data/` folder - they'll be automatically incorporated into your paper
+6. **Prepare your data first**: The writer does NOT run experiments or download data - place all your experimental results, figures, plots, and documentation in the `data/` folder before starting
 7. **Convert documents**: Convert PDFs, presentations, and other documents to Markdown for easy processing
 8. **Choose AI models**: Specify preferred models (GPT-4o, Claude, Gemini) for AI-enhanced features
 
@@ -431,6 +472,16 @@ For issues or questions:
 
 ## Example Session
 
+**Before starting**: Add your experimental results, figures, and documentation to the `data/` folder:
+```bash
+cp my_attention_results.csv data/
+cp attention_heatmap.png data/
+cp performance_comparison.png data/
+cp experimental_notes.txt data/
+```
+
+**Note**: The writer does not download data, run experiments, or perform analysis. You must provide all experimental results, figures, and supporting materials in the `data/` folder.
+
 ```
 > Create a NeurIPS paper on sparse attention mechanisms
 
@@ -441,6 +492,7 @@ APPROACH:
 - Structure: IMRaD with 8-page format
 - Citations: BibTeX with ~30-40 references
 - Style: NeurIPS citation style
+- Data: Will incorporate your experimental results and figures from data/
 
 OUTPUT: paper_outputs/20241027_143022_neurips_sparse_attention/
 
@@ -449,10 +501,16 @@ Starting execution now...
 [14:30:22] STARTING: NeurIPS sparse attention paper
 [14:30:23] CREATED: paper_outputs/20241027_143022_neurips_sparse_attention/
 [14:30:24] CREATED: Folder structure (drafts/, references/, figures/, final/)
-[14:30:25] CREATED: LaTeX document skeleton
+[14:30:25] DETECTED: 4 files in data/ folder - processing...
+[14:30:26] COPIED: 2 images to figures/, 2 data files to data/
+[14:30:27] CREATED: LaTeX document skeleton
 [14:30:45] RESEARCH: Literature search for Introduction
 [14:31:30] WRITING: Introduction section...
 [14:33:15] COMPLETED: Introduction - 750 words, 6 citations ✅
+[14:35:20] WRITING: Methods section with your experimental setup...
+[14:38:45] WRITING: Results section incorporating your data and figures...
+[14:42:10] INCLUDED: attention_heatmap.png as Figure 1
+[14:43:25] INCLUDED: performance_comparison.png as Figure 2
 ...
 [14:51:18] COMPILE: Build successful - no errors ✅
 [14:51:40] ✅ PROJECT COMPLETE
