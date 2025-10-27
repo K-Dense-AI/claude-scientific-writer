@@ -103,7 +103,44 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ## Document Manipulation Skills
 
-### 5. DOCX (Word Documents)
+### 5. MarkItDown - Universal File to Markdown Converter
+**Location**: `.claude/skills/markitdown/`
+
+**Capabilities**:
+- Convert 15+ file formats to Markdown (PDF, DOCX, PPTX, XLSX, images, audio, etc.)
+- AI-enhanced image descriptions using OpenAI models
+- OCR for scanned documents and images
+- Speech-to-text transcription for audio files
+- YouTube video transcription extraction
+- Batch processing with parallel execution
+- Azure Document Intelligence integration for complex PDFs
+- Plugin system for custom converters
+
+**References**:
+- `api_reference.md`: Complete API documentation and class references
+- `file_formats.md`: Format-specific conversion guides and best practices
+
+**Scripts**:
+- `batch_convert.py`: Parallel batch conversion of multiple files
+- `convert_with_ai.py`: AI-enhanced conversions with custom prompts
+- `convert_literature.py`: Scientific literature conversion with metadata extraction
+
+**Assets**:
+- `example_usage.md`: Comprehensive examples for common use cases
+
+**Features**:
+- Token-efficient Markdown output optimized for LLM processing
+- Supports optional dependencies for specific file formats
+- Custom prompts for scientific, medical, and data visualization contexts
+- Metadata extraction and organization
+- Error handling and robust batch processing
+- Integration with scientific workflows
+
+**Source**: https://github.com/microsoft/markitdown (MIT License)
+
+---
+
+### 6. DOCX (Word Documents)
 **Location**: `.claude/skills/document-skills/docx/`
 
 **Capabilities**:
@@ -124,7 +161,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 6. PDF Documents
+### 7. PDF Documents
 **Location**: `.claude/skills/document-skills/pdf/`
 
 **Capabilities**:
@@ -147,7 +184,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 7. PPTX (PowerPoint Presentations)
+### 8. PPTX (PowerPoint Presentations)
 **Location**: `.claude/skills/document-skills/pptx/`
 
 **Capabilities**:
@@ -170,7 +207,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 8. XLSX (Excel Spreadsheets)
+### 9. XLSX (Excel Spreadsheets)
 **Location**: `.claude/skills/document-skills/xlsx/`
 
 **Capabilities**:
@@ -216,6 +253,17 @@ Claude will use literature-review skill to structure a comprehensive review.
 > Extract the data from Table 1 in results.pdf and create a summary
 ```
 Claude will use the PDF skill to extract data and potentially the XLSX skill to organize it.
+
+### Using MarkItDown Skill
+```
+> Convert all PDFs in the literature folder to Markdown
+```
+Claude will use the markitdown skill to batch convert files.
+
+```
+> Convert this PowerPoint presentation to Markdown with AI-generated descriptions
+```
+Claude will use markitdown with AI enhancement for detailed image descriptions.
 
 ### Using Peer Review Skill
 ```

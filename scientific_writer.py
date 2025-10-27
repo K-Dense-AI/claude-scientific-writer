@@ -169,15 +169,16 @@ async def main():
     # Load system instructions from claude.md
     system_instructions = load_system_instructions(cwd)
     
-    # Add conversation continuity instruction
+    # Add conversation continuity instruction  
+    # Note: The Python CLI handles session tracking via current_paper_path
+    # These instructions only apply WITHIN a single CLI session, not across different chat sessions
     system_instructions += "\n\n" + """
 IMPORTANT - CONVERSATION CONTINUITY:
-When working in a chat session, you MUST continue editing the same paper across multiple messages.
-- If a paper has already been started in this session, subsequent messages should edit that same paper
-- Do NOT create a new paper directory unless explicitly asked to start a new paper
-- Track the current working directory and continue work there
-- If the user asks to modify, improve, or add to content, work on the existing paper
-- Only start a new paper if the user explicitly says "new paper", "start a new paper", or gives a completely unrelated topic
+- The user will provide context in their prompt if they want to continue working on an existing paper
+- If the prompt includes [CONTEXT: You are currently working on a paper in: ...], continue editing that paper
+- If no such context is provided, this is a NEW paper request - create a new paper directory
+- Do NOT assume there's an existing paper unless explicitly told in the prompt context
+- Each new chat session should start with a new paper unless context says otherwise
 """
     
     # Configure the Claude agent options
