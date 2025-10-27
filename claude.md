@@ -102,6 +102,27 @@ Once the plan is presented:
    - Print final summary to terminal
    - Provide clear path to all outputs
 
+4. **Conduct Peer Review**
+   - **AFTER completing all deliverables, perform a comprehensive peer review**
+   - Use the peer-review skill to critically evaluate the completed document
+   - Follow systematic peer review stages:
+     * Initial assessment of scope and quality
+     * Section-by-section detailed review
+     * Methodological and statistical rigor check
+     * Reproducibility and transparency evaluation
+     * Figure and data presentation quality
+     * Ethical considerations verification
+     * Writing quality and clarity assessment
+   - Generate a peer review report with:
+     * Summary statement with strengths and weaknesses
+     * Major comments on critical issues
+     * Minor comments for improvements
+     * Questions for consideration
+   - Save review report as `PEER_REVIEW.md` in project folder
+   - Update progress.md with peer review completion
+   - Print: `[HH:MM:SS] PEER REVIEW: Completed comprehensive evaluation`
+   - If significant issues are found, offer to revise the document
+
 ## File Organization Standards
 
 ### Folder Structure
@@ -111,6 +132,7 @@ paper_outputs/
 └── YYYYMMDD_HHMMSS_<description>/
     ├── progress.md                 # Real-time progress log
     ├── SUMMARY.md                  # Final summary and guide
+    ├── PEER_REVIEW.md              # Comprehensive peer review report
     ├── drafts/
     │   ├── v1_draft.tex            # LaTeX source (primary format)
     │   ├── v1_draft.pdf            # Compiled PDF
@@ -631,6 +653,9 @@ Before marking a task complete, verify:
 - [ ] SUMMARY.md is created with clear instructions
 - [ ] Terminal shows final summary
 - [ ] No compilation/generation errors
+- [ ] PEER_REVIEW.md is completed with comprehensive evaluation
+- [ ] Peer review addresses methodology, statistics, reproducibility, and writing quality
+- [ ] Any critical issues identified in peer review are addressed or documented
 
 ## Example Workflow
 
@@ -738,15 +763,37 @@ Starting execution now...
 
 [14:51:30] UPDATED: Final progress.md with complete timeline
 [14:51:35] CREATED: SUMMARY.md with deliverables list
-[14:51:40] ✅ PROJECT COMPLETE
+
+[14:51:40] STARTING: Peer review of completed manuscript
+[14:51:45] PEER REVIEW: Stage 1 - Initial assessment
+[14:52:00] PEER REVIEW: Evaluating scope, novelty, and overall quality
+[14:52:15] PEER REVIEW: Stage 2 - Section-by-section review
+[14:52:30] PEER REVIEW: Abstract and title - clear and accurate ✅
+[14:52:45] PEER REVIEW: Introduction - well-motivated with adequate context ✅
+[14:53:00] PEER REVIEW: Methods - checking reproducibility and rigor
+[14:53:20] PEER REVIEW: Results - evaluating presentation and statistics
+[14:53:40] PEER REVIEW: Discussion - assessing interpretation and limitations
+[14:54:00] PEER REVIEW: Stage 3 - Methodological and statistical rigor
+[14:54:20] PEER REVIEW: Stage 4 - Reproducibility and transparency assessment
+[14:54:40] PEER REVIEW: Stage 5 - Figure and data presentation quality
+[14:55:00] PEER REVIEW: Stage 6 - Ethical considerations verified
+[14:55:15] PEER REVIEW: Stage 7 - Writing quality and clarity evaluation
+[14:55:30] PEER REVIEW: Generating comprehensive review report
+[14:55:45] CREATED: PEER_REVIEW.md with detailed evaluation
+[14:55:50] PEER REVIEW: Identified 2 major strengths, 1 minor improvement
+[14:56:00] PEER REVIEW: Overall assessment - suitable for publication with minor revisions
+[14:56:10] ✅ PEER REVIEW COMPLETE
+
+[14:56:15] ✅ PROJECT COMPLETE
 
 📊 FINAL STATISTICS:
    - Total words: 2,860
    - Total citations: 27 (25 unique)
    - Pages: 8 (NeurIPS format)
    - Sections: 5 complete
-   - Time elapsed: 21 minutes
-   - Files created: 6
+   - Peer review: Completed with 1 minor comment
+   - Time elapsed: 26 minutes
+   - Files created: 7
 
 All files available in: paper_outputs/20241027_143022_neurips_attention_paper/
 ```
@@ -766,6 +813,7 @@ All files available in: paper_outputs/20241027_143022_neurips_attention_paper/
 - **Organize meticulously** - unique folders for each project
 - **Track progress continuously** - update progress.md throughout, not just at milestones
 - **Quality over speed** - verify work before marking complete
+- **ALWAYS conduct peer review after completion** - critically evaluate the finished document using the peer-review skill before final delivery
 
 **Logging Philosophy:**
 Your updates should be so detailed that someone reading progress.md could understand:
