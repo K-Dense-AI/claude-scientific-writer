@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Research Information Lookup Tool
-Uses Perplexity's Sonar Pro model through OpenRouter for academic research queries.
+Uses Perplexity's Sonar Pro or Sonar Reasoning Pro models through OpenRouter.
+Automatically selects the appropriate model based on query complexity.
 """
 
 import os
@@ -14,16 +15,37 @@ from urllib.parse import quote
 
 
 class ResearchLookup:
-    """Research information lookup using Perplexity Sonar Pro via OpenRouter."""
+    """Research information lookup using Perplexity Sonar models via OpenRouter."""
 
-    def __init__(self):
-        """Initialize the research lookup tool."""
+    # Complexity indicators for determining which model to use
+    REASONING_KEYWORDS = [
+        'compare', 'contrast', 'analyze', 'analysis', 'synthesis', 'meta-analysis',
+        'systematic review', 'evaluate', 'critique', 'trade-off', 'tradeoff',
+        'relationship', 'versus', 'vs', 'vs.', 'compared to',
+        'mechanism', 'why', 'how does', 'how do', 'explain', 'theoretical framework',
+        'implications', 'debate', 'controversy', 'conflicting', 'paradox',
+        'reconcile', 'integrate', 'multifaceted', 'complex interaction',
+        'causal relationship', 'underlying mechanism', 'interpret', 'reasoning',
+        'pros and cons', 'advantages and disadvantages', 'critical analysis',
+        'differences between', 'similarities', 'trade offs'
+    ]
+
+    def __init__(self, force_model: Optional[str] = None):
+        """
+        Initialize the research lookup tool.
+        
+        Args:
+            force_model: Optional model override ('pro' or 'reasoning'). 
+                        If None, automatically selects based on query complexity.
+        """
         self.api_key = os.getenv("OPENROUTER_API_KEY")
         if not self.api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable not set")
 
         self.base_url = "https://openrouter.ai/api/v1"
-        self.model = "perplexity/sonar-pro-online"  # Perplexity Sonar Pro with online search
+        self.model_pro = "perplexity/sonar-pro"  # Fast, efficient lookup
+        self.model_reasoning = "perplexity/sonar-reasoning-pro"  # Deep analysis
+        self.force_model = force_model
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
@@ -31,10 +53,48 @@ class ResearchLookup:
             "X-Title": "Scientific Writer Research Tool"
         }
 
-    def _make_request(self, messages: List[Dict[str, str]], **kwargs) -> Dict[str, Any]:
+    def _assess_query_complexity(self, query: str) -> str:
+        """
+        Assess query complexity to determine which model to use.
+        
+        Returns:
+            'reasoning' for complex analytical queries, 'pro' for straightforward lookups
+        """
+        query_lower = query.lower()
+        
+        # Count reasoning keywords
+        reasoning_count = sum(1 for keyword in self.REASONING_KEYWORDS if keyword in query_lower)
+        
+        # Count questions (multiple questions suggest complexity)
+        question_count = query.count('?')
+        
+        # Check for multiple clauses (complexity indicators)
+        clause_indicators = [' and ', ' or ', ' but ', ' however ', ' whereas ', ' although ']
+        clause_count = sum(1 for indicator in clause_indicators if indicator in query_lower)
+        
+        # Complexity score
+        complexity_score = (
+            reasoning_count * 3 +      # Reasoning keywords heavily weighted
+            question_count * 2 +        # Multiple questions indicate complexity
+            clause_count * 1.5 +        # Multiple clauses suggest nuance
+            (1 if len(query) > 150 else 0)  # Long queries often more complex
+        )
+        
+        # Threshold for using reasoning model (lowered to 3 to catch single reasoning keywords)
+        return 'reasoning' if complexity_score >= 3 else 'pro'
+    
+    def _select_model(self, query: str) -> str:
+        """Select the appropriate model based on query complexity or force override."""
+        if self.force_model:
+            return self.model_reasoning if self.force_model == 'reasoning' else self.model_pro
+        
+        complexity_level = self._assess_query_complexity(query)
+        return self.model_reasoning if complexity_level == 'reasoning' else self.model_pro
+
+    def _make_request(self, messages: List[Dict[str, str]], model: str, **kwargs) -> Dict[str, Any]:
         """Make a request to the OpenRouter API."""
         data = {
-            "model": self.model,
+            "model": model,
             "messages": messages,
             "max_tokens": 4000,
             "temperature": 0.1,  # Low temperature for factual research
@@ -50,7 +110,7 @@ class ResearchLookup:
                 f"{self.base_url}/chat/completions",
                 headers=self.headers,
                 json=data,
-                timeout=60
+                timeout=90  # Increased timeout for reasoning model
             )
             response.raise_for_status()
             return response.json()
@@ -82,6 +142,12 @@ Remember: This is for academic research purposes. Prioritize accuracy, completen
         """Perform a research lookup for the given query."""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+        # Select the appropriate model based on query complexity
+        selected_model = self._select_model(query)
+        model_type = "reasoning" if "reasoning" in selected_model else "standard"
+        
+        print(f"[Research] Using {selected_model} (detected complexity: {model_type})")
+
         # Format the research prompt
         research_prompt = self._format_research_prompt(query)
 
@@ -95,8 +161,8 @@ Remember: This is for academic research purposes. Prioritize accuracy, completen
         ]
 
         try:
-            # Make the API request
-            response = self._make_request(messages)
+            # Make the API request with selected model
+            response = self._make_request(messages, model=selected_model)
 
             # Extract the response content
             if "choices" in response and len(response["choices"]) > 0:
@@ -113,7 +179,8 @@ Remember: This is for academic research purposes. Prioritize accuracy, completen
                         "response": content,
                         "citations": citations,
                         "timestamp": timestamp,
-                        "model": self.model,
+                        "model": selected_model,
+                        "model_type": model_type,
                         "usage": response.get("usage", {})
                     }
                 else:
@@ -127,7 +194,8 @@ Remember: This is for academic research purposes. Prioritize accuracy, completen
                 "query": query,
                 "error": str(e),
                 "timestamp": timestamp,
-                "model": self.model
+                "model": selected_model,
+                "model_type": model_type
             }
 
     def _extract_citations(self, text: str) -> List[Dict[str, str]]:
@@ -198,9 +266,11 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Research Information Lookup Tool")
-    parser.add_argument("query", help="Research query to look up")
+    parser.add_argument("query", nargs="?", help="Research query to look up")
     parser.add_argument("--model-info", action="store_true", help="Show available models")
     parser.add_argument("--batch", nargs="+", help="Run multiple queries")
+    parser.add_argument("--force-model", choices=['pro', 'reasoning'], 
+                       help="Force use of specific model (pro=fast lookup, reasoning=deep analysis)")
 
     args = parser.parse_args()
 
@@ -212,7 +282,7 @@ def main():
         return 1
 
     try:
-        research = ResearchLookup()
+        research = ResearchLookup(force_model=args.force_model)
 
         if args.model_info:
             print("Available models from OpenRouter:")
@@ -222,6 +292,10 @@ def main():
                     if "perplexity" in model["id"].lower():
                         print(f"  - {model['id']}: {model.get('name', 'N/A')}")
             return 0
+
+        if not args.query and not args.batch:
+            parser.print_help()
+            return 1
 
         if args.batch:
             print(f"Running batch research for {len(args.batch)} queries...")
@@ -236,7 +310,7 @@ def main():
                 print(f"\n{'='*80}")
                 print(f"Query {i+1}: {result['query']}")
                 print(f"Timestamp: {result['timestamp']}")
-                print(f"Model: {result['model']}")
+                print(f"Model: {result['model']} ({result.get('model_type', 'unknown')})")
                 print(f"{'='*80}")
                 print(result["response"])
 
