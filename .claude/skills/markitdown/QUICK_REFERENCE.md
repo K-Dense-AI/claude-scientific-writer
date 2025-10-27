@@ -43,8 +43,16 @@ result = md.convert("paper.pdf")
 ```python
 from openai import OpenAI
 
-client = OpenAI()
-md = MarkItDown(llm_client=client, llm_model="gpt-4o")
+# Use OpenRouter for multiple model access
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
+
+md = MarkItDown(
+    llm_client=client,
+    llm_model="openai/gpt-4o"  # or anthropic/claude-3.5-sonnet
+)
 result = md.convert("slides.pptx")
 ```
 
@@ -95,10 +103,15 @@ python scripts/convert_literature.py papers/ markdown/ --create-index
 ```python
 from openai import OpenAI
 
-client = OpenAI()
+# Initialize OpenRouter client
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
+
 md = MarkItDown(
     llm_client=client,
-    llm_model="gpt-4o",
+    llm_model="anthropic/claude-3.5-sonnet",  # or openai/gpt-4o
     llm_prompt="Describe scientific figures with technical precision"
 )
 result = md.convert("paper.pdf")
@@ -113,8 +126,21 @@ Analyze this data visualization. Describe:
 - Notable data points
 """
 
-md = MarkItDown(llm_client=client, llm_model="gpt-4o", llm_prompt=prompt)
+md = MarkItDown(
+    llm_client=client,
+    llm_model="openai/gpt-4o",
+    llm_prompt=prompt
+)
 ```
+
+### Available Models via OpenRouter
+- `openai/gpt-4o` - GPT-4 Omni (vision)
+- `openai/gpt-4-vision` - GPT-4 Vision
+- `anthropic/claude-3.5-sonnet` - Claude 3.5 Sonnet (vision)
+- `anthropic/claude-3-opus` - Claude 3 Opus (vision)
+- `google/gemini-pro-vision` - Gemini Pro Vision
+
+See https://openrouter.ai/models for full list
 
 ## Azure Document Intelligence
 
@@ -204,7 +230,10 @@ Analyze this data visualization:
 ## Environment Variables
 
 ```bash
-export OPENAI_API_KEY="sk-..."
+# OpenRouter for AI-enhanced conversions
+export OPENROUTER_API_KEY="sk-or-v1-..."
+
+# Azure Document Intelligence (optional)
 export AZURE_DOCUMENT_INTELLIGENCE_KEY="key..."
 export AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT="https://..."
 ```

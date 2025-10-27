@@ -88,16 +88,21 @@ with open("document.pdf", "rb") as f:
 
 ### 1. AI-Enhanced Image Descriptions
 
-Use LLMs to generate detailed image descriptions (for PPTX and image files):
+Use LLMs via OpenRouter to generate detailed image descriptions (for PPTX and image files):
 
 ```python
 from markitdown import MarkItDown
 from openai import OpenAI
 
-client = OpenAI()
+# Initialize OpenRouter client (OpenAI-compatible API)
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
+
 md = MarkItDown(
     llm_client=client,
-    llm_model="gpt-4o",
+    llm_model="openai/gpt-4o",  # or anthropic/claude-3.5-sonnet
     llm_prompt="Describe this image in detail for scientific documentation"
 )
 
@@ -212,10 +217,15 @@ for pdf_file in pdf_dir.glob("*.pdf"):
 from markitdown import MarkItDown
 from openai import OpenAI
 
-client = OpenAI()
+# Use OpenRouter for access to multiple AI models
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
+
 md = MarkItDown(
     llm_client=client,
-    llm_model="gpt-4o",
+    llm_model="anthropic/claude-3.5-sonnet",  # or openai/gpt-4o
     llm_prompt="Describe this slide image in detail, focusing on key visual elements and data"
 )
 
@@ -361,6 +371,20 @@ for paper in papers_dir.glob("*.pdf"):
     content += result.text_content
     
     output_file.write_text(content)
+
+# For AI-enhanced conversion with figures
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
+
+md_ai = MarkItDown(
+    llm_client=client,
+    llm_model="openai/gpt-4o",
+    llm_prompt="Describe scientific figures with technical precision"
+)
 ```
 
 ### Extract Tables for Analysis
@@ -416,8 +440,11 @@ print(result.text_content)
 
 ## Resources
 
-- GitHub: https://github.com/microsoft/markitdown
-- PyPI: https://pypi.org/project/markitdown/
-- MCP Server: markitdown-mcp (for Claude Desktop integration)
-- Plugin Development: See `packages/markitdown-sample-plugin`
+- **MarkItDown GitHub**: https://github.com/microsoft/markitdown
+- **PyPI**: https://pypi.org/project/markitdown/
+- **OpenRouter**: https://openrouter.ai (for AI-enhanced conversions)
+- **OpenRouter API Keys**: https://openrouter.ai/keys
+- **OpenRouter Models**: https://openrouter.ai/models
+- **MCP Server**: markitdown-mcp (for Claude Desktop integration)
+- **Plugin Development**: See `packages/markitdown-sample-plugin`
 

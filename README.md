@@ -8,7 +8,8 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
 - 📚 **Literature Review**: Conduct comprehensive literature reviews with citation management
 - 🔍 **Research Lookup**: Real-time research information using Perplexity's Sonar Pro model via OpenRouter
 - 📝 **Peer Review**: Receive constructive feedback on scientific drafts
-- 📄 **Document Manipulation**: Work with various document formats (docx, pdf, pptx, xlsx)
+- 📄 **Document Conversion**: Convert 15+ file formats to Markdown using MarkItDown (PDF, DOCX, PPTX, XLSX, images, audio, etc.)
+- 🖼️ **AI-Enhanced Processing**: AI-powered image descriptions and document analysis using OpenRouter models
 - 🤖 **LaTeX Support**: Generates publication-ready LaTeX documents with BibTeX citations
 - 📊 **Progress Tracking**: Real-time logging and transparent workflow execution
 - 📦 **Data File Integration**: Automatically process and incorporate data files and images into your papers
@@ -133,6 +134,65 @@ The assistant will:
 > Format these 10 citations in IEEE style: [paste citations]
 ```
 
+### Document Conversion
+
+```
+> Convert all PDFs in the literature folder to Markdown
+```
+
+```
+> Convert this PowerPoint presentation to Markdown with AI-enhanced image descriptions
+```
+
+## OpenRouter Integration
+
+The Scientific Writer uses **OpenRouter** for AI-enhanced features, providing access to 100+ AI models through a unified API:
+
+### What is OpenRouter?
+
+OpenRouter is an API gateway that provides:
+- **Access to Multiple Models**: GPT-4, Claude, Gemini, and 100+ other models
+- **Unified Interface**: OpenAI-compatible API for easy integration
+- **Flexible Choice**: Choose the best model for each task
+- **Competitive Pricing**: Often better rates than direct access
+
+### Where OpenRouter is Used
+
+1. **Research Lookup**: Perplexity Sonar Pro for real-time research queries
+2. **AI-Enhanced Document Conversion**: GPT-4o, Claude 3.5 Sonnet, or Gemini for detailed image descriptions in PDFs and presentations
+
+### Setup
+
+OpenRouter is configured alongside your Anthropic API key:
+
+```bash
+# Add to your .env file
+echo "OPENROUTER_API_KEY=your_openrouter_api_key_here" >> .env
+```
+
+Get your API key at: https://openrouter.ai/keys
+
+### Popular Models for Different Tasks
+
+| Task | Recommended Model | Provider |
+|------|-------------------|----------|
+| Research Lookup | `perplexity/sonar-pro` | Perplexity |
+| Scientific Image Analysis | `anthropic/claude-3.5-sonnet` | Anthropic |
+| Presentation Conversion | `openai/gpt-4o` | OpenAI |
+| Cost-Effective OCR | `google/gemini-pro-vision` | Google |
+
+See the complete model list at: https://openrouter.ai/models
+
+### Example Usage
+
+When converting documents with AI enhancement, you can specify which model to use:
+
+```
+> Convert this research paper PDF to Markdown using Claude for image analysis
+```
+
+The assistant will automatically use the appropriate OpenRouter model for optimal results.
+
 ## Data File Integration
 
 The scientific writer can automatically process and incorporate data files and images from the `data/` folder at the project root. This feature makes it easy to include your research data, plots, and figures in your papers.
@@ -224,6 +284,16 @@ The CLI comes with specialized skills loaded from `.claude/skills/`:
 - Current literature access
 
 ### Document Skills
+
+#### MarkItDown - Universal File Converter
+- Convert 15+ file formats to Markdown (PDF, DOCX, PPTX, XLSX, images, audio, YouTube URLs)
+- AI-enhanced image descriptions using OpenRouter (GPT-4o, Claude, Gemini)
+- OCR for scanned documents
+- Speech-to-text transcription
+- Batch processing with parallel execution
+- Optimized for LLM processing and scientific workflows
+
+#### Traditional Document Manipulation
 - **DOCX**: Create and edit Word documents
 - **PDF**: Extract information, fill forms
 - **PPTX**: Create and modify PowerPoint presentations
@@ -245,6 +315,8 @@ For detailed skill documentation, see [SKILLS.md](SKILLS.md).
 4. **Iterate**: Ask for revisions or clarifications as needed
 5. **Use files**: Reference existing files for review or editing tasks
 6. **Add data files**: Place your data files and images in the `data/` folder - they'll be automatically incorporated into your paper
+7. **Convert documents**: Convert PDFs, presentations, and other documents to Markdown for easy processing
+8. **Choose AI models**: Specify preferred models (GPT-4o, Claude, Gemini) for AI-enhanced features
 
 ## Configuration
 
@@ -282,6 +354,8 @@ claude-scientific-writer/
 │       ├── literature-review/
 │       ├── peer-review/
 │       ├── research-lookup/
+│       ├── latex-posters/
+│       ├── markitdown/          # Universal file converter
 │       └── document-skills/
 ├── data/                        # Place your data files here (auto-processed)
 ├── paper_outputs/               # Generated papers (auto-created)
@@ -344,7 +418,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Built with the [Claude Agents SDK](https://docs.claude.com/en/docs/claude-code/sdk/sdk-overview)
 - Powered by Anthropic's Claude Sonnet 4.5
-- Research lookup powered by Perplexity Sonar Pro via OpenRouter
+- Research lookup powered by Perplexity Sonar Pro via [OpenRouter](https://openrouter.ai)
+- Document conversion powered by [MarkItDown](https://github.com/microsoft/markitdown) (Microsoft, MIT License)
+- AI-enhanced features via OpenRouter (GPT-4, Claude, Gemini, and 100+ models)
 
 ## Support
 

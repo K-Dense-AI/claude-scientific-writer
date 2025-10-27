@@ -133,11 +133,12 @@ Located in `assets/`:
 
 ### Advanced Features
 
-1. **AI Enhancement**
-   - OpenAI integration for image descriptions
+1. **AI Enhancement via OpenRouter**
+   - Access to 100+ AI models through OpenRouter
    - Multiple preset prompts (scientific, medical, data viz)
    - Custom prompt support
-   - Multiple model support (GPT-4, GPT-4o, etc.)
+   - Models: GPT-4, Claude 3.5, Gemini, and more
+   - Choose best model for each task
 
 2. **Azure Integration**
    - Azure Document Intelligence for complex PDFs
@@ -182,8 +183,10 @@ python scripts/batch_convert.py input_dir/ output_dir/ --extensions .pdf .docx -
 
 ### AI-Enhanced Convert
 ```bash
-export OPENAI_API_KEY="sk-..."
-python scripts/convert_with_ai.py paper.pdf output.md --prompt-type scientific
+export OPENROUTER_API_KEY="sk-or-v1-..."
+python scripts/convert_with_ai.py paper.pdf output.md \
+  --model anthropic/claude-3.5-sonnet \
+  --prompt-type scientific
 ```
 
 ### Literature Convert
@@ -224,10 +227,16 @@ md = MarkItDown()
 result = md.convert("document.pdf")
 print(result.text_content)
 
-# With AI
+# With AI via OpenRouter
 from openai import OpenAI
-client = OpenAI()
-md = MarkItDown(llm_client=client, llm_model="gpt-4o")
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
+md = MarkItDown(
+    llm_client=client,
+    llm_model="openai/gpt-4o"  # or anthropic/claude-3.5-sonnet
+)
 result = md.convert("presentation.pptx")
 ```
 
@@ -267,8 +276,11 @@ result = md.convert("presentation.pptx")
 
 ## Resources
 
-- **GitHub**: https://github.com/microsoft/markitdown
+- **MarkItDown GitHub**: https://github.com/microsoft/markitdown
 - **PyPI**: https://pypi.org/project/markitdown/
+- **OpenRouter**: https://openrouter.ai (AI model access)
+- **OpenRouter API Keys**: https://openrouter.ai/keys
+- **OpenRouter Models**: https://openrouter.ai/models
 - **License**: MIT (Microsoft Corporation)
 - **Python**: 3.10+ required
 - **Skill Location**: `.claude/skills/markitdown/`

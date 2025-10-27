@@ -2,7 +2,7 @@
 """
 Convert documents to Markdown with AI-enhanced image descriptions.
 
-This script demonstrates how to use MarkItDown with OpenAI to generate
+This script demonstrates how to use MarkItDown with OpenRouter to generate
 detailed descriptions of images in documents (PowerPoint, PDFs with images, etc.)
 """
 
@@ -71,7 +71,7 @@ def convert_with_ai(
     input_file: Path,
     output_file: Path,
     api_key: str,
-    model: str = "gpt-4o",
+    model: str = "openai/gpt-4o",
     prompt_type: str = "general",
     custom_prompt: str = None
 ) -> bool:
@@ -81,8 +81,8 @@ def convert_with_ai(
     Args:
         input_file: Path to input file
         output_file: Path to output Markdown file
-        api_key: OpenAI API key
-        model: Model name (default: gpt-4o)
+        api_key: OpenRouter API key
+        model: Model name (default: openai/gpt-4o)
         prompt_type: Type of prompt to use
         custom_prompt: Custom prompt (overrides prompt_type)
         
@@ -90,8 +90,11 @@ def convert_with_ai(
         True if successful, False otherwise
     """
     try:
-        # Initialize OpenAI client
-        client = OpenAI(api_key=api_key)
+        # Initialize OpenRouter client (OpenAI-compatible)
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://openrouter.ai/api/v1"
+        )
         
         # Select prompt
         if custom_prompt:
@@ -151,17 +154,24 @@ Examples:
   python convert_with_ai.py paper.pdf output.md --prompt-type scientific
   
   # Convert a presentation with custom model
-  python convert_with_ai.py slides.pptx slides.md --model gpt-4o --prompt-type presentation
+  python convert_with_ai.py slides.pptx slides.md --model anthropic/claude-3.5-sonnet --prompt-type presentation
   
-  # Use custom prompt
-  python convert_with_ai.py diagram.png diagram.md --custom-prompt "Describe this technical diagram"
+  # Use custom prompt with GPT-4
+  python convert_with_ai.py diagram.png diagram.md --model openai/gpt-4o --custom-prompt "Describe this technical diagram"
   
   # Set API key via environment variable
-  export OPENAI_API_KEY="sk-..."
+  export OPENROUTER_API_KEY="sk-or-v1-..."
   python convert_with_ai.py image.jpg image.md
 
 Environment Variables:
-  OPENAI_API_KEY    OpenAI API key (required if not passed via --api-key)
+  OPENROUTER_API_KEY    OpenRouter API key (required if not passed via --api-key)
+
+Popular Models (use with --model):
+  openai/gpt-4o              - GPT-4 Omni (vision support)
+  openai/gpt-4-vision        - GPT-4 Vision
+  anthropic/claude-3.5-sonnet - Claude 3.5 Sonnet (vision support)
+  anthropic/claude-3-opus    - Claude 3 Opus (vision support)
+  google/gemini-pro-vision   - Gemini Pro Vision
         """
     )
     
@@ -169,12 +179,12 @@ Environment Variables:
     parser.add_argument('output', type=Path, help='Output Markdown file')
     parser.add_argument(
         '--api-key', '-k',
-        help='OpenAI API key (or set OPENAI_API_KEY env var)'
+        help='OpenRouter API key (or set OPENROUTER_API_KEY env var)'
     )
     parser.add_argument(
         '--model', '-m',
-        default='gpt-4o',
-        help='OpenAI model to use (default: gpt-4o)'
+        default='openai/gpt-4o',
+        help='Model to use via OpenRouter (default: openai/gpt-4o)'
     )
     parser.add_argument(
         '--prompt-type', '-t',
@@ -204,9 +214,10 @@ Environment Variables:
         sys.exit(0)
     
     # Get API key
-    api_key = args.api_key or os.environ.get('OPENAI_API_KEY')
+    api_key = args.api_key or os.environ.get('OPENROUTER_API_KEY')
     if not api_key:
-        print("Error: OpenAI API key required. Set OPENAI_API_KEY environment variable or use --api-key")
+        print("Error: OpenRouter API key required. Set OPENROUTER_API_KEY environment variable or use --api-key")
+        print("Get your API key at: https://openrouter.ai/keys")
         sys.exit(1)
     
     # Validate input file

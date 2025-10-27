@@ -125,7 +125,11 @@ with open("talk_notes.md", "w") as f:
 from markitdown import MarkItDown
 from openai import OpenAI
 
-client = OpenAI()
+# Initialize OpenRouter client
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
 
 # Scientific diagram analysis
 scientific_prompt = """
@@ -139,7 +143,7 @@ Be technical and precise.
 
 md = MarkItDown(
     llm_client=client,
-    llm_model="gpt-4o",
+    llm_model="openai/gpt-4o",  # or anthropic/claude-3.5-sonnet
     llm_prompt=scientific_prompt
 )
 
@@ -154,19 +158,23 @@ print(result.text_content)
 from markitdown import MarkItDown
 from openai import OpenAI
 
-client = OpenAI()
+# Initialize OpenRouter client
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
 
-# Scientific papers
+# Scientific papers - use Claude for technical analysis
 scientific_md = MarkItDown(
     llm_client=client,
-    llm_model="gpt-4o",
+    llm_model="anthropic/claude-3.5-sonnet",
     llm_prompt="Describe scientific figures with technical precision"
 )
 
-# Presentations
+# Presentations - use GPT-4o for visual understanding
 presentation_md = MarkItDown(
     llm_client=client,
-    llm_model="gpt-4o",
+    llm_model="openai/gpt-4o",
     llm_prompt="Summarize slide content and key visual elements"
 )
 

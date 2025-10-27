@@ -220,25 +220,39 @@ class MyConverter(DocumentConverter):
 
 ## AI-Enhanced Conversions
 
-### Using OpenAI for Image Descriptions
+### Using OpenRouter for Image Descriptions
 
 ```python
 from markitdown import MarkItDown
 from openai import OpenAI
 
-# Initialize OpenAI client
-client = OpenAI(api_key="your-api-key")
+# Initialize OpenRouter client (OpenAI-compatible API)
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
 
 # Create MarkItDown with AI support
 md = MarkItDown(
     llm_client=client,
-    llm_model="gpt-4o",
+    llm_model="openai/gpt-4o",  # or anthropic/claude-3.5-sonnet
     llm_prompt="Describe this image in detail for scientific documentation"
 )
 
 # Convert files with images
 result = md.convert("presentation.pptx")
 ```
+
+### Available Models via OpenRouter
+
+Popular models with vision support:
+- `openai/gpt-4o` - GPT-4 Omni (recommended)
+- `openai/gpt-4-vision` - GPT-4 Vision
+- `anthropic/claude-3.5-sonnet` - Claude 3.5 Sonnet
+- `anthropic/claude-3-opus` - Claude 3 Opus
+- `google/gemini-pro-vision` - Gemini Pro Vision
+
+See https://openrouter.ai/models for the complete list.
 
 ### Custom Prompts
 
@@ -255,7 +269,7 @@ Be precise and technical.
 
 md = MarkItDown(
     llm_client=client,
-    llm_model="gpt-4o",
+    llm_model="anthropic/claude-3.5-sonnet",
     llm_prompt=scientific_prompt
 )
 ```
@@ -379,7 +393,7 @@ with ThreadPoolExecutor(max_workers=4) as executor:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `OPENAI_API_KEY` | OpenAI API key for image descriptions | `sk-...` |
+| `OPENROUTER_API_KEY` | OpenRouter API key for image descriptions | `sk-or-v1-...` |
 | `AZURE_DOCUMENT_INTELLIGENCE_KEY` | Azure DI authentication | `key123...` |
 | `AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT` | Azure DI endpoint | `https://...` |
 

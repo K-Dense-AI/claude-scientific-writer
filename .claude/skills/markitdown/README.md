@@ -61,13 +61,21 @@ print(result.text_content)
 ## Key Features
 
 ### 1. AI-Enhanced Conversions
-Use OpenAI models to generate detailed image descriptions:
+Use AI models via OpenRouter to generate detailed image descriptions:
 
 ```python
 from openai import OpenAI
 
-client = OpenAI()
-md = MarkItDown(llm_client=client, llm_model="gpt-4o")
+# OpenRouter provides access to 100+ AI models
+client = OpenAI(
+    api_key="your-openrouter-api-key",
+    base_url="https://openrouter.ai/api/v1"
+)
+
+md = MarkItDown(
+    llm_client=client,
+    llm_model="openai/gpt-4o"  # or anthropic/claude-3.5-sonnet
+)
 result = md.convert("presentation.pptx")
 ```
 
@@ -123,9 +131,12 @@ python scripts/batch_convert.py docs/ markdown/ --extensions .pdf .docx .pptx -r
 
 ### AI-Enhanced Conversion
 ```bash
-# Convert with AI descriptions
-export OPENAI_API_KEY="sk-..."
+# Convert with AI descriptions via OpenRouter
+export OPENROUTER_API_KEY="sk-or-v1-..."
 python scripts/convert_with_ai.py paper.pdf output.md --prompt-type scientific
+
+# Use different models
+python scripts/convert_with_ai.py image.png output.md --model anthropic/claude-3.5-sonnet
 
 # Use custom prompt
 python scripts/convert_with_ai.py image.png output.md --custom-prompt "Describe this diagram"
@@ -147,16 +158,19 @@ This skill integrates seamlessly with the Scientific Writer CLI for:
 
 ## Resources
 
-- **GitHub**: https://github.com/microsoft/markitdown
+- **MarkItDown GitHub**: https://github.com/microsoft/markitdown
 - **PyPI**: https://pypi.org/project/markitdown/
+- **OpenRouter**: https://openrouter.ai (AI model access)
+- **OpenRouter API Keys**: https://openrouter.ai/keys
+- **OpenRouter Models**: https://openrouter.ai/models
 - **License**: MIT
 
 ## Requirements
 
 - Python 3.10+
 - Optional dependencies based on formats needed
-- OpenAI API key (for AI-enhanced conversions)
-- Azure subscription (for Document Intelligence)
+- OpenRouter API key (for AI-enhanced conversions) - Get at https://openrouter.ai/keys
+- Azure subscription (optional, for Document Intelligence)
 
 ## Examples
 

@@ -144,28 +144,39 @@ uv pip install 'markitdown[all]'
 
 ## AI Enhancement Setup (Optional)
 
-For AI-powered image descriptions:
+For AI-powered image descriptions using OpenRouter:
 
-### OpenAI API
+### OpenRouter API
+
+OpenRouter provides unified access to multiple AI models (GPT-4, Claude, Gemini, etc.) through a single API.
 
 ```bash
-# Install OpenAI SDK (usually included)
+# Install OpenAI SDK (required, already included with markitdown)
 pip install openai
 
+# Get API key from https://openrouter.ai/keys
+
 # Set API key
-export OPENAI_API_KEY="sk-..."
+export OPENROUTER_API_KEY="sk-or-v1-..."
 
 # Add to shell profile for persistence
-echo 'export OPENAI_API_KEY="sk-..."' >> ~/.bashrc  # Linux
-echo 'export OPENAI_API_KEY="sk-..."' >> ~/.zshrc   # macOS
+echo 'export OPENROUTER_API_KEY="sk-or-v1-..."' >> ~/.bashrc  # Linux
+echo 'export OPENROUTER_API_KEY="sk-or-v1-..."' >> ~/.zshrc   # macOS
 ```
 
-### Azure OpenAI
+**Why OpenRouter?**
+- Access to 100+ AI models through one API
+- Choose between GPT-4, Claude, Gemini, and more
+- Competitive pricing
+- No vendor lock-in
+- Simple OpenAI-compatible interface
 
-```bash
-export AZURE_OPENAI_API_KEY="..."
-export AZURE_OPENAI_ENDPOINT="https://..."
-```
+**Popular Models for Image Description:**
+- `openai/gpt-4o` - Best vision understanding
+- `anthropic/claude-3.5-sonnet` - Excellent technical analysis
+- `google/gemini-pro-vision` - Cost-effective option
+
+See https://openrouter.ai/models for complete model list and pricing.
 
 ## Azure Document Intelligence Setup (Optional)
 
