@@ -63,9 +63,47 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
+### 4. LaTeX Research Posters
+**Location**: `.claude/skills/latex-posters/`
+
+**Capabilities**:
+- Creating professional research posters using LaTeX (beamerposter, tikzposter, baposter)
+- Conference poster design and layout
+- Full-page poster templates with proper spacing
+- Color schemes and visual design principles
+- Typography and readability optimization
+- PDF generation and quality control
+- Accessibility and inclusive design
+- Poster size configuration (A0, A1, 36×48", etc.)
+
+**References**:
+- `latex_poster_packages.md`: Detailed comparison of beamerposter, tikzposter, and baposter
+- `poster_design_principles.md`: Typography, color theory, visual hierarchy, and accessibility
+- `poster_layout_design.md`: Grid systems, spatial organization, and visual flow
+- `poster_content_guide.md`: Content strategy, writing style, and section-specific guidance
+
+**Scripts**:
+- `review_poster.sh`: Automated PDF quality check script
+
+**Assets**:
+- `beamerposter_template.tex`: Classic academic poster template
+- `tikzposter_template.tex`: Modern, colorful poster template
+- `baposter_template.tex`: Structured multi-column poster template
+- `poster_quality_checklist.md`: Comprehensive pre-printing checklist
+
+**Features**:
+- Ensures posters span the full page without excessive margins
+- PDF review and quality control guidelines
+- Automated checking scripts for page size, fonts, and images
+- Reduced-scale print testing instructions
+- Color contrast and accessibility verification
+- Common issues troubleshooting guide
+
+---
+
 ## Document Manipulation Skills
 
-### 4. DOCX (Word Documents)
+### 5. DOCX (Word Documents)
 **Location**: `.claude/skills/document-skills/docx/`
 
 **Capabilities**:
@@ -86,7 +124,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 5. PDF Documents
+### 6. PDF Documents
 **Location**: `.claude/skills/document-skills/pdf/`
 
 **Capabilities**:
@@ -109,7 +147,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 6. PPTX (PowerPoint Presentations)
+### 7. PPTX (PowerPoint Presentations)
 **Location**: `.claude/skills/document-skills/pptx/`
 
 **Capabilities**:
@@ -132,7 +170,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 7. XLSX (Excel Spreadsheets)
+### 8. XLSX (Excel Spreadsheets)
 **Location**: `.claude/skills/document-skills/xlsx/`
 
 **Capabilities**:
