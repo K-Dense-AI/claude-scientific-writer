@@ -1,0 +1,23 @@
+[project]
+name = "claude-scientific-writer"
+version = "1.0.0"
+description = "A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5 and the Claude Agents SDK"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "claude-agent-sdk>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+]
+
+[project.scripts]
+scientific-writer = "scientific_writer:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = []
+

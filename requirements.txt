@@ -1,4 +1,0 @@
-claude-agent-sdk
-python-dotenv
-requests
-

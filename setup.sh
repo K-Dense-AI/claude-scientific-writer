@@ -6,7 +6,30 @@ echo "Scientific Writer CLI Setup"
 echo "=================================="
 echo ""
 
+# Check if uv is installed
+echo "Checking for uv installation..."
+if ! command -v uv &> /dev/null; then
+    echo "✗ uv not found. Installing uv..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    
+    if [ $? -eq 0 ]; then
+        echo "✓ uv installed successfully"
+        echo ""
+        echo "⚠️  Please restart your shell or run:"
+        echo "   source $HOME/.cargo/env"
+        echo ""
+        echo "Then run this setup script again."
+        exit 0
+    else
+        echo "✗ Failed to install uv"
+        exit 1
+    fi
+else
+    echo "✓ uv is installed"
+fi
+
 # Check Python version
+echo ""
 echo "Checking Python version..."
 python_version=$(python3 --version 2>&1 | grep -oE '[0-9]+\.[0-9]+')
 required_version="3.10"
@@ -18,10 +41,10 @@ else
     exit 1
 fi
 
-# Install dependencies
+# Install dependencies using uv
 echo ""
-echo "Installing dependencies..."
-pip3 install -r requirements.txt
+echo "Installing dependencies with uv..."
+uv pip install -e .
 
 if [ $? -eq 0 ]; then
     echo "✓ Dependencies installed successfully"

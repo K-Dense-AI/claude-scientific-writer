@@ -55,6 +55,7 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
 ### Prerequisites
 
 - Python 3.10 or later
+- [uv](https://docs.astral.sh/uv/) - Fast Python package installer
 - An [Anthropic API key](https://console.anthropic.com/)
 - An [OpenRouter API key](https://openrouter.ai/) (for research lookup functionality)
 
@@ -66,17 +67,24 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
    cd claude-scientific-writer
    ```
 
-2. **Install dependencies:**
+2. **Install uv (if not already installed):**
    ```bash
-   pip install -r requirements.txt
+   curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
+
+3. **Install dependencies:**
    
-   Or use the setup script:
+   Use the setup script (recommended):
    ```bash
    bash setup.sh
    ```
+   
+   Or manually with uv:
+   ```bash
+   uv pip install -e .
+   ```
 
-3. **Set up your API keys:**
+4. **Set up your API keys:**
 
    Create a `.env` file in the project root:
    ```bash
@@ -401,7 +409,7 @@ claude-scientific-writer/
 ├── data/                        # Place your data files here (auto-processed)
 ├── paper_outputs/               # Generated papers (auto-created)
 ├── scientific_writer.py         # Main CLI application
-├── requirements.txt             # Python dependencies
+├── pyproject.toml               # Python dependencies (managed by uv)
 ├── setup.sh                     # Setup script
 ├── claude.md                    # System instructions
 ├── SKILLS.md                    # Detailed skills documentation
@@ -426,7 +434,7 @@ Make sure you've either:
 
 Ensure all dependencies are installed:
 ```bash
-pip install -r requirements.txt
+uv pip install -e .
 ```
 
 ### Permission Errors

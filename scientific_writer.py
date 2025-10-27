@@ -6,6 +6,7 @@ A command-line interface for scientific writing powered by Claude Code.
 
 import os
 import sys
+import time
 import asyncio
 import shutil
 from pathlib import Path
@@ -155,6 +156,81 @@ def create_data_context_message(processed_info):
     return "\n".join(context_parts)
 
 
+def find_existing_papers(output_folder):
+    """
+    Get all existing paper directories with their metadata.
+    Returns a list of dicts with path, name, and timestamp info.
+    """
+    papers = []
+    if not output_folder.exists():
+        return papers
+    
+    for paper_dir in output_folder.iterdir():
+        if paper_dir.is_dir():
+            papers.append({
+                'path': paper_dir,
+                'name': paper_dir.name,
+                'mtime': paper_dir.stat().st_mtime
+            })
+    
+    # Sort by modification time (most recent first)
+    papers.sort(key=lambda x: x['mtime'], reverse=True)
+    return papers
+
+
+def detect_paper_reference(user_input, existing_papers):
+    """
+    Try to detect if the user is referring to an existing paper.
+    Returns the paper path if found, None otherwise.
+    """
+    if not existing_papers:
+        return None
+    
+    user_input_lower = user_input.lower()
+    
+    # Keywords that suggest continuing with existing work
+    continuation_keywords = [
+        "continue", "update", "edit", "revise", "modify", "change",
+        "add to", "fix", "improve", "review", "the paper", "this paper",
+        "my paper", "current paper", "previous paper", "last paper",
+        "poster", "the poster", "my poster", "compile", "generate pdf"
+    ]
+    
+    # Keywords that explicitly indicate a new paper
+    new_paper_keywords = [
+        "new paper", "start fresh", "start afresh", "create new",
+        "different paper", "another paper", "write a new"
+    ]
+    
+    # If user explicitly wants a new paper, return None
+    if any(keyword in user_input_lower for keyword in new_paper_keywords):
+        return None
+    
+    # Check if user mentions continuation keywords
+    has_continuation_keyword = any(keyword in user_input_lower for keyword in continuation_keywords)
+    
+    # Try to find paper by name/topic keywords
+    for paper in existing_papers:
+        paper_name = paper['name'].lower()
+        # Extract topic from directory name (format: YYYYMMDD_HHMMSS_topic)
+        parts = paper_name.split('_', 2)
+        if len(parts) >= 3:
+            topic = parts[2].replace('_', ' ')
+            # Check if topic words appear in user input
+            topic_words = topic.split()
+            matches = sum(1 for word in topic_words if len(word) > 3 and word in user_input_lower)
+            
+            # If we have a good match or user used continuation keywords with recent paper
+            if matches >= 2 or (has_continuation_keyword and paper == existing_papers[0]):
+                return paper['path']
+    
+    # If user used continuation keywords but no specific match, use most recent paper
+    if has_continuation_keyword and existing_papers:
+        return existing_papers[0]['path']
+    
+    return None
+
+
 async def main():
     """Main CLI loop for the scientific writer."""
     # Get API key (verify it exists)
@@ -290,7 +366,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
                 continue
             
             # Check if user wants to start a new paper
-            new_paper_keywords = ["new paper", "start fresh", "create new", "different paper", "another paper"]
+            new_paper_keywords = ["new paper", "start fresh", "start afresh", "create new", "different paper", "another paper"]
             is_new_paper_request = any(keyword in user_input.lower() for keyword in new_paper_keywords)
             
             # Check for data files and process them if we have a current paper
@@ -342,26 +418,31 @@ User request: {user_input}"""
             # Try to detect if a new paper directory was created
             if not current_paper_path or is_new_paper_request:
                 # Look for the most recently modified directory in paper_outputs
+                # Only update if it was modified in the last 10 seconds (indicating it was just created)
                 try:
                     paper_dirs = [d for d in output_folder.iterdir() if d.is_dir()]
                     if paper_dirs:
                         most_recent = max(paper_dirs, key=lambda d: d.stat().st_mtime)
-                        current_paper_path = str(most_recent)
-                        print(f"\n📂 Working on: {most_recent.name}")
+                        time_since_modification = time.time() - most_recent.stat().st_mtime
                         
-                        # Process any remaining data files now that we have a paper path
-                        remaining_data_files = get_data_files(cwd)
-                        if remaining_data_files:
-                            print(f"\n📦 Processing {len(remaining_data_files)} data file(s)...")
-                            processed_info = process_data_files(cwd, remaining_data_files, current_paper_path)
-                            if processed_info:
-                                data_count = len(processed_info['data_files'])
-                                image_count = len(processed_info['image_files'])
-                                if data_count > 0:
-                                    print(f"   ✓ Copied {data_count} data file(s) to data/")
-                                if image_count > 0:
-                                    print(f"   ✓ Copied {image_count} image(s) to figures/")
-                                print("   ✓ Deleted original files from data folder")
+                        # Only set as current paper if it was modified very recently (within last 10 seconds)
+                        if time_since_modification < 10:
+                            current_paper_path = str(most_recent)
+                            print(f"\n📂 Working on: {most_recent.name}")
+                            
+                            # Process any remaining data files now that we have a paper path
+                            remaining_data_files = get_data_files(cwd)
+                            if remaining_data_files:
+                                print(f"\n📦 Processing {len(remaining_data_files)} data file(s)...")
+                                processed_info = process_data_files(cwd, remaining_data_files, current_paper_path)
+                                if processed_info:
+                                    data_count = len(processed_info['data_files'])
+                                    image_count = len(processed_info['image_files'])
+                                    if data_count > 0:
+                                        print(f"   ✓ Copied {data_count} data file(s) to data/")
+                                    if image_count > 0:
+                                        print(f"   ✓ Copied {image_count} image(s) to figures/")
+                                    print("   ✓ Deleted original files from data folder")
                 except Exception:
                     pass  # Silently fail if we can't detect the directory
             
