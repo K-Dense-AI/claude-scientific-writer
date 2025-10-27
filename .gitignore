@@ -39,6 +39,7 @@ env/
 
 # Output directories
 paper_outputs/
+data/
 
 # LaTeX auxiliary files
 *.aux
