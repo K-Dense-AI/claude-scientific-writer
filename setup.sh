@@ -1,0 +1,60 @@
+#!/bin/bash
+# Setup script for Scientific Writer CLI
+
+echo "=================================="
+echo "Scientific Writer CLI Setup"
+echo "=================================="
+echo ""
+
+# Check Python version
+echo "Checking Python version..."
+python_version=$(python3 --version 2>&1 | grep -oE '[0-9]+\.[0-9]+')
+required_version="3.10"
+
+if [ "$(printf '%s\n' "$required_version" "$python_version" | sort -V | head -n1)" = "$required_version" ]; then
+    echo "✓ Python $python_version detected (requires 3.10+)"
+else
+    echo "✗ Python 3.10+ required. Found: $python_version"
+    exit 1
+fi
+
+# Install dependencies
+echo ""
+echo "Installing dependencies..."
+pip3 install -r requirements.txt
+
+if [ $? -eq 0 ]; then
+    echo "✓ Dependencies installed successfully"
+else
+    echo "✗ Failed to install dependencies"
+    exit 1
+fi
+
+# Check for API key
+echo ""
+if [ -f ".env" ]; then
+    echo "✓ .env file found"
+else
+    echo "Creating .env file..."
+    echo "ANTHROPIC_API_KEY=your_api_key_here" > .env
+    echo "✓ Created .env file"
+    echo ""
+    echo "⚠️  IMPORTANT: Edit .env and add your Anthropic API key!"
+    echo "   Get your key from: https://console.anthropic.com/"
+fi
+
+# Make script executable
+chmod +x scientific_writer.py
+
+echo ""
+echo "=================================="
+echo "Setup Complete!"
+echo "=================================="
+echo ""
+echo "Next steps:"
+echo "1. Edit .env and add your ANTHROPIC_API_KEY"
+echo "2. Run: python scientific_writer.py"
+echo ""
+echo "For more information, see README.md"
+echo ""
+
