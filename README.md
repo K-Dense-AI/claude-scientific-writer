@@ -2,6 +2,8 @@
 
 A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5 and the Claude Agents SDK. This tool provides specialized assistance for writing scientific papers, conducting literature reviews, peer review, and real-time research lookup.
 
+**For more advanced and specialized writing, analysis and autonomous research capabilities, go to [k-dense.ai](https://k-dense.ai)**
+
 ## Features
 
 - 🔬 **Scientific Writing**: Generate complete scientific papers following IMRaD structure with proper citations and formatting
