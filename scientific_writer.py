@@ -293,9 +293,11 @@ IMPORTANT - CONVERSATION CONTINUITY:
     print("  • Data files → copied to paper's data/ folder")
     print("  • Images → copied to paper's figures/ folder")
     print("  • Original files are automatically deleted after copying")
-    print("\n💡 Chat Session Tips:")
-    print("  • Subsequent messages will continue editing the same paper")
-    print("  • Say 'new paper' or 'start fresh' to begin a different paper")
+    print("\n🤖 Intelligent Paper Detection:")
+    print("  • I automatically detect when you're referring to a previous paper")
+    print("  • Just mention keywords like 'continue', 'update', 'the paper', etc.")
+    print("  • Or reference the paper topic (e.g., 'fix the acoustics paper')")
+    print("  • Say 'new paper' to explicitly start a fresh paper")
     print("\nType 'exit' or 'quit' to end the session.")
     print("Type 'help' for usage tips.")
     print("=" * 70)
@@ -355,26 +357,47 @@ IMPORTANT - CONVERSATION CONTINUITY:
                 print("  • Mention citation style if you have a preference")
                 print("  • I'll make smart defaults if you don't specify details")
                 print("  • Check progress.md for detailed execution logs")
-                print("\n🔄 Conversation Continuity:")
-                print("  • Subsequent messages continue editing the same paper")
-                print("  • Say 'new paper' or 'start fresh' to begin a different paper")
-                print("  • I'll track your current working paper automatically")
+                print("\n🔄 Intelligent Paper Detection:")
+                print("  • I automatically detect when you're referring to a previous paper")
+                print("  • Just say 'continue the paper', 'update my paper', 'fix the poster'")
+                print("  • Or mention the paper topic: 'edit the acoustics paper'")
+                print("  • Keywords like 'continue', 'update', 'edit', 'revise' trigger detection")
+                print("  • I'll find the most relevant paper based on context")
+                print("  • Say 'new paper' or 'start fresh' to explicitly begin a new one")
+                print("  • Current working paper is tracked throughout the session")
                 print("=" * 70)
                 continue
             
             if not user_input:
                 continue
             
+            # Get all existing papers
+            existing_papers = find_existing_papers(output_folder)
+            
             # Check if user wants to start a new paper
             new_paper_keywords = ["new paper", "start fresh", "start afresh", "create new", "different paper", "another paper"]
             is_new_paper_request = any(keyword in user_input.lower() for keyword in new_paper_keywords)
+            
+            # Try to detect reference to existing paper
+            detected_paper_path = None
+            if not is_new_paper_request:
+                detected_paper_path = detect_paper_reference(user_input, existing_papers)
+                
+                # If we detected a paper reference and it's different from current, update it
+                if detected_paper_path and str(detected_paper_path) != current_paper_path:
+                    current_paper_path = str(detected_paper_path)
+                    print(f"\n🔍 Detected reference to existing paper: {detected_paper_path.name}")
+                    print(f"📂 Working on: {current_paper_path}\n")
+                elif detected_paper_path and str(detected_paper_path) == current_paper_path:
+                    # Already working on the right paper, just confirm
+                    print(f"📂 Continuing with: {Path(current_paper_path).name}\n")
             
             # Check for data files and process them if we have a current paper
             data_context = ""
             data_files = get_data_files(cwd)
             
             if data_files and current_paper_path and not is_new_paper_request:
-                print(f"\n📦 Found {len(data_files)} file(s) in data folder. Processing...")
+                print(f"📦 Found {len(data_files)} file(s) in data folder. Processing...")
                 processed_info = process_data_files(cwd, data_files, current_paper_path)
                 if processed_info:
                     data_context = create_data_context_message(processed_info)

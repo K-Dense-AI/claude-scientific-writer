@@ -106,6 +106,43 @@ Run the scientific writer CLI:
 python scientific_writer.py
 ```
 
+### Intelligent Paper Detection
+
+The tool automatically detects when you're referring to a previous paper and continues working on it. You don't need to manually specify which paper to work on!
+
+**How It Works:**
+- 🔍 **Automatic Detection**: Analyzes your prompt for references to existing papers
+- 📝 **Keyword Matching**: Recognizes continuation keywords like "continue", "update", "edit", "revise", "fix"
+- 🎯 **Topic Recognition**: Matches paper topics mentioned in your prompt (e.g., "acoustics paper", "biology review")
+- 🔄 **Context Switching**: Automatically switches between papers based on your intent
+
+**Example Usage:**
+
+```bash
+# First session - create a new paper
+> Write a Nature review paper on AI in biology
+
+# Later session - automatically continues the same paper
+> Update the paper with more recent citations
+
+# Reference a specific paper by topic
+> Fix the acoustics paper poster
+
+# Edit the most recent paper
+> Continue working on the paper
+
+# Explicitly start a new paper
+> Create a new paper on quantum computing
+```
+
+**Detection Keywords:**
+- Continuation: `continue`, `update`, `edit`, `revise`, `modify`, `change`, `fix`, `improve`
+- Paper references: `the paper`, `my paper`, `current paper`, `previous paper`, `last paper`
+- Poster work: `poster`, `the poster`, `my poster`
+- Compilation: `compile`, `generate pdf`
+
+**Note**: If you want to explicitly start a new paper, just say "new paper" or "start fresh".
+
 ## How It Works
 
 ### Workflow
