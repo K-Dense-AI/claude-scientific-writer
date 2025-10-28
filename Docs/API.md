@@ -1,14 +1,14 @@
-# Scientific Writer API Reference
+# Scientific Writer API
 
-Complete reference for the Scientific Writer v2.0 programmatic API.
+Complete reference for the Scientific Writer v2.0 programmatic API. For a quick start, see the README. This page contains full details, examples, and best practices.
 
 ## Installation
 
 ```bash
-# Install with uv
+# Install with uv (recommended)
 uv sync
 
-# Or install in your environment
+# Or install in your current environment
 uv pip install -e .
 ```
 
@@ -36,6 +36,8 @@ Asynchronous generator that creates a scientific paper and yields progress updat
 
 **Signature:**
 ```python
+from typing import AsyncGenerator, Dict, Any, Optional, List
+
 async def generate_paper(
     query: str,
     output_dir: Optional[str] = None,
@@ -60,8 +62,8 @@ async def generate_paper(
 **Returns:**
 
 An async generator that yields:
-1. **Progress updates** (type="progress") during execution
-2. **Final result** (type="result") with comprehensive paper information
+1. Progress updates (type="progress") during execution
+2. Final result (type="result") with comprehensive paper information
 
 **Example:**
 ```python
@@ -106,17 +108,6 @@ Progress information yielded during paper generation.
 - `compilation` - Compiling LaTeX to PDF
 - `complete` - Finalizing and scanning results
 
-**Example:**
-```json
-{
-  "type": "progress",
-  "timestamp": "2024-10-28T14:30:22Z",
-  "message": "Writing introduction section",
-  "stage": "writing",
-  "percentage": 35
-}
-```
-
 ### `PaperResult`
 
 Comprehensive final result with all paper information.
@@ -141,41 +132,6 @@ Comprehensive final result with all paper information.
 - `success` - Paper fully generated with PDF
 - `partial` - TeX created but PDF compilation failed
 - `failed` - Generation failed (see `errors` field)
-
-**Example:**
-```json
-{
-  "type": "result",
-  "status": "success",
-  "paper_directory": "/path/to/paper_outputs/20241028_143022_neurips_transformers/",
-  "paper_name": "20241028_143022_neurips_transformers",
-  "metadata": {
-    "title": "Efficient Attention Mechanisms for Transformers",
-    "created_at": "2024-10-28T14:30:22Z",
-    "topic": "neurips transformers",
-    "word_count": 5200
-  },
-  "files": {
-    "pdf_final": "/path/to/final/manuscript.pdf",
-    "tex_final": "/path/to/final/manuscript.tex",
-    "pdf_drafts": ["/path/to/drafts/v1_draft.pdf"],
-    "tex_drafts": ["/path/to/drafts/v1_draft.tex"],
-    "bibliography": "/path/to/references/references.bib",
-    "figures": ["/path/to/figures/attention_map.png"],
-    "data": ["/path/to/data/results.csv"],
-    "progress_log": "/path/to/progress.md",
-    "summary": "/path/to/SUMMARY.md"
-  },
-  "citations": {
-    "count": 42,
-    "style": "BibTeX",
-    "file": "/path/to/references/references.bib"
-  },
-  "figures_count": 1,
-  "compilation_success": true,
-  "errors": []
-}
-```
 
 ### `PaperMetadata`
 
@@ -307,16 +263,15 @@ async def with_error_handling():
                 print(f"[{update['stage']}] {update['message']}")
             else:
                 if update["status"] == "failed":
-                    print(f"❌ Generation failed!")
+                    print("Generation failed!")
                     for error in update["errors"]:
                         print(f"  Error: {error}")
                 elif update["status"] == "partial":
-                    print(f"⚠️  Partial success")
+                    print("Partial success")
                     print(f"  TeX file: {update['files']['tex_final']}")
                     print("  PDF compilation failed")
                 else:
-                    print(f"✓ Success!")
-    
+                    print("Success!")
     except ValueError as e:
         print(f"Configuration error: {e}")
     except Exception as e:
@@ -375,42 +330,13 @@ async def list_all_files():
 
 The API handles errors gracefully:
 
-1. **Configuration errors** (missing API key): Yields a result with `status="failed"`
-2. **Generation errors**: Captured in the `errors` field of the result
-3. **Partial failures**: TeX created but PDF failed → `status="partial"`
-
-**Example error result:**
-```json
-{
-  "type": "result",
-  "status": "failed",
-  "paper_directory": "",
-  "paper_name": "",
-  "errors": ["ANTHROPIC_API_KEY not found. Either pass api_key parameter..."]
-}
-```
-
-## Type Hints
-
-The package includes full type hints for better IDE support:
-
-```python
-from typing import AsyncGenerator, Dict, Any, Optional, List
-
-async def generate_paper(
-    query: str,
-    output_dir: Optional[str] = None,
-    api_key: Optional[str] = None,
-    model: str = "claude-sonnet-4-20250514",
-    data_files: Optional[List[str]] = None,
-    cwd: Optional[str] = None,
-) -> AsyncGenerator[Dict[str, Any], None]:
-    ...
-```
+1. Configuration errors (missing API key): yields a result with `status="failed"`
+2. Generation errors: captured in the `errors` field of the result
+3. Partial failures: TeX created but PDF failed -> `status="partial"`
 
 ## Best Practices
 
-1. **Always check update type:**
+1. Always check update type:
    ```python
    if update["type"] == "progress":
        # Handle progress
@@ -418,13 +344,13 @@ async def generate_paper(
        # Handle final result
    ```
 
-2. **Check status before accessing files:**
+2. Check status before accessing files:
    ```python
    if update["status"] == "success":
        pdf_path = update["files"]["pdf_final"]
    ```
 
-3. **Handle both success and failure:**
+3. Handle both success and failure:
    ```python
    if update["status"] == "failed":
        print(f"Errors: {update['errors']}")
@@ -434,15 +360,14 @@ async def generate_paper(
        print("Success!")
    ```
 
-4. **Use async context properly:**
+4. Use async context properly:
    ```python
+   import asyncio
    asyncio.run(main())  # For scripts
-   await generate_paper(...)  # Inside async functions
    ```
 
-5. **Save important results:**
+5. Save important results:
    ```python
-   # Save complete result for later reference
    import json
    with open("result.json", "w") as f:
        json.dump(update, f, indent=2)
@@ -450,7 +375,8 @@ async def generate_paper(
 
 ## See Also
 
-- [README.md](README.md) - Full project documentation
-- [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) - Upgrading from v1.x
-- [example_api_usage.py](example_api_usage.py) - Complete code examples
+- README.md - Overview and quick start
+- Docs/TROUBLESHOOTING.md - Troubleshooting issues
+- example_api_usage.py - Complete code examples
+
 
