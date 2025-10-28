@@ -194,6 +194,105 @@ paper_outputs/
 - **Figures:** `figure_01`, `figure_02` with descriptive names
 - **Files:** Use clear, descriptive names that indicate content
 
+### Version Management Protocol
+
+**CRITICAL: Always increment version numbers when editing papers or write-ups.**
+
+#### When to Increment Version Numbers
+
+**ALWAYS create a new version (v2, v3, etc.) when:**
+- Making substantial content edits to an existing draft
+- Revising based on peer review feedback
+- Incorporating user-requested changes to an existing paper
+- Making major structural changes (reorganizing sections, adding/removing content)
+- Updating citations or references significantly
+- Revising after feedback or review
+
+**Version Numbering Rules:**
+1. **Initial draft:** Always start with `v1_draft.tex` (or .pdf, .docx as appropriate)
+2. **Each revision:** Increment to `v2_draft.tex`, `v3_draft.tex`, etc.
+3. **Never overwrite:** Keep previous versions intact for reference
+4. **Copy to final:** After user approval, copy the latest version to `final/` directory
+
+#### Version Update Workflow
+
+When making edits to an existing paper:
+
+1. **Identify Current Version**
+   - Check the drafts/ folder for the highest version number
+   - Example: If `v2_draft.tex` exists, next version will be `v3_draft.tex`
+
+2. **Create New Version File**
+   - Copy current version to new version number
+   - Example: `cp v2_draft.tex v3_draft.tex`
+   - Print: `[HH:MM:SS] VERSION: Creating v3_draft.tex from v2_draft.tex`
+
+3. **Make Edits to New Version**
+   - Apply all changes to the new version file only
+   - Never modify the previous version files
+   - Print: `[HH:MM:SS] EDITING: Making revisions to v3_draft.tex`
+
+4. **Document Changes**
+   - Create or update `revision_notes.md` in the drafts/ folder
+   - Log what changed from previous version
+   - Include timestamp and version number
+   - Example:
+     ```markdown
+     ## Version 3 Changes (YYYY-MM-DD HH:MM:SS)
+     - Revised introduction based on peer review feedback
+     - Added 3 new citations in Methods section
+     - Reorganized Results section for clarity
+     - Fixed formatting issues in Discussion
+     ```
+
+5. **Update Progress Log**
+   - Print: `[HH:MM:SS] VERSION: v3 complete - [summary of changes]`
+   - Update progress.md with version history:
+     ```markdown
+     ### Version History
+     - v1: Initial draft (YYYY-MM-DD)
+     - v2: First revision - addressed structure (YYYY-MM-DD)
+     - v3: Second revision - peer review feedback (YYYY-MM-DD)
+     ```
+
+6. **Compile New Version**
+   - Run full LaTeX compilation for new version
+   - Print: `[HH:MM:SS] COMPILING: v3_draft.tex -> v3_draft.pdf`
+   - Perform automatic PDF formatting review
+   - Generate `v3_draft.pdf`
+
+7. **Update Final Directory (When Approved)**
+   - Only after user approval or when paper is ready for publication
+   - Copy latest version to final/ as `manuscript.tex` and `manuscript.pdf`
+   - Print: `[HH:MM:SS] FINAL: Copied v3_draft.tex to final/manuscript.tex`
+   - Update progress.md noting which version became final
+
+#### Version Tracking Best Practices
+
+- **Never delete old versions** - they serve as revision history
+- **Always document what changed** - maintain revision_notes.md
+- **Use descriptive commit messages** - if version control is used
+- **Track compilation artifacts** - keep .aux, .bbl, .log files with each version
+- **Incremental changes** - don't skip version numbers
+- **Clear version indicators** - always use v1, v2, v3 (not vA, vB, or draft1, draft2)
+
+#### Example Version Progression
+
+```
+drafts/
+├── v1_draft.tex          # Initial complete draft
+├── v1_draft.pdf
+├── v2_draft.tex          # First revision (structure improvements)
+├── v2_draft.pdf
+├── v3_draft.tex          # Second revision (peer review feedback)
+├── v3_draft.pdf
+├── v4_draft.tex          # Third revision (additional citations)
+├── v4_draft.pdf
+└── revision_notes.md     # Detailed change log for all versions
+```
+
+**Remember:** Every time you edit a paper, increment the version number. This provides a clear audit trail and allows easy comparison between revisions.
+
 ## Document Creation Standards
 
 ### Multi-Pass Writing Approach
@@ -987,6 +1086,9 @@ Before marking a task complete, verify:
 
 - [ ] All planned files are created
 - [ ] Documents are properly formatted
+- [ ] **Version numbers incremented if editing existing papers** (v1 → v2 → v3, etc.)
+- [ ] **Previous versions preserved** (never overwrite old versions)
+- [ ] **revision_notes.md updated** with what changed in new version
 - [ ] **100% of citations are REAL papers** (no placeholders, no invented citations)
 - [ ] **All citations found through research-lookup** (no illustrative examples)
 - [ ] Citations are complete and correct
@@ -1197,6 +1299,8 @@ All files available in: paper_outputs/20241027_143022_neurips_attention_paper/
 - **Use BibTeX for all citations** - maintain references.bib file with complete entries
 - **ALWAYS verify citation metadata** - every citation must have complete, verified metadata with DOIs when available
 - **100% real papers policy** - every citation must be a real, verifiable paper found through research-lookup
+- **INCREMENT VERSION NUMBERS** - when editing existing papers, ALWAYS create a new version (v2, v3, etc.) and preserve previous versions
+- **Document version changes** - maintain revision_notes.md with clear changelog for each version
 - **Compile frequently** - test LaTeX compilation after major additions
 - **Update frequently and granularly** - provide updates every 1-2 minutes of work
 - **Log everything with metrics** - word counts, citation counts, timestamps

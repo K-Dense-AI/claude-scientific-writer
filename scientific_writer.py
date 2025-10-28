@@ -196,6 +196,12 @@ def detect_paper_reference(user_input, existing_papers):
         "poster", "the poster", "my poster", "compile", "generate pdf"
     ]
     
+    # Keywords that suggest searching for/looking up an existing paper
+    search_keywords = [
+        "look for", "find", "search for", "where is", "which paper",
+        "show me", "open", "locate", "get"
+    ]
+    
     # Keywords that explicitly indicate a new paper
     new_paper_keywords = [
         "new paper", "start fresh", "start afresh", "create new",
@@ -206,10 +212,14 @@ def detect_paper_reference(user_input, existing_papers):
     if any(keyword in user_input_lower for keyword in new_paper_keywords):
         return None
     
-    # Check if user mentions continuation keywords
+    # Check if user mentions continuation or search keywords
     has_continuation_keyword = any(keyword in user_input_lower for keyword in continuation_keywords)
+    has_search_keyword = any(keyword in user_input_lower for keyword in search_keywords)
     
     # Try to find paper by name/topic keywords
+    best_match = None
+    best_match_score = 0
+    
     for paper in existing_papers:
         paper_name = paper['name'].lower()
         # Extract topic from directory name (format: YYYYMMDD_HHMMSS_topic)
@@ -220,9 +230,19 @@ def detect_paper_reference(user_input, existing_papers):
             topic_words = topic.split()
             matches = sum(1 for word in topic_words if len(word) > 3 and word in user_input_lower)
             
-            # If we have a good match or user used continuation keywords with recent paper
-            if matches >= 2 or (has_continuation_keyword and paper == existing_papers[0]):
+            # Keep track of best match
+            if matches > best_match_score:
+                best_match_score = matches
+                best_match = paper['path']
+            
+            # If we have a strong match (2+ topic words), return it
+            # This is especially important for search keywords
+            if matches >= 2 and (has_search_keyword or has_continuation_keyword):
                 return paper['path']
+    
+    # If we found any match with search keywords, return the best one
+    if has_search_keyword and best_match_score > 0:
+        return best_match
     
     # If user used continuation keywords but no specific match, use most recent paper
     if has_continuation_keyword and existing_papers:
@@ -295,8 +315,9 @@ IMPORTANT - CONVERSATION CONTINUITY:
     print("  • Original files are automatically deleted after copying")
     print("\n🤖 Intelligent Paper Detection:")
     print("  • I automatically detect when you're referring to a previous paper")
-    print("  • Just mention keywords like 'continue', 'update', 'the paper', etc.")
-    print("  • Or reference the paper topic (e.g., 'fix the acoustics paper')")
+    print("  • Continue: 'continue', 'update', 'edit', 'the paper', etc.")
+    print("  • Search: 'look for', 'find', 'show me', 'where is', etc.")
+    print("  • Or reference the paper topic (e.g., 'find the acoustics paper')")
     print("  • Say 'new paper' to explicitly start a fresh paper")
     print("\nType 'exit' or 'quit' to end the session.")
     print("Type 'help' for usage tips.")
@@ -359,10 +380,11 @@ IMPORTANT - CONVERSATION CONTINUITY:
                 print("  • Check progress.md for detailed execution logs")
                 print("\n🔄 Intelligent Paper Detection:")
                 print("  • I automatically detect when you're referring to a previous paper")
-                print("  • Just say 'continue the paper', 'update my paper', 'fix the poster'")
-                print("  • Or mention the paper topic: 'edit the acoustics paper'")
-                print("  • Keywords like 'continue', 'update', 'edit', 'revise' trigger detection")
-                print("  • I'll find the most relevant paper based on context")
+                print("  • Continue working: 'continue the paper', 'update my paper', 'edit the poster'")
+                print("  • Search/find: 'look for the X paper', 'find the paper about Y'")
+                print("  • Or mention the paper topic: 'show me the acoustics paper'")
+                print("  • Keywords like 'continue', 'update', 'edit', 'look for', 'find' trigger detection")
+                print("  • I'll find the most relevant paper based on topic matching")
                 print("  • Say 'new paper' or 'start fresh' to explicitly begin a new one")
                 print("  • Current working paper is tracked throughout the session")
                 print("=" * 70)
