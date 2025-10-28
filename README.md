@@ -1,8 +1,17 @@
 # Claude Scientific Writer
 
-A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5 and the Claude Agents SDK. This tool provides specialized assistance for writing scientific papers, conducting literature reviews, peer review, and real-time research lookup.
+A powerful Python package and CLI for scientific writing powered by Claude Sonnet 4.5 and the Claude Agents SDK. Generate complete scientific papers programmatically or through an interactive command-line interface.
+
+**Version 2.0** introduces a programmatic API while maintaining full backward compatibility with the CLI.
 
 **For more advanced and specialized writing, analysis and autonomous research capabilities, go to [k-dense.ai](https://k-dense.ai)**
+
+## 📚 Documentation
+
+- **[API Reference](API_REFERENCE.md)** - Complete API documentation with examples
+- **[Migration Guide](MIGRATION_GUIDE.md)** - Upgrading from v1.x to v2.0
+- **[Example Code](example_api_usage.py)** - Programmatic usage examples
+- **[Skills Guide](Docs/SKILLS.md)** - Available writing and research skills
 
 ## Features
 
@@ -107,22 +116,163 @@ A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5
 
 ### Usage
 
+#### CLI Usage
+
 Run the scientific writer CLI:
 
 **If you used `uv sync`:**
 ```bash
-uv run python scientific_writer.py
+uv run scientific-writer
 ```
 
 **If you installed with `uv pip install -e .`:**
 ```bash
-python scientific_writer.py
-```
-
-**Or use the installed script directly:**
-```bash
 scientific-writer
 ```
+
+#### Programmatic API Usage
+
+You can also use the scientific writer as a Python library in your own code:
+
+```python
+import asyncio
+from scientific_writer import generate_paper
+
+async def main():
+    query = "Create a Nature paper on CRISPR gene editing"
+    
+    async for update in generate_paper(query):
+        if update["type"] == "progress":
+            print(f"[{update['percentage']}%] {update['message']}")
+        else:
+            # Final result with comprehensive information
+            result = update
+            print(f"✓ Paper created: {result['paper_directory']}")
+            print(f"✓ PDF: {result['files']['pdf_final']}")
+            print(f"✓ TeX: {result['files']['tex_final']}")
+            print(f"✓ Citations: {result['citations']['count']}")
+            print(f"✓ Figures: {result['figures_count']}")
+            
+            # Access all generated files
+            for draft_pdf in result['files']['pdf_drafts']:
+                print(f"  Draft: {draft_pdf}")
+
+asyncio.run(main())
+```
+
+**API Parameters:**
+
+- `query` (str, required): The paper generation request
+- `output_dir` (str, optional): Custom output directory (defaults to `./paper_outputs`)
+- `api_key` (str, optional): Anthropic API key (defaults to `ANTHROPIC_API_KEY` env var)
+- `model` (str, optional): Claude model to use (default: `claude-sonnet-4-20250514`)
+- `data_files` (list, optional): List of file paths to include in the paper
+- `cwd` (str, optional): Working directory (defaults to package parent directory)
+
+**Return Value:**
+
+The `generate_paper()` function is an async generator that yields:
+1. **Progress updates** (dict with `type="progress"`) during execution
+2. **Final result** (dict with `type="result"`) containing comprehensive paper information
+
+See the [API Response Format](#api-response-format) section below for the complete JSON structure.
+
+**Advanced Example with Custom Options:**
+
+```python
+import asyncio
+from scientific_writer import generate_paper
+
+async def create_neurips_paper():
+    # Generate a paper with custom data files
+    data_files = ["results.csv", "figures/attention_map.png"]
+    
+    async for update in generate_paper(
+        query="Create a NeurIPS paper on efficient transformers",
+        output_dir="./my_papers",
+        data_files=data_files,
+        model="claude-sonnet-4-20250514"
+    ):
+        if update["type"] == "progress":
+            print(f"[{update['stage']}] {update['message']}")
+        else:
+            # Save result to JSON
+            import json
+            with open("paper_result.json", "w") as f:
+                json.dump(update, f, indent=2)
+            
+            print(f"Paper complete! Status: {update['status']}")
+            if update['compilation_success']:
+                print(f"PDF available at: {update['files']['pdf_final']}")
+
+asyncio.run(create_neurips_paper())
+```
+
+### API Response Format
+
+The `generate_paper()` async generator yields two types of updates:
+
+#### Progress Update
+
+Yielded periodically during paper generation:
+
+```json
+{
+  "type": "progress",
+  "timestamp": "2024-10-28T14:30:22Z",
+  "message": "Writing paper sections",
+  "stage": "writing",
+  "percentage": 50
+}
+```
+
+**Stages:** `initialization` → `research` → `writing` → `compilation` → `complete`
+
+#### Final Result
+
+The last yield contains comprehensive paper information:
+
+```json
+{
+  "type": "result",
+  "status": "success",
+  "paper_directory": "/path/to/paper_outputs/20241028_143022_topic/",
+  "paper_name": "20241028_143022_topic",
+  "metadata": {
+    "title": "Efficient Attention Mechanisms for Transformer Models",
+    "created_at": "2024-10-28T14:30:22Z",
+    "topic": "efficient transformers",
+    "word_count": 5200
+  },
+  "files": {
+    "pdf_final": "/path/to/final/manuscript.pdf",
+    "tex_final": "/path/to/final/manuscript.tex",
+    "pdf_drafts": ["/path/to/drafts/v1_draft.pdf"],
+    "tex_drafts": ["/path/to/drafts/v1_draft.tex"],
+    "bibliography": "/path/to/references/references.bib",
+    "figures": [
+      "/path/to/figures/attention_map.png",
+      "/path/to/figures/performance_comparison.png"
+    ],
+    "data": ["/path/to/data/results.csv"],
+    "progress_log": "/path/to/progress.md",
+    "summary": "/path/to/SUMMARY.md"
+  },
+  "citations": {
+    "count": 42,
+    "style": "BibTeX",
+    "file": "/path/to/references/references.bib"
+  },
+  "figures_count": 2,
+  "compilation_success": true,
+  "errors": []
+}
+```
+
+**Status Values:**
+- `success`: Paper fully generated with PDF
+- `partial`: TeX created but PDF compilation failed
+- `failed`: Generation failed
 
 ### Intelligent Paper Detection
 
