@@ -63,8 +63,15 @@ asyncio.run(main())
 - Troubleshooting: Docs/TROUBLESHOOTING.md
 - Skills Overview: Docs/SKILLS.md
 - Development and Contributing: Docs/DEVELOPMENT.md
+- Releasing (versioning & publishing): Docs/RELEASING.md
 - Release Notes: CHANGELOG.md
 - System Instructions (for the agent): CLAUDE.md
+
+## Versioning and Publishing (short)
+Use `uv` and the helper scripts:
+- Bump version (keeps pyproject + __init__ in sync): `uv run scripts/bump_version.py [patch|minor|major]`
+- Build and publish: `uv run scripts/publish.py` (or `--bump patch|minor|major`)
+See Docs/RELEASING.md for prerequisites, dry runs, tagging, and verification.
 
 ## Migration (v1.x -> v2.0)
 - CLI remains unchanged (scientific-writer).
