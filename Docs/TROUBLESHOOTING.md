@@ -76,6 +76,69 @@ wsl --install
 
 Then install Node.js and the scientific writer within your WSL environment, where the Claude Code CLI typically has fewer compatibility issues.
 
+#### 7. Try Using npx Directly
+If Claude Code works from the command line but the SDK can't find it, try using `npx` to run it:
+
+```cmd
+npx @anthropic-ai/claude-code --version
+```
+
+If this works, you might have a PATH resolution issue specific to how Python/the SDK spawns processes.
+
+#### 8. Check for Multiple Node.js Installations
+Multiple Node.js installations can cause PATH conflicts:
+
+```cmd
+where node
+where npm
+npm config get prefix
+```
+
+If you see multiple paths, this might be causing the issue.
+
+#### 9. Try a Virtual Environment
+Create a fresh Python virtual environment to isolate the installation:
+
+```cmd
+python -m venv venv
+venv\Scripts\activate
+pip install -e .
+```
+
+Then run the scientific writer from within this virtual environment.
+
+### Known Issue: SDK Compatibility on Windows (No Admin Rights)
+
+**If you've confirmed:**
+- ✅ `claude` works when called directly (`claude --version` shows version 2.0.28 or similar)
+- ✅ npm global path is in your PATH (`C:\Users\<username>\AppData\Roaming\npm`)
+- ✅ Package is installed correctly (`npm list -g @anthropic-ai/claude-code` shows it)
+- ✅ Tried both CMD and PowerShell
+- ❌ Don't have administrator rights to modify system settings
+
+**This appears to be a Windows-specific issue with the `claude-agent-sdk` subprocess execution.**
+
+The SDK may be using a process spawning method that doesn't properly resolve `.CMD` files on Windows in non-admin environments. This is an **upstream SDK issue**.
+
+**Temporary Workarounds:**
+
+1. **Use WSL without admin rights**: You can install WSL as a user if it's enabled by your IT department:
+   ```powershell
+   wsl --install --distribution Ubuntu
+   ```
+   Then set up the project in WSL where the SDK has better compatibility.
+
+2. **Try Git Bash**: If you have Git for Windows installed, try running the scientific writer from Git Bash instead of CMD/PowerShell, as it provides a more Unix-like environment.
+
+3. **Request IT assistance**: Ask your IT department to either:
+   - Grant you temporary admin rights for software installation
+   - Install the tool in a system-wide location
+   - Enable WSL if not already available
+
+4. **Use your personal machine**: As a short-term workaround, run the tool on a machine where you have admin rights (as you mentioned trying on your Mac).
+
+5. **Report the SDK issue**: This is likely a bug in `claude-agent-sdk`. Consider opening an issue at the [Claude Agent SDK repository](https://github.com/anthropics/claude-agent-sdk) with your diagnostic information.
+
 ### Additional Diagnostics
 If the problem persists, gather this information for further troubleshooting:
 
@@ -94,9 +157,19 @@ npm --version
 
 # Check where npm installs global packages
 npm config get prefix
+
+# Check Python version
+python --version
+
+# Try npx
+npx @anthropic-ai/claude-code --version
+
+# Check for multiple Node installations
+where node
+where npm
 ```
 
-Share this information when reporting the issue on GitHub.
+Share this information when reporting the issue on GitHub or the SDK repository.
 
 ---
 

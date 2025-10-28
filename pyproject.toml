@@ -1,6 +1,6 @@
 [project]
 name = "claude-scientific-writer"
-version = "1.1.0"
+version = "1.1.1"
 description = "A powerful command-line tool for scientific writing powered by Claude Sonnet 4.5 and the Claude Agents SDK"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -10,6 +10,24 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "requests>=2.31.0",
 ]
+
+# System Dependencies (must be installed separately):
+# 
+# LaTeX Distribution (required for PDF compilation):
+#   - macOS: MacTeX (https://www.tug.org/mactex/) or BasicTeX
+#     Install: brew install --cask mactex-no-gui
+#   - Linux: TeX Live
+#     Install: sudo apt-get install texlive-full (Ubuntu/Debian)
+#              sudo dnf install texlive-scheme-full (Fedora)
+#   - Windows: MiKTeX (https://miktex.org/) or TeX Live
+#
+# Required LaTeX packages (usually included in full distributions):
+#   - pdflatex, bibtex, latexmk
+#   - Common packages: amsmath, graphicx, hyperref, natbib, geometry
+#
+# Optional but recommended:
+#   - Ghostscript (for PDF manipulation)
+#   - ImageMagick (for image processing)
 
 [project.scripts]
 scientific-writer = "scientific_writer:main"
