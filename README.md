@@ -85,6 +85,10 @@ MIT - see LICENSE.
 - Open an issue on GitHub
 - See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common problems
 
+## ⭐ Show Your Support
+
+If you find this project helpful for your research or work, please consider giving it a star on GitHub! It helps others discover the tool and motivates continued development. Thank you! 🙏
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=K-Dense-AI/claude-scientific-writer&type=date&legend=top-left)](https://www.star-history.com/#K-Dense-AI/claude-scientific-writer&type=date&legend=top-left)
