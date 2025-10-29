@@ -1,7 +1,7 @@
 # Claude Scientific Writer
 
 [![PyPI version](https://badge.fury.io/py/scientific-writer.svg)](https://badge.fury.io/py/scientific-writer)
-[![PyPI - Total Downloads](https://img.shields.io/pypi/dt/scientific-writer)](https://pypi.org/project/scientific-writer/)
+[![Total Downloads](https://static.pepy.tech/badge/scientific-writer)](https://pepy.tech/project/scientific-writer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Python package and CLI for generating publication-ready scientific papers, reports, posters, grant proposals, and more academic documents with Claude Sonnet and Perplexity models. Version 2.0 adds a fully typed, programmatic API while keeping the CLI 100% backward compatible.
