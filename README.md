@@ -1,6 +1,6 @@
 # Claude Scientific Writer
 
-A Python package and CLI for generating publication-ready scientific papers with Claude Sonnet. Version 2.0 adds a fully typed, programmatic API while keeping the CLI 100% backward compatible.
+A Python package and CLI for generating publication-ready scientific papers, reports, posters, grant proposals, and more academic documents with Claude Sonnet and Perplexity models. Version 2.0 adds a fully typed, programmatic API while keeping the CLI 100% backward compatible.
 
 ## Quick Start
 
@@ -46,7 +46,7 @@ asyncio.run(main())
 ```
 
 ## Features
-- Scientific writing (IMRaD) with LaTeX and BibTeX outputs
+- Generate scientific papers, reports, posters, grant proposals, and other academic documents with LaTeX and BibTeX
 - Real-time progress streaming and transparent logging
 - Automatic bibliography and citation management
 - Data and figure integration from a local data/ folder
