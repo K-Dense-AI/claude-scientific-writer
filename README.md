@@ -106,4 +106,4 @@ If you find this project helpful for your research or work, please consider givi
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=K-Dense-AI/claude-scientific-writer&type=date&legend=top-left)](https://www.star-history.com/#K-Dense-AI/claude-scientific-writer&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=K-Dense-AI/claude-scientific-writer&type=Timeline)](https://star-history.com/#K-Dense-AI/claude-scientific-writer&Timeline)

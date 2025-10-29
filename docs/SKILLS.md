@@ -63,7 +63,59 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 4. LaTeX Research Posters
+### 4. Research Grants
+**Location**: `.claude/skills/research-grants/`
+
+**Capabilities**:
+- Writing competitive research proposals for NSF, NIH, DOE, and DARPA
+- Agency-specific formatting and requirements
+- Review criteria understanding (Intellectual Merit, Broader Impacts, Significance, Innovation)
+- Budget preparation and justification
+- Specific Aims pages (NIH)
+- Project Summaries (NSF)
+- Broader Impacts strategies
+- Technology transition planning (DOE, DARPA)
+- Resubmission strategies
+
+**Focus Agencies**:
+- **NSF**: National Science Foundation (Intellectual Merit + Broader Impacts)
+- **NIH**: National Institutes of Health (R01, R21, K awards, etc.)
+- **DOE**: Department of Energy (Office of Science, ARPA-E, EERE)
+- **DARPA**: Defense Advanced Research Projects Agency (BAAs, SBIR)
+
+**References**:
+- `nsf_guidelines.md`: NSF proposal structure, broader impacts, review criteria
+- `nih_guidelines.md`: NIH mechanisms, specific aims, research strategy
+- `doe_guidelines.md`: DOE programs, TRLs, cost sharing, lab partnerships
+- `darpa_guidelines.md`: DARPA structure, Heilmeier Catechism, PM engagement
+- `broader_impacts.md`: Comprehensive NSF broader impacts strategies
+- `specific_aims_guide.md`: Complete guide to NIH Specific Aims page
+
+**Assets/Templates**:
+- `nsf_project_summary_template.md`: NSF Project Summary with Overview, Intellectual Merit, Broader Impacts
+- `nih_specific_aims_template.md`: NIH Specific Aims page template
+- `budget_justification_template.md`: Budget justification with agency-specific examples
+
+**Features**:
+- Agency-specific review criteria and scoring systems
+- Success rates and funding trends by agency
+- Timeline planning and milestone development
+- Budget preparation with personnel, equipment, travel, supplies
+- Broader impacts with measurable outcomes (NSF)
+- Preliminary data integration (NIH)
+- National laboratory collaboration (DOE)
+- Technology transition and commercialization (DOE, DARPA)
+- Resubmission and reviewer response strategies
+
+**Key Guidance**:
+- NSF: Equally weighted Intellectual Merit and Broader Impacts (must be substantive)
+- NIH: Specific Aims page is the most critical component (1 page)
+- DOE: Energy relevance, TRLs, cost sharing, commercialization pathway
+- DARPA: High-risk/high-reward, Heilmeier Catechism, PM engagement essential
+
+---
+
+### 5. LaTeX Research Posters
 **Location**: `.claude/skills/latex-posters/`
 
 **Capabilities**:
@@ -103,7 +155,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ## Document Manipulation Skills
 
-### 5. MarkItDown - Universal File to Markdown Converter
+### 6. MarkItDown - Universal File to Markdown Converter
 **Location**: `.claude/skills/markitdown/`
 
 **Capabilities**:
@@ -140,7 +192,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 6. DOCX (Word Documents)
+### 7. DOCX (Word Documents)
 **Location**: `.claude/skills/document-skills/docx/`
 
 **Capabilities**:
@@ -161,7 +213,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 7. PDF Documents
+### 8. PDF Documents
 **Location**: `.claude/skills/document-skills/pdf/`
 
 **Capabilities**:
@@ -184,7 +236,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 8. PPTX (PowerPoint Presentations)
+### 9. PPTX (PowerPoint Presentations)
 **Location**: `.claude/skills/document-skills/pptx/`
 
 **Capabilities**:
@@ -207,7 +259,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 9. XLSX (Excel Spreadsheets)
+### 10. XLSX (Excel Spreadsheets)
 **Location**: `.claude/skills/document-skills/xlsx/`
 
 **Capabilities**:
@@ -270,6 +322,22 @@ Claude will use markitdown with AI enhancement for detailed image descriptions.
 > Review my discussion section for logical flow and adherence to reporting standards
 ```
 Claude will use the peer-review skill to provide constructive feedback.
+
+### Using Research Grants Skill
+```
+> Help me write an NSF proposal for my computational neuroscience research
+```
+Claude will use the research-grants skill to provide NSF-specific guidance.
+
+```
+> I need to draft NIH Specific Aims for my cancer immunotherapy R01
+```
+Claude will help structure your 1-page specific aims using NIH best practices.
+
+```
+> What should I include in broader impacts for an NSF Materials Research proposal?
+```
+Claude will provide substantive broader impacts strategies aligned with NSF criteria.
 
 ## Adding Custom Skills
 
