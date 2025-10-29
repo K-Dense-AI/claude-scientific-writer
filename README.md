@@ -1,15 +1,26 @@
 # Claude Scientific Writer
 
+[![PyPI version](https://badge.fury.io/py/scientific-writer.svg)](https://badge.fury.io/py/scientific-writer)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/scientific-writer)](https://pypi.org/project/scientific-writer/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/scientific-writer)](https://pypi.org/project/scientific-writer/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A Python package and CLI for generating publication-ready scientific papers, reports, posters, grant proposals, and more academic documents with Claude Sonnet and Perplexity models. Version 2.0 adds a fully typed, programmatic API while keeping the CLI 100% backward compatible.
 
 ## Quick Start
 
 ### Prerequisites
-- Python 3.10+
-- uv (package and environment manager)
+- Python 3.10-3.12
 - ANTHROPIC_API_KEY (required), OPENROUTER_API_KEY (optional for research lookup)
 
 ### Install
+
+#### Option 1: Install from PyPI (Recommended)
+```bash
+pip install scientific-writer
+```
+
+#### Option 2: Install from source with uv
 ```bash
 git clone https://github.com/yourusername/claude-scientific-writer.git
 cd claude-scientific-writer
@@ -27,6 +38,10 @@ export ANTHROPIC_API_KEY='your_key'
 
 ### Use the CLI
 ```bash
+# If installed via pip
+scientific-writer
+
+# If installed from source with uv
 uv run scientific-writer
 ```
 
@@ -47,6 +62,7 @@ asyncio.run(main())
 
 ## Features
 - Generate scientific papers, reports, posters, grant proposals, and other academic documents with LaTeX and BibTeX
+- Format and iteratively edit existing drafts with intelligent revision capabilities
 - Real-time progress streaming and transparent logging
 - Automatic bibliography and citation management
 - Data and figure integration from a local data/ folder
