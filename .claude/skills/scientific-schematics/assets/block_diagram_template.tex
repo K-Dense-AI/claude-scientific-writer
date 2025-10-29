@@ -1,0 +1,199 @@
+% Block Diagram Template
+% For system architecture, data flow, and component diagrams
+%
+% Usage:
+%   1. Copy and customize this template
+%   2. Modify blocks and connections
+%   3. Compile with: pdflatex block_diagram_template.tex
+%   4. Include in paper with: \includegraphics{block_diagram.pdf}
+
+\documentclass[tikz, border=5mm]{standalone}
+\usepackage{tikz}
+
+% Load shared styles
+\input{tikz_styles.tex}
+
+\begin{document}
+
+% === Example 1: Data Acquisition System ===
+\begin{tikzpicture}[blockdiagram]
+
+% Components
+\node[component] (sensor) {Sensor};
+\node[component, right=of sensor] (adc) {ADC};
+\node[component, right=of adc] (micro) {Micro-\\controller};
+\node[component, above right=1cm and 1.5cm of micro] (wireless) {Wireless\\Module};
+\node[component, below right=1cm and 1.5cm of micro] (display) {Display};
+\node[component, right=3cm of micro] (server) {Server};
+
+% Connections with data flow
+\draw[dataflow] (sensor) -- node[above, font=\footnotesize] {analog} (adc);
+\draw[dataflow] (adc) -- node[above, font=\footnotesize] {digital} (micro);
+\draw[dataflow] (micro) -- node[above right, font=\footnotesize] {WiFi} (wireless);
+\draw[dataflow] (micro) -- node[below right, font=\footnotesize] {SPI} (display);
+\draw[dataflow] (wireless) -- node[above, font=\footnotesize] {TCP/IP} (server);
+
+% Optional: control signals
+\draw[control, <->] (server) to[bend left=20] node[above, font=\footnotesize] {control} (micro);
+
+\end{tikzpicture}
+
+\vspace{1cm}
+
+% === Example 2: Software Architecture (Three-Tier) ===
+\begin{tikzpicture}[blockdiagram]
+
+% Presentation Layer
+\node[subsystem] (web) {Web UI};
+\node[subsystem, right=of web] (mobile) {Mobile App};
+
+% Business Logic Layer
+\node[subsystem, below=2cm of web, xshift=1.5cm] (api) {API Server};
+\node[component, left=of api] (auth) {Auth\\Service};
+\node[component, right=of api] (worker) {Worker\\Queue};
+
+% Data Layer
+\node[component, below=2cm of auth] (db) {Database};
+\node[component, below=2cm of api] (cache) {Cache};
+\node[component, below=2cm of worker] (storage) {File\\Storage};
+
+% Connections
+\draw[dataflow, <->] (web) -- (api);
+\draw[dataflow, <->] (mobile) -- (api);
+\draw[dataflow, <->] (api) -- (auth);
+\draw[dataflow, <->] (api) -- (worker);
+\draw[dataflow, <->] (auth) -- (db);
+\draw[dataflow, <->] (api) -- (db);
+\draw[dataflow, <->] (api) -- (cache);
+\draw[dataflow, <->] (worker) -- (storage);
+
+% Layer labels
+\node[annotation, left=2.5cm of web] {Presentation\\Layer};
+\node[annotation, left=2.5cm of api] {Business\\Logic};
+\node[annotation, left=2.5cm of db] {Data\\Layer};
+
+\end{tikzpicture}
+
+\vspace{1cm}
+
+% === Example 3: Experimental Setup ===
+\begin{tikzpicture}[blockdiagram, node distance=2.5cm]
+
+% Equipment chain
+\node[component] (source) {Light\\Source};
+\node[component, right=of source] (filter) {Filter};
+\node[component, right=of filter] (sample) {Sample\\Chamber};
+\node[component, right=of sample] (detector) {Detector};
+\node[component, right=of detector] (amp) {Amplifier};
+\node[component, above right=0.5cm and 1cm of amp] (daq) {Data\\Acquisition};
+\node[component, below=1.5cm of sample] (temp) {Temperature\\Controller};
+
+% Signal flow
+\draw[dataflow] (source) -- node[above, font=\footnotesize] {light} (filter);
+\draw[dataflow] (filter) -- (sample);
+\draw[dataflow] (sample) -- (detector);
+\draw[dataflow] (detector) -- node[above, font=\footnotesize] {signal} (amp);
+\draw[dataflow] (amp) -- (daq);
+
+% Control
+\draw[control, <->] (temp) -- (sample);
+\draw[control] (daq.south) |- (temp.east);
+
+% Computer
+\node[subsystem, right=of daq] (computer) {Computer};
+\draw[dataflow, <->] (daq) -- (computer);
+
+\end{tikzpicture}
+
+\end{document}
+
+% === Customization Guide ===
+%
+% BLOCK TYPES (from tikz_styles.tex):
+%   component - Standard component (blue, medium size)
+%   subsystem - Larger system block (green, larger, bold)
+%   interface - Connection point (orange circle)
+%
+% ARROW TYPES:
+%   dataflow  - Data flow arrow (solid, blue)
+%   control   - Control signal (dashed, red)
+%   arrow     - Generic arrow (black)
+%
+% ARROW DIRECTIONS:
+%   -->  : Left to right
+%   <->  : Bidirectional
+%   |-   : Vertical then horizontal
+%   -|   : Horizontal then vertical
+%
+% POSITIONING:
+%   right=of node     - To the right
+%   below=of node     - Below
+%   above=of node     - Above
+%   right=2cm of node - Specific distance
+%   above right=1cm and 2cm of node - Diagonal
+%
+% LABELS ON ARROWS:
+%   \draw[dataflow] (a) -- node[above] {label} (b);
+%   \draw[dataflow] (a) -- node[below, font=\footnotesize] {label} (b);
+%   \draw[dataflow] (a) -- node[pos=0.3, above] {label} (b);
+%
+% CURVED CONNECTIONS:
+%   \draw[dataflow] (a) to[bend left=30] (b);
+%   \draw[dataflow] (a) to[bend right=30] (b);
+%   \draw[dataflow, out=45, in=135] (a) to (b);
+%
+% GROUPING COMPONENTS:
+% Use fit library to draw box around multiple components:
+%
+%   \node[background, fit=(comp1) (comp2) (comp3)] {};
+%   \node[above, font=\small] at (group.north) {Subsystem Name};
+%
+% Or manually draw a box:
+%
+%   \draw[thick, okabe-green, rounded corners] 
+%     (x1, y1) rectangle (x2, y2);
+%   \node at (x, y) {Group Label};
+%
+% LAYER/HIERARCHY VISUALIZATION:
+% Add horizontal lines and labels to show layers:
+%
+%   % Draw separators
+%   \draw[thick, gray, dashed] (-2, 0) -- (8, 0);
+%   \draw[thick, gray, dashed] (-2, -3) -- (8, -3);
+%   
+%   % Add layer labels
+%   \node[annotation, left] at (-2, 1) {Layer 1};
+%   \node[annotation, left] at (-2, -1.5) {Layer 2};
+%
+% SIGNAL TYPES:
+% Annotate data/signal types on connections:
+%   - Digital/Analog
+%   - Protocol (SPI, I2C, UART, Ethernet, etc.)
+%   - Data rate (Mbps, Hz)
+%   - Voltage levels
+%
+% TYPICAL USAGE IN PAPER:
+%
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{block_diagram.pdf}
+%   \caption{System architecture showing data flow from sensor through
+%            signal processing to display and wireless transmission.
+%            Solid arrows indicate data flow, dashed arrows show control signals.}
+%   \label{fig:architecture}
+% \end{figure}
+%
+% MULTI-PANEL DIAGRAMS:
+% Combine overview and detail views:
+%   - Panel A: High-level system overview
+%   - Panel B: Detailed view of one subsystem
+%
+% Add panel labels:
+%   \node[font=\large\bfseries] at (-3, 5) {A};
+%   \node[font=\large\bfseries] at (-3, -2) {B};
+%
+% RESOURCES:
+% - UML diagrams: https://www.uml-diagrams.org/
+% - System architecture patterns
+% - IEEE recommended practice for architectural description
+

@@ -1,0 +1,422 @@
+% TikZ Styles for Scientific Diagrams
+% Colorblind-safe Okabe-Ito palette and reusable node/arrow styles
+%
+% Usage:
+%   \input{tikz_styles.tex}
+%   \begin{tikzpicture}[consort]  % Use predefined style set
+%     \node[flowbox] {My node};
+%   \end{tikzpicture}
+
+% Load required libraries
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit, backgrounds}
+
+% === Okabe-Ito Colorblind-Safe Palette ===
+% These colors are distinguishable by all types of color blindness
+
+\definecolor{okabe-orange}{RGB}{230, 159, 0}      % #E69F00
+\definecolor{okabe-blue}{RGB}{86, 180, 233}       % #56B4E9
+\definecolor{okabe-green}{RGB}{0, 158, 115}       % #009E73
+\definecolor{okabe-yellow}{RGB}{240, 228, 66}     % #F0E442
+\definecolor{okabe-dblue}{RGB}{0, 114, 178}       % #0072B2
+\definecolor{okabe-vermillion}{RGB}{213, 94, 0}   % #D55E00
+\definecolor{okabe-purple}{RGB}{204, 121, 167}    % #CC79A7
+\definecolor{okabe-black}{RGB}{0, 0, 0}           % #000000
+
+% Semantic color aliases
+\colorlet{primary-color}{okabe-blue}
+\colorlet{secondary-color}{okabe-orange}
+\colorlet{accent-color}{okabe-green}
+\colorlet{warning-color}{okabe-vermillion}
+
+% === Arrow Styles ===
+
+\tikzset{
+  % Standard arrow
+  arrow/.style={
+    -Stealth,
+    thick,
+    line width=1.2pt
+  },
+  % Thicker arrow
+  thick-arrow/.style={
+    -Stealth,
+    very thick,
+    line width=2pt
+  },
+  % Double arrow
+  double-arrow/.style={
+    Stealth-Stealth,
+    thick,
+    line width=1.2pt
+  },
+  % Dashed arrow
+  dashed-arrow/.style={
+    -Stealth,
+    thick,
+    dashed,
+    dash pattern=on 3pt off 2pt
+  },
+  % Inhibition arrow (blunt end)
+  inhibit-arrow/.style={
+    -|,
+    thick,
+    line width=1.5pt,
+    color=okabe-vermillion
+  },
+  % Activation arrow (for biological pathways)
+  activation-arrow/.style={
+    -Stealth,
+    thick,
+    line width=1.5pt,
+    color=okabe-dblue
+  },
+}
+
+% === Node Shapes for Flowcharts ===
+
+\tikzset{
+  % Process box (rounded rectangle)
+  process/.style={
+    rectangle,
+    rounded corners=3pt,
+    draw=black,
+    thick,
+    fill=okabe-blue!20,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center,
+    font=\small,
+    text width=3cm
+  },
+  % Decision diamond
+  decision/.style={
+    diamond,
+    draw=black,
+    thick,
+    fill=okabe-orange!20,
+    minimum width=2.5cm,
+    minimum height=1.5cm,
+    aspect=2,
+    align=center,
+    font=\small,
+    text width=2cm
+  },
+  % Start/End terminal
+  terminal/.style={
+    rectangle,
+    rounded corners=10pt,
+    draw=black,
+    thick,
+    fill=okabe-green!20,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center,
+    font=\small,
+    text width=3cm
+  },
+  % Data/Input/Output
+  data/.style={
+    trapezium,
+    trapezium left angle=70,
+    trapezium right angle=110,
+    draw=black,
+    thick,
+    fill=okabe-yellow!20,
+    minimum width=3cm,
+    minimum height=1cm,
+    align=center,
+    font=\small,
+    text width=2.5cm
+  },
+  % Subprocess (double border)
+  subprocess/.style={
+    rectangle,
+    rounded corners=3pt,
+    draw=black,
+    thick,
+    double,
+    double distance=1pt,
+    fill=okabe-blue!20,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center,
+    font=\small,
+    text width=3cm
+  },
+}
+
+% === CONSORT-Style Flowchart Nodes ===
+
+\tikzset{
+  % CONSORT flow box
+  flowbox/.style={
+    rectangle,
+    rounded corners=2pt,
+    draw=black,
+    thick,
+    fill=white,
+    minimum width=4cm,
+    minimum height=1.2cm,
+    align=center,
+    font=\small,
+    text width=3.5cm
+  },
+  % CONSORT info box (for exclusion criteria, etc.)
+  infobox/.style={
+    rectangle,
+    draw=black,
+    thin,
+    fill=okabe-yellow!15,
+    minimum width=3cm,
+    minimum height=0.8cm,
+    align=left,
+    font=\footnotesize,
+    text width=2.8cm
+  },
+  % CONSORT group allocation box
+  groupbox/.style={
+    rectangle,
+    rounded corners=2pt,
+    draw=black,
+    thick,
+    fill=okabe-blue!15,
+    minimum width=3.5cm,
+    minimum height=1cm,
+    align=center,
+    font=\small,
+    text width=3cm
+  },
+}
+
+% === Block Diagram Components ===
+
+\tikzset{
+  % Component block
+  component/.style={
+    rectangle,
+    draw=black,
+    thick,
+    fill=okabe-blue!20,
+    minimum width=2.5cm,
+    minimum height=1.2cm,
+    align=center,
+    font=\small
+  },
+  % Subsystem (larger, different color)
+  subsystem/.style={
+    rectangle,
+    draw=black,
+    very thick,
+    fill=okabe-green!20,
+    minimum width=3.5cm,
+    minimum height=1.5cm,
+    align=center,
+    font=\small\bfseries
+  },
+  % Interface point
+  interface/.style={
+    circle,
+    draw=black,
+    thick,
+    fill=okabe-orange!30,
+    minimum size=0.8cm,
+    font=\small
+  },
+  % Data flow arrow
+  dataflow/.style={
+    -Stealth,
+    thick,
+    color=okabe-dblue
+  },
+  % Control signal arrow
+  control/.style={
+    -Stealth,
+    thick,
+    dashed,
+    color=okabe-vermillion
+  },
+}
+
+% === Biological Pathway Nodes ===
+
+\tikzset{
+  % Protein
+  protein/.style={
+    rectangle,
+    rounded corners=5pt,
+    draw=black,
+    thick,
+    fill=okabe-blue!20,
+    minimum width=2cm,
+    minimum height=0.8cm,
+    align=center,
+    font=\small
+  },
+  % Gene
+  gene/.style={
+    rectangle,
+    draw=black,
+    thick,
+    fill=okabe-green!20,
+    minimum width=2cm,
+    minimum height=0.8cm,
+    align=center,
+    font=\small\itshape  % Italics for genes
+  },
+  % Metabolite
+  metabolite/.style={
+    circle,
+    draw=black,
+    thick,
+    fill=okabe-yellow!20,
+    minimum size=1.5cm,
+    align=center,
+    font=\small
+  },
+  % Enzyme/Catalyst
+  enzyme/.style={
+    ellipse,
+    draw=black,
+    thick,
+    fill=okabe-dblue!20,
+    minimum width=2cm,
+    minimum height=1cm,
+    align=center,
+    font=\small
+  },
+  % Complex
+  complex/.style={
+    rectangle,
+    rounded corners=8pt,
+    draw=black,
+    very thick,
+    fill=okabe-orange!20,
+    minimum width=2.5cm,
+    minimum height=1cm,
+    align=center,
+    font=\small
+  },
+}
+
+% === Utility Styles ===
+
+\tikzset{
+  % Connection dot (for junctions)
+  junction/.style={
+    circle,
+    fill=black,
+    inner sep=0pt,
+    minimum size=3pt
+  },
+  % Label node (transparent)
+  label/.style={
+    rectangle,
+    draw=none,
+    fill=none,
+    font=\small,
+    align=center
+  },
+  % Annotation (smaller text)
+  annotation/.style={
+    rectangle,
+    draw=none,
+    fill=none,
+    font=\footnotesize,
+    align=center,
+    text=gray
+  },
+  % Highlight box (for emphasis)
+  highlight/.style={
+    rectangle,
+    rounded corners=5pt,
+    draw=okabe-vermillion,
+    very thick,
+    fill=okabe-vermillion!10,
+    minimum width=2cm,
+    minimum height=1cm,
+    align=center
+  },
+  % Background box
+  background/.style={
+    rectangle,
+    rounded corners=5pt,
+    draw=gray,
+    thin,
+    fill=gray!10,
+    inner sep=10pt
+  },
+}
+
+% === Predefined Style Sets ===
+
+% CONSORT flowchart style set
+\tikzset{
+  consort/.style={
+    node distance=1.5cm and 2cm,
+    every node/.style={font=\small},
+    >=Stealth
+  }
+}
+
+% Block diagram style set
+\tikzset{
+  blockdiagram/.style={
+    node distance=2cm and 3cm,
+    every node/.style={font=\small},
+    >=Stealth
+  }
+}
+
+% Biological pathway style set
+\tikzset{
+  pathway/.style={
+    node distance=2cm and 2.5cm,
+    every node/.style={font=\small},
+    >=Stealth
+  }
+}
+
+% Simple flowchart style set
+\tikzset{
+  simple/.style={
+    node distance=1.5cm,
+    every node/.style={font=\small},
+    >=Stealth
+  }
+}
+
+% === Helper Commands ===
+
+% Panel label (A, B, C) for multi-panel figures
+\newcommand{\panellabel}[2][]{
+  \node[font=\large\bfseries, #1] at (#2) {\textbf{#2}};
+}
+
+% Connection with label
+\newcommand{\connlabel}[3][above]{
+  \draw[arrow] (#2) -- node[#1, font=\footnotesize] {#3} (#2);
+}
+
+% === Notes ===
+% 
+% To use these styles in your diagram:
+%
+% 1. Include this file in your preamble or tikzpicture:
+%    \input{tikz_styles.tex}
+%
+% 2. Apply a style set to your tikzpicture:
+%    \begin{tikzpicture}[consort]
+%      ...
+%    \end{tikzpicture}
+%
+% 3. Use the predefined node styles:
+%    \node[flowbox] (n1) {My node};
+%    \node[process, below=of n1] (n2) {Process step};
+%    \draw[arrow] (n1) -- (n2);
+%
+% 4. Use the colorblind-safe colors:
+%    fill=okabe-blue!20, draw=okabe-dblue
+%
+% All colors and styles follow accessibility best practices for
+% scientific publication.
+

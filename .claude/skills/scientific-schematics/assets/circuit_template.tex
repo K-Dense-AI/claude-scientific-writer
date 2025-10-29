@@ -1,0 +1,159 @@
+% Circuit Diagram Template using CircuitikZ
+% For electrical schematics, instrumentation diagrams, and signal processing
+%
+% Usage:
+%   1. Copy and customize this template
+%   2. Compile with: pdflatex circuit_template.tex
+%   3. Include in paper with: \includegraphics{circuit.pdf}
+
+\documentclass[tikz, border=5mm]{standalone}
+\usepackage{tikz}
+\usepackage{circuitikz}
+
+% Load shared colors (optional, for consistent styling)
+\input{tikz_styles.tex}
+
+\begin{document}
+
+% === Example 1: RC Filter Circuit ===
+\begin{circuitikz}[american, scale=1.2, transform shape]
+
+% Input
+\draw (0,0) node[left] {$V_{in}$}
+  to[short, o-] (0.5,0)
+  to[R, l=$R_1$, v^>=$V_R$] (3,0)
+  to[short, -o] (3.5,0) node[right] {$V_{out}$};
+
+% Capacitor to ground
+\draw (3,0) to[C, l=$C_1$, *-] (3,-2)
+  node[ground] {};
+
+% Component values annotation (optional)
+\node[below, font=\small] at (1.5,-2.5) {$R_1 = 1\,\mathrm{k}\Omega$, $C_1 = 10\,\mu\mathrm{F}$};
+
+\end{circuitikz}
+
+\vspace{1cm}
+
+% === Example 2: Voltage Divider ===
+\begin{circuitikz}[american, scale=1.2, transform shape]
+
+% Voltage source
+\draw (0,0) to[V, v=$V_s$, invert] (0,3);
+
+% Resistors
+\draw (0,3) to[short] (2,3)
+  to[R, l=$R_1$] (2,1.5)
+  to[short, -o] (3,1.5) node[right] {$V_{out}$}
+  (2,1.5) to[R, l=$R_2$] (2,0)
+  to[short] (0,0);
+
+% Ground
+\draw (0,0) node[ground] {};
+
+\end{circuitikz}
+
+\vspace{1cm}
+
+% === Example 3: Amplifier Circuit ===
+\begin{circuitikz}[american, scale=1.0, transform shape]
+
+% Input
+\draw (0,0) node[left] {$V_{in}$}
+  to[C, l=$C_{in}$, o-] (1.5,0);
+
+% Biasing resistor
+\draw (1.5,0) to[R, l=$R_b$, *-] (1.5,2)
+  to[short] (0,2) node[left] {$+V_{cc}$};
+
+% Transistor
+\node[npn] (npn) at (3,0) {};
+\draw (1.5,0) to[short] (npn.base);
+
+% Collector resistor
+\draw (npn.collector) to[R, l=$R_c$] (3,2.5)
+  to[short] (3,3) node[above] {$+V_{cc}$};
+
+% Emitter to ground
+\draw (npn.emitter) to[short] (3,-1.5) node[ground] {};
+
+% Output
+\draw (npn.collector) to[C, l=$C_{out}$, *-o] (5,0.75) node[right] {$V_{out}$};
+
+\end{circuitikz}
+
+\end{document}
+
+% === CircuitikZ Component Reference ===
+%
+% PASSIVE COMPONENTS:
+%   to[R, l=$R_1$] - Resistor with label
+%   to[C, l=$C_1$] - Capacitor
+%   to[L, l=$L_1$] - Inductor
+%   to[D, l=$D_1$] - Diode
+%   to[vR] - Variable resistor
+%   to[vC] - Variable capacitor
+%
+% SOURCES:
+%   to[V, v=$V_s$] - Voltage source
+%   to[I, i=$I_s$] - Current source
+%   to[sV] - Sinusoidal voltage source
+%   to[battery] - Battery
+%
+% SEMICONDUCTORS:
+%   node[npn] (name) {} - NPN transistor
+%   node[pnp] (name) {} - PNP transistor
+%   node[nmos] (name) {} - N-channel MOSFET
+%   node[pmos] (name) {} - P-channel MOSFET
+%   node[op amp] (name) {} - Operational amplifier
+%
+% CONNECTIONS:
+%   to[short] - Wire/short circuit
+%   to[short, o-] - Wire starting with open circle
+%   to[short, -o] - Wire ending with open circle
+%   to[short, *-] - Wire starting with filled dot
+%   to[short, -*] - Wire ending with filled dot
+%
+% OTHER:
+%   node[ground] {} - Ground symbol
+%   node[vcc] {} - VCC symbol
+%   to[meter, l=$V$] - Voltmeter
+%   to[ammeter] - Ammeter
+%
+% VOLTAGE/CURRENT ANNOTATIONS:
+%   v=$V_x$ - Voltage drop label
+%   v^>=$V_x$ - Voltage with arrow pointing up
+%   v_<=$V_x$ - Voltage with arrow pointing down
+%   i=$I_x$ - Current label
+%
+% CUSTOMIZATION:
+%
+% 1. Change style to european:
+%    \begin{circuitikz}[european]
+%
+% 2. Scale the circuit:
+%    \begin{circuitikz}[scale=1.5, transform shape]
+%
+% 3. Change colors (using okabe-ito palette):
+%    to[R, l=$R_1$, color=okabe-blue]
+%
+% 4. Rotate components:
+%    to[R, l=$R_1$, rotate=90]
+%
+% 5. Add node at specific coordinate:
+%    \draw (2,3) node[npn] {};
+%
+% TYPICAL USAGE IN PAPER:
+%
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=0.6\columnwidth]{circuit.pdf}
+%   \caption{Schematic diagram of the measurement circuit.
+%            $R_1 = 1\,\mathrm{k}\Omega$, $C_1 = 10\,\mu\mathrm{F}$.}
+%   \label{fig:circuit}
+% \end{figure}
+%
+% RESOURCES:
+% - CircuitikZ manual: https://ctan.org/pkg/circuitikz
+% - Component library: See CircuitikZ documentation Section 4
+

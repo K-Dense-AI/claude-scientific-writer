@@ -63,7 +63,48 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 4. Research Grants
+### 4. Scholar Evaluation
+**Location**: `.claude/skills/scholar-evaluation/`
+
+**Capabilities**:
+- Systematic quantitative evaluation across 8 dimensions using ScholarEval framework
+- Scoring research papers, proposals, and literature reviews (1-5 scale)
+- Assessing publication readiness for target venues
+- Providing prioritized, actionable feedback with evidence-based recommendations
+- Identifying strengths and weaknesses across problem formulation, literature review, methodology, data collection, analysis, results, writing quality, and citations
+- Generating comprehensive evaluation reports with dimension scores
+
+**References**:
+- `evaluation_framework.md`: Detailed rubrics and quality indicators for all 8 evaluation dimensions
+
+**Scripts**:
+- `calculate_scores.py`: Calculate aggregate scores from dimension ratings, generate evaluation reports
+
+**Features**:
+- Research-backed framework (ScholarEval methodology from arXiv:2510.16234)
+- Quantitative scoring (1-5 scale per dimension) with weighted averaging
+- Dimension-specific rubrics for consistent evaluation
+- Publication readiness assessment
+- Strengths/weaknesses identification
+- Prioritized recommendations by impact
+- Contextual adjustments for work stage, venue, and discipline
+
+**When to Use**:
+- As a complement to peer review for quantitative assessment
+- Evaluating publication readiness before submission
+- Tracking improvement across multiple revisions
+- Benchmarking research quality against established criteria
+- Providing structured feedback for academic work
+
+**Key Guidance**:
+- Complements peer-review skill with systematic quantitative approach
+- Evaluates across 8 dimensions: Problem Formulation, Literature Review, Methodology, Data Collection, Analysis, Results, Writing Quality, Citations
+- Scores range from 1 (Poor) to 5 (Excellent)
+- Overall assessment thresholds: 4.5+ (Exceptional/Top-tier), 4.0-4.4 (Strong/Minor revisions), 3.5-3.9 (Good/Major revisions), 3.0-3.4 (Acceptable/Significant revisions), <3.0 (Needs major rework)
+
+---
+
+### 5. Research Grants
 **Location**: `.claude/skills/research-grants/`
 
 **Capabilities**:
@@ -115,7 +156,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 5. LaTeX Research Posters
+### 6. LaTeX Research Posters
 **Location**: `.claude/skills/latex-posters/`
 
 **Capabilities**:
@@ -153,9 +194,60 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
+### 6. Scientific Schematics and Diagrams
+**Location**: `.claude/skills/scientific-schematics/`
+
+**Capabilities**:
+- Create methodology flowcharts (CONSORT diagrams for clinical trials)
+- Generate circuit diagrams and electrical schematics
+- Visualize biological pathways and signaling cascades
+- Design system architecture and block diagrams
+- Create process flow diagrams and decision trees
+- Network diagrams and graph visualizations
+- Publication-quality vector graphics with TikZ/LaTeX
+- Programmatic diagram generation with Python (Schemdraw, NetworkX, Matplotlib)
+
+**References**:
+- `tikz_guide.md`: Comprehensive TikZ syntax, positioning, styles, and techniques
+- `diagram_types.md`: Catalog of scientific diagram types with use cases and examples
+- `best_practices.md`: Publication standards, accessibility, and colorblind-safe design
+- `python_libraries.md`: Guide to Schemdraw, NetworkX, and Matplotlib for programmatic generation
+
+**Scripts**:
+- `generate_flowchart.py`: Convert text descriptions to TikZ flowcharts
+- `circuit_generator.py`: Generate circuit diagrams using Schemdraw
+- `pathway_diagram.py`: Create biological pathway diagrams with Matplotlib
+- `compile_tikz.py`: Standalone TikZ compilation utility (PDF/PNG output)
+
+**Assets**:
+- `tikz_styles.tex`: Reusable style definitions with Okabe-Ito colorblind-safe palette
+- `flowchart_template.tex`: CONSORT-style methodology flowchart template
+- `circuit_template.tex`: Electrical circuit diagram template with CircuitikZ
+- `pathway_template.tex`: Biological pathway diagram template
+- `block_diagram_template.tex`: System architecture diagram template
+
+**Features**:
+- Colorblind-safe Okabe-Ito color palette throughout
+- Vector graphics for infinite scalability
+- LaTeX integration for consistent typography
+- Automated flowchart generation from numbered lists
+- Publication-ready output (PDF, SVG, PNG)
+- Accessible design following WCAG standards
+- Grayscale compatibility verification
+
+**Use Cases**:
+- **CONSORT diagrams**: Participant flow for clinical trials
+- **Electronics papers**: Circuit schematics and signal processing diagrams
+- **Biology papers**: Signaling cascades, metabolic pathways, gene networks
+- **Engineering papers**: System architecture, data flow, block diagrams
+- **Methodology sections**: Study design, data processing pipelines
+- **Conceptual frameworks**: Process flows, decision trees
+
+---
+
 ## Document Manipulation Skills
 
-### 6. MarkItDown - Universal File to Markdown Converter
+### 7. MarkItDown - Universal File to Markdown Converter
 **Location**: `.claude/skills/markitdown/`
 
 **Capabilities**:
@@ -192,7 +284,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 7. DOCX (Word Documents)
+### 8. DOCX (Word Documents)
 **Location**: `.claude/skills/document-skills/docx/`
 
 **Capabilities**:
@@ -213,7 +305,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 8. PDF Documents
+### 9. PDF Documents
 **Location**: `.claude/skills/document-skills/pdf/`
 
 **Capabilities**:
@@ -236,7 +328,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 9. PPTX (PowerPoint Presentations)
+### 10. PPTX (PowerPoint Presentations)
 **Location**: `.claude/skills/document-skills/pptx/`
 
 **Capabilities**:
@@ -259,7 +351,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 10. XLSX (Excel Spreadsheets)
+### 11. XLSX (Excel Spreadsheets)
 **Location**: `.claude/skills/document-skills/xlsx/`
 
 **Capabilities**:
@@ -323,6 +415,17 @@ Claude will use markitdown with AI enhancement for detailed image descriptions.
 ```
 Claude will use the peer-review skill to provide constructive feedback.
 
+### Using Scholar Evaluation Skill
+```
+> Evaluate this paper using the ScholarEval framework
+```
+Claude will use the scholar-evaluation skill to provide systematic quantitative evaluation across 8 dimensions.
+
+```
+> Assess publication readiness for Nature Machine Intelligence
+```
+Claude will evaluate the paper and provide scores and recommendations for submission readiness.
+
 ### Using Research Grants Skill
 ```
 > Help me write an NSF proposal for my computational neuroscience research
@@ -338,6 +441,27 @@ Claude will help structure your 1-page specific aims using NIH best practices.
 > What should I include in broader impacts for an NSF Materials Research proposal?
 ```
 Claude will provide substantive broader impacts strategies aligned with NSF criteria.
+
+### Using Scientific Schematics Skill
+```
+> Create a CONSORT flowchart for my clinical trial showing participant flow from screening (n=500) through randomization to final analysis
+```
+Claude will generate a methodology flowchart following CONSORT guidelines.
+
+```
+> Generate a circuit diagram for an RC low-pass filter
+```
+Claude will create an electrical circuit schematic using CircuitikZ or Schemdraw.
+
+```
+> Create a biological pathway diagram showing the MAPK signaling cascade from receptor to gene expression
+```
+Claude will visualize the signaling pathway with properly styled proteins and activation arrows.
+
+```
+> Design a block diagram showing the architecture of my data acquisition system with sensor, ADC, microcontroller, and wireless transmission
+```
+Claude will create a system architecture diagram with labeled components and data flow.
 
 ## Adding Custom Skills
 
