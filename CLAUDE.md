@@ -375,21 +375,9 @@ drafts/
    - Verify each paper exists and is relevant before citing
    - Only cite papers you have actually looked up and verified
    
-   **Detailed Logging for Research Phase:**
-   - Print: `[HH:MM:SS] RESEARCH: Starting literature search for [Section Name]`
-   - Print: `[HH:MM:SS] RESEARCH: Query - "[search terms used]"`
-   - Print: `[HH:MM:SS] RESEARCH: Found [N] REAL papers on [specific topic/aspect]`
-   - Print: `[HH:MM:SS] RESEARCH: Verified paper - [Author Year] "[Title]"`
-   - Update progress.md with bullet list of key papers found:
-     ```
-     🔄 Research lookup for [Section Name]:
-        - Found 8 REAL papers on [topic A]:
-          * Smith et al. 2023 "Machine Learning for X" (verified via research-lookup)
-          * Jones & Lee 2022 "Deep Learning Approaches to Y" (verified via research-lookup)
-        - Found 5 REAL papers on [topic B]
-        - All citations verified as real, published papers
-     ```
-   - Print: `[HH:MM:SS] RESEARCH: Completed - [N] total REAL papers identified for citation`
+   **Research Logging:**
+   - Print: `[HH:MM:SS] RESEARCH: Query "[search terms]" - Found [N] REAL papers`
+   - Update progress.md with verified papers list and totals
 
 3. **Write Section Content - ONLY WITH REAL CITATIONS**
    - Replace placeholder comments with actual content
@@ -405,45 +393,18 @@ drafts/
      * Skip that particular claim if it can't be properly supported
    - Aim for completeness in first pass with all REAL citations
    
-   **Detailed Logging for Writing Phase:**
-   - Print: `[HH:MM:SS] WRITING: Starting [Section Name] - [subsection if applicable]`
-   - For longer sections, provide progress updates every 2-3 paragraphs:
-     * Print: `[HH:MM:SS] PROGRESS: [Section Name] - ~[word count] words, [X] of [Y] subsections`
-   - Log specific milestones:
-     * Print: `[HH:MM:SS] WRITING: Completed background paragraph (cited: [Author1, Author2])`
-     * Print: `[HH:MM:SS] WRITING: Completed methodology description ([N] words)`
-     * Print: `[HH:MM:SS] WRITING: Added analysis of [specific finding/result]`
-   - Update progress.md with subsection completion:
-     ```
-     🔄 Writing [Section Name]:
-        ✅ Background and context (350 words, 4 citations)
-        ✅ Literature gap analysis (200 words, 3 citations)
-        🔄 Our contribution statement (in progress)
-     ```
+   **Writing Logging:**
+   - Print: `[HH:MM:SS] WRITING: [Section Name] - [subsection]`
+   - Progress every 2-3 paragraphs: word count, citations
+   - Update progress.md with subsection completion status
 
-4. **Add Citations in Real-Time with Metadata Verification**
-   - Add BibTeX entries to references.bib as you cite
-   - Use descriptive citation keys (author_year_keyword)
-   - **ALWAYS verify citation metadata is complete and accurate** (see Citation Metadata Verification)
-   
-   **Detailed Logging for Citations:**
-   - Print each citation: `[HH:MM:SS] CITATION: Added [Author Year] - "[Paper Title]"`
-   - Print verification: `[HH:MM:SS] VERIFIED: Citation metadata complete for [Author Year] (DOI: [doi])`
-   - Track running count: `[HH:MM:SS] CITATIONS: [N] total in [Section Name]`
-   - Log bibliography updates: `[HH:MM:SS] BIBLIOGRAPHY: Added [N] new BibTeX entries`
+4. **Add Citations in Real-Time**
+   - Add verified BibTeX entries as you cite (author_year_keyword format)
+   - Log: `[HH:MM:SS] CITATION: [Author Year] - verified ✅`
 
 5. **Log Section Completion**
-   - Provide comprehensive completion summary
-   - Print: `[HH:MM:SS] COMPLETED: [Section Name] - [word count] words, [N] citations`
-   - Update progress.md with detailed summary:
-     ```
-     ✅ Completed [Section Name]:
-        - Total words: [count]
-        - Total citations: [count] ([list key citations])
-        - Subsections: [list all subsections]
-        - Key points covered: [brief bullet list]
-        - Time taken: [duration]
-     ```
+   - Print: `[HH:MM:SS] COMPLETED: [Section Name] - [words] words, [N] citations`
+   - Update progress.md with summary and metrics
 
 6. **Repeat for Each Section**
    - Move to next section only after current is complete
@@ -454,79 +415,10 @@ drafts/
 
 **After all sections are written:**
 
-1. **Write Abstract** (always last)
-   - Synthesize the complete paper
-   - Follow journal-specific abstract structure
-   - Stay within word limits
-   
-   **Detailed Logging:**
-   - Print: `[HH:MM:SS] WRITING: Abstract - synthesizing full paper`
-   - Print: `[HH:MM:SS] ABSTRACT: Background and objectives (~50 words)`
-   - Print: `[HH:MM:SS] ABSTRACT: Methods summary (~40 words)`
-   - Print: `[HH:MM:SS] ABSTRACT: Key results (~50 words)`
-   - Print: `[HH:MM:SS] ABSTRACT: Conclusions (~30 words)`
-   - Update progress.md: "✅ Abstract complete - [N] words (within [journal] limit)"
-
-2. **Verify Citations and Metadata**
-   - Check all citations compile correctly
-   - Ensure bibliography is complete
-   - Verify citation style matches requirements
-   - **Audit all citation metadata for completeness**
-   
-   **Detailed Logging:**
-   - Print: `[HH:MM:SS] REVIEW: Checking citation compilation`
-   - Print: `[HH:MM:SS] REVIEW: Verified [N] citations across all sections`
-   - Print: `[HH:MM:SS] REVIEW: Bibliography contains [N] complete entries`
-   - Print: `[HH:MM:SS] REVIEW: Citation style verified - [style name]`
-   - Print: `[HH:MM:SS] REVIEW: Metadata verification - [N] citations with DOIs ([X]%)`
-   - Print: `[HH:MM:SS] REVIEW: Metadata verification - all required fields present ✅`
-   - Update progress.md with citation audit results including metadata completeness statistics
-
-3. **Comprehensive Quality Review**
-   - Check section flow and transitions
-   - Verify all figures/tables are referenced
-   - Ensure consistent terminology throughout
-   - Verify all cross-references work
-   - Check formatting consistency
-   - Run final compilation/generation
-   
-   **Detailed Logging for Quality Review:**
-   - Print: `[HH:MM:SS] REVIEW: Starting comprehensive quality check`
-   - Print: `[HH:MM:SS] REVIEW: Checking section transitions and flow`
-   - Print: `[HH:MM:SS] REVIEW: Verifying [N] figures and [N] tables referenced`
-   - Print: `[HH:MM:SS] REVIEW: Checking terminology consistency`
-   - Print: `[HH:MM:SS] REVIEW: Validating cross-references`
-   - Print: `[HH:MM:SS] REVIEW: Checking formatting (fonts, spacing, margins)`
-   - Update progress.md with quality checklist:
-     ```
-     ✅ Quality Review Completed:
-        ✅ All sections flow logically with smooth transitions
-        ✅ [N] figures properly referenced and captioned
-        ✅ [N] tables properly referenced and captioned
-        ✅ Terminology consistent throughout
-        ✅ [N] cross-references verified
-        ✅ Formatting matches [journal/conference] guidelines
-        ✅ Word count: [N] (within limits)
-        ✅ Citation count: [N] (sufficient for scope)
-     ```
-
-4. **Final LaTeX Compilation and Verification**
-   - Print: `[HH:MM:SS] COMPILING: Running pdflatex (pass 1/3)`
-   - Print: `[HH:MM:SS] COMPILING: Running bibtex to process bibliography`
-   - Print: `[HH:MM:SS] COMPILE: bibtex complete - [N] entries processed`
-   - Print: `[HH:MM:SS] COMPILING: Running pdflatex (pass 2/3) - resolving citations`
-   - Print: `[HH:MM:SS] COMPILING: Running pdflatex (pass 3/3) - finalizing`
-   - Print: `[HH:MM:SS] COMPILE: Build successful - no errors ✅`
-   - Print: `[HH:MM:SS] VERIFY: PDF generated - [N] pages`
-   - Print: `[HH:MM:SS] VERIFY: All citations rendered correctly`
-   - Print: `[HH:MM:SS] VERIFY: Bibliography complete with [N] entries`
-   - Update progress.md: "✅ LaTeX compilation successful - PDF ready for delivery"
-   
-   **Note:** LaTeX requires multiple compilation passes:
-   - Pass 1: Process document structure and generate .aux files
-   - BibTeX: Process bibliography from references.bib
-   - Pass 2: Resolve citations and references
-   - Pass 3: Finalize cross-references and page numbers
+1. **Write Abstract** (always last) - synthesize complete paper, follow journal structure
+2. **Verify Citations** - check compilation, bibliography completeness, metadata audit
+3. **Quality Review** - section flow, figures/tables referenced, terminology, cross-references, formatting
+4. **LaTeX Compilation** - 3-pass cycle: pdflatex → bibtex → pdflatex (2×) for proper citations/references
 
 5. **AUTOMATIC PDF Formatting Review (Required After Each Compilation)**
    
@@ -590,25 +482,7 @@ drafts/
    - Log all issues found and fixes applied
    - Include final formatting quality assessment
    
-   **Example Output:**
-   ```
-   [14:51:20] PDF REVIEW: Starting automatic formatting inspection
-   [14:51:25] PDF REVIEW: Analyzing 8 pages for formatting issues
-   [14:51:45] PDF REVIEW: Found 3 formatting issues
-   [14:51:45] PDF REVIEW: Issue 1 - Page 3: Figure 2 overlapping with text below
-   [14:51:45] PDF REVIEW: Issue 2 - Page 5: Excessive space before Results section
-   [14:51:45] PDF REVIEW: Issue 3 - Page 7: Table extending into right margin
-   [14:51:46] PDF REVIEW: Applying fixes...
-   [14:51:50] PDF REVIEW: Fixed figure overlap on page 3 - added \FloatBarrier
-   [14:51:55] PDF REVIEW: Fixed spacing on page 5 - removed extra \vspace{20pt}
-   [14:52:00] PDF REVIEW: Fixed table width on page 7 - scaled to 0.9\textwidth
-   [14:52:05] PDF REVIEW: Recompiling PDF with formatting fixes
-   [14:52:25] PDF REVIEW: Iteration 2 - Analyzing updated PDF
-   [14:52:35] PDF REVIEW: ✅ No formatting issues detected - PDF looks excellent!
-   [14:52:35] PDF REVIEW: Completed 2 formatting improvement iterations
-   ```
-   
-   **This is NOT optional - every PDF must go through this review process automatically.**
+   **This is MANDATORY - every PDF must go through automatic formatting review and iterative fixes.**
 
 ### For Research Papers
 
@@ -650,159 +524,29 @@ When adding citations to references.bib, follow this verification protocol:
 
 **Step 2: Verify Required BibTeX Fields**
 
-For **@article** (journal papers):
-- ✅ Required: author, title, journal, year, volume
-- ✅ Strongly recommended: number, pages, DOI
-- ✅ Optional: month, note, url
-- Example:
-```bibtex
-@article{smith2023machine,
-  author = {Smith, John and Jones, Mary},
-  title = {Machine Learning Methods for Data Analysis},
-  journal = {Nature Machine Intelligence},
-  year = {2023},
-  volume = {5},
-  number = {3},
-  pages = {245--258},
-  doi = {10.1038/s42256-023-00123-4}
-}
-```
-
-For **@inproceedings** (conference papers):
-- ✅ Required: author, title, booktitle, year
-- ✅ Strongly recommended: pages, publisher, DOI
-- ✅ Optional: editor, volume, series, address, month, organization
-- Example:
-```bibtex
-@inproceedings{vaswani2017attention,
-  author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and others},
-  title = {Attention Is All You Need},
-  booktitle = {Advances in Neural Information Processing Systems},
-  year = {2017},
-  volume = {30},
-  pages = {5998--6008},
-  publisher = {Curran Associates, Inc.}
-}
-```
-
-For **@book**:
-- ✅ Required: author/editor, title, publisher, year
-- ✅ Strongly recommended: ISBN, edition
-- ✅ Optional: volume, series, address
-
-For **@inbook** or **@incollection**:
-- ✅ Required: author, title, booktitle, publisher, year
-- ✅ Strongly recommended: pages, chapter, editor, DOI
-
-For **@misc** (preprints, arXiv, etc.):
-- ✅ Required: author, title, year
-- ✅ Strongly recommended: eprint (arXiv ID), archivePrefix, primaryClass, url
-- Example:
-```bibtex
-@misc{brown2020language,
-  author = {Brown, Tom B. and Mann, Benjamin and others},
-  title = {Language Models are Few-Shot Learners},
-  year = {2020},
-  eprint = {2005.14165},
-  archivePrefix = {arXiv},
-  primaryClass = {cs.CL}
-}
-```
+- **@article**: author, title, journal, year, volume (+ pages, DOI recommended)
+- **@inproceedings**: author, title, booktitle, year (+ pages, publisher, DOI recommended)
+- **@book**: author/editor, title, publisher, year (+ ISBN, edition recommended)
+- **@misc** (arXiv): author, title, year (+ eprint, archivePrefix, primaryClass recommended)
 
 **Step 3: Metadata Quality Checks**
 
-For each citation, verify:
-1. **Author Names**
-   - Proper formatting (Last, First Middle)
-   - "and" to separate authors
-   - Use "and others" or "et al." for long lists (>10 authors)
-   - Escape special characters (umlauts, accents) properly
+Verify for each citation:
+1. **Author Names**: Proper format (Last, First), "and" separator, escape special characters
+2. **Title**: Exact title, {Braces} for capitalization, escape LaTeX characters
+3. **Journal/Conference**: Full official name, correct spelling
+4. **Year**: Actual publication year (not preprint), cross-check with DOI
+5. **Pages**: Format as 123--456 (double dash)
+6. **DOI**: Always include when available, verify resolves at https://doi.org/
 
-2. **Title**
-   - Exact title (check capitalization)
-   - Use {Title Case} in braces to preserve capitalization
-   - Include subtitle if present (colon-separated)
-   - Escape special LaTeX characters
+**Step 4: Verification Process**
 
-3. **Journal/Conference Name**
-   - Full official name (not abbreviation unless standard)
-   - Check spelling and capitalization as published
-   - For conferences: use full booktitle
-
-4. **Publication Year**
-   - Verify actual publication year (not preprint year if published)
-   - For conferences: use year of publication, not year held
-   - Cross-check with DOI
-
-5. **Volume, Number, Pages**
-   - Exact volume and issue number
-   - Page range format: 123--456 (double dash --)
-   - Verify against official publication
-
-6. **DOI (Digital Object Identifier)**
-   - **ALWAYS include DOI when available**
-   - Format: just DOI string (e.g., 10.1038/nature12345)
-   - Verify DOI resolves at https://doi.org/
-   - Log: `[HH:MM:SS] VERIFIED: DOI 10.xxxx/xxxxx resolves correctly`
-
-**Step 4: Verification Using Research Tools**
-
-Before adding each citation:
-1. Look up paper using research-lookup or web search
-2. Verify against official sources:
-   - Publisher website, DOI resolver (https://doi.org/), Google Scholar
-   - PubMed (biomedical), arXiv (preprints)
+1. Look up via research-lookup or web search
+2. Verify against official sources (DOI resolver, Google Scholar, PubMed, arXiv)
 3. Cross-check at least 2 sources
-4. Log: `[HH:MM:SS] VERIFIED: Citation metadata for [Author Year] confirmed via [source]`
-
-**Step 5: Citation Key Standards**
-
-Use consistent, descriptive citation keys:
-- Format: `firstauthor_year_keyword`
-- Example: `smith2023machine`, `vaswani2017attention`
-- Keep keys lowercase for consistency
-- Use meaningful keywords (not generic like "paper1")
-- Avoid special characters in keys
-
-**Step 6: Special Cases**
-
-For **arXiv preprints later published**:
-- Use the published version information
-- Include note field: `note = {Published in [Journal Name]}`
-- Update from @misc to @article if published
-
-For **papers with many authors** (>10):
-- List first few authors + "and others"
-- Never omit all author information
-
-For **papers with special characters**:
-- Escape properly: `{\"o}` for ö, `{\'e}` for é, etc.
-- Use braces to preserve capitalization: `{DNA}`, `{COVID-19}`
-
-**Step 7: Logging Verification**
-
-For each verified citation, log:
-```
-[HH:MM:SS] CITATION: Adding [Author Year]
-           Title: "[Full Title]"
-           Source: [Journal/Conference]
-           DOI: [doi if available]
-[HH:MM:SS] VERIFYING: Checking metadata via [source]
-[HH:MM:SS] VERIFIED: All required fields present ✅
-[HH:MM:SS] VERIFIED: DOI resolves correctly ✅
-[HH:MM:SS] ADDED: Citation to references.bib
-```
-
-**Step 8: Batch Verification**
-
-After adding multiple citations to a section:
-```
-[HH:MM:SS] VERIFICATION SUMMARY for [Section Name]:
-           Total citations: [N]
-           With DOI: [N] ([X]%)
-           Verified: [N] ✅
-           Missing metadata: [N] (if any)
-```
+4. Use citation keys: `firstauthor_year_keyword` (lowercase, meaningful)
+5. Special cases: Use published version over preprint; list first authors + "and others" for >10 authors; escape special characters
+6. Log verification: `[HH:MM:SS] VERIFIED: [Author Year] - all fields present ✅`
 
 **Quality Standards**
 - **100% citations must be REAL papers found via research-lookup**
@@ -844,180 +588,28 @@ After adding multiple citations to a section:
 
 ### Progress Logging Requirements
 
-**Log these events ALWAYS with detailed context:**
+**Log these events ALWAYS:**
+- Structural: Folder/file creation, skeleton setup, template initialization
+- Research: Literature searches, papers found, bibliography updates
+- Writing: Section start/completion with word and citation counts
+- Technical: LaTeX compilation, PDF generation, formatting reviews, error resolution
+- Review: Quality checks, revisions, user feedback incorporation
 
-#### Structural Events
-- ✅ Folder/file creation - specify exact paths and purpose
-- ✅ Skeleton creation - list all sections and subsections created
-- ✅ Template initialization - note format (LaTeX/DOCX/MD) and version
-
-#### Research and Reference Events
-- ✅ Research lookup start - specify section and search terms
-- ✅ Papers found - list count and topics covered
-- ✅ Reference additions - include author, year, and title for each
-- ✅ Bibliography updates - note number of entries added
-- ✅ Citation statistics - running count per section and total
-
-#### Writing Events
-- ✅ Section start - announce which section/subsection
-- ✅ Subsection completion - with word count and citation count
-- ✅ Progress milestones - every 2-3 paragraphs for long sections
-- ✅ Section completion - comprehensive summary with statistics
-- ✅ Figure/table generation - with caption and placement
-- ✅ Cross-references - note what was linked (figures, tables, sections)
-
-#### Technical Events (LaTeX-specific)
-- ✅ LaTeX compilation attempts - pdflatex, bibtex runs
-- ✅ Compilation/generation of PDFs - success/failure status with error details
-- ✅ PDF formatting review - automatic visual inspection after compilation
-- ✅ PDF formatting issues found - specific problems with page numbers
-- ✅ PDF formatting fixes applied - LaTeX changes made to resolve issues
-- ✅ PDF recompilation after fixes - iterative improvement cycles
-- ✅ BibTeX processing - bibliography compilation status
-- ✅ Package installations or errors - missing packages and solutions
-- ✅ Error encounters and resolutions - full LaTeX error context and solution
-- ✅ File saves and updates - which .tex and .bib files modified
-- ✅ Version updates - what changed from previous version
-
-#### Review and Revision Events
-- ✅ Review phase start - what's being reviewed
-- ✅ Issues identified - specific problems found
-- ✅ Revisions made - what was changed and why
-- ✅ User feedback incorporation - what feedback, how addressed
-- ✅ Quality checks - what was verified
-
-**Detailed Update Format:**
-
-**For Terminal Output:**
-```
-[HH:MM:SS] CATEGORY: Specific action taken
-           Context: What section/file/component
-           Details: Quantitative metrics (words, citations, etc.)
-           Result: Outcome (✅ success / ⚠️ warning / ❌ failure)
-```
-
-**For progress.md:**
-```markdown
-### [HH:MM:SS] Phase/Section Name
-
-**Action:** What was done
-**Context:** Where and why
-**Metrics:** 
-  - Word count: [N]
-  - Citations added: [N]
-  - Time elapsed: [duration]
-**Key Decisions:** Any important choices made
-**Status:** ✅ Complete / 🔄 In Progress / ⏳ Pending / ❌ Failed
-```
-
-**Example of Detailed Logging:**
-```
-[14:32:15] RESEARCH: Starting literature search for Introduction
-           Context: Need background on transformer architectures
-           Query: "transformer attention mechanisms survey"
-           Result: ✅ Found 12 relevant papers
-
-[14:33:42] RESEARCH: Papers identified for Introduction
-           - Vaswani et al. 2017 (original transformer paper)
-           - Bahdanau et al. 2014 (attention mechanism)
-           - 10 additional recent surveys and applications
-           Result: ✅ Sufficient references for comprehensive intro
-
-[14:35:10] WRITING: Starting Introduction - Background subsection
-           Context: Explaining evolution of attention in NLP
-           Target: 300-400 words with 4-6 citations
-
-[14:37:45] PROGRESS: Introduction background - 280 words complete
-           Citations: Bahdanau 2014, Vaswani 2017, Devlin 2018
-           Status: 🔄 70% complete, adding final paragraph
-
-[14:39:20] COMPLETED: Introduction background subsection
-           Metrics: 385 words, 5 citations
-           Quality: All claims cited, smooth narrative flow
-           Result: ✅ Ready for next subsection
-```
+**Format:** `[HH:MM:SS] CATEGORY: Action - metrics (✅/⚠️/❌)`
 
 ## Communication Style
 
 ### Terminal Updates
 
-- **Granular and informative** - provide updates every 1-2 minutes of work
-- **Timestamped** - every update includes time in [HH:MM:SS] format
-- **Status indicators** - use emojis or symbols (✅ ❌ 🔄 ⏳ ⚠️)
-- **Progress indicators** - show completion percentage when applicable
-- **Quantitative metrics** - include word counts, citation counts, section progress
-- **Context-rich** - explain what you're doing and why
-- **Real-time transparency** - update as work happens, not after
-
-**Frequency Guidelines:**
-- Structural changes: Immediate
-- Research lookup: Start, each query, completion
-- Writing: Start, every 2-3 paragraphs, subsection completion
-- Citations: Each added OR batch updates every 3-5 citations
-- Compilation: Before attempt, result status
-- Errors: Immediately
-
-**Example Terminal Update Flow:**
-```
-[14:30:00] STARTING: Introduction section
-[14:30:15] RESEARCH: Literature search - "quantum computing algorithms"
-[14:31:30] RESEARCH: Found 8 relevant papers (Shor 1994, Grover 1996, ...)
-[14:32:00] WRITING: Introduction - Background paragraph
-[14:33:45] PROGRESS: 275 words written, 3 citations added
-[14:35:20] WRITING: Introduction - Research gap analysis
-[14:36:50] PROGRESS: 450 words total, 6 citations total
-[14:38:15] COMPLETED: Introduction - 620 words, 9 citations ✅
-```
+- **Timestamped** [HH:MM:SS] with status indicators (✅ ❌ 🔄 ⏳ ⚠️)
+- **Quantitative metrics** - word counts, citation counts, section progress
+- **Update frequency**: Every 1-2 minutes during structural changes, research, writing, compilation
 
 ### Progress File Updates
 
-- **Append-only** - never delete previous entries
-- **Structured** - consistent markdown formatting
-- **Highly detailed** - full context, metrics, decisions
-- **Timestamped** - every entry has timestamp
-- **Hierarchical** - organize by phase → section → subsection
-- **Searchable** - clear headers, consistent terminology
-- **Include metrics** - word counts, citations, time elapsed
-- **Document decisions** - explain choices made
-- **Track changes** - note revisions
-
-**Progress.md Structure:**
-```markdown
-# Progress Log: [Project Name]
-
-## Summary
-- Started: YYYY-MM-DD HH:MM:SS
-- Status: In Progress / Completed
-- Current Phase: [Phase name]
-- Last Updated: YYYY-MM-DD HH:MM:SS
-
-## Timeline
-
-### [HH:MM:SS] Initialization
-✅ Created project folder structure
-✅ Initialized progress tracking
-✅ Set up LaTeX template
-
-### [HH:MM:SS] Document Skeleton
-✅ Created full document structure with 5 main sections
-✅ Added section headers and subsection placeholders
-📊 Sections: Introduction, Methods, Results, Discussion, Conclusion
-
-### [HH:MM:SS] Introduction Section
-🔄 Research Phase
-  - Query: "machine learning interpretability methods"
-  - Found: 12 papers (Ribeiro 2016, Lundberg 2017, ...)
-  - Key topics: LIME, SHAP, attention visualization
-
-✅ Writing Phase
-  - Background: 350 words, 4 citations
-  - Literature gap: 220 words, 3 citations
-  - Our contribution: 180 words, 2 citations
-  - Total: 750 words, 9 citations
-
-### [HH:MM:SS] Methods Section
-🔄 Currently in progress...
-```
+- **Append-only** structured markdown with timestamps
+- **Include**: metrics, decisions, changes, hierarchical organization
+- Track: initialization → skeleton → section-by-section → review → completion
 
 ## Error Handling
 
@@ -1100,185 +692,18 @@ Before marking task complete, verify:
 
 ## Example Workflow
 
-### User Request
-"Create a NeurIPS paper on attention mechanisms"
+Request: "Create a NeurIPS paper on attention mechanisms"
 
-### Your Response
-
-**Step 1: Present Brief Plan and Start Execution**
-```
-I'll create a complete NeurIPS conference paper on attention mechanisms. Here's my approach:
-
-APPROACH:
-- Format: LaTeX (using NeurIPS template with standard 8-page format)
-- Structure: IMRaD with focus on transformer attention mechanisms
-- Citations: BibTeX with ~30-40 references
-- Style: NeurIPS citation style (numbered references)
-- Output: Both .tex source and compiled .pdf
-
-OUTPUT: paper_outputs/20241027_143022_neurips_attention_paper/
-
-Starting execution now...
-```
-
-**Step 2: Execute with Detailed Continuous Updates**
-```
-[14:30:22] STARTING: NeurIPS attention mechanisms paper
-[14:30:23] CREATED: paper_outputs/20241027_143022_neurips_attention_paper/
-[14:30:24] CREATED: Folder structure (drafts/, references/, figures/, final/)
-[14:30:25] CREATED: progress.md - initializing progress tracking
-[14:30:30] CREATED: LaTeX document skeleton - drafts/v1_draft.tex
-[14:30:31] SKELETON: Document class: article with neurips_2023 style
-[14:30:32] SKELETON: Sections - Introduction, Methods, Results, Discussion, Conclusion
-[14:30:33] SKELETON: Packages - natbib, hyperref, graphicx, amsmath, algorithm2e
-[14:30:34] CREATED: references/references.bib for BibTeX bibliography
-
-[14:30:45] STARTING: Introduction section
-[14:30:50] RESEARCH: Using research-lookup - query: "transformer attention mechanisms"
-[14:31:10] RESEARCH: Using research-lookup - query: "attention mechanism history neural networks"
-[14:31:30] RESEARCH: Verifying papers found via research-lookup
-[14:31:35] RESEARCH: Found 8 REAL papers on transformer architecture (verified via research-lookup)
-           - Vaswani et al. 2017 "Attention Is All You Need" (VERIFIED)
-           - Devlin et al. 2019 "BERT: Pre-training of Deep Bidirectional Transformers" (VERIFIED)
-           - [6 more verified papers listed]
-[14:31:40] RESEARCH: Found 5 REAL papers on attention mechanisms evolution (verified via research-lookup)
-           - Bahdanau et al. 2015 "Neural Machine Translation by Jointly Learning to Align" (VERIFIED)
-           - [4 more verified papers listed]
-[14:31:45] RESEARCH: Total 13 REAL papers identified for Introduction (all verified through research-lookup)
-[14:32:00] WRITING: Introduction - Background paragraph
-[14:32:45] CITATION: Adding Vaswani 2017 - "Attention Is All You Need"
-           Source: Advances in Neural Information Processing Systems
-           DOI: (checking for availability)
-[14:32:50] VERIFYING: Checking citation metadata via Google Scholar
-[14:32:55] VERIFIED: All required fields present ✅
-[14:32:56] ADDED: vaswani2017attention to references.bib
-[14:33:10] CITATION: Adding Bahdanau 2014 - "Neural Machine Translation"
-           Source: International Conference on Learning Representations
-           DOI: (checking arXiv record)
-[14:33:15] VERIFYING: Checking metadata via arXiv
-[14:33:18] VERIFIED: Citation metadata complete ✅
-[14:33:19] ADDED: bahdanau2014neural to references.bib
-[14:33:40] PROGRESS: Background complete - 320 words, 3 citations (all verified)
-[14:34:00] WRITING: Introduction - Literature gap analysis
-[14:35:15] PROGRESS: Gap analysis complete - 250 words, 2 citations
-[14:35:30] WRITING: Introduction - Our contribution
-[14:36:20] PROGRESS: Contribution statement - 180 words, 1 citation
-[14:36:25] COMPLETED: Introduction - 750 words, 6 citations ✅
-
-[14:36:40] STARTING: Methods section
-[14:36:50] RESEARCH: Using research-lookup - query: "attention mechanism implementation details"
-[14:37:10] RESEARCH: Using research-lookup - query: "transformer training methodology"
-[14:37:30] RESEARCH: Found 6 REAL papers on implementation details (verified via research-lookup)
-           - All papers verified as real, published works ✅
-[14:38:00] WRITING: Methods - Architecture description (using ONLY verified citations)
-[14:39:15] PROGRESS: Architecture - 420 words, 4 citations
-[14:39:30] WRITING: Methods - Training procedure
-[14:40:45] PROGRESS: Training details - 350 words, 3 citations
-[14:41:00] COMPLETED: Methods - 770 words, 7 citations ✅
-
-[14:41:15] STARTING: Results section
-[14:41:20] WRITING: Results - Experimental setup
-[14:42:30] PROGRESS: Setup description - 280 words, 2 citations
-[14:42:45] WRITING: Results - Performance metrics
-[14:43:50] PROGRESS: Metrics analysis - 390 words, 4 citations
-[14:44:05] COMPLETED: Results - 670 words, 6 citations ✅
-
-[14:44:20] STARTING: Discussion section
-[14:44:30] RESEARCH: Using research-lookup - query: "attention mechanism limitations challenges"
-[14:44:50] RESEARCH: Using research-lookup - query: "transformer comparison alternative architectures"
-[14:45:10] RESEARCH: Found 7 REAL papers on related work comparison (verified via research-lookup)
-           - All papers verified as real publications ✅
-[14:45:30] WRITING: Discussion - Interpretation of results (using ONLY verified citations)
-[14:46:40] PROGRESS: Interpretation - 380 words, 5 citations
-[14:47:00] WRITING: Discussion - Limitations and future work
-[14:48:15] PROGRESS: Limitations - 290 words, 3 citations
-[14:48:20] COMPLETED: Discussion - 670 words, 8 citations ✅
-
-[14:48:35] WRITING: Abstract (synthesizing complete paper)
-[14:48:40] ABSTRACT: Background and objectives (~55 words)
-[14:48:55] ABSTRACT: Methods summary (~45 words)
-[14:49:10] ABSTRACT: Key results (~50 words)
-[14:49:25] ABSTRACT: Conclusions (~30 words)
-[14:49:30] COMPLETED: Abstract - 180 words ✅
-
-[14:49:45] REVIEW: Starting comprehensive quality check
-[14:49:50] REVIEW: Checking section transitions - ✅ smooth flow
-[14:50:00] REVIEW: Verifying cross-references - ✅ all valid
-[14:50:10] REVIEW: Citation check - 27 citations, 25 unique references
-[14:50:15] REVIEW: Metadata verification - 24 citations with DOIs (96%)
-[14:50:20] REVIEW: Metadata verification - all required fields present ✅
-[14:50:25] REVIEW: Citation sources verified - 25/25 from primary sources (100%)
-[14:50:30] REVIEW: Bibliography verified - all entries complete
-[14:50:35] REVIEW: Formatting check - ✅ matches NeurIPS template
-[14:50:40] REVIEW: Word count - 2,860 words (within 8-page limit)
-
-[14:50:50] COMPILING: Running pdflatex on v1_draft.tex (pass 1/3)
-[14:50:58] COMPILE: pdflatex pass 1 complete - processing references
-[14:51:00] COMPILING: Running bibtex on v1_draft.aux
-[14:51:02] COMPILE: bibtex complete - 25 bibliography entries processed
-[14:51:03] COMPILING: Running pdflatex (pass 2/3) - resolving citations
-[14:51:10] COMPILE: pdflatex pass 2 complete
-[14:51:11] COMPILING: Running pdflatex (pass 3/3) - finalizing document
-[14:51:18] COMPILE: Build successful - no errors ✅
-[14:51:19] VERIFY: PDF generated - drafts/v1_draft.pdf
-[14:51:20] VERIFY: PDF contains 8 pages
-[14:51:21] VERIFY: All sections present and formatted correctly
-[14:51:22] VERIFY: All citations rendered correctly
-[14:51:23] VERIFY: Bibliography appears on page 8
-
-[14:51:25] PDF REVIEW: Starting automatic formatting inspection
-[14:51:30] PDF REVIEW: Analyzing 8 pages for formatting issues
-[14:51:50] PDF REVIEW: Found 2 formatting issues
-[14:51:51] PDF REVIEW: Issue 1 - Page 4: Figure 1 has excessive space below caption
-[14:51:52] PDF REVIEW: Issue 2 - Page 6: Results section header orphaned at bottom
-[14:51:55] PDF REVIEW: Applying fixes...
-[14:52:00] PDF REVIEW: Fixed figure spacing on page 4 - adjusted \abovecaptionskip
-[14:52:05] PDF REVIEW: Fixed page break on page 6 - added \needspace{4\baselineskip}
-[14:52:10] PDF REVIEW: Recompiling PDF with formatting fixes
-[14:52:30] PDF REVIEW: Iteration 2 - Analyzing updated PDF
-[14:52:45] PDF REVIEW: ✅ No formatting issues detected - PDF looks excellent!
-[14:52:46] PDF REVIEW: Completed 2 formatting improvement iterations
-
-[14:52:50] UPDATED: Final progress.md with complete timeline
-[14:52:55] CREATED: SUMMARY.md with deliverables list
-
-[14:53:00] STARTING: Peer review of completed manuscript
-[14:53:05] PEER REVIEW: Stage 1 - Initial assessment
-[14:53:20] PEER REVIEW: Evaluating scope, novelty, and overall quality
-[14:53:35] PEER REVIEW: Stage 2 - Section-by-section review
-[14:53:50] PEER REVIEW: Abstract and title - clear and accurate ✅
-[14:54:05] PEER REVIEW: Introduction - well-motivated with adequate context ✅
-[14:54:20] PEER REVIEW: Methods - checking reproducibility and rigor
-[14:54:40] PEER REVIEW: Results - evaluating presentation and statistics
-[14:55:00] PEER REVIEW: Discussion - assessing interpretation and limitations
-[14:55:20] PEER REVIEW: Stage 3 - Methodological and statistical rigor
-[14:55:40] PEER REVIEW: Stage 4 - Reproducibility and transparency assessment
-[14:56:00] PEER REVIEW: Stage 5 - Figure and data presentation quality
-[14:56:20] PEER REVIEW: Stage 6 - Ethical considerations verified
-[14:56:35] PEER REVIEW: Stage 7 - Writing quality and clarity evaluation
-[14:56:50] PEER REVIEW: Generating comprehensive review report
-[14:57:05] CREATED: PEER_REVIEW.md with detailed evaluation
-[14:57:10] PEER REVIEW: Identified 2 major strengths, 1 minor improvement
-[14:57:20] PEER REVIEW: Overall assessment - suitable for publication with minor revisions
-[14:57:30] ✅ PEER REVIEW COMPLETE
-
-[14:57:35] ✅ PROJECT COMPLETE
-
-📊 FINAL STATISTICS:
-   - Total words: 2,860
-   - Total citations: 27 (25 unique) - ALL REAL PAPERS ✅
-   - Citations verified via research-lookup: 25/25 (100%) ✅
-   - Citations with verified metadata: 25/25 (100%) ✅
-   - Citations with DOIs: 24/25 (96%)
-   - Zero placeholder or invented citations ✅
-   - Pages: 8 (NeurIPS format)
-   - Sections: 5 complete
-   - Peer review: Completed with 1 minor comment
-   - Time elapsed: 26 minutes
-   - Files created: 7
-
-All files available in: paper_outputs/20241027_143022_neurips_attention_paper/
-```
+**Response Flow:**
+1. Present plan: LaTeX format, IMRaD structure, NeurIPS template, ~30-40 BibTeX citations
+2. Create folder: `paper_outputs/20241027_143022_neurips_attention_paper/`
+3. Build skeleton with all sections
+4. Research-lookup per section (finding REAL papers only)
+5. Write section-by-section with verified citations
+6. Compile LaTeX (3-pass: pdflatex → bibtex → pdflatex × 2)
+7. Automatic PDF formatting review and fixes
+8. Comprehensive peer review
+9. Deliver with statistics and SUMMARY.md
 
 ## Remember
 
