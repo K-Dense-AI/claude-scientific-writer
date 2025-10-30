@@ -321,10 +321,36 @@ async def list_all_files():
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | Yes* | Your Anthropic API key |
-| `OPENROUTER_API_KEY` | No | For research lookup (Perplexity Sonar Pro) |
+| `ANTHROPIC_API_KEY` | Yes* | Your Anthropic API key for Claude Sonnet 4.5 |
+| `OPENROUTER_API_KEY` | No | For real-time research lookup via Perplexity Sonar Pro |
 
 \* Can be overridden by passing `api_key` parameter to `generate_paper()`
+
+### Research Lookup
+
+When `OPENROUTER_API_KEY` is set, the system gains access to real-time research capabilities:
+
+- **Live internet search** during paper generation
+- **Recent publications** from 2024-2025
+- **Fact verification** with current data
+- **Citation discovery** for latest research
+
+The research lookup is automatically invoked when needed - you don't need to explicitly request it.
+
+**Setup:**
+```bash
+# Add to your .env file
+echo "OPENROUTER_API_KEY=your_key_here" >> .env
+```
+
+**Example usage:**
+```python
+# Will automatically use research lookup to find recent papers
+async for update in generate_paper(
+    "Create a paper on recent advances in quantum computing (2024)"
+):
+    pass
+```
 
 ## Error Handling
 
@@ -373,10 +399,196 @@ The API handles errors gracefully:
        json.dump(update, f, indent=2)
    ```
 
+## Advanced Features
+
+### Data File Processing
+
+The API automatically processes data files and organizes them appropriately:
+
+```python
+async for update in generate_paper(
+    query="Analyze experimental results",
+    data_files=[
+        "./results.csv",           # → copied to data/
+        "./performance_plot.png",  # → copied to figures/
+        "./supplementary.json"     # → copied to data/
+    ]
+):
+    if update["type"] == "result":
+        # Files are available in the paper directory
+        data_files = update["files"]["data"]
+        figures = update["files"]["figures"]
+```
+
+**Note:** When using the API, original files are preserved (not deleted). In CLI mode, they are deleted after copying.
+
+### Intelligent Paper Detection (CLI Only)
+
+The CLI automatically detects references to existing papers:
+
+```bash
+# CLI automatically tracks context
+> Create a Nature paper on CRISPR
+# Creates new paper
+
+> Add a methods section
+# Continues editing the CRISPR paper
+
+> Find the acoustics paper
+# Switches to the acoustics paper
+
+> new paper on quantum computing
+# Explicitly starts a new paper
+```
+
+This feature is CLI-specific because the API is stateless. Each `generate_paper()` call creates a new paper.
+
+### Custom Output Organization
+
+Control where papers are saved:
+
+```python
+# Custom output directory
+async for update in generate_paper(
+    query="Create a paper",
+    output_dir="~/my_research/papers"
+):
+    pass
+
+# Custom working directory
+async for update in generate_paper(
+    query="Create a paper",
+    cwd="/path/to/project",
+    output_dir="./outputs"
+):
+    pass
+```
+
+### Model Selection
+
+Choose different Claude models (though Sonnet 4.5 is recommended):
+
+```python
+async for update in generate_paper(
+    query="Create a paper",
+    model="claude-sonnet-4-20250514"  # Latest Sonnet 4.5
+):
+    pass
+```
+
+### Metadata Extraction
+
+The API automatically extracts metadata from generated papers:
+
+```python
+async for update in generate_paper(query):
+    if update["type"] == "result":
+        # Extracted metadata
+        title = update["metadata"]["title"]        # From \title{} in LaTeX
+        word_count = update["metadata"]["word_count"]  # Estimated from TeX
+        created_at = update["metadata"]["created_at"]  # ISO 8601 timestamp
+        topic = update["metadata"]["topic"]        # From directory name
+        
+        # Citation information
+        citation_count = update["citations"]["count"]  # From .bib file
+        citation_style = update["citations"]["style"]  # BibTeX style
+        bib_file = update["citations"]["file"]     # Path to .bib
+```
+
+### Progress Monitoring Patterns
+
+#### Simple Progress Bar
+
+```python
+def print_progress_bar(percentage: int, width: int = 50):
+    filled = int(width * percentage / 100)
+    bar = "█" * filled + "░" * (width - filled)
+    return f"[{bar}] {percentage}%"
+
+async for update in generate_paper(query):
+    if update["type"] == "progress":
+        print(f"\r{print_progress_bar(update['percentage'])}", end="")
+```
+
+#### Stage-Based Updates
+
+```python
+stage_emojis = {
+    "initialization": "🔧",
+    "research": "🔍",
+    "writing": "✍️",
+    "compilation": "📦",
+    "complete": "✅"
+}
+
+async for update in generate_paper(query):
+    if update["type"] == "progress":
+        emoji = stage_emojis.get(update["stage"], "⏳")
+        print(f"{emoji} [{update['stage']}] {update['message']}")
+```
+
+#### Logging to File
+
+```python
+import json
+from datetime import datetime
+
+log_file = "paper_generation.log"
+
+async for update in generate_paper(query):
+    # Log all updates
+    with open(log_file, "a") as f:
+        f.write(json.dumps(update) + "\n")
+    
+    if update["type"] == "progress":
+        print(f"[{update['percentage']}%] {update['message']}")
+```
+
+### Multiple Papers
+
+Generate multiple papers in sequence or parallel:
+
+```python
+import asyncio
+
+# Sequential generation
+async def generate_multiple_sequential():
+    papers = [
+        "Create a paper on quantum computing",
+        "Create a paper on machine learning",
+        "Create a paper on climate change"
+    ]
+    
+    results = []
+    for query in papers:
+        async for update in generate_paper(query):
+            if update["type"] == "result":
+                results.append(update)
+    
+    return results
+
+# Parallel generation (advanced)
+async def generate_multiple_parallel():
+    async def generate_one(query):
+        async for update in generate_paper(query):
+            if update["type"] == "result":
+                return update
+    
+    papers = [
+        "Create a paper on quantum computing",
+        "Create a paper on machine learning",
+        "Create a paper on climate change"
+    ]
+    
+    results = await asyncio.gather(*[generate_one(q) for q in papers])
+    return results
+```
+
 ## See Also
 
-- README.md - Overview and quick start
-- Docs/TROUBLESHOOTING.md - Troubleshooting issues
-- example_api_usage.py - Complete code examples
+- [README.md](../README.md) - Overview and quick start
+- [FEATURES.md](FEATURES.md) - Complete features guide
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Troubleshooting issues
+- [example_api_usage.py](../example_api_usage.py) - Complete code examples
 
 

@@ -2,6 +2,51 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
+## [2.0.1] - 2025-10-30
+
+### 📝 Documentation Updates
+
+#### Added
+- **[FEATURES.md](docs/FEATURES.md)** - Comprehensive features guide covering:
+  - Document generation (papers, posters, grants, reviews, schematics)
+  - AI-powered capabilities (research lookup, peer review, iterative editing)
+  - Intelligent paper detection system
+  - Data & file integration workflows
+  - Document conversion with MarkItDown
+  - Developer features and API patterns
+
+#### Enhanced
+- **README.md** - Reorganized with improved feature highlights:
+  - Categorized features (Document Generation, AI Capabilities, Developer Tools)
+  - Expanded CLI and API usage examples
+  - Added workflow examples for common use cases
+  - Better visual organization with emojis and sections
+  
+- **API.md** - Added advanced documentation:
+  - Research lookup setup and usage
+  - Data file processing details
+  - Intelligent paper detection explanation
+  - Custom output organization patterns
+  - Metadata extraction examples
+  - Progress monitoring patterns (progress bars, stage-based, logging)
+  - Multiple paper generation (sequential and parallel)
+  
+- **Documentation organization** - Restructured into:
+  - User Guides (Features, API, Skills, Troubleshooting)
+  - Developer Resources (Development, Releasing, Changelog, System Instructions)
+
+### Key Highlights
+
+This update significantly improves documentation coverage for:
+- ✨ **Research lookup** - Real-time literature search with Perplexity Sonar Pro
+- ✨ **Intelligent paper detection** - Automatic context tracking in CLI
+- ✨ **Grant proposals** - NSF, NIH, DOE, DARPA with agency-specific guidance
+- ✨ **Scientific schematics** - CONSORT diagrams, circuits, pathways
+- ✨ **Document conversion** - 15+ formats with MarkItDown
+- ✨ **ScholarEval framework** - 8-dimension quantitative paper evaluation
+
+---
+
 ## [2.0.0] - 2025-10-28
 
 ### 🎉 Major Release: Programmatic API
