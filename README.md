@@ -1,6 +1,6 @@
 # Claude Scientific Writer
 
-[![PyPI version](https://badge.fury.io/py/scientific-writer.svg)](https://badge.fury.io/py/scientific-writer)
+[![PyPI version](https://img.shields.io/pypi/v/scientific-writer.svg)](https://pypi.org/project/scientific-writer/)
 [![Total Downloads](https://static.pepy.tech/badge/scientific-writer)](https://pepy.tech/project/scientific-writer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
