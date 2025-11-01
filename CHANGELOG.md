@@ -2,6 +2,42 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
+## [2.1.0] - 2025-11-01
+
+### ✨ Added
+
+#### New Skills
+
+- **Citation Management Skill** - Advanced citation quality control system
+  - Validates all citation metadata for completeness and accuracy
+  - Checks for proper author names, titles, venues, DOIs, and URLs
+  - Reduces AI hallucinations in bibliographic references
+  - Ensures citations meet publication standards
+  - Helps avoid citation-related desk rejects
+
+- **Venue Templates Skill** - Comprehensive academic submission templates
+  - Journal templates (Nature, Science, Cell, PNAS, etc.)
+  - Conference templates (NeurIPS, ICML, CVPR, ACL, etc.)
+  - Poster templates with venue-specific dimensions and styles
+  - Grant proposal templates (NSF, NIH, DOE, DARPA)
+  - Venue-specific formatting guidelines and requirements
+  - Reference documents with submission best practices
+  - Example usage scripts for common venues
+
+### 🔧 Improvements
+
+- Enhanced citation accuracy through automated metadata validation
+- Streamlined academic submission workflow with ready-to-use templates
+- Better support for multiple publication venues and formats
+
+### 📝 Documentation
+
+- Added comprehensive documentation for citation management workflows
+- Included venue template examples and usage guides
+- Updated skills documentation with new capabilities
+
+---
+
 ## [2.0.1] - 2025-10-30
 
 ### 📝 Documentation Updates
