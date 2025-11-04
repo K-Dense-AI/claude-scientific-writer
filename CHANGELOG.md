@@ -4,9 +4,13 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ## [Unreleased]
 
+---
+
+## [2.2.0] - 2025-11-04
+
 ### ✨ Added
 
-#### New Skills
+#### New Skills & Capabilities
 
 - **Clinical Reports Skill** - Comprehensive clinical documentation system
   - Four major report types: case reports, diagnostic reports, clinical trial reports, patient documentation
@@ -22,6 +26,13 @@ All notable changes to the Scientific Writer project will be documented in this 
   - Medical terminology standards (SNOMED-CT, LOINC, ICD-10, CPT)
   - Quality assurance checklists
   - Integration with scientific-writing and peer-review skills
+
+### 🔧 Improvements
+
+- Enhanced medical and clinical documentation capabilities
+- Expanded document generation beyond academic papers to clinical settings
+- Added healthcare regulatory compliance features
+- Improved template library with industry-standard medical formats
 
 ### 📝 Documentation
 
