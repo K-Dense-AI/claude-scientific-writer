@@ -35,23 +35,23 @@ def get_api_key(api_key: Optional[str] = None) -> str:
     return env_key
 
 
-def load_system_instructions(cwd: Path) -> str:
+def load_system_instructions(package_dir: Path) -> str:
     """
-    Load system instructions from CLAUDE.md file.
+    Load system instructions from package's CLAUDE.md file.
     
     Args:
-        cwd: Current working directory (project root).
+        package_dir: Package installation directory containing CLAUDE.md.
         
     Returns:
         System instructions string.
     """
-    instructions_file = cwd / "CLAUDE.md"
+    instructions_file = package_dir / "CLAUDE.md"
     
     if instructions_file.exists():
         with open(instructions_file, 'r', encoding='utf-8') as f:
             return f.read()
     else:
-        # Fallback if CLAUDE.md doesn't exist
+        # Fallback if CLAUDE.md doesn't exist in package
         return (
             "You are a scientific writing assistant. Follow best practices for "
             "scientific communication and always present a plan before execution."

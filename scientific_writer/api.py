@@ -76,10 +76,13 @@ async def generate_paper(
     if cwd:
         work_dir = Path(cwd).resolve()
     else:
-        # Default to package parent directory (project root)
-        work_dir = Path(__file__).parent.parent.absolute()
+        # Default to user's current working directory
+        work_dir = Path.cwd()
     
-    # Ensure output folder exists
+    # Get package directory for loading system instructions and skills
+    package_dir = Path(__file__).parent.parent.absolute()
+    
+    # Ensure output folder exists in user's directory
     output_folder = ensure_output_folder(work_dir, output_dir)
     
     # Initial progress update
@@ -89,8 +92,8 @@ async def generate_paper(
         percentage=0,
     ).to_dict()
     
-    # Load system instructions
-    system_instructions = load_system_instructions(work_dir)
+    # Load system instructions from package
+    system_instructions = load_system_instructions(package_dir)
     
     # Add conversation continuity instruction
     system_instructions += "\n\n" + """
@@ -120,8 +123,8 @@ IMPORTANT - CONVERSATION CONTINUITY:
         model=model,
         allowed_tools=["Read", "Write", "Edit", "Bash", "research-lookup"],
         permission_mode="bypassPermissions",
-        setting_sources=["project"],
-        cwd=str(work_dir),
+        setting_sources=[str(package_dir / ".claude" / "skills")],  # Load skills from package directory
+        cwd=str(work_dir),  # User's working directory
     )
     
     # Track progress through message analysis
