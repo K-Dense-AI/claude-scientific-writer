@@ -156,7 +156,123 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 6. LaTeX Research Posters
+### 6. Clinical Reports
+**Location**: `.claude/skills/clinical-reports/`
+
+**Capabilities**:
+- Writing clinical case reports following CARE (CAse REport) guidelines for journal publication
+- Creating diagnostic reports (radiology, pathology, laboratory) with professional standards
+- Documenting clinical trial data (SAE reports, Clinical Study Reports per ICH-E3)
+- Patient clinical documentation (SOAP notes, H&P, discharge summaries)
+- HIPAA compliance and de-identification verification
+- Regulatory compliance (FDA 21 CFR Part 11, ICH-GCP)
+- Medical terminology and coding standards (SNOMED-CT, LOINC, ICD-10, CPT)
+- Quality assurance and validation
+
+**Four Major Report Types**:
+1. **Clinical Case Reports** - CARE-compliant case reports for medical journals
+2. **Diagnostic Reports** - Radiology (ACR), pathology (CAP), laboratory reports
+3. **Clinical Trial Reports** - SAE reports, CSRs, protocol deviations, DSMB reports
+4. **Patient Documentation** - SOAP notes, H&P, discharge summaries, consultation notes
+
+**References**:
+- `case_report_guidelines.md`: CARE guidelines, journal requirements, de-identification
+- `diagnostic_reports_standards.md`: ACR/CAP/CLSI standards, structured reporting
+- `clinical_trial_reporting.md`: ICH-E3, CONSORT, SAE reporting, MedDRA coding
+- `patient_documentation.md`: SOAP, H&P, discharge summary standards
+- `regulatory_compliance.md`: HIPAA, 21 CFR Part 11, ICH-GCP, FDA requirements
+- `medical_terminology.md`: SNOMED-CT, LOINC, ICD-10, CPT, abbreviations
+- `data_presentation.md`: Clinical tables, figures, Kaplan-Meier curves, forest plots
+- `peer_review_standards.md`: Review criteria for clinical manuscripts
+
+**Templates (12 comprehensive templates)**:
+- `case_report_template.md`: CARE-compliant case report structure
+- `soap_note_template.md`: SOAP progress note format
+- `history_physical_template.md`: Complete H&P template
+- `discharge_summary_template.md`: Hospital discharge summary
+- `consult_note_template.md`: Consultation note format
+- `radiology_report_template.md`: Structured radiology report
+- `pathology_report_template.md`: Surgical pathology with synoptic reporting
+- `lab_report_template.md`: Clinical laboratory report
+- `clinical_trial_sae_template.md`: Serious adverse event report
+- `clinical_trial_csr_template.md`: Clinical study report (ICH-E3)
+- `quality_checklist.md`: QA checklist for all report types
+- `hipaa_compliance_checklist.md`: Privacy compliance verification
+
+**Scripts (8 validation and automation tools)**:
+- `validate_case_report.py`: Check CARE guideline compliance
+- `check_deidentification.py`: Scan for 18 HIPAA identifiers
+- `validate_trial_report.py`: Verify ICH-E3 structure
+- `format_adverse_events.py`: Generate AE summary tables
+- `generate_report_template.py`: Interactive template generator
+- `extract_clinical_data.py`: Parse structured clinical data
+- `compliance_checker.py`: Regulatory compliance verification
+- `terminology_validator.py`: Medical terminology and coding validation
+
+**Features**:
+- Comprehensive coverage of all clinical report types
+- Regulatory compliance built-in (HIPAA, FDA, ICH-GCP)
+- Professional templates based on industry standards
+- Automated validation and quality checking
+- Privacy protection and de-identification tools
+- Integration with scientific-writing and peer-review skills
+
+**Key Guidance**:
+- Always obtain informed consent for case reports
+- Remove all 18 HIPAA identifiers before publication
+- Follow CARE guidelines for case reports
+- Use structured reporting for diagnostic reports (BI-RADS, Lung-RADS, etc.)
+- Meet regulatory timelines for SAE reporting (7-day, 15-day)
+- Document medical necessity for billing support
+- Maintain ALCOA-CCEA principles for clinical trial data
+
+**When to Use**:
+- Publishing clinical case reports in medical journals
+- Writing radiology, pathology, or laboratory reports
+- Documenting adverse events in clinical trials
+- Preparing regulatory submissions (CSR, IND safety reports)
+- Creating patient progress notes and summaries
+- Ensuring HIPAA compliance in clinical documentation
+
+**Example Usage**:
+
+### Writing a Clinical Case Report
+```
+> Create a clinical case report for a patient with unusual presentation of acute appendicitis
+```
+Claude will use the clinical-reports skill to create a CARE-compliant case report with proper de-identification.
+
+### Generating Diagnostic Reports
+```
+> Generate a radiology report template for chest CT scan
+> Create a pathology report for breast biopsy specimen
+```
+Claude will use structured reporting templates (ACR, CAP) with appropriate medical terminology.
+
+### Clinical Trial Documentation
+```
+> Write an SAE report for serious adverse event in phase 3 trial
+> Create a clinical study report outline following ICH-E3
+```
+Claude will ensure regulatory compliance and proper causality assessment.
+
+### Patient Documentation
+```
+> Create a SOAP note for follow-up visit
+> Generate a discharge summary for heart failure patient
+```
+Claude will use standard clinical documentation formats with billing support.
+
+### Validation and Compliance
+```
+> Check this case report for HIPAA identifiers
+> Validate clinical trial report against ICH-E3 structure
+```
+Claude will use validation scripts to ensure compliance and quality.
+
+---
+
+### 7. LaTeX Research Posters
 **Location**: `.claude/skills/latex-posters/`
 
 **Capabilities**:
@@ -194,7 +310,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 6. Scientific Schematics and Diagrams
+### 8. Scientific Schematics and Diagrams
 **Location**: `.claude/skills/scientific-schematics/`
 
 **Capabilities**:
@@ -247,7 +363,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ## Document Manipulation Skills
 
-### 7. MarkItDown - Universal File to Markdown Converter
+### 10. MarkItDown - Universal File to Markdown Converter
 **Location**: `.claude/skills/markitdown/`
 
 **Capabilities**:
@@ -284,7 +400,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 8. DOCX (Word Documents)
+### 11. DOCX (Word Documents)
 **Location**: `.claude/skills/document-skills/docx/`
 
 **Capabilities**:
@@ -305,7 +421,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 9. PDF Documents
+### 12. PDF Documents
 **Location**: `.claude/skills/document-skills/pdf/`
 
 **Capabilities**:
@@ -328,7 +444,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 10. PPTX (PowerPoint Presentations)
+### 13. PPTX (PowerPoint Presentations)
 **Location**: `.claude/skills/document-skills/pptx/`
 
 **Capabilities**:
@@ -351,7 +467,7 @@ This document provides an overview of all skills available in the Scientific Wri
 
 ---
 
-### 11. XLSX (Excel Spreadsheets)
+### 14. XLSX (Excel Spreadsheets)
 **Location**: `.claude/skills/document-skills/xlsx/`
 
 **Capabilities**:
@@ -463,7 +579,7 @@ Claude will visualize the signaling pathway with properly styled proteins and ac
 ```
 Claude will create a system architecture diagram with labeled components and data flow.
 
-### 7. Venue Templates
+### 9. Venue Templates
 **Location**: `.claude/skills/venue-templates/`
 
 **Capabilities**:

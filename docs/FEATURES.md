@@ -111,6 +111,31 @@ Systematic literature reviews with citation management.
 > Synthesize recent papers on quantum computing from 2023-2024
 ```
 
+### Clinical Reports
+
+Comprehensive clinical documentation with regulatory compliance.
+
+**Report Types:**
+- **Case Reports** - CARE-compliant reports for medical journals
+- **Diagnostic Reports** - Radiology, pathology, laboratory reports
+- **Clinical Trial Reports** - SAE reports, Clinical Study Reports (ICH-E3)
+- **Patient Documentation** - SOAP notes, H&P, discharge summaries
+
+**Features:**
+- 12 professional templates based on industry standards
+- HIPAA compliance and de-identification tools
+- Regulatory compliance (FDA, ICH-GCP)
+- Medical terminology validation
+- 8 automated validation scripts
+
+**Example:**
+```bash
+> Create a clinical case report for a rare disease presentation
+> Generate a radiology report template for chest CT
+> Write an SAE report for clinical trial adverse event
+> Create a discharge summary for heart failure patient
+```
+
 ### Scientific Schematics
 
 Publication-quality diagrams and visualizations.

@@ -10,6 +10,7 @@ A Python package and CLI for generating publication-ready scientific papers, rep
 - Programmatic Python API with async support
 - Research lookup with Perplexity Sonar Pro
 - Intelligent paper detection (auto-resume editing)
+- Clinical reports (case reports, diagnostic reports, trial reports, HIPAA compliance)
 - Grant proposal generation (NSF, NIH, DOE, DARPA)
 - Research posters with LaTeX
 - Scientific schematics (CONSORT, circuits, pathways)
@@ -73,6 +74,7 @@ asyncio.run(main())
 
 ### 📝 Document Generation
 - **Scientific papers** with IMRaD structure (Nature, Science, NeurIPS, etc.)
+- **Clinical reports** (case reports, diagnostic reports, trial reports, patient documentation)
 - **Research posters** using LaTeX (beamerposter, tikzposter, baposter)
 - **Grant proposals** (NSF, NIH, DOE, DARPA) with agency-specific formatting
 - **Literature reviews** with systematic citation management
@@ -146,6 +148,7 @@ asyncio.run(main())
 | Task | Command Example |
 |------|----------------|
 | **Scientific Paper** | `> Create a Nature paper on CRISPR gene editing` |
+| **Clinical Report** | `> Create a clinical case report for rare disease presentation` |
 | **Grant Proposal** | `> Write an NSF proposal for quantum computing research` |
 | **Research Poster** | `> Generate a conference poster from my paper` |
 | **Literature Review** | `> Create a literature review on machine learning in healthcare` |
@@ -172,6 +175,7 @@ asyncio.run(main())
 | Type | Example |
 |------|---------|
 | **Papers** | Nature, Science, NeurIPS, ICML, IEEE, ACM |
+| **Clinical Reports** | Case reports, diagnostic reports, trial reports, patient notes |
 | **Grants** | NSF, NIH R01/R21/K, DOE, DARPA |
 | **Posters** | Conference posters (A0, A1, custom sizes) |
 | **Reviews** | Systematic literature reviews |

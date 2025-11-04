@@ -2,6 +2,36 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
+## [Unreleased]
+
+### ✨ Added
+
+#### New Skills
+
+- **Clinical Reports Skill** - Comprehensive clinical documentation system
+  - Four major report types: case reports, diagnostic reports, clinical trial reports, patient documentation
+  - CARE-compliant case report writing for journal publication
+  - Diagnostic reports (radiology/ACR, pathology/CAP, laboratory/CLSI)
+  - Clinical trial documentation (SAE reports, CSRs following ICH-E3)
+  - Patient clinical notes (SOAP, H&P, discharge summaries, consultations)
+  - 12 professional templates based on industry standards
+  - 8 comprehensive reference guides (570-745 lines each)
+  - 8 validation and automation Python scripts
+  - HIPAA compliance and de-identification tools
+  - Regulatory compliance (FDA 21 CFR Part 11, ICH-GCP)
+  - Medical terminology standards (SNOMED-CT, LOINC, ICD-10, CPT)
+  - Quality assurance checklists
+  - Integration with scientific-writing and peer-review skills
+
+### 📝 Documentation
+
+- Updated README.md to include clinical reports in document generation
+- Updated docs/SKILLS.md with comprehensive clinical-reports skill documentation
+- Updated docs/FEATURES.md with clinical reports examples
+- Added clinical-reports/README.md with quick start guide
+
+---
+
 ## [2.1.0] - 2025-11-01
 
 ### ✨ Added
