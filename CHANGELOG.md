@@ -6,6 +6,76 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.3.0] - 2025-11-04
+
+### ✨ Added
+
+#### Manuscript Editing Workflow
+
+- **Automatic Editing Mode Detection** - Smart file routing based on file type
+  - Manuscript files (`.tex`, `.md`, `.docx`, `.pdf`) automatically copied to `drafts/` folder
+  - Image files routed to `figures/` folder
+  - Data files routed to `data/` folder
+  - System recognizes manuscripts in drafts/ as editing tasks, not creation from scratch
+  
+- **EDITING MODE Context** - Clear feedback and instructions
+  - Prominent `⚠️ EDITING MODE` warning displayed when manuscripts detected
+  - Agent receives explicit instructions to edit existing manuscript
+  - Visual `[EDITING MODE]` indicators in CLI output
+  - Progress messages show manuscript file counts separately
+  
+- **Enhanced File Processing** - Improved data file handling
+  - New `get_manuscript_extensions()` function in `core.py`
+  - Updated `process_data_files()` to handle three file categories
+  - Updated `create_data_context_message()` with editing mode detection
+  - Manuscript files tracked separately in processed_info dictionary
+
+### 🔧 Improvements
+
+- **System Instructions (WRITER.md)** - Added comprehensive manuscript editing workflow section
+  - Clear instructions for handling manuscript files from data folder
+  - Defined file routing rules by file type
+  - Detailed editing workflow for the agent
+  - Example scenarios demonstrating the workflow
+  
+- **CLI User Experience** - Better visibility into file processing
+  - Welcome message explains manuscript file routing
+  - File processing shows separate counts for manuscripts, data, and images
+  - Help text updated with manuscript editing information
+  - Consistent `[EDITING MODE]` indicators throughout
+  
+- **API Progress Updates** - Enhanced feedback in programmatic mode
+  - Progress messages report manuscript files separately
+  - Clear indication when manuscripts are copied to drafts/
+  - Better tracking of file processing stages
+
+### 📝 Files Modified
+
+- `scientific_writer/.claude/WRITER.md` - Added "CRITICAL: Manuscript Editing Workflow" section
+- `scientific_writer/core.py` - Added manuscript detection and routing logic
+- `scientific_writer/cli.py` - Updated UI to show editing mode indicators
+- `scientific_writer/api.py` - Enhanced progress reporting for manuscript files
+
+### 🎯 Usage Example
+
+```bash
+# Place a manuscript file in the data folder
+cp my_paper.tex data/
+
+# Run scientific writer
+scientific-writer
+
+# The system will:
+# ✓ Detect my_paper.tex as a manuscript file
+# ✓ Copy it to drafts/ folder (not data/)
+# ✓ Display [EDITING MODE] indicator
+# ✓ Treat the task as editing, not creation
+
+> "Improve the introduction and add 5 more citations"
+```
+
+---
+
 ## [2.2.1] - 2025-11-04
 
 ### 🔧 Improvements
