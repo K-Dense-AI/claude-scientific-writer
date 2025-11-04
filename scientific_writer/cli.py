@@ -20,6 +20,7 @@ from .core import (
     get_data_files,
     process_data_files,
     create_data_context_message,
+    setup_claude_skills,
 )
 from .utils import find_existing_papers, detect_paper_reference
 
@@ -35,7 +36,10 @@ async def main():
     
     # Get the current working directory (user's directory) and package directory
     cwd = Path.cwd()  # User's current working directory
-    package_dir = Path(__file__).parent.parent.absolute()  # Package installation directory
+    package_dir = Path(__file__).parent.absolute()  # Package installation directory (scientific_writer/)
+    
+    # Set up Claude skills in the working directory
+    setup_claude_skills(package_dir, cwd)
     
     # Ensure paper_outputs folder exists in user's directory
     output_folder = ensure_output_folder(cwd)
@@ -61,7 +65,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
         model="claude-sonnet-4-20250514",  # Always use Claude Sonnet 4.5
         allowed_tools=["Read", "Write", "Edit", "Bash", "research-lookup"],  # Default Claude Code tools + research lookup
         permission_mode="bypassPermissions",  # Execute immediately without approval prompts
-        setting_sources=[str(package_dir / ".claude" / "skills")],  # Load skills from package directory
+        setting_sources=["project"],  # Load skills from project .claude directory
         cwd=str(cwd),  # Set working directory to user's current directory
     )
     

@@ -10,6 +10,28 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
+    """
+    Set up Claude skills by copying from package to working directory.
+    
+    Args:
+        package_dir: Package installation directory containing .claude/
+        work_dir: User's working directory where .claude/ should be copied
+    """
+    source_claude = package_dir / ".claude"
+    dest_claude = work_dir / ".claude"
+    
+    # Only copy if source exists and destination doesn't
+    if source_claude.exists() and not dest_claude.exists():
+        try:
+            shutil.copytree(source_claude, dest_claude)
+            print(f"✓ Initialized Claude skills in {dest_claude}")
+        except Exception as e:
+            print(f"Warning: Could not copy Claude skills: {e}")
+    elif not source_claude.exists():
+        print(f"Warning: Skills directory not found in package: {source_claude}")
+
+
 def get_api_key(api_key: Optional[str] = None) -> str:
     """
     Get the Anthropic API key.

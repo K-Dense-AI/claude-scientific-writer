@@ -15,6 +15,7 @@ from .core import (
     get_data_files,
     process_data_files,
     create_data_context_message,
+    setup_claude_skills,
 )
 from .models import ProgressUpdate, PaperResult, PaperMetadata, PaperFiles
 from .utils import (
@@ -80,7 +81,10 @@ async def generate_paper(
         work_dir = Path.cwd()
     
     # Get package directory for loading system instructions and skills
-    package_dir = Path(__file__).parent.parent.absolute()
+    package_dir = Path(__file__).parent.absolute()  # scientific_writer/ directory
+    
+    # Set up Claude skills in the working directory
+    setup_claude_skills(package_dir, work_dir)
     
     # Ensure output folder exists in user's directory
     output_folder = ensure_output_folder(work_dir, output_dir)
@@ -123,7 +127,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
         model=model,
         allowed_tools=["Read", "Write", "Edit", "Bash", "research-lookup"],
         permission_mode="bypassPermissions",
-        setting_sources=[str(package_dir / ".claude" / "skills")],  # Load skills from package directory
+        setting_sources=["project"],  # Load skills from project .claude directory
         cwd=str(work_dir),  # User's working directory
     )
     
