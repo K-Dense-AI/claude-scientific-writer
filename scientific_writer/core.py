@@ -12,7 +12,7 @@ load_dotenv()
 
 def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
     """
-    Set up Claude skills by copying from package to working directory.
+    Set up Claude skills and WRITER.md by copying .claude/ from package to working directory.
     
     Args:
         package_dir: Package installation directory containing .claude/
@@ -21,15 +21,16 @@ def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
     source_claude = package_dir / ".claude"
     dest_claude = work_dir / ".claude"
     
-    # Only copy if source exists and destination doesn't
+    # Copy .claude directory (which includes skills/ and WRITER.md) if source exists and destination doesn't
     if source_claude.exists() and not dest_claude.exists():
         try:
             shutil.copytree(source_claude, dest_claude)
-            print(f"✓ Initialized Claude skills in {dest_claude}")
+            print(f"✓ Initialized Claude configuration in {dest_claude}")
+            print(f"✓ Skills and system instructions (WRITER.md) ready")
         except Exception as e:
-            print(f"Warning: Could not copy Claude skills: {e}")
+            print(f"Warning: Could not copy Claude configuration: {e}")
     elif not source_claude.exists():
-        print(f"Warning: Skills directory not found in package: {source_claude}")
+        print(f"Warning: .claude directory not found in package: {source_claude}")
 
 
 def get_api_key(api_key: Optional[str] = None) -> str:
@@ -57,23 +58,23 @@ def get_api_key(api_key: Optional[str] = None) -> str:
     return env_key
 
 
-def load_system_instructions(package_dir: Path) -> str:
+def load_system_instructions(work_dir: Path) -> str:
     """
-    Load system instructions from package's CLAUDE.md file.
+    Load system instructions from .claude/WRITER.md in the working directory.
     
     Args:
-        package_dir: Package installation directory containing CLAUDE.md.
+        work_dir: Working directory containing .claude/WRITER.md.
         
     Returns:
         System instructions string.
     """
-    instructions_file = package_dir / "CLAUDE.md"
+    instructions_file = work_dir / ".claude" / "WRITER.md"
     
     if instructions_file.exists():
         with open(instructions_file, 'r', encoding='utf-8') as f:
             return f.read()
     else:
-        # Fallback if CLAUDE.md doesn't exist in package
+        # Fallback if WRITER.md doesn't exist
         return (
             "You are a scientific writing assistant. Follow best practices for "
             "scientific communication and always present a plan before execution."

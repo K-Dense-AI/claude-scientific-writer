@@ -38,14 +38,14 @@ async def main():
     cwd = Path.cwd()  # User's current working directory
     package_dir = Path(__file__).parent.absolute()  # Package installation directory (scientific_writer/)
     
-    # Set up Claude skills in the working directory
+    # Set up Claude skills in the working directory (includes WRITER.md)
     setup_claude_skills(package_dir, cwd)
     
     # Ensure paper_outputs folder exists in user's directory
     output_folder = ensure_output_folder(cwd)
     
-    # Load system instructions from package CLAUDE.md
-    system_instructions = load_system_instructions(package_dir)
+    # Load system instructions from .claude/WRITER.md in working directory
+    system_instructions = load_system_instructions(cwd)
     
     # Add conversation continuity instruction  
     # Note: The Python CLI handles session tracking via current_paper_path
@@ -62,7 +62,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
     # Configure the Claude agent options
     options = ClaudeAgentOptions(
         system_prompt=system_instructions,
-        model="claude-sonnet-4-20250514",  # Always use Claude Sonnet 4.5
+        model="claude-sonnet-4-5",  # Always use Claude Sonnet 4.5
         allowed_tools=["Read", "Write", "Edit", "Bash", "research-lookup"],  # Default Claude Code tools + research lookup
         permission_mode="bypassPermissions",  # Execute immediately without approval prompts
         setting_sources=["project"],  # Load skills from project .claude directory

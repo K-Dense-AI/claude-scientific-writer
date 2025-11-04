@@ -80,10 +80,10 @@ async def generate_paper(
         # Default to user's current working directory
         work_dir = Path.cwd()
     
-    # Get package directory for loading system instructions and skills
+    # Get package directory for copying skills to working directory
     package_dir = Path(__file__).parent.absolute()  # scientific_writer/ directory
     
-    # Set up Claude skills in the working directory
+    # Set up Claude skills in the working directory (includes WRITER.md)
     setup_claude_skills(package_dir, work_dir)
     
     # Ensure output folder exists in user's directory
@@ -96,8 +96,8 @@ async def generate_paper(
         percentage=0,
     ).to_dict()
     
-    # Load system instructions from package
-    system_instructions = load_system_instructions(package_dir)
+    # Load system instructions from .claude/WRITER.md in working directory
+    system_instructions = load_system_instructions(work_dir)
     
     # Add conversation continuity instruction
     system_instructions += "\n\n" + """
