@@ -6,6 +6,16 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.2.1] - 2025-11-04
+
+### 🔧 Improvements
+
+- Minor bug fixes and stability improvements
+- Documentation updates
+- Enhanced error handling
+
+---
+
 ## [2.2.0] - 2025-11-04
 
 ### ✨ Added
