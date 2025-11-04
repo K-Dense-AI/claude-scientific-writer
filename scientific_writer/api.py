@@ -77,8 +77,8 @@ async def generate_paper(
     if cwd:
         work_dir = Path(cwd).resolve()
     else:
-        # Default to user's current working directory
-        work_dir = Path.cwd()
+        # Default to user's current working directory (absolute path)
+        work_dir = Path.cwd().resolve()
     
     # Get package directory for copying skills to working directory
     package_dir = Path(__file__).parent.absolute()  # scientific_writer/ directory
@@ -100,7 +100,13 @@ async def generate_paper(
     system_instructions = load_system_instructions(work_dir)
     
     # Add conversation continuity instruction
-    system_instructions += "\n\n" + """
+    system_instructions += "\n\n" + f"""
+IMPORTANT - WORKING DIRECTORY:
+- Your working directory is: {work_dir}
+- ALWAYS create paper_outputs folder in this directory: {work_dir}/paper_outputs/
+- NEVER write to /tmp/ or any other temporary directory
+- All paper outputs MUST go to: {work_dir}/paper_outputs/<timestamp>_<description>/
+
 IMPORTANT - CONVERSATION CONTINUITY:
 - This is a NEW paper request - create a new paper directory
 - Create a unique timestamped directory in the paper_outputs folder
@@ -190,8 +196,12 @@ IMPORTANT - CONVERSATION CONTINUITY:
                     delete_originals=False  # Don't delete when using programmatic API
                 )
                 if processed_info:
+                    manuscript_count = len(processed_info.get('manuscript_files', []))
+                    message = f"Processed {len(processed_info['all_files'])} file(s)"
+                    if manuscript_count > 0:
+                        message += f" ({manuscript_count} manuscript(s) copied to drafts/)"
                     yield ProgressUpdate(
-                        message=f"Processed {len(processed_info['all_files'])} data file(s)",
+                        message=message,
                         stage="complete",
                         percentage=97,
                     ).to_dict()

@@ -35,7 +35,8 @@ async def main():
         sys.exit(1)
     
     # Get the current working directory (user's directory) and package directory
-    cwd = Path.cwd()  # User's current working directory
+    # Capture and resolve the current working directory at CLI invocation time
+    cwd = Path.cwd().resolve()  # User's current working directory (absolute path)
     package_dir = Path(__file__).parent.absolute()  # Package installation directory (scientific_writer/)
     
     # Set up Claude skills in the working directory (includes WRITER.md)
@@ -50,7 +51,13 @@ async def main():
     # Add conversation continuity instruction  
     # Note: The Python CLI handles session tracking via current_paper_path
     # These instructions only apply WITHIN a single CLI session, not across different chat sessions
-    system_instructions += "\n\n" + """
+    system_instructions += "\n\n" + f"""
+IMPORTANT - WORKING DIRECTORY:
+- Your working directory is: {cwd}
+- ALWAYS create paper_outputs folder in this directory: {cwd}/paper_outputs/
+- NEVER write to /tmp/ or any other temporary directory
+- All paper outputs MUST go to: {cwd}/paper_outputs/<timestamp>_<description>/
+
 IMPORTANT - CONVERSATION CONTINUITY:
 - The user will provide context in their prompt if they want to continue working on an existing paper
 - If the prompt includes [CONTEXT: You are currently working on a paper in: ...], continue editing that paper
@@ -89,11 +96,13 @@ IMPORTANT - CONVERSATION CONTINUITY:
     print("  2. I'll provide continuous updates during the process")
     print("  3. All outputs saved to: paper_outputs/<timestamp_description>/")
     print("  4. Progress tracked in real-time in progress.md")
-    print(f"\n📁 Output folder: {output_folder}")
+    print(f"\n📁 Working directory: {cwd}")
+    print(f"📁 Output folder: {output_folder}")
     print(f"\n📦 Data Files:")
     print("  • Place files in the 'data/' folder to include them in your paper")
-    print("  • Data files → copied to paper's data/ folder")
-    print("  • Images → copied to paper's figures/ folder")
+    print("  • Manuscript files (.tex, .md, .docx, .pdf) → copied to drafts/ for EDITING")
+    print("  • Data files (csv, txt, json, etc.) → copied to paper's data/ folder")
+    print("  • Images (png, jpg, svg, etc.) → copied to paper's figures/ folder")
     print("  • Original files are automatically deleted after copying")
     print("\n🤖 Intelligent Paper Detection:")
     print("  • I automatically detect when you're referring to a previous paper")
@@ -154,8 +163,11 @@ IMPORTANT - CONVERSATION CONTINUITY:
                 processed_info = process_data_files(cwd, data_files, current_paper_path)
                 if processed_info:
                     data_context = create_data_context_message(processed_info)
-                    data_count = len(processed_info['data_files'])
-                    image_count = len(processed_info['image_files'])
+                    manuscript_count = len(processed_info.get('manuscript_files', []))
+                    data_count = len(processed_info.get('data_files', []))
+                    image_count = len(processed_info.get('image_files', []))
+                    if manuscript_count > 0:
+                        print(f"   ✓ Copied {manuscript_count} manuscript file(s) to drafts/ [EDITING MODE]")
                     if data_count > 0:
                         print(f"   ✓ Copied {data_count} data file(s) to data/")
                     if image_count > 0:
@@ -212,8 +224,11 @@ User request: {user_input}"""
                                 print(f"\n📦 Processing {len(remaining_data_files)} data file(s)...")
                                 processed_info = process_data_files(cwd, remaining_data_files, current_paper_path)
                                 if processed_info:
-                                    data_count = len(processed_info['data_files'])
-                                    image_count = len(processed_info['image_files'])
+                                    manuscript_count = len(processed_info.get('manuscript_files', []))
+                                    data_count = len(processed_info.get('data_files', []))
+                                    image_count = len(processed_info.get('image_files', []))
+                                    if manuscript_count > 0:
+                                        print(f"   ✓ Copied {manuscript_count} manuscript file(s) to drafts/ [EDITING MODE]")
                                     if data_count > 0:
                                         print(f"   ✓ Copied {data_count} data file(s) to data/")
                                     if image_count > 0:
@@ -265,6 +280,7 @@ def _print_help():
     print("  - SUMMARY.md - Project summary and instructions")
     print("\n📦 Data Files:")
     print("  Place files in the 'data/' folder at project root:")
+    print("  • Manuscript files (.tex, .md, .docx, .pdf) → copied to drafts/ for EDITING")
     print("  • Data files (csv, txt, json, etc.) → copied to paper's data/")
     print("  • Images (png, jpg, svg, etc.) → copied to paper's figures/")
     print("  • Files are used as context for the paper")

@@ -106,6 +106,11 @@ def get_image_extensions() -> set:
     return {'.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.tif', '.svg', '.webp', '.ico'}
 
 
+def get_manuscript_extensions() -> set:
+    """Return a set of manuscript file extensions that should go to drafts/ folder."""
+    return {'.tex', '.md', '.docx', '.pdf'}
+
+
 def get_data_files(cwd: Path, data_files: Optional[List[str]] = None) -> List[Path]:
     """
     Get data files either from provided list or from data folder.
@@ -140,7 +145,8 @@ def process_data_files(
 ) -> Optional[Dict[str, Any]]:
     """
     Process data files by copying them to the paper output folder.
-    Images go to figures/, other files go to data/.
+    Manuscript files (.tex, .md, .docx, .pdf) go to drafts/, 
+    images go to figures/, other files go to data/.
     
     Args:
         cwd: Current working directory (project root).
@@ -157,15 +163,20 @@ def process_data_files(
     paper_output = Path(paper_output_path)
     data_output = paper_output / "data"
     figures_output = paper_output / "figures"
+    drafts_output = paper_output / "drafts"
     
     # Ensure output directories exist
     data_output.mkdir(parents=True, exist_ok=True)
     figures_output.mkdir(parents=True, exist_ok=True)
+    drafts_output.mkdir(parents=True, exist_ok=True)
     
     image_extensions = get_image_extensions()
+    manuscript_extensions = get_manuscript_extensions()
+    
     processed_info = {
         'data_files': [],
         'image_files': [],
+        'manuscript_files': [],
         'all_files': []
     }
     
@@ -174,7 +185,17 @@ def process_data_files(
         file_name = file_path.name
         
         # Determine destination based on file type
-        if file_ext in image_extensions:
+        # CRITICAL: Manuscript files go to drafts/ folder for editing workflow
+        if file_ext in manuscript_extensions:
+            destination = drafts_output / file_name
+            file_type = 'manuscript'
+            processed_info['manuscript_files'].append({
+                'name': file_name,
+                'path': str(destination),
+                'original': str(file_path),
+                'extension': file_ext
+            })
+        elif file_ext in image_extensions:
             destination = figures_output / file_name
             file_type = 'image'
             processed_info['image_files'].append({
@@ -225,12 +246,24 @@ def create_data_context_message(processed_info: Optional[Dict[str, Any]]) -> str
     
     context_parts = ["\n[DATA FILES AVAILABLE]"]
     
-    if processed_info['data_files']:
+    # CRITICAL: If manuscript files are present, this is an EDITING task
+    if processed_info.get('manuscript_files'):
+        context_parts.append("\n⚠️  EDITING MODE - Manuscript files detected!")
+        context_parts.append("\nManuscript files (in drafts/ folder for editing):")
+        for file_info in processed_info['manuscript_files']:
+            context_parts.append(f"  - {file_info['name']} ({file_info['extension']}): {file_info['path']}")
+        context_parts.append("\n🔧 TASK: This is an EDITING task, not creating from scratch.")
+        context_parts.append("   → Read the existing manuscript from drafts/")
+        context_parts.append("   → Apply the requested changes/improvements")
+        context_parts.append("   → Create new version following version numbering protocol")
+        context_parts.append("   → Document changes in revision_notes.md")
+    
+    if processed_info.get('data_files'):
         context_parts.append("\nData files (in data/ folder):")
         for file_info in processed_info['data_files']:
             context_parts.append(f"  - {file_info['name']}: {file_info['path']}")
     
-    if processed_info['image_files']:
+    if processed_info.get('image_files'):
         context_parts.append("\nImage files (in figures/ folder):")
         for file_info in processed_info['image_files']:
             context_parts.append(f"  - {file_info['name']}: {file_info['path']}")
