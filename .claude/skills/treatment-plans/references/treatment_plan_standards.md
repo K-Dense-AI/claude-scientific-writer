@@ -10,7 +10,36 @@ Treatment plans are comprehensive documents that outline systematic approaches t
 
 ## Core Documentation Standards
 
-### 1. Essential Components
+### 1. Executive Summary Best Practices (Foundation Medicine Model)
+
+**CRITICAL: All treatment plans MUST include a prominent "Treatment Plan Highlights" summary box on the first page.**
+
+Following the Foundation Medicine model for genomic profiling reports, treatment plans should begin with a concise, bulletin-style summary that provides immediate access to key actionable information:
+
+**Components of Treatment Plan Highlights Box:**
+- **Key Diagnosis**: Primary condition with ICD-10 code, severity/stage (1 line)
+- **Primary Treatment Goals**: 2-3 SMART goals in bullet format
+- **Main Interventions**: 2-3 key interventions (pharmacological, non-pharmacological, monitoring)
+- **Timeline Overview**: Brief treatment duration/phases (1 line)
+
+**Format Requirements:**
+- Use colored box (tcolorbox in LaTeX) to make it visually prominent
+- Place immediately after title, before Patient Information section
+- Summary must fit on first page with patient demographics
+- Use concise, actionable language
+- Focus on what clinicians need to know immediately
+
+**Optimal Document Length:**
+- **Preferred**: 1 page for most treatment plans (quick-reference format)
+- **Standard**: 3-4 pages for moderate complexity cases
+- **Extended**: 5-6 pages maximum for highly complex cases only
+- Prioritize brevity, clarity, and actionability over comprehensive detail
+- Think "clinical decision support card" not "comprehensive textbook"
+
+**Design Philosophy:**
+The highlights box enables efficient clinical decision-making by providing critical information upfront, following evidence-based practices from precision medicine reporting. This approach improves care coordination, reduces time to treatment initiation, and ensures key information is never overlooked.
+
+### 2. Essential Components
 
 All treatment plans must include:
 

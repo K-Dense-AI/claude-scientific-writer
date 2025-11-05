@@ -2,18 +2,21 @@
 
 ## Overview
 
-Comprehensive skill for generating professional medical treatment plans across all clinical specialties. Provides LaTeX/PDF templates with SMART goal frameworks, evidence-based interventions, regulatory compliance, and validation tools for patient-centered care planning.
+Skill for generating **concise, clinician-focused** medical treatment plans across all clinical specialties. Provides LaTeX/PDF templates with SMART goal frameworks, evidence-based interventions, regulatory compliance, and validation tools for patient-centered care planning.
+
+**Default to 1-page format** for most cases - think "quick reference card" not "comprehensive textbook".
 
 ## What's Included
 
-### 📋 Six Treatment Plan Types
+### 📋 Seven Treatment Plan Types
 
-1. **General Medical Treatment Plans** - Primary care, chronic diseases (diabetes, hypertension, heart failure)
-2. **Rehabilitation Treatment Plans** - Physical therapy, occupational therapy, cardiac/pulmonary rehab
-3. **Mental Health Treatment Plans** - Psychiatric care, depression, anxiety, PTSD, substance use
-4. **Chronic Disease Management Plans** - Complex multimorbidity, long-term care coordination
-5. **Perioperative Care Plans** - Preoperative optimization, ERAS protocols, postoperative recovery
-6. **Pain Management Plans** - Acute and chronic pain, multimodal analgesia, opioid-sparing strategies
+1. **One-Page Treatment Plan** (PREFERRED) - Concise, quick-reference format for most clinical scenarios
+2. **General Medical Treatment Plans** - Primary care, chronic diseases (diabetes, hypertension, heart failure)
+3. **Rehabilitation Treatment Plans** - Physical therapy, occupational therapy, cardiac/pulmonary rehab
+4. **Mental Health Treatment Plans** - Psychiatric care, depression, anxiety, PTSD, substance use
+5. **Chronic Disease Management Plans** - Complex multimorbidity, long-term care coordination
+6. **Perioperative Care Plans** - Preoperative optimization, ERAS protocols, postoperative recovery
+7. **Pain Management Plans** - Acute and chronic pain, multimodal analgesia, opioid-sparing strategies
 
 ### 📚 Reference Files (5 comprehensive guides)
 
@@ -23,8 +26,9 @@ Comprehensive skill for generating professional medical treatment plans across a
 - `regulatory_compliance.md` - HIPAA compliance, billing documentation, quality measures
 - `specialty_specific_guidelines.md` - Detailed guidelines for each treatment plan type
 
-### 📄 LaTeX Templates (6 professional templates)
+### 📄 LaTeX Templates (7 professional templates)
 
+- `one_page_treatment_plan.tex` - **FIRST CHOICE** - Dense, scannable 1-page format (like precision oncology reports)
 - `general_medical_treatment_plan.tex` - Comprehensive medical care planning
 - `rehabilitation_treatment_plan.tex` - Functional restoration and therapy
 - `mental_health_treatment_plan.tex` - Psychiatric and behavioral health
@@ -52,6 +56,7 @@ python generate_template.py --type general_medical --output diabetes_plan.tex
 ```
 
 Available template types:
+- `one_page` (PREFERRED - use for most cases)
 - `general_medical`
 - `rehabilitation`
 - `mental_health`

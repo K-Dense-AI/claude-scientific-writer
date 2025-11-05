@@ -10,6 +10,7 @@ import time
 import asyncio
 from pathlib import Path
 from typing import Optional
+from dotenv import load_dotenv
 
 from claude_agent_sdk import query, ClaudeAgentOptions
 
@@ -27,6 +28,13 @@ from .utils import find_existing_papers, detect_paper_reference
 
 async def main():
     """Main CLI loop for the scientific writer."""
+    # Explicitly load .env file from current working directory
+    # This ensures API keys are available in the shell environment
+    cwd_resolved = Path.cwd().resolve()
+    env_file = cwd_resolved / ".env"
+    if env_file.exists():
+        load_dotenv(dotenv_path=env_file, override=True)
+    
     # Get API key (verify it exists)
     try:
         get_api_key()

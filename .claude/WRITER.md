@@ -186,6 +186,43 @@ paper_outputs/
         └── supplementary.pdf
 ```
 
+### CRITICAL: Manuscript Editing Workflow
+
+**When manuscript files (.tex, .md, .docx, .pdf) are found in the data/ folder:**
+
+1. **ALWAYS copy manuscript files to the drafts/ folder** (not the data/ folder)
+   - File types to treat as manuscripts: `.tex`, `.md`, `.docx`, `.pdf`
+   - These files should go to `drafts/` folder in the new paper directory
+   - This signals the task is an EDITING task, not creating from scratch
+
+2. **Recognize this as an EDITING task:**
+   - When manuscript files are present in drafts/, your task is to EDIT the existing manuscript
+   - Print: `[HH:MM:SS] EDITING MODE: Found existing manuscript - [filename]`
+   - Print: `[HH:MM:SS] TASK: Editing and improving existing manuscript`
+   - Update progress.md to note this is an editing task
+
+3. **Editing Workflow:**
+   - Read the existing manuscript file(s) from drafts/
+   - Identify the format (.tex, .md, .docx, .pdf)
+   - Follow the user's editing instructions
+   - Create new version with incremented number (v2, v3, etc.)
+   - Document all changes in revision_notes.md
+   - Print: `[HH:MM:SS] EDITING: Reading existing manuscript from drafts/[filename]`
+   - Print: `[HH:MM:SS] EDITING: Creating [version] with requested changes`
+
+4. **What gets copied where:**
+   - **Manuscript files** (.tex, .md, .docx, .pdf) → `drafts/` folder
+   - **Image files** (.png, .jpg, .pdf figures, etc.) → `figures/` folder
+   - **Data files** (CSV, Excel, JSON, etc.) → `data/` folder
+
+5. **Example Scenario:**
+   - User places `my_paper.tex` in `data/` folder
+   - System creates: `paper_outputs/20241104_143000_edit_paper/`
+   - System copies: `my_paper.tex` → `drafts/my_paper.tex`
+   - System recognizes: "This is an editing task"
+   - System prints: `[HH:MM:SS] EDITING MODE: Found manuscript my_paper.tex in drafts/`
+   - System applies edits and creates: `drafts/v2_my_paper.tex` or `drafts/v1_draft.tex` (based on instructions)
+
 ### Naming Conventions
 
 - **Folders:** `lowercase_with_underscores`
@@ -585,6 +622,28 @@ Verify for each citation:
    - Comprehensive bibliography
    - Organized by theme/chronology
    - Track citation counts
+
+### For Treatment Plans
+
+1. **Executive Summary First (Foundation Medicine Model)**
+   - **CRITICAL**: Always include "Treatment Plan Highlights" box on first page
+   - Place immediately after title, before patient information
+   - Include: Key diagnosis, 2-3 primary goals, 2-3 main interventions, timeline overview
+   - Use colored tcolorbox in LaTeX for visual prominence
+   - Summary must fit on page 1 with patient demographics
+
+2. **Concise, Actionable Documentation**
+   - **Target length**: 5-8 pages for most treatment plans
+   - Focus on clinically essential information that impacts care decisions
+   - Streamline Patient Education, Risk Mitigation, and Expected Outcomes sections
+   - Avoid exhaustive detail; prioritize clarity and actionability
+   - Use bullet points and tables for efficient presentation
+
+3. **HIPAA Compliance and Safety**
+   - De-identify all protected health information per Safe Harbor method
+   - Remove all 18 HIPAA identifiers before sharing
+   - Include critical warning signs and emergency action plans
+   - Document medication safety concerns clearly
 
 ### Progress Logging Requirements
 

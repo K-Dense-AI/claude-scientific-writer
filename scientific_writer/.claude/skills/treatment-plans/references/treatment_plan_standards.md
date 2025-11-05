@@ -30,10 +30,11 @@ Following the Foundation Medicine model for genomic profiling reports, treatment
 - Focus on what clinicians need to know immediately
 
 **Optimal Document Length:**
-- **Target**: 5-8 pages for most treatment plans
-- **Complex cases**: May extend to 10 pages if medically necessary
-- **Simple cases**: May be as brief as 3-4 pages
-- Prioritize clarity and actionability over comprehensive detail
+- **Preferred**: 1 page for most treatment plans (quick-reference format)
+- **Standard**: 3-4 pages for moderate complexity cases
+- **Extended**: 5-6 pages maximum for highly complex cases only
+- Prioritize brevity, clarity, and actionability over comprehensive detail
+- Think "clinical decision support card" not "comprehensive textbook"
 
 **Design Philosophy:**
 The highlights box enables efficient clinical decision-making by providing critical information upfront, following evidence-based practices from precision medicine reporting. This approach improves care coordination, reduces time to treatment initiation, and ensures key information is never overlooked.

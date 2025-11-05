@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 from typing import Optional, List, Dict, Any, AsyncGenerator, Union
 from datetime import datetime
+from dotenv import load_dotenv
 
 from claude_agent_sdk import query, ClaudeAgentOptions
 
@@ -66,19 +67,24 @@ async def generate_paper(
     # Initialize
     start_time = time.time()
     
+    # Explicitly load .env file from working directory
+    # Determine working directory first
+    if cwd:
+        work_dir = Path(cwd).resolve()
+    else:
+        work_dir = Path.cwd().resolve()
+    
+    # Load .env from working directory
+    env_file = work_dir / ".env"
+    if env_file.exists():
+        load_dotenv(dotenv_path=env_file, override=True)
+    
     # Get API key
     try:
         api_key_value = get_api_key(api_key)
     except ValueError as e:
         yield _create_error_result(str(e))
         return
-    
-    # Determine working directory
-    if cwd:
-        work_dir = Path(cwd).resolve()
-    else:
-        # Default to user's current working directory (absolute path)
-        work_dir = Path.cwd().resolve()
     
     # Get package directory for copying skills to working directory
     package_dir = Path(__file__).parent.absolute()  # scientific_writer/ directory

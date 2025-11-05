@@ -4,6 +4,54 @@
 
 This reference provides detailed guidelines for developing treatment plans specific to each of the six template types: general medical, rehabilitation, mental health, chronic disease management, perioperative, and pain management. Each section includes specialty-specific considerations, clinical pearls, and best practices.
 
+## Concise Documentation Examples by Specialty
+
+### Foundation Medicine Model: Concise vs. Verbose
+
+**PRINCIPLE**: Focus on actionable information; eliminate redundancy; use bullet points and short paragraphs.
+
+### General Medical - Diabetes Example
+
+**VERBOSE (Avoid)**:
+> "Patient education was provided on the pathophysiology of Type 2 Diabetes Mellitus, including detailed explanation of insulin resistance, pancreatic beta-cell dysfunction, and the progressive nature of the disease. The patient was educated about the various potential complications of diabetes including microvascular complications such as diabetic retinopathy which can lead to blindness, diabetic nephropathy which can progress to end-stage renal disease requiring dialysis, and diabetic neuropathy which can cause pain and sensory loss. Additionally, macrovascular complications were discussed including increased risk of myocardial infarction, stroke, and peripheral arterial disease."
+
+**CONCISE (Preferred - 75% shorter)**:
+> "Key Education: Disease understanding, micro/macrovascular complication risks, self-monitoring techniques (glucose, BP), medication timing, diet basics, exercise safety, sick day management. Critical warnings: Hypoglycemia (shakiness, confusion - treat with 15g carbs), severe hyperglycemia >300 (call office), chest pain/stroke symptoms (911)."
+
+### Mental Health - Depression Example
+
+**VERBOSE (Avoid)**:
+> "The patient will participate in individual psychotherapy sessions utilizing Cognitive Behavioral Therapy techniques. Sessions will be scheduled on a weekly basis for a duration of 50 minutes each. The therapist will work with the patient to identify negative thought patterns, challenge cognitive distortions, develop behavioral activation strategies, and build coping skills for managing depressive symptoms."
+
+**CONCISE (Preferred - 60% shorter)**:
+> "CBT weekly × 16 sessions (50 min) focusing on: identifying/challenging negative thoughts, behavioral activation, coping skills development. Goals: PHQ-9 <10, return to work, 3 effective stress management strategies."
+
+### Rehabilitation - Post-Stroke Example
+
+**VERBOSE (Avoid)**:
+> "Expected outcomes include improvement in upper extremity function with anticipated achievement of the ability to perform self-care activities including bathing, dressing, and grooming with minimal assistance or independently. The patient is expected to demonstrate improved ambulation capabilities with progression from wheelchair mobility to ambulation with a rolling walker under supervision, with eventual goal of independent ambulation with a straight cane for distances up to 300 feet."
+
+**CONCISE (Preferred - 70% shorter)**:
+> "Expected outcomes (8 weeks): Independent ADLs with adaptive equipment, ambulation 300+ feet with walker/supervision, stair negotiation with handrail, safe home discharge. Timeline: Week 2 - transfers with supervision; Week 4 - ambulate 150 feet; Week 8 - community ambulation, discharge ready."
+
+### Perioperative - Laparoscopic Surgery Example
+
+**VERBOSE (Avoid)**:
+> "Postoperative pain management will utilize a multimodal approach to analgesia in order to minimize opioid consumption and reduce the risk of opioid-related adverse effects including nausea, vomiting, constipation, and respiratory depression. The multimodal regimen will include scheduled acetaminophen administered at a dose of 1000 milligrams every 6 hours, ibuprofen 600 milligrams every 6 hours as needed, and opioid analgesics reserved for breakthrough pain only."
+
+**CONCISE (Preferred - 65% shorter)**:
+> "Multimodal analgesia: Acetaminophen 1000mg Q6H scheduled, ibuprofen 600mg Q6H PRN, opioids for breakthrough only. Goal: Pain <4/10, minimize opioid use, early mobilization."
+
+### Key Principles for Concise Documentation
+
+1. **Use abbreviations appropriately**: Q6H, PRN, ADLs, BP (define on first use if uncommon)
+2. **Bullet points over paragraphs**: Easier to scan, more actionable
+3. **Combine related information**: Group similar items together
+4. **Eliminate filler words**: "The patient will...", "It is anticipated that..."
+5. **Focus on "what, when, why"**: Action, timing, rationale in minimal words
+6. **Use tables for complex data**: Medication lists, monitoring schedules
+7. **Prioritize critical information**: Safety warnings, emergency actions
+
 ## 1. General Medical Treatment Plans
 
 ### Applicable Conditions
