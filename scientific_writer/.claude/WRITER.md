@@ -623,6 +623,28 @@ Verify for each citation:
    - Organized by theme/chronology
    - Track citation counts
 
+### For Treatment Plans
+
+1. **Executive Summary First (Foundation Medicine Model)**
+   - **CRITICAL**: Always include "Treatment Plan Highlights" box on first page
+   - Place immediately after title, before patient information
+   - Include: Key diagnosis, 2-3 primary goals, 2-3 main interventions, timeline overview
+   - Use colored tcolorbox in LaTeX for visual prominence
+   - Summary must fit on page 1 with patient demographics
+
+2. **Concise, Actionable Documentation**
+   - **Target length**: 5-8 pages for most treatment plans
+   - Focus on clinically essential information that impacts care decisions
+   - Streamline Patient Education, Risk Mitigation, and Expected Outcomes sections
+   - Avoid exhaustive detail; prioritize clarity and actionability
+   - Use bullet points and tables for efficient presentation
+
+3. **HIPAA Compliance and Safety**
+   - De-identify all protected health information per Safe Harbor method
+   - Remove all 18 HIPAA identifiers before sharing
+   - Include critical warning signs and emergency action plans
+   - Document medication safety concerns clearly
+
 ### Progress Logging Requirements
 
 **Log these events ALWAYS:**

@@ -25,6 +25,46 @@ This skill should be used when:
 - Ensuring regulatory compliance in treatment documentation
 - Generating professional treatment plans for medical records
 
+## Document Format and Best Practices
+
+### Executive Summary First (Foundation Medicine Model)
+
+**CRITICAL REQUIREMENT: All treatment plans MUST include a prominent "Treatment Plan Highlights" box on the first page.**
+
+Following the Foundation Medicine model for precision medicine reporting, treatment plans begin with a concise, bulletin-style summary box that provides immediate access to key actionable information. This summary appears immediately after the title and before patient information.
+
+**Components of Treatment Plan Highlights:**
+- **Key Diagnosis**: Primary condition with ICD-10 code, severity/stage
+- **Primary Treatment Goals**: 2-3 SMART goals in bullet format  
+- **Main Interventions**: 2-3 key interventions (pharmacological, non-pharmacological, monitoring)
+- **Timeline Overview**: Brief treatment duration/phases
+
+**Visual Format:**
+- Colored box using tcolorbox package (different color for each template type)
+- Visually prominent and easy to locate
+- Fits on first page with patient demographics
+- Uses concise, actionable language
+
+### Concise Documentation
+
+Treatment plans should prioritize **clarity and actionability** over exhaustive detail:
+
+- **Focused**: Include only clinically essential information that impacts care decisions
+- **Actionable**: Emphasize what needs to be done, when, and why
+- **Efficient**: Facilitate quick decision-making without sacrificing clinical quality
+- **Target length**: 5-8 pages for most cases (complex cases may extend to 10 pages; simple cases 3-4 pages)
+
+**Streamlining Guidelines:**
+- Patient Education section: Focus on key topics and critical warning signs rather than exhaustive lists
+- Risk Mitigation section: Highlight critical medication safety concerns and emergency actions
+- Expected Outcomes section: Provide concise anticipated responses and timelines
+- Avoid redundancy between sections
+- Use bullet points and tables for efficient information presentation
+
+### Quality Over Quantity
+
+The goal is professional, clinically complete documentation that respects clinicians' time while ensuring comprehensive patient care. Every section should add value; remove or condense sections that don't directly inform treatment decisions.
+
 ## Core Capabilities
 
 ### 1. General Medical Treatment Plans

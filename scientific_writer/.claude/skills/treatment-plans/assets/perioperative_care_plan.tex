@@ -15,6 +15,7 @@
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 \usepackage{tabularx}
+\usepackage[most]{tcolorbox}
 
 % Header and footer
 \pagestyle{fancy}
@@ -37,6 +38,34 @@
 {\large Surgical \& Procedural Patient Management}\\[0.5em]
 \rule{\textwidth}{1pt}
 \end{center}
+
+\vspace{1em}
+
+% ===== TREATMENT PLAN HIGHLIGHTS (Foundation Medicine Model) =====
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{TREATMENT PLAN HIGHLIGHTS},fonttitle=\bfseries\large]
+
+\textbf{Procedure:} [Planned surgery/procedure - e.g., Laparoscopic cholecystectomy for symptomatic cholelithiasis]
+
+\vspace{0.3em}
+\textbf{Primary Perioperative Goals:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item [Goal 1 - e.g., Safe completion of procedure with minimal complications]
+    \item [Goal 2 - e.g., Discharge within 24 hours (outpatient procedure)]
+    \item [Goal 3 - e.g., Return to normal activities within 2 weeks]
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Key Perioperative Elements:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textit{Preoperative:} [Optimization - e.g., ASA class II, medical clearance obtained, NPO after midnight]
+    \item \textit{Intraoperative:} [Approach - e.g., General anesthesia, standard laparoscopic technique]
+    \item \textit{Postoperative:} [Recovery - e.g., Early mobilization, multimodal analgesia, same-day discharge]
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Timeline:} [Schedule - e.g., Surgery date [XX/XX], follow-up at 2 weeks, full recovery 4-6 weeks]
+
+\end{tcolorbox}
 
 \vspace{1em}
 

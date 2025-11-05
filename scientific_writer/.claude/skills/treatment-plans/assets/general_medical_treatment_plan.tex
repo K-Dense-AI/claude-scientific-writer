@@ -17,6 +17,7 @@
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 \usepackage{tabularx}
+\usepackage[most]{tcolorbox}
 
 % Header and footer
 \pagestyle{fancy}
@@ -39,6 +40,34 @@
 {\large General Medicine \& Chronic Disease Management}\\[0.5em]
 \rule{\textwidth}{1pt}
 \end{center}
+
+\vspace{1em}
+
+% ===== TREATMENT PLAN HIGHLIGHTS (Foundation Medicine Model) =====
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{TREATMENT PLAN HIGHLIGHTS},fonttitle=\bfseries\large]
+
+\textbf{Key Diagnosis:} [Primary diagnosis with ICD-10 code, severity/stage]
+
+\vspace{0.3em}
+\textbf{Primary Treatment Goals:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item [Goal 1 - e.g., Reduce HbA1c from 8.5\% to $<$7\% within 3 months]
+    \item [Goal 2 - e.g., Achieve blood pressure $<$130/80 mmHg within 8 weeks]
+    \item [Goal 3 - e.g., Weight loss of 7-10\% body weight over 6 months]
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Main Interventions:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textit{Pharmacological:} [Key medications - e.g., Metformin 1000mg BID, Lisinopril 10mg daily]
+    \item \textit{Non-pharmacological:} [Lifestyle modifications - e.g., Mediterranean diet, 150 min/week exercise]
+    \item \textit{Monitoring:} [Key parameters - e.g., HbA1c every 3 months, home BP daily]
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Timeline:} [Duration - e.g., Intensive initiation (4 weeks), Adjustment phase (8 weeks), Maintenance (ongoing)]
+
+\end{tcolorbox}
 
 \vspace{1em}
 
@@ -382,36 +411,12 @@ Urine ACR & [e.g., normal] & $<$30 mg/g & Annually \\ \hline
 \end{itemize}
 
 % ===== SECTION 7: EXPECTED OUTCOMES =====
-\section*{7. Expected Outcomes}
+\section*{7. Expected Outcomes and Prognosis}
 
-\subsection*{Primary Outcome Measures}
+\textbf{Anticipated Treatment Response}: With adherence, expect HbA1c reduction of 1-1.5\%, BP reduction of 10-15 mmHg, and 5-10\% weight loss over 6 months. Improvements visible at 4-8 weeks (BP, glucose), with HbA1c changes by 3 months.
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Glycemic Control}: HbA1c reduction of 1.5\% expected with metformin + lifestyle
-    \item \textbf{Blood Pressure Control}: SBP reduction of 10-15 mmHg with ACE inhibitor
-    \item \textbf{Weight Reduction}: 7-10\% body weight loss over 6-12 months
-    \item \textbf{Lipid Control}: LDL reduction of 30-40\% with statin therapy
-\end{itemize}
-
-\subsection*{Timeline for Improvement}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Weeks 1-2}: Improved fasting glucose, initial weight loss
-    \item \textbf{Weeks 4-8}: BP at goal, medication tolerance established
-    \item \textbf{Month 3}: HbA1c improvement visible
-    \item \textbf{Months 6-12}: Sustained control, complication risk reduction
-\end{itemize}
-
-\subsection*{Long-Term Prognosis}
-
-With adherence to this treatment plan, expected outcomes include:
-\begin{itemize}[leftmargin=*]
-    \item Reduced microvascular complication risk (retinopathy, nephropathy, neuropathy)
-    \item Decreased cardiovascular event risk (MI, stroke)
-    \item Improved quality of life and functional status
-    \item Maintained independence and ability to work
-    \item [Additional expected benefits]
-\end{itemize}
+\vspace{0.5em}
+\textbf{Long-Term Benefits}: Reduced complication risk (cardiovascular events, retinopathy, nephropathy), improved quality of life, maintained independence and functional status.
 
 % ===== SECTION 8: FOLLOW-UP PLAN =====
 \section*{8. Follow-Up Plan}
@@ -459,110 +464,36 @@ With adherence to this treatment plan, expected outcomes include:
 \end{itemize}
 
 % ===== SECTION 9: PATIENT EDUCATION =====
-\section*{9. Patient Education}
+\section*{9. Patient Education and Self-Management}
 
-\subsection*{Condition Understanding}
+\textbf{Key Education Topics}: Disease understanding, complication risks, treatment rationale, self-monitoring techniques (glucose, BP), medication administration, diet/nutrition basics, exercise safety, sick day management.
 
-Patient education provided on:
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Disease Pathophysiology}: [e.g., How Type 2 diabetes affects blood sugar and organs]
-    \item \textbf{Natural History}: [Course without treatment vs. with optimal management]
-    \item \textbf{Complication Risks}: [Microvascular and macrovascular complications]
-    \item \textbf{Treatment Rationale}: [Why each intervention is recommended]
+\vspace{0.5em}
+\textbf{Critical Warning Signs}:
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textit{Emergency (call 911)}: Chest pain, severe hypoglycemia with confusion, stroke symptoms
+    \item \textit{Call office same day}: Glucose $>$300 or $<$60 mg/dL, BP $>$180/110, severe medication side effects
+    \item \textit{Urgent evaluation}: Diabetic foot wounds, severe hyperglycemia with symptoms
 \end{itemize}
 
-\subsection*{Self-Management Skills}
+\vspace{0.5em}
+\textbf{Support Resources}: DSMES referral, registered dietitian, educational materials, support groups, tracking technology, financial assistance programs as needed.
 
-Training provided on:
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Glucose Monitoring}: How to use glucometer, when to test, target ranges, record keeping
-    \item \textbf{Blood Pressure Monitoring}: Proper technique, timing, logging
-    \item \textbf{Medication Administration}: How to take each medication, timing with meals
-    \item \textbf{Diet and Nutrition}: Carb counting, meal planning, label reading
-    \item \textbf{Exercise Safety}: Starting gradually, checking glucose before/after exercise
-    \item \textbf{Sick Day Management}: When to call, medication adjustments during illness
-\end{itemize}
-
-\subsection*{Warning Signs}
-
-Patient instructed to recognize and respond to:
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Hypoglycemia}: Shakiness, sweating, confusion - treat with 15g fast carbs
-    \item \textbf{Hyperglycemia}: Excessive thirst, urination, fatigue - check glucose, call if $>$300
-    \item \textbf{Cardiovascular Symptoms}: Chest pain, SOB, leg swelling - seek immediate care
-    \item \textbf{Diabetic Foot Problems}: Wounds, numbness, pain - immediate podiatry evaluation
-    \item \textbf{Medication Side Effects}: [Specific symptoms requiring dose adjustment or discontinuation]
-\end{itemize}
-
-\subsection*{Resources and Support}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Educational Materials}: [Handouts provided on diabetes, diet, medications]
-    \item \textbf{Diabetes Self-Management Education}: Referral to DSMES program
-    \item \textbf{Nutrition Counseling}: Registered dietitian appointment scheduled
-    \item \textbf{Support Groups}: [Local or online diabetes support groups]
-    \item \textbf{Technology}: [Glucose tracking app, BP log app, medication reminder]
-    \item \textbf{Financial Assistance}: [Medication assistance programs, community resources]
-\end{itemize}
-
-% ===== SECTION 10: RISK MITIGATION =====
+% ===== SECTION 10: RISK MITIGATION AND SAFETY =====
 \section*{10. Risk Mitigation and Safety}
 
-\subsection*{Medication Safety}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Hypoglycemia Risk}:
-    \begin{itemize}
-        \item Low risk with metformin alone (no insulin/sulfonylureas)
-        \item Patient educated on symptoms and treatment (15-15 rule)
-        \item Glucose monitoring more frequent if starting insulin in future
-    \end{itemize}
-    
-    \item \textbf{Lactic Acidosis Risk} (metformin):
-    \begin{itemize}
-        \item Monitor renal function every 6 months
-        \item Hold metformin if eGFR $<$30 or during acute illness/dehydration
-        \item Discontinue 48 hours before contrast procedures
-    \end{itemize}
-    
-    \item \textbf{Hyperkalemia/Renal Impairment} (ACE inhibitor):
-    \begin{itemize}
-        \item Check potassium and creatinine 1-2 weeks after initiation
-        \item Monitor every 6 months ongoing
-        \item Hold during severe dehydration or acute kidney injury
-    \end{itemize}
+\textbf{Key Medication Safety Concerns}:
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item \textit{Metformin}: Monitor eGFR every 6 months; hold if eGFR $<$30, during acute illness, or 48 hours before contrast
+    \item \textit{ACE inhibitor}: Check K+ and creatinine at 1-2 weeks, then every 6 months; hold during dehydration/AKI
+    \item \textit{Hypoglycemia}: Low risk without insulin/sulfonylureas; educate on recognition and 15-15 rule
 \end{itemize}
 
-\subsection*{Complication Prevention}
+\vspace{0.5em}
+\textbf{Complication Prevention}: Annual eye exam, foot exam, and urine ACR; aspirin if ASCVD risk $>$10\%; BP and glucose control reduces cardiovascular, retinopathy, nephropathy, and neuropathy risks.
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Cardiovascular}: Aspirin 81mg if ASCVD risk $>$10\%, BP/lipid control
-    \item \textbf{Retinopathy}: Annual dilated eye exam, glucose control
-    \item \textbf{Nephropathy}: ACE inhibitor renal protection, annual urine ACR, BP control
-    \item \textbf{Neuropathy}: Annual foot exam, glucose control, foot care education
-    \item \textbf{Falls}: Screen for orthostatic hypotension, avoid overtreatment
-\end{itemize}
-
-\subsection*{Polypharmacy and Drug Interactions}
-
-\begin{itemize}[leftmargin=*]
-    \item Regular medication reconciliation at each visit
-    \item Screen for drug-drug interactions with new medications
-    \item Deprescribe unnecessary medications
-    \item Consider pill burden and simplify regimen when possible
-\end{itemize}
-
-\subsection*{Emergency Action Plan}
-
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Situation} & \textbf{Action} \\ \hline
-Severe hypoglycemia ($<$50, confusion) & Give glucagon injection if available, call 911 \\ \hline
-Hyperglycemia $>$300 with symptoms & Drink water, check ketones if T1DM, call office \\ \hline
-Chest pain or stroke symptoms & Call 911 immediately \\ \hline
-Medication side effect & Stop medication, call office same day \\ \hline
-Acute illness/vomiting & Sick day protocol, call office for guidance \\ \hline
-\end{tabularx}
+\vspace{0.5em}
+\textbf{Emergency Actions}: Severe hypoglycemia ($<$50, confusion) - glucagon then 911; chest pain/stroke - call 911; hyperglycemia $>$300 with symptoms - hydrate and call office; severe medication side effects - stop medication, call same day.
 
 % ===== SECTION 11: PROVIDER SIGNATURE =====
 \vspace{2em}
