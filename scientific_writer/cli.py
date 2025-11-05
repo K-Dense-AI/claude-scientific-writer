@@ -225,25 +225,27 @@ User request: {user_input}"""
                         if time_since_modification < 10:
                             current_paper_path = str(most_recent)
                             print(f"\n📂 Working on: {most_recent.name}")
-                            
-                            # Process any remaining data files now that we have a paper path
-                            remaining_data_files = get_data_files(cwd)
-                            if remaining_data_files:
-                                print(f"\n📦 Processing {len(remaining_data_files)} data file(s)...")
-                                processed_info = process_data_files(cwd, remaining_data_files, current_paper_path)
-                                if processed_info:
-                                    manuscript_count = len(processed_info.get('manuscript_files', []))
-                                    data_count = len(processed_info.get('data_files', []))
-                                    image_count = len(processed_info.get('image_files', []))
-                                    if manuscript_count > 0:
-                                        print(f"   ✓ Copied {manuscript_count} manuscript file(s) to drafts/ [EDITING MODE]")
-                                    if data_count > 0:
-                                        print(f"   ✓ Copied {data_count} data file(s) to data/")
-                                    if image_count > 0:
-                                        print(f"   ✓ Copied {image_count} image(s) to figures/")
-                                    print("   ✓ Deleted original files from data folder")
                 except Exception:
                     pass  # Silently fail if we can't detect the directory
+                
+                # Process any remaining data files now that we have a paper path
+                # This is outside the try-except so file processing errors are not silently ignored
+                if current_paper_path:
+                    remaining_data_files = get_data_files(cwd)
+                    if remaining_data_files:
+                        print(f"\n📦 Processing {len(remaining_data_files)} data file(s)...")
+                        processed_info = process_data_files(cwd, remaining_data_files, current_paper_path)
+                        if processed_info:
+                            manuscript_count = len(processed_info.get('manuscript_files', []))
+                            data_count = len(processed_info.get('data_files', []))
+                            image_count = len(processed_info.get('image_files', []))
+                            if manuscript_count > 0:
+                                print(f"   ✓ Copied {manuscript_count} manuscript file(s) to drafts/ [EDITING MODE]")
+                            if data_count > 0:
+                                print(f"   ✓ Copied {data_count} data file(s) to data/")
+                            if image_count > 0:
+                                print(f"   ✓ Copied {image_count} image(s) to figures/")
+                            print("   ✓ Deleted original files from data folder")
             
         except KeyboardInterrupt:
             print("\n\nInterrupted. Type 'exit' to quit or continue with a new prompt.")
