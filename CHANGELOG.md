@@ -6,6 +6,14 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.3.1] - 2025-11-05
+
+### 🔧 Improvements
+
+- Package maintenance and version update
+
+---
+
 ## [2.3.0] - 2025-11-04
 
 ### ✨ Added
