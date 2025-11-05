@@ -625,21 +625,36 @@ Verify for each citation:
 
 ### For Treatment Plans
 
-1. **Executive Summary First (Foundation Medicine Model)**
-   - **CRITICAL**: Always include "Treatment Plan Highlights" box on first page
+1. **Format Selection Based on Complexity**
+   - **PREFERRED**: 1-page format for most cases (quick-reference card style)
+     * Use `one_page_treatment_plan.tex` template
+     * Dense, scannable format similar to precision oncology reports
+     * Two-column layout with all essential information
+     * Think "clinical decision support card" not "comprehensive textbook"
+   - **Standard**: 3-4 pages for moderate complexity
+     * Use specialty-specific templates (general_medical, mental_health, etc.)
+     * Include first-page executive summary plus supporting details
+   - **Extended**: 5-6 pages maximum for highly complex cases only
+     * Multiple comorbidities or extensive multidisciplinary interventions
+     * Still maintain concise, actionable focus
+
+2. **Executive Summary (For Multi-Page Plans)**
+   - **CRITICAL**: Include "Treatment Plan Highlights" box on first page
    - Place immediately after title, before patient information
    - Include: Key diagnosis, 2-3 primary goals, 2-3 main interventions, timeline overview
    - Use colored tcolorbox in LaTeX for visual prominence
    - Summary must fit on page 1 with patient demographics
 
-2. **Concise, Actionable Documentation**
-   - **Target length**: 5-8 pages for most treatment plans
-   - Focus on clinically essential information that impacts care decisions
-   - Streamline Patient Education, Risk Mitigation, and Expected Outcomes sections
-   - Avoid exhaustive detail; prioritize clarity and actionability
-   - Use bullet points and tables for efficient presentation
+3. **Concise, Actionable Documentation**
+   - **Default to shortest format possible**: Start with 1-page; only expand if clinical complexity requires it
+   - Every sentence must add value to clinical decision-making
+   - Eliminate all non-essential text and academic verbosity
+   - Focus on what clinicians need to act, not comprehensive background
+   - Use bullet points, tables, and structured sections for efficiency
+   - Streamline: Patient Education (3-5 key points), Risk Mitigation (critical only), Expected Outcomes (2-3 statements)
+   - **Minimal citations**: Use brief in-text citations only when needed (0-3 max for concise plans)
 
-3. **HIPAA Compliance and Safety**
+4. **HIPAA Compliance and Safety**
    - De-identify all protected health information per Safe Harbor method
    - Remove all 18 HIPAA identifiers before sharing
    - Include critical warning signs and emergency action plans
