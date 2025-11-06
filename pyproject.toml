@@ -1,6 +1,6 @@
 [project]
 name = "scientific-writer"
-version = "2.3.1"
+version = "2.3.2"
 description = "AI-powered scientific writing with programmatic API and CLI - powered by Claude Sonnet 4.5 and the Claude Agents SDK"
 readme = "README.md"
 requires-python = ">=3.10"
