@@ -623,9 +623,20 @@ Verify for each citation:
    - Organized by theme/chronology
    - Track citation counts
 
-### For Treatment Plans
+### For Clinical Decision Support Documents
 
-1. **Format Selection Based on Complexity**
+The clinical-decision-support skill supports **three document types**. Detect type from user request keywords:
+
+**Document Type Detection:**
+- **Individual Treatment Plan**: "treatment plan for patient", "patient with [condition]", individual case
+- **Cohort Analysis**: "cohort of N patients", "stratified by", "biomarker analysis", "patient group"
+- **Recommendation Report**: "treatment recommendations", "clinical guideline", "evidence-based", "decision algorithm"
+
+#### Type 1: Individual Patient Treatment Plans
+
+**Use When:** User requests treatment plan for a specific patient or condition
+
+**Format Selection Based on Complexity:**
    - **PREFERRED**: 1-page format for most cases (quick-reference card style)
      * Use `one_page_treatment_plan.tex` template
      * Dense, scannable format similar to precision oncology reports
@@ -638,27 +649,170 @@ Verify for each citation:
      * Multiple comorbidities or extensive multidisciplinary interventions
      * Still maintain concise, actionable focus
 
-2. **Executive Summary (For Multi-Page Plans)**
-   - **CRITICAL**: Include "Treatment Plan Highlights" box on first page
-   - Place immediately after title, before patient information
-   - Include: Key diagnosis, 2-3 primary goals, 2-3 main interventions, timeline overview
-   - Use colored tcolorbox in LaTeX for visual prominence
-   - Summary must fit on page 1 with patient demographics
+**Key Requirements:**
+   - Executive summary box on first page (diagnosis, goals, interventions, timeline)
+   - Concise, actionable language (every sentence adds clinical value)
+   - Bullet points, tables, structured sections
+   - Minimal citations (0-3 for concise plans)
+   - HIPAA de-identification (remove all 18 identifiers)
+   - Emergency action plans and warning signs
 
-3. **Concise, Actionable Documentation**
-   - **Default to shortest format possible**: Start with 1-page; only expand if clinical complexity requires it
-   - Every sentence must add value to clinical decision-making
-   - Eliminate all non-essential text and academic verbosity
-   - Focus on what clinicians need to act, not comprehensive background
-   - Use bullet points, tables, and structured sections for efficiency
-   - Streamline: Patient Education (3-5 key points), Risk Mitigation (critical only), Expected Outcomes (2-3 statements)
-   - **Minimal citations**: Use brief in-text citations only when needed (0-3 max for concise plans)
+#### Type 2: Patient Cohort Analyses
 
-4. **HIPAA Compliance and Safety**
-   - De-identify all protected health information per Safe Harbor method
-   - Remove all 18 HIPAA identifiers before sharing
-   - Include critical warning signs and emergency action plans
-   - Document medication safety concerns clearly
+**Use When:** User requests analysis of patient groups stratified by biomarkers or characteristics
+
+**Template:** Use `cohort_analysis_template.tex` from clinical-decision-support skill
+
+**Structure (6-8 pages):**
+   1. **Executive Summary** (tcolorbox)
+      - Cohort size and stratification method
+      - Key findings (3-5 bullet points)
+      - Clinical implications (1-2 sentences)
+   
+   2. **Cohort Characteristics**
+      - Patient demographics table (age, sex, ECOG PS, stage)
+      - Baseline clinical features
+      - Statistical comparisons between groups (p-values)
+   
+   3. **Biomarker Profile** (tcolorbox for emphasis)
+      - Classification method (IHC, NGS, gene expression)
+      - Group definitions with molecular features
+      - Biomarker distribution and correlations
+   
+   4. **Treatment Outcomes**
+      - Response rates table (ORR, CR, PR, SD, PD with 95% CI)
+      - Survival outcomes (median PFS/OS, HRs, p-values)
+      - Reference Kaplan-Meier curves if available
+   
+   5. **Statistical Analysis**
+      - Methods section (tests used, software, significance level)
+      - Multivariable Cox regression table
+      - Interpretation of results
+   
+   6. **Clinical Implications** (tcolorbox with recommendations)
+      - Treatment recommendations by biomarker group
+      - GRADE-graded recommendations (1A, 1B, 2A, etc.)
+      - Monitoring protocols
+   
+   7. **Strengths and Limitations**
+      - Study strengths (3-5 points)
+      - Limitations (3-5 points with impact)
+   
+   8. **References**
+      - Key clinical trials, biomarker validations, guidelines
+
+**Statistical Reporting Standards:**
+   - Report HRs with 95% CI and p-values
+   - Include effect sizes, not just p-values
+   - Use appropriate tests (t-test, Mann-Whitney, chi-square, log-rank)
+   - Multivariable analysis adjusting for confounders
+   - All p-values two-sided unless specified
+
+**Biomarker Nomenclature:**
+   - Gene names italicized: \textit{EGFR}, \textit{KRAS}
+   - HGVS notation for variants: p.L858R, c.2573T>G
+   - IHC scores: 0, 1+, 2+, 3+ (HER2)
+   - Expression percentages: PD-L1 TPS ≥50%
+   - Specify assay method and cut-points
+
+#### Type 3: Treatment Recommendation Reports
+
+**Use When:** User requests evidence-based guidelines, treatment algorithms, or clinical pathways
+
+**Template:** Use `treatment_recommendation_template.tex` from clinical-decision-support skill
+
+**Structure (5-7 pages):**
+   1. **Recommendation Strength Legend** (tcolorbox)
+      - Green: STRONG (Grade 1) - benefits clearly outweigh risks
+      - Yellow: CONDITIONAL (Grade 2) - trade-offs exist, shared decision-making
+      - Blue: RESEARCH (Grade R) - insufficient evidence, clinical trial preferred
+      - Red: NOT RECOMMENDED - evidence against use
+   
+   2. **Clinical Context**
+      - Disease overview (1 paragraph)
+      - Target population (inclusion/exclusion criteria)
+   
+   3. **Evidence Review**
+      - Key clinical trials (design, n, results, quality)
+      - Guideline concordance table (NCCN, ASCO, ESMO)
+   
+   4. **Treatment Options** (color-coded tcolorboxes by strength)
+      - Option 1: STRONG (1A) - green box
+        * Regimen with dosing
+        * Evidence basis (trial, outcomes, guideline)
+        * Indications and contraindications
+        * Key toxicities and management
+        * Monitoring protocol
+      - Option 2: CONDITIONAL (2B) - yellow box
+        * When to consider, trade-offs
+      - Option 3: RESEARCH - blue box
+        * Clinical trial recommendations
+   
+   5. **Clinical Decision Algorithm** (TikZ flowchart)
+      - Simple pathway (5-7 decision points max)
+      - Color-coded by urgency (red=urgent, yellow=semi-urgent, blue=routine)
+   
+   6. **Special Populations**
+      - Elderly, renal impairment, hepatic impairment dose adjustments
+   
+   7. **Monitoring Protocol**
+      - On-treatment monitoring table
+      - Dose modification guidelines
+      - Post-treatment surveillance schedule
+   
+   8. **References**
+      - Primary trials, meta-analyses, guidelines
+
+**GRADE Methodology Requirements:**
+   - All recommendations MUST have GRADE notation (1A, 1B, 2A, 2B, 2C)
+   - Evidence quality: HIGH (⊕⊕⊕⊕), MODERATE (⊕⊕⊕○), LOW (⊕⊕○○), VERY LOW (⊕○○○)
+   - Recommendation strength: STRONG ("We recommend...") vs CONDITIONAL ("We suggest...")
+   - Document benefits and harms quantitatively
+   - State guideline concordance (NCCN Category, ESMO Grade)
+
+**Color-Coded Recommendation Boxes:**
+```latex
+% Strong recommendation
+\begin{tcolorbox}[enhanced,colback=stronggreen!10,colframe=stronggreen,
+  title={\textbf{RECOMMENDATION} \hfill \textbf{GRADE: 1A}}]
+We recommend [intervention] for [population]...
+\end{tcolorbox}
+
+% Conditional recommendation  
+\begin{tcolorbox}[enhanced,colback=conditionalyellow!10,colframe=conditionalyellow,
+  title={\textbf{RECOMMENDATION} \hfill \textbf{GRADE: 2B}}]
+We suggest [intervention] for patients who value [outcome]...
+\end{tcolorbox}
+```
+
+#### Common Elements Across All CDS Document Types
+
+**Professional Formatting (All Types):**
+   - 0.5in margins (compact pharmaceutical style)
+   - Sans-serif font (Helvetica via helvet package)
+   - 10pt body text, 11pt subsections, 12-14pt headers
+   - Minimal whitespace, dense information
+   - Header: Document type and subject
+   - Footer: "Confidential Medical Document - For Professional Use Only"
+
+**HIPAA Compliance (All Types):**
+   - Remove all 18 HIPAA identifiers
+   - Use de-identified patient IDs (PT001, PT002)
+   - Aggregate data only for cohorts (no individual PHI)
+   - Confidentiality notices in header/footer
+
+**Evidence Integration (All Types):**
+   - Real citations only (verify with research-lookup)
+   - NCCN, ASCO, ESMO guideline references
+   - FDA approval status when relevant
+   - Clinical trial data with NCT numbers
+
+**Statistical Rigor (Cohort and Recommendation Types):**
+   - Hazard ratios with 95% CI
+   - P-values (two-sided, report as p<0.001 not p=0.00)
+   - Confidence intervals for all effect sizes
+   - Number at risk, sample sizes clearly stated
+   - Appropriate statistical tests documented
 
 ### Progress Logging Requirements
 
