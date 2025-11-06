@@ -97,8 +97,91 @@ Use this skill when you need to:
 
 ## Document Structure
 
-### Patient Cohort Analysis  
-- **Executive Summary**: Cohort overview, key findings, clinical implications
+**CRITICAL REQUIREMENT: All clinical decision support documents MUST begin with a complete executive summary on page 1 that spans the entire first page before any table of contents or detailed sections.**
+
+### Page 1 Executive Summary Structure
+
+The first page of every CDS document should contain ONLY the executive summary with the following components:
+
+**Required Elements (all on page 1):**
+1. **Document Title and Type**
+   - Main title (e.g., "Biomarker-Stratified Cohort Analysis" or "Evidence-Based Treatment Recommendations")
+   - Subtitle with disease state and focus
+   
+2. **Report Information Box** (using colored tcolorbox)
+   - Document type and purpose
+   - Date of analysis/report
+   - Disease state and patient population
+   - Author/institution (if applicable)
+   - Analysis framework or methodology
+   
+3. **Key Findings Boxes** (3-5 colored boxes using tcolorbox)
+   - **Primary Results** (blue box): Main efficacy/outcome findings
+   - **Biomarker Insights** (green box): Key molecular subtype findings
+   - **Clinical Implications** (yellow/orange box): Actionable treatment implications
+   - **Statistical Summary** (gray box): Hazard ratios, p-values, key statistics
+   - **Safety Highlights** (red box, if applicable): Critical adverse events or warnings
+
+**Visual Requirements:**
+- Use `\thispagestyle{empty}` to remove page numbers from page 1
+- All content must fit on page 1 (before `\newpage`)
+- Use colored tcolorbox environments with different colors for visual hierarchy
+- Boxes should be scannable and highlight most critical information
+- Use bullet points, not narrative paragraphs
+- End page 1 with `\newpage` before table of contents or detailed sections
+
+**Example First Page LaTeX Structure:**
+```latex
+\maketitle
+\thispagestyle{empty}
+
+% Report Information Box
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black, title=Report Information]
+\textbf{Document Type:} Patient Cohort Analysis\\
+\textbf{Disease State:} HER2-Positive Metastatic Breast Cancer\\
+\textbf{Analysis Date:} \today\\
+\textbf{Population:} 60 patients, biomarker-stratified by HR status
+\end{tcolorbox}
+
+\vspace{0.3cm}
+
+% Key Finding #1: Primary Results
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black, title=Primary Efficacy Results]
+\begin{itemize}
+    \item Overall ORR: 72\% (95\% CI: 59-83\%)
+    \item Median PFS: 18.5 months (95\% CI: 14.2-22.8)
+    \item Median OS: 35.2 months (95\% CI: 28.1-NR)
+\end{itemize}
+\end{tcolorbox}
+
+\vspace{0.3cm}
+
+% Key Finding #2: Biomarker Insights
+\begin{tcolorbox}[colback=green!5!white, colframe=green!75!black, title=Biomarker Stratification Findings]
+\begin{itemize}
+    \item HR+/HER2+: ORR 68\%, median PFS 16.2 months
+    \item HR-/HER2+: ORR 78\%, median PFS 22.1 months
+    \item HR status significantly associated with outcomes (p=0.041)
+\end{itemize}
+\end{tcolorbox}
+
+\vspace{0.3cm}
+
+% Key Finding #3: Clinical Implications
+\begin{tcolorbox}[colback=orange!5!white, colframe=orange!75!black, title=Clinical Recommendations]
+\begin{itemize}
+    \item Strong efficacy observed regardless of HR status (Grade 1A)
+    \item HR-/HER2+ patients showed numerically superior outcomes
+    \item Treatment recommended for all HER2+ MBC patients
+\end{itemize}
+\end{tcolorbox}
+
+\newpage
+\tableofcontents  % TOC on page 2
+\newpage  % Detailed content starts page 3
+```
+
+### Patient Cohort Analysis (Detailed Sections - Page 3+)
 - **Cohort Characteristics**: Demographics, baseline features, patient selection criteria
 - **Biomarker Stratification**: Molecular subtypes, genomic alterations, IHC profiles
 - **Treatment Exposure**: Therapies received, dosing, treatment duration by subgroup
@@ -110,7 +193,16 @@ Use this skill when you need to:
 - **Figures**: Waterfall plots, swimmer plots, survival curves, forest plots
 - **Tables**: Demographics table, biomarker frequency, outcomes by subgroup
 
-### Treatment Recommendation Reports
+### Treatment Recommendation Reports (Detailed Sections - Page 3+)
+
+**Page 1 Executive Summary for Treatment Recommendations should include:**
+1. **Report Information Box**: Disease state, guideline version/date, target population
+2. **Key Recommendations Box** (green): Top 3-5 GRADE-graded recommendations by line of therapy
+3. **Biomarker Decision Criteria Box** (blue): Key molecular markers influencing treatment selection
+4. **Evidence Summary Box** (gray): Major trials supporting recommendations (e.g., KEYNOTE-189, FLAURA)
+5. **Critical Monitoring Box** (orange/red): Essential safety monitoring requirements
+
+**Detailed Sections (Page 3+):**
 - **Clinical Context**: Disease state, epidemiology, current treatment landscape
 - **Target Population**: Patient characteristics, biomarker criteria, staging
 - **Evidence Review**: Systematic literature synthesis, guideline summary, trial data
@@ -125,9 +217,20 @@ Use this skill when you need to:
 
 ## Output Format
 
+**MANDATORY FIRST PAGE REQUIREMENT:**
+- **Page 1**: Full-page executive summary with 3-5 colored tcolorbox elements
+- **Page 2**: Table of contents (optional)
+- **Page 3+**: Detailed sections with methods, results, figures, tables
+
+**Document Specifications:**
 - **Primary**: LaTeX/PDF with 0.5in margins for compact, data-dense presentation
+- **Length**: Typically 5-15 pages (1 page executive summary + 4-14 pages detailed content)
 - **Style**: Publication-ready, pharmaceutical-grade, suitable for regulatory submissions
+- **First Page**: Always a complete executive summary spanning entire page 1 (see Document Structure section)
+
+**Visual Elements:**
 - **Colors**: 
+  - Page 1 boxes: blue=data/information, green=biomarkers/recommendations, yellow/orange=clinical implications, red=warnings
   - Recommendation boxes (green=strong recommendation, yellow=conditional, blue=research needed)
   - Biomarker stratification (color-coded molecular subtypes)
   - Statistical significance (color-coded p-values, hazard ratios)
@@ -138,12 +241,12 @@ Use this skill when you need to:
   - Adverse events by cohort
   - Evidence summary tables with GRADE ratings
 - **Figures**: 
-  - Kaplan-Meier survival curves with log-rank p-values
-  - Waterfall plots showing best response
-  - Forest plots for subgroup analyses
+  - Kaplan-Meier survival curves with log-rank p-values and number at risk tables
+  - Waterfall plots showing best response by patient
+  - Forest plots for subgroup analyses with confidence intervals
   - TikZ decision algorithm flowcharts
   - Swimmer plots for individual patient timelines
-- **Statistics**: Hazard ratios with 95% CI, p-values, median survival times
+- **Statistics**: Hazard ratios with 95% CI, p-values, median survival times, landmark survival rates
 - **Compliance**: De-identification per HIPAA Safe Harbor, confidentiality notices for proprietary data
 
 ## Integration
@@ -307,11 +410,18 @@ This skill integrates with:
 
 ### General Best Practices
 
-1. **De-identification**: Remove all 18 HIPAA identifiers before document generation (Safe Harbor method)
-2. **Regulatory Compliance**: Include confidentiality notices for proprietary pharmaceutical data
-3. **Publication-Ready Formatting**: Use 0.5in margins, professional fonts, color-coded sections
-4. **Reproducibility**: Document all statistical methods to enable replication
-5. **Conflict of Interest**: Disclose pharmaceutical funding or relationships when applicable
+1. **First Page Executive Summary (MANDATORY)**: 
+   - ALWAYS create a complete executive summary on page 1 that spans the entire first page
+   - Use 3-5 colored tcolorbox elements to highlight key findings
+   - No table of contents or detailed sections on page 1
+   - Use `\thispagestyle{empty}` and end with `\newpage`
+   - This is the single most important page - it should be scannable in 60 seconds
+2. **De-identification**: Remove all 18 HIPAA identifiers before document generation (Safe Harbor method)
+3. **Regulatory Compliance**: Include confidentiality notices for proprietary pharmaceutical data
+4. **Publication-Ready Formatting**: Use 0.5in margins, professional fonts, color-coded sections
+5. **Reproducibility**: Document all statistical methods to enable replication
+6. **Conflict of Interest**: Disclose pharmaceutical funding or relationships when applicable
+7. **Visual Hierarchy**: Use colored boxes consistently (blue=data, green=biomarkers, yellow/orange=recommendations, red=warnings)
 
 ## References
 
