@@ -272,7 +272,116 @@ Claude will use validation scripts to ensure compliance and quality.
 
 ---
 
-### 7. LaTeX Research Posters
+### 7. Clinical Decision Support
+**Location**: `.claude/skills/clinical-decision-support/`
+
+**Capabilities**:
+- Generate professional clinical decision support (CDS) documents for medical professionals
+- Create patient cohort analyses stratified by biomarkers or clinical characteristics
+- Develop evidence-based treatment recommendation reports with GRADE methodology
+- Build clinical decision algorithms and pathways with TikZ flowcharts
+- Produce biomarker-guided therapy selection reports
+- Support three document types: individual treatment plans, cohort analyses, and recommendation reports
+- LaTeX/PDF output with compact professional formatting (0.5in margins)
+
+**Document Types**:
+
+1. **Individual Patient Treatment Plans**
+   - Personalized treatment protocols for specific conditions
+   - Medication dosing, monitoring schedules, follow-up plans
+   - HIPAA-compliant de-identification
+   
+2. **Patient Cohort Analysis**
+   - Biomarker-stratified group analyses (e.g., PD-L1 expression levels, molecular subtypes)
+   - Outcome comparisons with statistical testing (OS, PFS, ORR, safety)
+   - Pharmaceutical-grade reports for clinical research
+   
+3. **Treatment Recommendation Reports**
+   - Evidence-based clinical guidelines with GRADE grading
+   - Treatment algorithms and decision pathways
+   - Biomarker-guided therapy selection
+
+**References (6 comprehensive guides)**:
+- `patient_cohort_analysis.md`: Stratification methods, biomarkers, outcome metrics, statistical comparisons
+- `treatment_recommendations.md`: Evidence grading (GRADE), treatment sequencing, monitoring protocols
+- `clinical_decision_algorithms.md`: Decision trees, risk stratification tools, TikZ flowcharts
+- `biomarker_classification.md`: Genomic biomarkers, molecular subtypes, companion diagnostics, actionability frameworks
+- `outcome_analysis.md`: Survival analysis (Kaplan-Meier, Cox regression), response assessment (RECIST), statistical methods
+- `evidence_synthesis.md`: Guideline integration (NCCN, ASCO, ESMO), systematic reviews, GRADE methodology
+
+**Templates (4 LaTeX templates)**:
+- `cohort_analysis_template.tex`: Patient group analysis with demographics, biomarker profile, outcomes, statistics
+- `treatment_recommendation_template.tex`: Evidence-based guidelines with color-coded recommendation boxes
+- `clinical_pathway_template.tex`: TikZ flowcharts for clinical decision algorithms (landscape format)
+- `biomarker_report_template.tex`: Comprehensive genomic profiling reports with therapy matching
+
+**Scripts (5 analysis tools)**:
+- `generate_survival_analysis.py`: Kaplan-Meier curves, log-rank tests, hazard ratios, LaTeX table generation
+- `create_cohort_tables.py`: Baseline characteristics, efficacy outcomes, safety tables with statistical tests
+- `build_decision_tree.py`: Automated TikZ flowchart generation from JSON/text specifications
+- `biomarker_classifier.py`: Patient stratification algorithms (PD-L1, HER2, molecular subtypes)
+- `validate_cds_document.py`: Quality checks for evidence citations, GRADE format, HIPAA compliance
+
+**Assets**:
+- `example_gbm_cohort.md`: GBM molecular subtype analysis example (Mesenchymal-Immune-Active vs Other)
+- `recommendation_strength_guide.md`: GRADE framework guide with examples and wording templates
+- `color_schemes.tex`: Standardized color definitions for recommendations, urgency, biomarkers
+
+**Features**:
+- **Evidence-Based**: GRADE methodology for recommendation strength and evidence quality
+- **Biomarker Integration**: Genomic alterations, expression profiles, molecular subtypes
+- **Statistical Rigor**: Proper hypothesis testing, confidence intervals, survival analysis
+- **Professional Output**: Compact LaTeX/PDF matching pharmaceutical industry standards
+- **Guideline Concordance**: Integration with NCCN, ASCO, ESMO, AHA/ACC guidelines
+- **Clinical Actionability**: Tier-based classification (FDA-approved, investigational, VUS)
+
+**When to Use**:
+- Creating treatment plans for individual patients
+- Analyzing patient cohorts stratified by biomarkers
+- Generating evidence-based clinical recommendations
+- Producing pharmaceutical-grade clinical analysis documents
+- Developing clinical pathways and decision algorithms
+- Reporting biomarker-guided therapy selection
+
+**Example Usage**:
+
+### Individual Treatment Plan
+```
+> Create a treatment plan for a 55-year-old patient with newly diagnosed type 2 diabetes and hypertension
+```
+Claude will generate a personalized treatment protocol with monitoring and follow-up.
+
+### Patient Cohort Analysis
+```
+> Analyze a cohort of 45 NSCLC patients stratified by PD-L1 expression (<1%, 1-49%, ≥50%) including ORR, PFS, and OS outcomes
+
+> Generate cohort analysis for 30 GBM patients classified into mesenchymal-immune-active and proneural molecular subtypes with treatment outcomes
+```
+Claude will create comprehensive cohort reports with biomarker profiles, outcome comparisons, statistical analysis, and clinical recommendations.
+
+### Treatment Recommendation Report
+```
+> Create evidence-based treatment recommendations for HER2-positive metastatic breast cancer including first-line and second-line options
+
+> Generate treatment algorithm for heart failure management based on NYHA class and ejection fraction with GDMT protocols
+```
+Claude will develop recommendation reports with GRADE-graded options, decision algorithms, and monitoring protocols.
+
+### Biomarker Report
+```
+> Create a genomic profiling report for NSCLC patient with EGFR L858R mutation including FDA-approved therapies and clinical trial matching
+```
+Claude will generate biomarker reports with tier-based actionability and personalized treatment recommendations.
+
+### Validation
+```
+> Validate this cohort analysis document for evidence citations and statistical reporting completeness
+```
+Claude will use validation scripts to check quality and compliance.
+
+---
+
+### 8. LaTeX Research Posters
 **Location**: `.claude/skills/latex-posters/`
 
 **Capabilities**:
@@ -310,7 +419,7 @@ Claude will use validation scripts to ensure compliance and quality.
 
 ---
 
-### 8. Scientific Schematics and Diagrams
+### 9. Scientific Schematics and Diagrams
 **Location**: `.claude/skills/scientific-schematics/`
 
 **Capabilities**:
@@ -363,7 +472,7 @@ Claude will use validation scripts to ensure compliance and quality.
 
 ## Document Manipulation Skills
 
-### 10. MarkItDown - Universal File to Markdown Converter
+### 11. MarkItDown - Universal File to Markdown Converter
 **Location**: `.claude/skills/markitdown/`
 
 **Capabilities**:
@@ -400,7 +509,7 @@ Claude will use validation scripts to ensure compliance and quality.
 
 ---
 
-### 11. DOCX (Word Documents)
+### 12. DOCX (Word Documents)
 **Location**: `.claude/skills/document-skills/docx/`
 
 **Capabilities**:
@@ -421,7 +530,7 @@ Claude will use validation scripts to ensure compliance and quality.
 
 ---
 
-### 12. PDF Documents
+### 13. PDF Documents
 **Location**: `.claude/skills/document-skills/pdf/`
 
 **Capabilities**:
@@ -444,7 +553,7 @@ Claude will use validation scripts to ensure compliance and quality.
 
 ---
 
-### 13. PPTX (PowerPoint Presentations)
+### 14. PPTX (PowerPoint Presentations)
 **Location**: `.claude/skills/document-skills/pptx/`
 
 **Capabilities**:
@@ -467,7 +576,7 @@ Claude will use validation scripts to ensure compliance and quality.
 
 ---
 
-### 14. XLSX (Excel Spreadsheets)
+### 15. XLSX (Excel Spreadsheets)
 **Location**: `.claude/skills/document-skills/xlsx/`
 
 **Capabilities**:
@@ -579,7 +688,7 @@ Claude will visualize the signaling pathway with properly styled proteins and ac
 ```
 Claude will create a system architecture diagram with labeled components and data flow.
 
-### 9. Venue Templates
+### 10. Venue Templates
 **Location**: `.claude/skills/venue-templates/`
 
 **Capabilities**:
