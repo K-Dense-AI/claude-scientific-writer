@@ -470,9 +470,32 @@ drafts/
    After compiling a PDF, MUST automatically perform visual formatting review:
    
    - Print: `[HH:MM:SS] PDF REVIEW: Starting automatic formatting inspection`
-   - **Read the entire PDF file** using the Read tool
-   - **Visually inspect all pages** for formatting issues
-   - Print: `[HH:MM:SS] PDF REVIEW: Analyzing [N] pages for formatting issues`
+   
+   **Size Check First (CRITICAL for Large PDFs):**
+   - Before reading the PDF, check its size using file system tools
+   - If the PDF text representation would be >40,000 lines or >800KB:
+     * Print: `[HH:MM:SS] PDF REVIEW: ⚠️ Large PDF detected - using chunked review mode`
+     * Skip full PDF reading to avoid buffer overflow errors
+     * Instead, perform **chunked review** (review whole PDF in parts):
+       1. Check LaTeX .log file for errors, warnings, overfull/underfull boxes
+       2. Determine total page count from PDF
+       3. Divide PDF into chunks of 10-15 pages each
+       4. For each chunk:
+          - Read that chunk of pages using offset/limit parameters
+          - Print: `[HH:MM:SS] PDF REVIEW: Analyzing chunk [N/M] (pages X-Y)`
+          - Check for formatting issues in that section
+          - Document any issues found with page numbers
+       5. After all chunks reviewed, aggregate findings
+       6. Print: `[HH:MM:SS] PDF REVIEW: Completed chunked review - [N] total issues found`
+       7. If issues found, apply fixes to LaTeX source
+       8. Recompile once if fixes applied (no iterative recompilation for large PDFs)
+     * Log in progress.md: "Large PDF - reviewed in chunks to avoid buffer overflow"
+   
+   - If PDF is normal size (<40,000 lines):
+     * Proceed with full automatic review as described below
+     * **Read the entire PDF file** using the Read tool
+     * **Visually inspect all pages** for formatting issues
+     * Print: `[HH:MM:SS] PDF REVIEW: Analyzing [N] pages for formatting issues`
    
    **Focus Areas (Check Every PDF):**
    1. **Text Overlaps**: Text overlapping with figures, tables, equations, or margins
@@ -853,7 +876,16 @@ We suggest [intervention] for patients who value [outcome]...
    - Attempt resolution or workaround
    - If critical: stop and ask for guidance
 
-2. **Error Log Format:**
+2. **Common Errors and Resolutions:**
+   
+   **Large PDF JSON Buffer Overflow:**
+   - **Error:** "Failed to decode JSON: JSON message exceeded maximum buffer size"
+   - **Cause:** PDF file is too large (>40,000 lines or >1MB text) to read entirely
+   - **Resolution:** Use simplified review mode (check only .log file and spot-check pages)
+   - **Prevention:** Always check PDF size before attempting full read
+   - **User Message:** "✅ PDF created successfully - automatic review limited due to large file size"
+
+3. **Error Log Format:**
    ```
    [HH:MM:SS] ERROR: Description
               Context: What was attempted
