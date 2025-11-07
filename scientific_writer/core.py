@@ -108,7 +108,17 @@ def get_image_extensions() -> set:
 
 def get_manuscript_extensions() -> set:
     """Return a set of manuscript file extensions that should go to drafts/ folder."""
-    return {'.tex', '.md', '.docx', '.pdf'}
+    return {'.tex'}
+
+
+def get_source_extensions() -> set:
+    """Return a set of source/context file extensions that should go to sources/ folder."""
+    return {'.md', '.docx', '.pdf'}
+
+
+def get_data_extensions() -> set:
+    """Return a set of data file extensions that should go to data/ folder."""
+    return {'.csv', '.json', '.txt', '.xlsx', '.xls', '.tsv', '.xml', '.yaml', '.yml', '.sql'}
 
 
 def get_data_files(cwd: Path, data_files: Optional[List[str]] = None) -> List[Path]:
@@ -145,8 +155,11 @@ def process_data_files(
 ) -> Optional[Dict[str, Any]]:
     """
     Process data files by copying them to the paper output folder.
-    Manuscript files (.tex, .md, .docx, .pdf) go to drafts/, 
-    images go to figures/, other files go to data/.
+    Manuscript files (.tex) go to drafts/, 
+    Source files (.md, .docx, .pdf) go to sources/,
+    images go to figures/, 
+    data files (csv, json, etc.) go to data/,
+    everything else goes to sources/.
     
     Args:
         cwd: Current working directory (project root).
@@ -164,19 +177,24 @@ def process_data_files(
     data_output = paper_output / "data"
     figures_output = paper_output / "figures"
     drafts_output = paper_output / "drafts"
+    sources_output = paper_output / "sources"
     
     # Ensure output directories exist
     data_output.mkdir(parents=True, exist_ok=True)
     figures_output.mkdir(parents=True, exist_ok=True)
     drafts_output.mkdir(parents=True, exist_ok=True)
+    sources_output.mkdir(parents=True, exist_ok=True)
     
     image_extensions = get_image_extensions()
     manuscript_extensions = get_manuscript_extensions()
+    source_extensions = get_source_extensions()
+    data_extensions = get_data_extensions()
     
     processed_info = {
         'data_files': [],
         'image_files': [],
         'manuscript_files': [],
+        'source_files': [],
         'all_files': []
     }
     
@@ -185,8 +203,11 @@ def process_data_files(
         file_name = file_path.name
         
         # Determine destination based on file type
-        # CRITICAL: Manuscript files go to drafts/ folder for editing workflow
+        # Priority: manuscript (.tex) → drafts/, images → figures/, 
+        # data files → data/, source files → sources/, everything else → sources/
+        
         if file_ext in manuscript_extensions:
+            # CRITICAL: Only .tex files go to drafts/ folder for editing workflow
             destination = drafts_output / file_name
             file_type = 'manuscript'
             processed_info['manuscript_files'].append({
@@ -203,13 +224,23 @@ def process_data_files(
                 'path': str(destination),
                 'original': str(file_path)
             })
-        else:
+        elif file_ext in data_extensions:
             destination = data_output / file_name
             file_type = 'data'
             processed_info['data_files'].append({
                 'name': file_name,
                 'path': str(destination),
                 'original': str(file_path)
+            })
+        else:
+            # Source files (.md, .docx, .pdf) and everything else go to sources/
+            destination = sources_output / file_name
+            file_type = 'source'
+            processed_info['source_files'].append({
+                'name': file_name,
+                'path': str(destination),
+                'original': str(file_path),
+                'extension': file_ext
             })
         
         # Copy the file
@@ -246,9 +277,9 @@ def create_data_context_message(processed_info: Optional[Dict[str, Any]]) -> str
     
     context_parts = ["\n[DATA FILES AVAILABLE]"]
     
-    # CRITICAL: If manuscript files are present, this is an EDITING task
+    # CRITICAL: If manuscript files (.tex) are present, this is an EDITING task
     if processed_info.get('manuscript_files'):
-        context_parts.append("\n⚠️  EDITING MODE - Manuscript files detected!")
+        context_parts.append("\n⚠️  EDITING MODE - Manuscript files (.tex) detected!")
         context_parts.append("\nManuscript files (in drafts/ folder for editing):")
         for file_info in processed_info['manuscript_files']:
             context_parts.append(f"  - {file_info['name']} ({file_info['extension']}): {file_info['path']}")
@@ -257,6 +288,13 @@ def create_data_context_message(processed_info: Optional[Dict[str, Any]]) -> str
         context_parts.append("   → Apply the requested changes/improvements")
         context_parts.append("   → Create new version following version numbering protocol")
         context_parts.append("   → Document changes in revision_notes.md")
+    
+    if processed_info.get('source_files'):
+        context_parts.append("\nSource/Context files (in sources/ folder for reference):")
+        for file_info in processed_info['source_files']:
+            ext = file_info.get('extension', '')
+            context_parts.append(f"  - {file_info['name']} ({ext}): {file_info['path']}")
+        context_parts.append("\nNote: These files are available as reference/context material.")
     
     if processed_info.get('data_files'):
         context_parts.append("\nData files (in data/ folder):")

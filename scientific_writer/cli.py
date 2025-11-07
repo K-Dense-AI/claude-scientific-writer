@@ -108,9 +108,11 @@ IMPORTANT - CONVERSATION CONTINUITY:
     print(f"📁 Output folder: {output_folder}")
     print(f"\n📦 Data Files:")
     print("  • Place files in the 'data/' folder to include them in your paper")
-    print("  • Manuscript files (.tex, .md, .docx, .pdf) → copied to drafts/ for EDITING")
+    print("  • Manuscript files (.tex) → copied to drafts/ for EDITING")
+    print("  • Context files (.md, .docx, .pdf) → copied to sources/ for REFERENCE")
     print("  • Data files (csv, txt, json, etc.) → copied to paper's data/ folder")
     print("  • Images (png, jpg, svg, etc.) → copied to paper's figures/ folder")
+    print("  • Other files → copied to sources/ for CONTEXT")
     print("  • Original files are automatically deleted after copying")
     print("\n🤖 Intelligent Paper Detection:")
     print("  • I automatically detect when you're referring to a previous paper")
@@ -166,39 +168,119 @@ IMPORTANT - CONVERSATION CONTINUITY:
             data_context = ""
             data_files = get_data_files(cwd)
             
-            if data_files and current_paper_path and not is_new_paper_request:
+            # PHASE 1: Handle new paper with data files - create directory first
+            if data_files and not current_paper_path and (is_new_paper_request or not current_paper_path):
+                print(f"\n📦 Found {len(data_files)} file(s) in data folder.")
+                print("📝 Starting a new paper...")
+                print("⏳ Step 1/2: Creating paper directory...\n")
+                
+                # Create directory structure first
+                directory_prompt = f"""Create a new paper directory structure in paper_outputs/ following the standard format:
+paper_outputs/YYYYMMDD_HHMMSS_<description>/
+
+Create these folders:
+- drafts/
+- final/
+- references/
+- figures/
+- data/
+- sources/
+
+IMPORTANT: 
+1. Only create the directory structure and progress.md file
+2. Do NOT start writing the paper yet
+3. Report back the directory path you created
+4. Wait for further instructions
+
+Based on the user request: {user_input}"""
+                
+                # Send directory creation request
+                async for message in query(prompt=directory_prompt, options=options):
+                    if hasattr(message, "content") and message.content:
+                        for block in message.content:
+                            if hasattr(block, "text"):
+                                print(block.text, end="", flush=True)
+                
+                print("\n")
+                
+                # Detect the newly created directory
+                time.sleep(1)  # Brief pause to ensure filesystem is updated
+                try:
+                    paper_dirs = [d for d in output_folder.iterdir() if d.is_dir()]
+                    if paper_dirs:
+                        most_recent = max(paper_dirs, key=lambda d: d.stat().st_mtime)
+                        time_since_modification = time.time() - most_recent.stat().st_mtime
+                        
+                        if time_since_modification < 15:  # Within last 15 seconds
+                            current_paper_path = str(most_recent)
+                            print(f"✓ Directory created: {most_recent.name}\n")
+                except Exception as e:
+                    print(f"Warning: Could not detect paper directory: {e}\n")
+                
+                # PHASE 2: Process data files before continuing
+                if current_paper_path:
+                    print(f"⏳ Step 2/2: Processing and copying data files...")
+                    processed_info = process_data_files(cwd, data_files, current_paper_path)
+                    if processed_info:
+                        data_context = create_data_context_message(processed_info)
+                        manuscript_count = len(processed_info.get('manuscript_files', []))
+                        source_count = len(processed_info.get('source_files', []))
+                        data_count = len(processed_info.get('data_files', []))
+                        image_count = len(processed_info.get('image_files', []))
+                        if manuscript_count > 0:
+                            print(f"   ✓ Copied {manuscript_count} .tex manuscript(s) to drafts/ [EDITING MODE]")
+                        if source_count > 0:
+                            print(f"   ✓ Copied {source_count} source/context file(s) to sources/")
+                        if data_count > 0:
+                            print(f"   ✓ Copied {data_count} data file(s) to data/")
+                        if image_count > 0:
+                            print(f"   ✓ Copied {image_count} image(s) to figures/")
+                        print("   ✓ Deleted original files from data folder\n")
+                        print("✅ Files processed. Now starting paper generation...\n")
+                
+                # Update prompt to continue with paper generation
+                contextual_prompt = f"""[CONTEXT: You are working on a paper in: {current_paper_path}]
+[FILES HAVE BEEN PROCESSED AND COPIED - see details below]
+{data_context}
+
+Now continue with the actual paper generation for the user's request:
+{user_input}"""
+                
+            elif data_files and current_paper_path and not is_new_paper_request:
+                # Existing paper with data files - process immediately
                 print(f"📦 Found {len(data_files)} file(s) in data folder. Processing...")
                 processed_info = process_data_files(cwd, data_files, current_paper_path)
                 if processed_info:
                     data_context = create_data_context_message(processed_info)
                     manuscript_count = len(processed_info.get('manuscript_files', []))
+                    source_count = len(processed_info.get('source_files', []))
                     data_count = len(processed_info.get('data_files', []))
                     image_count = len(processed_info.get('image_files', []))
                     if manuscript_count > 0:
-                        print(f"   ✓ Copied {manuscript_count} manuscript file(s) to drafts/ [EDITING MODE]")
+                        print(f"   ✓ Copied {manuscript_count} .tex manuscript(s) to drafts/ [EDITING MODE]")
+                    if source_count > 0:
+                        print(f"   ✓ Copied {source_count} source/context file(s) to sources/")
                     if data_count > 0:
                         print(f"   ✓ Copied {data_count} data file(s) to data/")
                     if image_count > 0:
                         print(f"   ✓ Copied {image_count} image(s) to figures/")
                     print("   ✓ Deleted original files from data folder\n")
-            elif data_files and not current_paper_path:
-                # Store data files info for later processing once paper is created
-                print(f"\n📦 Found {len(data_files)} file(s) in data folder.")
-                print("   They will be processed once the paper directory is created.\n")
-            
-            # Build contextual prompt
-            contextual_prompt = user_input
-            
-            # Add context about current paper if one exists and not starting new
-            if current_paper_path and not is_new_paper_request:
+                
+                # Build contextual prompt for existing paper
                 contextual_prompt = f"""[CONTEXT: You are currently working on a paper in: {current_paper_path}]
 [INSTRUCTION: Continue editing this existing paper. Do NOT create a new paper directory.]
 {data_context}
 User request: {user_input}"""
-            elif is_new_paper_request:
-                # Reset paper tracking when explicitly starting new
+                
+            elif is_new_paper_request and not data_files:
+                # New paper without data files - normal flow
                 current_paper_path = None
                 print("📝 Starting a new paper...\n")
+                contextual_prompt = user_input
+                
+            else:
+                # No data files, no special handling
+                contextual_prompt = user_input
             
             # Send query to Claude
             print()  # Add blank line before response
@@ -211,8 +293,8 @@ User request: {user_input}"""
             
             print()  # Add blank line after response
             
-            # Try to detect if a new paper directory was created
-            if not current_paper_path or is_new_paper_request:
+            # Try to detect if a new paper directory was created (for cases without data files)
+            if not current_paper_path and not data_files:
                 # Look for the most recently modified directory in paper_outputs
                 # Only update if it was modified in the last 10 seconds (indicating it was just created)
                 try:
@@ -227,25 +309,6 @@ User request: {user_input}"""
                             print(f"\n📂 Working on: {most_recent.name}")
                 except Exception:
                     pass  # Silently fail if we can't detect the directory
-                
-                # Process any remaining data files now that we have a paper path
-                # This is outside the try-except so file processing errors are not silently ignored
-                if current_paper_path:
-                    remaining_data_files = get_data_files(cwd)
-                    if remaining_data_files:
-                        print(f"\n📦 Processing {len(remaining_data_files)} data file(s)...")
-                        processed_info = process_data_files(cwd, remaining_data_files, current_paper_path)
-                        if processed_info:
-                            manuscript_count = len(processed_info.get('manuscript_files', []))
-                            data_count = len(processed_info.get('data_files', []))
-                            image_count = len(processed_info.get('image_files', []))
-                            if manuscript_count > 0:
-                                print(f"   ✓ Copied {manuscript_count} manuscript file(s) to drafts/ [EDITING MODE]")
-                            if data_count > 0:
-                                print(f"   ✓ Copied {data_count} data file(s) to data/")
-                            if image_count > 0:
-                                print(f"   ✓ Copied {image_count} image(s) to figures/")
-                            print("   ✓ Deleted original files from data folder")
             
         except KeyboardInterrupt:
             print("\n\nInterrupted. Type 'exit' to quit or continue with a new prompt.")
@@ -286,13 +349,16 @@ def _print_help():
     print("  - references/ - Bibliography files")
     print("  - figures/ - Images and charts")
     print("  - data/ - Data files for the paper")
+    print("  - sources/ - Context/reference materials")
     print("  - progress.md - Real-time progress log")
     print("  - SUMMARY.md - Project summary and instructions")
     print("\n📦 Data Files:")
     print("  Place files in the 'data/' folder at project root:")
-    print("  • Manuscript files (.tex, .md, .docx, .pdf) → copied to drafts/ for EDITING")
+    print("  • Manuscript files (.tex) → copied to drafts/ for EDITING")
+    print("  • Context files (.md, .docx, .pdf) → copied to sources/ for REFERENCE")
     print("  • Data files (csv, txt, json, etc.) → copied to paper's data/")
     print("  • Images (png, jpg, svg, etc.) → copied to paper's figures/")
+    print("  • Other files → copied to sources/ for CONTEXT")
     print("  • Files are used as context for the paper")
     print("  • Original files automatically deleted after copying")
     print("\n🎯 Pro Tips:")

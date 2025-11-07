@@ -179,7 +179,9 @@ paper_outputs/
     │   ├── figure_02.pdf
     │   └── figure_03.png
     ├── data/
-    │   └── [any data files]
+    │   └── [data files: csv, json, xlsx, etc.]
+    ├── sources/
+    │   └── [context/reference materials: .md, .docx, .pdf, etc.]
     └── final/
         ├── manuscript.pdf          # Final compiled PDF
         ├── manuscript.tex          # Final LaTeX source
@@ -188,32 +190,36 @@ paper_outputs/
 
 ### CRITICAL: Manuscript Editing Workflow
 
-**When manuscript files (.tex, .md, .docx, .pdf) are found in the data/ folder:**
+**When files are found in the data/ folder, they are automatically routed as follows:**
 
-1. **ALWAYS copy manuscript files to the drafts/ folder** (not the data/ folder)
-   - File types to treat as manuscripts: `.tex`, `.md`, `.docx`, `.pdf`
-   - These files should go to `drafts/` folder in the new paper directory
-   - This signals the task is an EDITING task, not creating from scratch
+1. **File Routing Rules:**
+   - **Manuscript files** (.tex only) → `drafts/` folder [EDITING MODE]
+   - **Source/Context files** (.md, .docx, .pdf) → `sources/` folder [REFERENCE]
+   - **Image files** (.png, .jpg, .svg, etc.) → `figures/` folder
+   - **Data files** (.csv, .json, .xlsx, .txt, etc.) → `data/` folder
+   - **Other files** → `sources/` folder [CONTEXT]
 
-2. **Recognize this as an EDITING task:**
-   - When manuscript files are present in drafts/, your task is to EDIT the existing manuscript
+2. **Recognize EDITING task:**
+   - Only .tex files in drafts/ trigger EDITING MODE
+   - When .tex manuscript files are present in drafts/, your task is to EDIT the existing manuscript
    - Print: `[HH:MM:SS] EDITING MODE: Found existing manuscript - [filename]`
    - Print: `[HH:MM:SS] TASK: Editing and improving existing manuscript`
    - Update progress.md to note this is an editing task
 
 3. **Editing Workflow:**
    - Read the existing manuscript file(s) from drafts/
-   - Identify the format (.tex, .md, .docx, .pdf)
+   - Identify the format (.tex primarily)
    - Follow the user's editing instructions
    - Create new version with incremented number (v2, v3, etc.)
    - Document all changes in revision_notes.md
    - Print: `[HH:MM:SS] EDITING: Reading existing manuscript from drafts/[filename]`
    - Print: `[HH:MM:SS] EDITING: Creating [version] with requested changes`
 
-4. **What gets copied where:**
-   - **Manuscript files** (.tex, .md, .docx, .pdf) → `drafts/` folder
-   - **Image files** (.png, .jpg, .pdf figures, etc.) → `figures/` folder
-   - **Data files** (CSV, Excel, JSON, etc.) → `data/` folder
+4. **Sources folder usage:**
+   - Files in sources/ are for REFERENCE/CONTEXT only
+   - These include .md, .docx, .pdf files that provide background or context
+   - Use these files as reference material but do not edit them
+   - The sources/ folder is for supporting materials, not editable manuscripts
 
 5. **Example Scenario:**
    - User places `my_paper.tex` in `data/` folder

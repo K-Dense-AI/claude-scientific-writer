@@ -129,6 +129,7 @@ def scan_paper_directory(paper_dir: Path) -> Dict[str, Any]:
         'bibliography': None,
         'figures': [],
         'data': [],
+        'sources': [],
         'progress_log': None,
         'summary': None,
     }
@@ -176,6 +177,13 @@ def scan_paper_directory(paper_dir: Path) -> Dict[str, Any]:
         for file in sorted(data_dir.iterdir()):
             if file.is_file():
                 result['data'].append(str(file))
+    
+    # Scan sources/ directory
+    sources_dir = paper_dir / "sources"
+    if sources_dir.exists():
+        for file in sorted(sources_dir.iterdir()):
+            if file.is_file():
+                result['sources'].append(str(file))
     
     # Check for progress.md and SUMMARY.md
     progress_file = paper_dir / "progress.md"
