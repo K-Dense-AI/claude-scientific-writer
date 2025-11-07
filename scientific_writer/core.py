@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import zipfile
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 from dotenv import load_dotenv
@@ -147,6 +148,61 @@ def get_data_files(cwd: Path, data_files: Optional[List[str]] = None) -> List[Pa
     return files
 
 
+def extract_images_from_docx(docx_path: Path, figures_output: Path) -> List[Dict[str, Any]]:
+    """
+    Extract all images from a .docx file and copy them to the figures folder.
+    
+    A .docx file is a ZIP archive containing images in the word/media/ directory.
+    This function extracts all image files and copies them to the specified output directory.
+    
+    Args:
+        docx_path: Path to the .docx file.
+        figures_output: Path to the figures output directory.
+        
+    Returns:
+        List of dictionaries containing information about extracted images.
+        Each dict has 'name', 'path', and 'source_docx' keys.
+    """
+    extracted_images = []
+    image_extensions = get_image_extensions()
+    
+    try:
+        with zipfile.ZipFile(docx_path, 'r') as zip_ref:
+            # List all files in the archive
+            all_files = zip_ref.namelist()
+            
+            # Filter for files in word/media/ directory that are images
+            media_files = [f for f in all_files if f.startswith('word/media/')]
+            
+            for media_file in media_files:
+                # Get the filename from the path
+                file_name = Path(media_file).name
+                file_ext = Path(media_file).suffix.lower()
+                
+                # Only extract if it's an image file
+                if file_ext in image_extensions:
+                    # Extract to figures folder
+                    output_path = figures_output / file_name
+                    
+                    # Read the file from the zip and write it to the output
+                    with zip_ref.open(media_file) as source:
+                        with open(output_path, 'wb') as target:
+                            target.write(source.read())
+                    
+                    extracted_images.append({
+                        'name': file_name,
+                        'path': str(output_path),
+                        'source_docx': docx_path.name
+                    })
+    
+    except zipfile.BadZipFile:
+        print(f"Warning: {docx_path.name} is not a valid .docx file (ZIP archive)")
+    except Exception as e:
+        print(f"Warning: Could not extract images from {docx_path.name}: {str(e)}")
+    
+    return extracted_images
+
+
 def process_data_files(
     cwd: Path, 
     data_files: List[Path], 
@@ -252,6 +308,13 @@ def process_data_files(
                 'destination': str(destination)
             })
             
+            # If it's a .docx file, extract images to figures folder
+            if file_ext == '.docx':
+                extracted_images = extract_images_from_docx(file_path, figures_output)
+                if extracted_images:
+                    for img_info in extracted_images:
+                        processed_info['image_files'].append(img_info)
+            
             # Delete the original file after successful copy if requested
             if delete_originals:
                 file_path.unlink()
@@ -302,9 +365,29 @@ def create_data_context_message(processed_info: Optional[Dict[str, Any]]) -> str
             context_parts.append(f"  - {file_info['name']}: {file_info['path']}")
     
     if processed_info.get('image_files'):
+        # Separate images by source (direct vs extracted from docx)
+        direct_images = [img for img in processed_info['image_files'] if 'source_docx' not in img]
+        extracted_images = [img for img in processed_info['image_files'] if 'source_docx' in img]
+        
         context_parts.append("\nImage files (in figures/ folder):")
-        for file_info in processed_info['image_files']:
-            context_parts.append(f"  - {file_info['name']}: {file_info['path']}")
+        
+        if direct_images:
+            context_parts.append("  Directly provided:")
+            for file_info in direct_images:
+                context_parts.append(f"    - {file_info['name']}: {file_info['path']}")
+        
+        if extracted_images:
+            # Group extracted images by source docx
+            from collections import defaultdict
+            images_by_docx = defaultdict(list)
+            for img in extracted_images:
+                images_by_docx[img['source_docx']].append(img)
+            
+            context_parts.append("  Extracted from .docx files:")
+            for docx_name, images in images_by_docx.items():
+                img_names = ', '.join([img['name'] for img in images])
+                context_parts.append(f"    - From {docx_name}: {img_names}")
+        
         context_parts.append("\nNote: These images can be referenced as figures in the paper.")
     
     context_parts.append("[END DATA FILES]\n")
