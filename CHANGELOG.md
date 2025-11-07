@@ -6,6 +6,93 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.4.0] - 2025-11-07
+
+### ✨ Added
+
+#### Smart File Routing System
+
+- **Intelligent File Categorization** - Automatic routing of files based on type and purpose
+  - **Manuscript files** (.tex only) → `drafts/` folder [EDITING MODE triggered]
+  - **Source/Context files** (.md, .docx, .pdf) → `sources/` folder [REFERENCE materials]
+  - **Image files** (.png, .jpg, .svg, etc.) → `figures/` folder
+  - **Data files** (.csv, .json, .xlsx, .txt, etc.) → `data/` folder
+  - **Other files** → `sources/` folder [CONTEXT]
+
+- **New Sources Directory** - Dedicated folder for reference and context materials
+  - Separate location for .md, .docx, .pdf files used as reference
+  - Clear distinction between editable manuscripts and supporting materials
+  - Better organization of project resources
+
+### 🔧 Improvements
+
+#### Enhanced Manuscript Editing Workflow
+
+- **Refined EDITING MODE Detection** - Only .tex files in drafts/ trigger EDITING MODE
+  - Previous behavior: .tex, .md, .docx, .pdf all triggered editing mode
+  - New behavior: Only .tex files are treated as editable manuscripts
+  - .md, .docx, .pdf files are now reference materials in sources/
+  - Clearer user experience with more predictable behavior
+
+- **Improved File Processing** - Better error handling and user feedback
+  - Enhanced progress reporting during file copying operations
+  - Separate counters for manuscripts, sources, data, and images
+  - Clear indicators showing where each file type is being copied
+  - More informative CLI output throughout the file processing workflow
+
+- **Updated Documentation** - Comprehensive updates to system instructions
+  - Clarified file routing rules in WRITER.md
+  - Updated CLI help text with new file categorization
+  - Enhanced welcome message explaining file handling
+  - Better examples demonstrating the workflow
+
+### 🗑️ Removed
+
+- **CLAUDE.md** - Consolidated system instructions
+  - Removed redundant CLAUDE.md file from project root
+  - All system instructions now centralized in `.claude/WRITER.md` and `scientific_writer/.claude/WRITER.md`
+  - Reduces confusion and maintenance overhead
+
+### 📝 Files Modified
+
+- `scientific_writer/cli.py` - Enhanced file routing and user feedback
+- `scientific_writer/core.py` - New file categorization functions and processing logic
+- `scientific_writer/utils.py` - Added sources/ directory scanning
+- `.claude/WRITER.md` - Updated file routing documentation
+- `scientific_writer/.claude/WRITER.md` - Updated file routing rules
+
+### 🎯 Usage Example
+
+```bash
+# Place various files in the data folder
+cp my_paper.tex data/           # → drafts/ (EDITING MODE)
+cp background.pdf data/          # → sources/ (REFERENCE)
+cp dataset.csv data/             # → data/
+cp figure1.png data/             # → figures/
+
+# Run scientific writer
+scientific-writer
+
+# The system will:
+# ✓ Route .tex to drafts/ and activate EDITING MODE
+# ✓ Copy .pdf to sources/ as reference material
+# ✓ Copy .csv to data/ folder
+# ✓ Copy .png to figures/ folder
+# ✓ Provide clear feedback for each operation
+
+> "Improve the introduction using the background material"
+```
+
+### 💡 Key Benefits
+
+- **Better Organization** - Clear separation between manuscripts, sources, data, and figures
+- **Predictable Behavior** - Consistent file routing based on file types
+- **Enhanced Clarity** - Users know exactly where their files will go
+- **Improved Workflow** - Easier to manage complex projects with multiple file types
+- **Better Context** - Reference materials clearly separated from editable content
+
+---
+
 ## [2.3.2] - 2025-11-06
 
 ### 🔧 Improvements

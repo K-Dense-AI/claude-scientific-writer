@@ -6,7 +6,14 @@
 
 A Python package and CLI for generating publication-ready scientific papers, reports, posters, grant proposals, and more academic documents with Claude Sonnet 4.5. Features real-time research lookup, intelligent paper detection, and comprehensive document conversion. Version 2.0 adds a fully typed, programmatic API while keeping the CLI 100% backward compatible.
 
-**✨ What's New in v2.0+**
+**✨ What's New in v2.4.0**
+- **Smart File Routing** - Automatic categorization of manuscript, source, data, and image files
+- **Enhanced Editing Mode** - .tex files automatically routed to drafts/ for seamless editing
+- **Sources Folder** - Separate folder for reference materials (.md, .docx, .pdf) to keep context organized
+- **Improved File Processing** - Better error handling and user feedback during file operations
+- **Streamlined Workflow** - Clearer distinction between editable manuscripts and reference materials
+
+**✨ Previous Features (v2.0+)**
 - Programmatic Python API with async support
 - Research lookup with Perplexity Sonar Pro
 - Intelligent paper detection (auto-resume editing)
