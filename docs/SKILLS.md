@@ -419,7 +419,105 @@ Claude will use validation scripts to check quality and compliance.
 
 ---
 
-### 9. Scientific Schematics and Diagrams
+### 9. Scientific Slides and Presentations
+**Location**: `.claude/skills/scientific-slides/`
+
+**Capabilities**:
+- Create slide decks for scientific talks (conference presentations, seminars, defenses)
+- Structure presentations for different contexts (5-60 minute talks)
+- Design professional slides with PowerPoint (via pptx skill) or LaTeX Beamer
+- Optimize data visualizations for presentation context
+- Timing and pacing guidance with practice strategies
+- Visual review workflow with automated validation
+- Integration with research-lookup for proper citations
+
+**Talk Types Supported**:
+- **Conference talks** (10-20 min): Brief, focused on key findings
+- **Academic seminars** (45-60 min): Comprehensive, detailed methods
+- **Thesis defenses** (45-60 min): Complete dissertation overview
+- **Grant pitches** (15-20 min): Emphasis on significance and feasibility
+- **Journal clubs** (20-45 min): Critical analysis of published work
+- **Lightning talks** (5 min): Ultra-focused single message
+
+**References**:
+- `presentation_structure.md`: Structure for all talk types, timing allocation, narrative arc
+- `slide_design_principles.md`: Typography, color theory, layout, accessibility
+- `data_visualization_slides.md`: Simplifying figures for presentations
+- `talk_types_guide.md`: Specific guidance for each presentation type
+- `beamer_guide.md`: Complete LaTeX Beamer documentation
+- `visual_review_workflow.md`: PDF to images, systematic inspection, iteration
+
+**Templates**:
+- `beamer_template_conference.tex`: 15-minute conference talk
+- `beamer_template_seminar.tex`: 45-minute academic seminar
+- `beamer_template_defense.tex`: Dissertation defense
+
+**Assets**:
+- `powerpoint_design_guide.md`: Complete PowerPoint design with pptx skill integration
+- `timing_guidelines.md`: Comprehensive timing, pacing, and practice strategies
+
+**Scripts**:
+- `validate_presentation.py`: Check slide count, timing, fonts, file size
+- `pdf_to_images.py`: Convert PDF to images for visual inspection
+
+**Features**:
+- **Research-lookup integration**: Automatically gather citations for background and discussion
+- **Two implementation paths**: PowerPoint (via pptx skill) or LaTeX Beamer
+- **Visual validation workflow**: Convert to images, inspect systematically, iterate
+- **Timing guidance**: One-slide-per-minute rule with adjustments
+- **Design principles**: Minimal text (24pt+), high contrast, color-blind safe
+- **Practice strategies**: Systematic rehearsal with timing checkpoints
+
+**When to Use**:
+- Creating any scientific presentation or slide deck
+- Preparing conference talks or research seminars
+- Developing thesis defense presentations
+- Making grant pitch slides
+- Building lecture or tutorial presentations
+- Converting papers to presentation format
+
+**Example Usage**:
+
+### Conference Talk
+```
+> Create a 15-minute conference presentation on my machine learning research
+```
+Claude will use research-lookup to gather citations, structure the talk, and provide guidance for creating slides with either PowerPoint or Beamer.
+
+### Seminar Presentation
+```
+> Help me build a 45-minute seminar on CRISPR gene editing with comprehensive methods
+```
+Claude will structure a detailed academic seminar with proper citations and timing guidance.
+
+### Thesis Defense
+```
+> Create slides for my dissertation defense covering three studies
+```
+Claude will structure a comprehensive defense presentation following academic standards.
+
+### Visual Validation
+```
+> Convert my presentation to images and review for layout issues
+```
+Claude will use scripts to convert PDF to images and systematically inspect for text overflow, overlap, and design issues.
+
+### Timing Check
+```
+> Validate my 20-slide presentation for a 15-minute talk
+```
+Claude will check if slide count is appropriate and provide timing recommendations.
+
+**Key Principles**:
+- **Structure**: Spend 40-50% of time on results, follow clear story arc
+- **Design**: Minimal text, large fonts (24pt+), one idea per slide
+- **Citations**: Use research-lookup to gather 8-12 papers for proper context
+- **Timing**: Practice 3-5 times, set checkpoints, never skip conclusions
+- **Validation**: Visual review workflow to catch overflow and overlap issues
+
+---
+
+### 10. Scientific Schematics and Diagrams
 **Location**: `.claude/skills/scientific-schematics/`
 
 **Capabilities**:
@@ -472,7 +570,7 @@ Claude will use validation scripts to check quality and compliance.
 
 ## Document Manipulation Skills
 
-### 11. MarkItDown - Universal File to Markdown Converter
+### 12. MarkItDown - Universal File to Markdown Converter
 **Location**: `.claude/skills/markitdown/`
 
 **Capabilities**:
@@ -509,7 +607,7 @@ Claude will use validation scripts to check quality and compliance.
 
 ---
 
-### 12. DOCX (Word Documents)
+### 13. DOCX (Word Documents)
 **Location**: `.claude/skills/document-skills/docx/`
 
 **Capabilities**:
@@ -530,7 +628,7 @@ Claude will use validation scripts to check quality and compliance.
 
 ---
 
-### 13. PDF Documents
+### 14. PDF Documents
 **Location**: `.claude/skills/document-skills/pdf/`
 
 **Capabilities**:
@@ -553,7 +651,7 @@ Claude will use validation scripts to check quality and compliance.
 
 ---
 
-### 14. PPTX (PowerPoint Presentations)
+### 15. PPTX (PowerPoint Presentations)
 **Location**: `.claude/skills/document-skills/pptx/`
 
 **Capabilities**:
@@ -576,7 +674,7 @@ Claude will use validation scripts to check quality and compliance.
 
 ---
 
-### 15. XLSX (Excel Spreadsheets)
+### 16. XLSX (Excel Spreadsheets)
 **Location**: `.claude/skills/document-skills/xlsx/`
 
 **Capabilities**:
@@ -688,7 +786,7 @@ Claude will visualize the signaling pathway with properly styled proteins and ac
 ```
 Claude will create a system architecture diagram with labeled components and data flow.
 
-### 10. Venue Templates
+### 11. Venue Templates
 **Location**: `.claude/skills/venue-templates/`
 
 **Capabilities**:

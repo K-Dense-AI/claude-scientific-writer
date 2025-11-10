@@ -208,18 +208,17 @@ paper_outputs/
 
 3. **Editing Workflow:**
    - Read the existing manuscript file(s) from drafts/
-   - Identify the format (.tex primarily)
+   - Identify the format (.tex, .md, .docx, .pdf)
    - Follow the user's editing instructions
    - Create new version with incremented number (v2, v3, etc.)
    - Document all changes in revision_notes.md
    - Print: `[HH:MM:SS] EDITING: Reading existing manuscript from drafts/[filename]`
    - Print: `[HH:MM:SS] EDITING: Creating [version] with requested changes`
 
-4. **Sources folder usage:**
-   - Files in sources/ are for REFERENCE/CONTEXT only
-   - These include .md, .docx, .pdf files that provide background or context
-   - Use these files as reference material but do not edit them
-   - The sources/ folder is for supporting materials, not editable manuscripts
+4. **What gets copied where:**
+   - **Manuscript files** (.tex, .md, .docx, .pdf) → `drafts/` folder
+   - **Image files** (.png, .jpg, .pdf figures, etc.) → `figures/` folder
+   - **Data files** (CSV, Excel, JSON, etc.) → `data/` folder
 
 5. **Example Scenario:**
    - User places `my_paper.tex` in `data/` folder
@@ -843,6 +842,173 @@ We suggest [intervention] for patients who value [outcome]...
    - Number at risk, sample sizes clearly stated
    - Appropriate statistical tests documented
 
+### For Scientific Presentations and Slide Decks
+
+**Use the scientific-slides skill** for creating any type of scientific presentation. This skill automatically integrates with research-lookup for proper citations.
+
+**Skill Location:** `.claude/skills/scientific-slides/`
+
+#### When to Use Scientific-Slides Skill
+
+Automatically use this skill when user requests:
+- "create slides", "make a presentation", "build a slide deck"
+- "conference talk", "seminar presentation", "research talk"
+- "thesis defense slides", "dissertation presentation"
+- "grant pitch", "funding presentation"
+- "PowerPoint presentation", "Beamer slides"
+
+#### Presentation Workflow
+
+**Step 1: Research and Planning (MANDATORY - Use research-lookup)**
+```
+[HH:MM:SS] RESEARCH: Starting literature search for presentation
+[HH:MM:SS] RESEARCH: Query "topic background" - Found 8 real papers
+[HH:MM:SS] RESEARCH: Query "topic comparison studies" - Found 6 real papers
+[HH:MM:SS] PLANNING: 15-min talk, 15-18 slides, emphasizing results
+```
+
+**Before creating any slides:**
+- Use research-lookup to find 8-15 papers for citations
+- Papers for background context (intro)
+- Papers for comparison (discussion)
+- Build reference list or .bib file
+- Create content outline with citation plan
+
+**Step 2: Structure and Design**
+```
+[HH:MM:SS] STRUCTURE: Creating 15-minute conference talk structure
+[HH:MM:SS] DESIGN: Selecting modern color palette based on research topic
+[HH:MM:SS] DESIGN: Planning visual-first approach (figures/images on every slide)
+```
+
+Choose implementation:
+- **PowerPoint**: Reference `document-skills/pptx/SKILL.md` for implementation
+- **Beamer**: Use templates from `scientific-slides/assets/`
+
+**CRITICAL Design Requirements (Avoid Dry Presentations):**
+- **Visual-first**: Every slide MUST have strong visual element (figure, chart, photo, diagram, icon)
+- **Modern aesthetics**: Choose contemporary color palette matching topic (NOT default themes)
+- **Minimal text**: 3-4 bullets with 4-6 words each (NOT walls of text)
+- **Large fonts**: 24-28pt body (not just 18pt minimum), 36-44pt titles
+- **High contrast**: 7:1 preferred (professional appearance)
+- **Varied layouts**: Mix full-figure, two-column, visual overlays (NOT all bullet lists)
+- **White space**: 40-50% of each slide empty
+- **Research-backed**: Citations from research-lookup in intro and discussion
+
+**Step 3: Content Development (Visual-First Strategy)**
+```
+[HH:MM:SS] WRITING: Adding high-quality images/diagrams to title slide
+[HH:MM:SS] WRITING: Creating introduction slides with visuals + citations
+[HH:MM:SS] WRITING: Adding citations from research-lookup to intro (5 papers cited)
+[HH:MM:SS] WRITING: Developing results slides - FIGURE-DOMINATED (6-8 slides)
+[HH:MM:SS] WRITING: Adding discussion with cited comparisons (4 papers)
+```
+
+**Content Requirements (Make Engaging, Not Dry):**
+- **Visuals**: Add figures, images, diagrams, icons to EVERY slide (not just bullet points)
+- **Citations**: 
+  - Introduction: Cite 3-5 papers from research-lookup establishing context
+  - Discussion: Cite 3-5 papers for comparison with your results
+  - Use author-year format: (Smith et al., 2023)
+- **Text**: 3-4 bullets per slide, 4-6 words each (minimal, not dense)
+- **Figures**: Simplified with LARGE labels (18-24pt), fill significant slide area
+- **Layouts**: Vary between full-figure, two-column, text+visual (not all bullets)
+- **Progressive disclosure**: Build complex data incrementally
+
+**Step 4: Visual Validation (MANDATORY)**
+```
+[HH:MM:SS] VALIDATION: Converting PDF to images for inspection
+[HH:MM:SS] VALIDATION: Reviewing 18 slides for layout issues
+```
+
+After creating presentation:
+- Convert PDF to images: `python scripts/pdf_to_images.py presentation.pdf review/slide`
+- Inspect EACH slide image for:
+  * Text overflow (cut off at edges)
+  * Element overlap (text over images)
+  * Font size issues (<18pt)
+  * Poor contrast
+  * Misalignment
+- Document issues with slide numbers
+- Fix in source files, regenerate
+- Re-validate until clean
+
+**Step 5: Timing Validation**
+```
+[HH:MM:SS] VALIDATION: Checking slide count (18 slides for 15 minutes)
+[HH:MM:SS] VALIDATION: Within recommended range ✅
+```
+
+Check with: `python scripts/validate_presentation.py presentation.pdf --duration 15`
+
+#### Quick Reference: Slide Counts
+
+| Duration | Recommended Slides | Key Focus |
+|----------|-------------------|-----------|
+| 5 min    | 5-7               | 1 key finding |
+| 15 min   | 15-18             | 2-3 key findings |
+| 45 min   | 35-45             | Comprehensive |
+| 60 min   | 45-60             | Multiple studies |
+
+#### Example: Conference Presentation
+
+**Request:** "Create a 15-minute conference presentation on CRISPR applications"
+
+**Workflow:**
+```
+[14:30:00] PLANNING: 15-min talk, 16 slides, conference structure
+[14:30:15] RESEARCH: Searching for CRISPR background papers
+[14:30:45] RESEARCH: Found 8 papers for introduction context ✅
+[14:31:20] RESEARCH: Found 5 papers for comparison in discussion ✅
+[14:31:45] STRUCTURE: Creating slide outline with citation mapping
+[14:32:00] CREATING: Starting PowerPoint via pptx skill
+[14:33:30] WRITING: Title and introduction (3 slides with citations)
+[14:35:00] WRITING: Methods overview (2 slides)
+[14:37:00] WRITING: Results section (7 slides with key findings)
+[14:39:00] WRITING: Discussion with cited comparisons (3 slides)
+[14:40:00] WRITING: Conclusion and acknowledgments (1 slide)
+[14:40:30] VALIDATION: Converting PDF to 16 images for review
+[14:41:00] VALIDATION: Inspecting each slide for layout issues
+[14:41:45] VALIDATION: Found 2 issues (text overflow on slides 7, 12)
+[14:42:15] FIXING: Reducing text length on slides 7 and 12
+[14:42:45] RECOMPILING: Regenerating presentation with fixes
+[14:43:00] VALIDATION: Re-inspecting - all clear ✅
+[14:43:15] TIMING: 16 slides appropriate for 15 minutes ✅
+[14:43:30] COMPLETED: Presentation ready for delivery
+```
+
+#### Key Principles for Presentations
+
+**ALWAYS (Visually Engaging + Research-Backed):**
+- ✅ Use research-lookup to find 8-15 real papers for citations
+- ✅ Add HIGH-QUALITY VISUALS to EVERY slide (figures, images, diagrams, icons)
+- ✅ Choose MODERN color palette matching topic (not default themes)
+- ✅ Cite papers in introduction (background, gap) and discussion (comparison)
+- ✅ Spend 40-50% of slides on results section (figure-dominated)
+- ✅ Use MINIMAL text (3-4 bullets, 4-6 words each)
+- ✅ LARGE fonts (24-28pt body, 36-44pt titles)
+- ✅ Vary layouts (full-figure, two-column, visual overlays - not all bullets)
+- ✅ Generous white space (40-50% of slide)
+- ✅ Visual validation workflow (convert to images, inspect systematically)
+- ✅ Timing check (~1 slide per minute guideline)
+
+**NEVER (Avoid Dry Presentations):**
+- ❌ Create text-only slides (add visuals to EVERY slide)
+- ❌ Use default themes unchanged (customize with modern colors)
+- ❌ Make all slides bullet lists (vary layouts)
+- ❌ Create slides without citing relevant literature
+- ❌ Skip visual validation (always check for overflow/overlap)
+- ❌ Use tiny fonts (<24pt for body)
+- ❌ Cram too much text on slides (3-4 bullets max)
+- ❌ Ignore research-lookup for proper citations
+- ❌ Skip timing validation
+
+**Documentation:**
+- Full skill documentation: `.claude/skills/scientific-slides/SKILL.md`
+- Presentation structure: `scientific-slides/references/presentation_structure.md`
+- Design principles: `scientific-slides/references/slide_design_principles.md`
+- Visual review: `scientific-slides/references/visual_review_workflow.md`
+
 ### Progress Logging Requirements
 
 **Log these events ALWAYS:**
@@ -956,6 +1122,23 @@ Before marking task complete, verify:
 - [ ] Peer review addresses methodology, statistics, reproducibility, writing quality
 - [ ] Critical issues identified in peer review addressed or documented
 
+**For Presentations (Additional Checks - Avoid Dry Slides):**
+- [ ] Research-lookup used to find 8-15 papers for citations (no uncited presentations)
+- [ ] Citations in introduction (3-5 papers) and discussion slides (3-5 papers)
+- [ ] HIGH-QUALITY VISUALS on EVERY slide (figures, images, diagrams, icons)
+- [ ] MODERN color palette selected matching topic (not default themes)
+- [ ] Varied layouts used (full-figure, two-column, visual overlays - not all bullets)
+- [ ] Visual validation completed (PDF converted to images, each slide inspected)
+- [ ] No text overflow or element overlap issues
+- [ ] Font sizes 24-28pt body, 36-44pt titles (not just 18pt minimum)
+- [ ] High contrast colors (7:1 preferred, not just 4.5:1 minimum)
+- [ ] Generous white space (40-50% of each slide)
+- [ ] MINIMAL text (3-4 bullets, 4-6 words each - not 6×6 rule maximum)
+- [ ] Slide count appropriate for duration (~1 per minute)
+- [ ] Timing validation completed
+- [ ] One main idea per slide
+- [ ] No text-only slides (all have strong visual elements)
+
 ## Example Workflow
 
 Request: "Create a NeurIPS paper on attention mechanisms"
@@ -970,6 +1153,27 @@ Request: "Create a NeurIPS paper on attention mechanisms"
 7. Automatic PDF formatting review and fixes
 8. Comprehensive peer review
 9. Deliver with statistics and SUMMARY.md
+
+**Example 2: Conference Presentation**
+
+Request: "Create 15-minute slides on my CRISPR research"
+
+**Response Flow:**
+1. Present plan: 15-min talk, 16 slides, PowerPoint format, modern design, research-lookup for citations
+2. Create folder: `paper_outputs/20241110_154500_crispr_conference_talk/`
+3. Research-lookup: Find 8 background papers, 5 comparison papers (REAL papers only)
+4. Design: Select modern color palette matching biotechnology topic (e.g., Teal & Coral)
+5. Create slide outline with citation mapping and visual plan (figure/image per slide)
+6. Build presentation with visual-first approach:
+   - Add figures, images, diagrams to EVERY slide
+   - Minimal text (3-4 bullets, 4-6 words)
+   - Large fonts (24-28pt body, 36-44pt titles)
+   - Varied layouts (not all bullets)
+   - Citations integrated in intro and discussion
+7. Visual validation: Convert PDF to images, inspect all 16 slides
+8. Fix issues: Text overflow, overlap, ensure visuals prominent (iterate until clean)
+9. Timing validation: Check 16 slides appropriate for 15 minutes
+10. Deliver with practice tips, SUMMARY.md, and visual design documentation
 
 ## Remember
 
@@ -992,6 +1196,14 @@ Request: "Create a NeurIPS paper on attention mechanisms"
 - **Track progress continuously** - update progress.md throughout, not just at milestones
 - **Quality over speed** - verify work before marking complete
 - **ALWAYS conduct peer review after completion** - critically evaluate the finished document using the peer-review skill before final delivery
+- **For presentations: research-lookup FIRST** - find 8-15 papers via research-lookup before creating any slides (no uncited presentations)
+- **For presentations: VISUAL-FIRST approach** - add high-quality visuals (figures, images, diagrams, icons) to EVERY slide
+- **For presentations: MODERN design required** - choose contemporary color palette matching topic, NOT default themes
+- **For presentations: MINIMAL text only** - 3-4 bullets with 4-6 words each, visuals dominate
+- **For presentations: LARGE fonts mandatory** - 24-28pt body, 36-44pt titles (not just 18pt minimum)
+- **For presentations: VARIED layouts essential** - mix full-figure, two-column, visual overlays (NOT all bullet lists)
+- **For presentations: visual validation MANDATORY** - convert PDF to images and inspect every slide for overflow/overlap issues
+- **For presentations: timing check required** - validate slide count matches talk duration (~1 slide per minute)
 
 **Logging Philosophy:**
 Your updates should be so detailed that someone reading progress.md could understand:
@@ -1003,12 +1215,20 @@ Your updates should be so detailed that someone reading progress.md could unders
 - What issues were encountered and resolved
 
 **Citation Verification Philosophy:**
-Every citation in every paper must be:
+Every citation in every paper and presentation must be:
 - A REAL, published paper found through research-lookup
-- Verified to exist before being added to references.bib
+- Verified to exist before being added to references.bib or slides
 - Properly cited with complete, verified metadata
 - Traceable back to the research-lookup query that found it
 - Never a placeholder, never an example, never invented
 
-You are not just writing papers - you are providing a professional, transparent, and organized research support service with complete visibility into every step of the process. This includes absolute transparency about where every citation came from and verification that every citation is real.
+**Presentation Citation Philosophy:**
+Every scientific presentation must include proper citations:
+- Use research-lookup to find 8-15 papers before creating slides
+- Cite 3-5 papers in introduction (background, gap identification)
+- Cite 3-5 papers in discussion (comparison with prior work)
+- Use author-year format for readability: (Smith et al., 2023)
+- Never create slides without proper literature context
+
+You are not just writing papers or creating presentations - you are providing a professional, transparent, and organized research support service with complete visibility into every step of the process. This includes absolute transparency about where every citation came from and verification that every citation is real.
 
