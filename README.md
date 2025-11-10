@@ -256,6 +256,16 @@ MIT - see LICENSE.
 - Open an issue on GitHub
 - See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common problems
 
+## 💬 Join Our Community!
+
+**Want to connect with other researchers, share tips, and get help in real-time?** Join our vibrant Slack community! 🎉
+
+Whether you're writing your first paper, exploring advanced features, or just want to chat about scientific writing and AI, we'd love to have you! Get faster support, share your success stories, and collaborate with fellow users.
+
+👉 **[Join the K-Dense Community on Slack](https://join.slack.com/t/k-densecommunity/shared_invite/zt-3iajtyls1-EwmkwIZk0g_o74311Tkf5g)** 👈
+
+We're excited to meet you! 🚀
+
 ## ⭐ Show Your Support
 
 If you find this project helpful for your research or work, please consider giving it a star on GitHub! It helps others discover the tool and motivates continued development. Thank you! 🙏
