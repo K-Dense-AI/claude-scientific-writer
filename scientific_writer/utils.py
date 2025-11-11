@@ -53,7 +53,9 @@ def detect_paper_reference(user_input: str, existing_papers: List[Dict[str, Any]
         "continue", "update", "edit", "revise", "modify", "change",
         "add to", "fix", "improve", "review", "the paper", "this paper",
         "my paper", "current paper", "previous paper", "last paper",
-        "poster", "the poster", "my poster", "compile", "generate pdf"
+        "poster", "the poster", "my poster", "presentation", "the presentation",
+        "my presentation", "previous presentation", "last presentation",
+        "compile", "generate pdf"
     ]
     
     # Keywords that suggest searching for/looking up an existing paper

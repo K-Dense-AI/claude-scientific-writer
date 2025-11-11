@@ -23,7 +23,7 @@ from .core import (
     create_data_context_message,
     setup_claude_skills,
 )
-from .utils import find_existing_papers, detect_paper_reference
+from .utils import find_existing_papers, detect_paper_reference, scan_paper_directory
 
 
 async def main():
@@ -115,10 +115,10 @@ IMPORTANT - CONVERSATION CONTINUITY:
     print("  • Other files → copied to sources/ for CONTEXT")
     print("  • Original files are automatically deleted after copying")
     print("\n🤖 Intelligent Paper Detection:")
-    print("  • I automatically detect when you're referring to a previous paper")
-    print("  • Continue: 'continue', 'update', 'edit', 'the paper', etc.")
+    print("  • I automatically detect when you're referring to a previous paper/presentation")
+    print("  • Continue: 'continue', 'update', 'edit', 'the paper', 'the presentation', etc.")
     print("  • Search: 'look for', 'find', 'show me', 'where is', etc.")
-    print("  • Or reference the paper topic (e.g., 'find the acoustics paper')")
+    print("  • Or reference the topic (e.g., 'find the acoustics paper')")
     print("  • Say 'new paper' to explicitly start a fresh paper")
     print("\nType 'exit' or 'quit' to end the session.")
     print("Type 'help' for usage tips.")
@@ -159,7 +159,24 @@ IMPORTANT - CONVERSATION CONTINUITY:
                 if detected_paper_path and str(detected_paper_path) != current_paper_path:
                     current_paper_path = str(detected_paper_path)
                     print(f"\n🔍 Detected reference to existing paper: {detected_paper_path.name}")
-                    print(f"📂 Working on: {current_paper_path}\n")
+                    print(f"📂 Working on: {current_paper_path}")
+                    
+                    # Show what files exist in this paper
+                    paper_info = scan_paper_directory(detected_paper_path)
+                    file_count = sum([
+                        1 if paper_info['tex_final'] else 0,
+                        1 if paper_info['pdf_final'] else 0,
+                        len(paper_info['tex_drafts']),
+                        len(paper_info['pdf_drafts']),
+                        len(paper_info['figures']),
+                        len(paper_info['data']),
+                        len(paper_info['sources']),
+                        1 if paper_info['bibliography'] else 0,
+                        1 if paper_info['progress_log'] else 0,
+                        1 if paper_info['summary'] else 0,
+                    ])
+                    print(f"📄 Found {file_count} file(s) in this directory\n")
+                    
                 elif detected_paper_path and str(detected_paper_path) == current_paper_path:
                     # Already working on the right paper, just confirm
                     print(f"📂 Continuing with: {Path(current_paper_path).name}\n")
@@ -278,8 +295,46 @@ User request: {user_input}"""
                 print("📝 Starting a new paper...\n")
                 contextual_prompt = user_input
                 
+            elif current_paper_path and not data_files:
+                # Detected existing paper without new data files - provide context about what exists
+                paper_info = scan_paper_directory(Path(current_paper_path))
+                
+                # Build a context message about the paper's current state
+                context_parts = [
+                    f"[CONTEXT: You are currently working on a paper in: {current_paper_path}]",
+                    "[INSTRUCTION: Continue working on this existing paper. Do NOT create a new paper directory.]",
+                    "\n📁 Current paper contents:"
+                ]
+                
+                # Add information about what files exist
+                if paper_info['tex_final']:
+                    context_parts.append(f"  • Final LaTeX: {Path(paper_info['tex_final']).name}")
+                if paper_info['pdf_final']:
+                    context_parts.append(f"  • Final PDF: {Path(paper_info['pdf_final']).name}")
+                if paper_info['tex_drafts']:
+                    context_parts.append(f"  • Draft LaTeX files: {len(paper_info['tex_drafts'])} file(s)")
+                    for draft in paper_info['tex_drafts']:
+                        context_parts.append(f"    - {Path(draft).name}")
+                if paper_info['pdf_drafts']:
+                    context_parts.append(f"  • Draft PDF files: {len(paper_info['pdf_drafts'])} file(s)")
+                if paper_info['figures']:
+                    context_parts.append(f"  • Figures: {len(paper_info['figures'])} file(s)")
+                if paper_info['data']:
+                    context_parts.append(f"  • Data files: {len(paper_info['data'])} file(s)")
+                if paper_info['sources']:
+                    context_parts.append(f"  • Source/context files: {len(paper_info['sources'])} file(s)")
+                if paper_info['bibliography']:
+                    context_parts.append(f"  • Bibliography: {Path(paper_info['bibliography']).name}")
+                if paper_info['progress_log']:
+                    context_parts.append(f"  • Progress log: progress.md")
+                if paper_info['summary']:
+                    context_parts.append(f"  • Summary: SUMMARY.md")
+                
+                context_parts.append(f"\nUser request: {user_input}")
+                contextual_prompt = "\n".join(context_parts)
+                
             else:
-                # No data files, no special handling
+                # No data files, no detected paper
                 contextual_prompt = user_input
             
             # Send query to Claude
@@ -367,14 +422,14 @@ def _print_help():
     print("  • I'll make smart defaults if you don't specify details")
     print("  • Check progress.md for detailed execution logs")
     print("\n🔄 Intelligent Paper Detection:")
-    print("  • I automatically detect when you're referring to a previous paper")
-    print("  • Continue working: 'continue the paper', 'update my paper', 'edit the poster'")
-    print("  • Search/find: 'look for the X paper', 'find the paper about Y'")
-    print("  • Or mention the paper topic: 'show me the acoustics paper'")
+    print("  • I automatically detect when you're referring to a previous paper/presentation")
+    print("  • Continue working: 'continue the paper', 'update my presentation', 'edit the poster'")
+    print("  • Search/find: 'look for the X paper', 'find the presentation about Y'")
+    print("  • Or mention the topic: 'show me the acoustics paper'")
     print("  • Keywords like 'continue', 'update', 'edit', 'look for', 'find' trigger detection")
-    print("  • I'll find the most relevant paper based on topic matching")
+    print("  • I'll find the most relevant paper/presentation based on topic matching")
     print("  • Say 'new paper' or 'start fresh' to explicitly begin a new one")
-    print("  • Current working paper is tracked throughout the session")
+    print("  • Current working paper/presentation is tracked throughout the session")
     print("=" * 70)
 
 
