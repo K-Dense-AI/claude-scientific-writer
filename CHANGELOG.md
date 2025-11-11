@@ -6,6 +6,136 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.5.0] - 2025-11-11
+
+### ✨ Added
+
+#### Scientific Slides & Presentation System
+
+- **Professional Presentation Generation** - Create high-quality scientific slides directly from research papers or topics
+  - Support for academic conferences, research seminars, and institutional presentations
+  - Beautiful LaTeX Beamer templates with modern, professional designs
+  - Automatic content structuring optimized for scientific communication
+  - Integration with existing paper workflows
+
+- **Comprehensive Presentation Skill** - New `scientific-slides` skill with extensive resources
+  - **Design Guidelines** - 663-line comprehensive guide covering:
+    - Visual hierarchy and layout principles
+    - Color theory and accessibility (WCAG 2.1 compliance)
+    - Typography best practices for presentations
+    - Data visualization guidelines
+    - Animation and transition recommendations
+    - Venue-specific formatting (conference dimensions, aspect ratios)
+  - **LaTeX Beamer Templates** - Multiple professional themes ready to use
+  - **Presentation Assets** - Icons, diagrams, and visual elements
+  - **Example Scripts** - Python automation for presentation creation
+  - **Reference Materials** - Best practices for scientific presentations
+
+- **PowerPoint Conversion Support** - Generate both LaTeX and PowerPoint formats
+  - Python-based conversion scripts using `python-pptx`
+  - Preservation of layout, formatting, and design elements
+  - Support for complex slide structures and animations
+  - Export to multiple formats (PDF, PPTX)
+
+### 🔧 Improvements
+
+#### Enhanced Document Generation Workflow
+
+- **Intelligent Presentation Detection** - Automatic recognition of presentation requests
+  - Detects keywords like "presentation", "slides", "PowerPoint", "deck"
+  - Routes to appropriate templates and formatting
+  - Optimizes content structure for visual delivery
+
+- **Better Template Organization** - Improved skill system architecture
+  - Clear separation of document types (papers, posters, slides, grants, reports)
+  - Easier access to venue-specific templates
+  - Enhanced metadata and tagging for template discovery
+
+#### Output Organization
+
+- **Presentation-Specific Directories** - Organized output structure
+  - `drafts/` - LaTeX source files and initial versions
+  - `final/` - Compiled PDFs and PowerPoint files
+  - `figures/` - Presentation graphics and diagrams
+  - `references/` - Bibliography files
+  - `slide_images/` - Individual slide exports
+
+### 🎯 Usage Examples
+
+#### CLI - Generate Scientific Presentation
+
+```bash
+scientific-writer
+> Create a conference presentation on The AI Scientist framework by Sakana AI
+
+# The system will:
+# ✓ Generate professional Beamer slides
+# ✓ Structure content for visual delivery
+# ✓ Include diagrams and figures
+# ✓ Compile to PDF
+# ✓ Optionally convert to PowerPoint
+```
+
+#### API - Programmatic Presentation Generation
+
+```python
+import asyncio
+from scientific_writer import generate_paper
+
+async def main():
+    async for update in generate_paper(
+        "Create a research seminar presentation on CRISPR applications in agriculture"
+    ):
+        if update["type"] == "progress":
+            print(f"[{update['percentage']}%] {update['message']}")
+        else:
+            print(f"Presentation: {update['files']['pdf_final']}")
+
+asyncio.run(main())
+```
+
+#### Convert Paper to Slides
+
+```bash
+# Place your paper in the data folder
+cp my_paper.pdf data/
+
+scientific-writer
+> Convert this paper into a 20-minute conference presentation
+
+# The system will:
+# ✓ Extract key findings from the paper
+# ✓ Structure slides for time limit
+# ✓ Create visual representations
+# ✓ Generate speaker notes
+```
+
+### 💡 Key Features
+
+- **Professional Quality** - Publication-ready slides following best practices
+- **Scientific Accuracy** - Maintains rigor while optimizing for visual communication
+- **Flexible Formats** - LaTeX Beamer, PDF, and PowerPoint output
+- **Accessibility** - WCAG 2.1 compliant color schemes and layouts
+- **Time Optimization** - Automatic content pacing for different presentation lengths
+- **Visual Design** - Modern, clean aesthetics appropriate for academic settings
+
+### 📝 Files Added/Modified
+
+- `scientific_writer/.claude/skills/scientific-slides/` - Complete presentation skill directory
+  - `assets/powerpoint_design_guide.md` - Comprehensive 663-line design guide
+  - Additional templates, scripts, and references
+- Documentation updates reflecting new presentation capabilities
+
+### 🎨 Design Philosophy
+
+The scientific slides system follows evidence-based design principles:
+- **Cognitive Load Theory** - Minimizing extraneous information
+- **Dual Coding Theory** - Combining verbal and visual information
+- **Evidence-Based Medicine Presentation** - CONSORT/PRISMA diagram standards
+- **Academic Communication Best Practices** - Nature, Science, Cell presentation guidelines
+
+---
+
 ## [2.4.0] - 2025-11-07
 
 ### ✨ Added
