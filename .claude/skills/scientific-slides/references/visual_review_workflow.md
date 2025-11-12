@@ -4,6 +4,35 @@
 
 Visual review is a critical quality assurance step for presentations, allowing you to identify and fix layout issues, text overflow, element overlap, and design problems before presenting. This guide covers converting presentations to images, systematic visual inspection, common issues, and iterative improvement strategies.
 
+## ⚠️ CRITICAL RULE: NEVER READ PDF PRESENTATIONS DIRECTLY
+
+**MANDATORY: Always convert presentation PDFs to images FIRST, then review the images.**
+
+### Why This Rule Exists
+
+- **Buffer Overflow Prevention**: Presentation PDFs (especially multi-slide decks) cause "JSON message exceeded maximum buffer size" errors when read directly
+- **Visual Accuracy**: Images show exactly what the audience will see, including rendering issues
+- **Performance**: Image-based review is faster and more reliable than PDF text extraction
+- **Consistency**: Ensures uniform review process for all presentations
+
+### The ONLY Correct Workflow for Presentations
+
+1. ✅ Generate PDF from PowerPoint/Beamer source
+2. ✅ **Convert PDF to images** using pdftoppm or similar tool
+3. ✅ **Review the image files** systematically
+4. ✅ Document issues by slide number
+5. ✅ Fix issues in source files
+6. ✅ Regenerate PDF and repeat
+
+### What NOT To Do
+
+- ❌ NEVER use read_file tool on presentation PDFs
+- ❌ NEVER attempt to read PDF slides as text
+- ❌ NEVER skip the image conversion step
+- ❌ NEVER assume PDF is "small enough" to read directly
+
+**If you're reviewing a presentation and haven't converted to images yet, STOP and convert first.**
+
 ## Why Visual Review Matters
 
 ### Common Problems Invisible in Source

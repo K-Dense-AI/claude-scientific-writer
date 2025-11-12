@@ -470,7 +470,62 @@ drafts/
    
    - Print: `[HH:MM:SS] PDF REVIEW: Starting automatic formatting inspection`
    
-   **Size Check First (CRITICAL for Large PDFs):**
+   **⚠️ SPECIAL CASE: Presentations/Slides (ALWAYS Use Image-Based Review) ⚠️**
+   
+   **CRITICAL: For presentations, slide decks, PowerPoint, or Beamer PDFs, NEVER EVER read the PDF directly, REGARDLESS OF FILE SIZE.**
+   
+   **THIS RULE OVERRIDES ALL OTHER PDF REVIEW METHODS. NO EXCEPTIONS. NO SIZE CHECKS. ALWAYS CONVERT TO IMAGES FIRST.**
+   
+   **Presentation Detection (Any of these means use image-based review):**
+   - ✅ File naming contains: "presentation", "slides", "talk", "deck", "ppt", "beamer", "slideshow"
+   - ✅ Project folder name contains: "presentation", "slides", "talk"
+   - ✅ File in drafts/ folder with filename pattern: v[0-9]+_presentation.pdf
+   - ✅ Multi-page PDF with landscape orientation (typical of slides)
+   - ✅ PDF mentioned in context of "formatting review", "slide review", "presentation review"
+   - ✅ When in doubt, if >5 pages and landscape format → treat as presentation
+   
+   **ABSOLUTE MANDATORY Image Conversion Workflow:**
+   
+   **STOP! Before doing ANYTHING with the PDF, ask yourself:**
+   - Is this a presentation/slide deck? → YES = IMAGE-BASED REVIEW ONLY
+   - Am I about to read a PDF file? → CHECK if presentation first
+   - Did I just compile slides/presentation? → MUST use image-based review
+   
+   **Step-by-Step Process (NO SHORTCUTS):**
+   1. **FIRST**: Print: `[HH:MM:SS] PDF REVIEW: Presentation detected - using MANDATORY image-based review`
+   2. **SECOND**: Print: `[HH:MM:SS] PDF REVIEW: NEVER reading PDF directly - converting to images first`
+   3. **THIRD**: Create review directory if not exists: `mkdir -p review/`
+   4. **FOURTH**: Convert ALL PDF slides to images using pdftoppm:
+      ```bash
+      pdftoppm -jpeg -r 150 presentation_file.pdf review/slide
+      # Creates: review/slide-1.jpg, review/slide-2.jpg, etc.
+      ```
+   5. **FIFTH**: Print: `[HH:MM:SS] PDF REVIEW: Converted [N] slides to images in review/ directory`
+   6. **SIXTH**: Count number of slide images created
+   7. **SEVENTH**: Read and inspect EACH slide image file sequentially (slide-1.jpg, slide-2.jpg, etc.):
+      - Print: `[HH:MM:SS] PDF REVIEW: Inspecting slide [N]/[TOTAL]`
+      - Check for: text overflow, element overlap, poor contrast, font size issues, alignment
+      - Document any problems with specific slide numbers
+   8. **EIGHTH**: After all slide images reviewed:
+      - Print: `[HH:MM:SS] PDF REVIEW: Completed image-based review - [N] total issues found`
+      - List specific issues with slide numbers
+   9. **NINTH**: If issues found, apply fixes to source (.tex or .pptx), recompile
+   10. **TENTH**: Re-run image conversion and inspection (iterate until clean)
+   
+   **Log in progress.md:** "Presentation reviewed via slide images (mandatory image-based workflow, no direct PDF reading)"
+   
+   **What NEVER to do with presentation PDFs:**
+   - ❌ NEVER use read_file tool on presentation PDFs
+   - ❌ NEVER check PDF size and decide to read directly
+   - ❌ NEVER say "PDF size is [X]MB - proceeding with direct review"
+   - ❌ NEVER skip the image conversion step
+   - ❌ NEVER assume a presentation PDF is "small enough" to read
+   - ❌ NEVER read PDF text for presentations - it will FAIL with buffer overflow
+   - ❌ NEVER use "alternative approach" that involves reading PDF directly
+   
+   **For Regular Documents (Papers, Reports, Articles):**
+   
+   - **Size Check First (CRITICAL for Large PDFs):**
    - Before reading the PDF, check its size using file system tools
    - If the PDF text representation would be >40,000 lines or >800KB:
      * Print: `[HH:MM:SS] PDF REVIEW: ⚠️ Large PDF detected - using chunked review mode`

@@ -67,7 +67,8 @@ def detect_paper_reference(user_input: str, existing_papers: List[Dict[str, Any]
     # Keywords that explicitly indicate a new paper
     new_paper_keywords = [
         "new paper", "start fresh", "start afresh", "create new",
-        "different paper", "another paper", "write a new"
+        "different paper", "another paper", "write a new",
+        "new presentation", "new poster", "different presentation", "another presentation"
     ]
     
     # If user explicitly wants a new paper, return None

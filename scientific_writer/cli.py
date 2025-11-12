@@ -147,7 +147,10 @@ IMPORTANT - CONVERSATION CONTINUITY:
             existing_papers = find_existing_papers(output_folder)
             
             # Check if user wants to start a new paper
-            new_paper_keywords = ["new paper", "start fresh", "start afresh", "create new", "different paper", "another paper"]
+            new_paper_keywords = [
+                "new paper", "start fresh", "start afresh", "create new", "different paper", "another paper",
+                "new presentation", "new poster", "different presentation", "another presentation"
+            ]
             is_new_paper_request = any(keyword in user_input.lower() for keyword in new_paper_keywords)
             
             # Try to detect reference to existing paper
