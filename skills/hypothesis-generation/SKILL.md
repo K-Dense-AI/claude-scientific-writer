@@ -123,15 +123,60 @@ For each hypothesis, generate specific, quantitative predictions:
 
 ### 8. Present Structured Output
 
-Use the template in `assets/hypothesis_output_template.md` to present hypotheses in a clear, consistent format:
+Generate a professional LaTeX document using the template in `assets/hypothesis_report_template.tex`. The report should be well-formatted with colored boxes for visual organization and divided into a concise main text with comprehensive appendices.
 
-**Standard structure:**
-1. **Background & Context** - Phenomenon and literature summary
-2. **Competing Hypotheses** - Enumerated hypotheses with mechanistic explanations
-3. **Quality Assessment** - Evaluation of each hypothesis
-4. **Experimental Designs** - Proposed tests for each hypothesis
-5. **Testable Predictions** - Specific, measurable predictions
-6. **Critical Comparisons** - How to distinguish between hypotheses
+**Document Structure:**
+
+**Main Text (Concise, 8-14 pages):**
+1. **Executive Summary** - One-page overview in summary box
+2. **Competing Hypotheses** - Each hypothesis in its own colored box (3-5 hypotheses)
+3. **Testable Predictions** - Predictions in amber boxes for each hypothesis
+4. **Critical Comparisons** - Comparison boxes showing how to distinguish hypotheses
+
+**Appendices (Comprehensive, Detailed):**
+- **Appendix A:** Comprehensive literature review with extensive citations
+- **Appendix B:** Detailed experimental designs with full protocols
+- **Appendix C:** Quality assessment tables and detailed evaluations
+- **Appendix D:** Supplementary evidence and analogous systems
+
+**Colored Box Usage:**
+
+Use the custom box environments from `hypothesis_generation.sty`:
+
+- `hypothesisbox1` through `hypothesisbox5` - For each competing hypothesis (blue, green, purple, teal, orange)
+- `predictionbox` - For testable predictions (amber)
+- `comparisonbox` - For critical comparisons (steel gray)
+- `evidencebox` - For supporting evidence highlights (light blue)
+- `summarybox` - For executive summary (blue)
+
+**Each hypothesis box should contain:**
+- **Mechanistic Explanation:** 2-3 paragraphs explaining HOW and WHY
+- **Key Supporting Evidence:** 3-5 bullet points with citations
+- **Core Assumptions:** 2-4 enumerated assumptions
+
+**Citation Requirements:**
+
+Aim for extensive citation to support all claims:
+- **Main text:** 15-20 key citations for most important evidence
+- **Appendix A:** 40-60+ comprehensive citations covering all relevant literature
+- **Total target:** 50+ references in bibliography
+
+Every mechanism, evidence point, and claim should be supported by citations. Use `\citep{author2023}` for parenthetical citations.
+
+**LaTeX Compilation:**
+
+The template requires XeLaTeX or LuaLaTeX for proper rendering:
+
+```bash
+xelatex hypothesis_report.tex
+bibtex hypothesis_report
+xelatex hypothesis_report.tex
+xelatex hypothesis_report.tex
+```
+
+**Required packages:** The `hypothesis_generation.sty` style package must be in the same directory or LaTeX path. It requires: tcolorbox, xcolor, fontspec, fancyhdr, titlesec, enumitem, booktabs, natbib.
+
+**Quick Reference:** See `assets/FORMATTING_GUIDE.md` for detailed examples of all box types, color schemes, and common formatting patterns.
 
 ## Quality Standards
 
@@ -153,4 +198,6 @@ Ensure all generated hypotheses meet these standards:
 
 ### assets/
 
-- `hypothesis_output_template.md` - Structured format for presenting hypotheses consistently with all required sections
+- `hypothesis_generation.sty` - LaTeX style package providing colored boxes, professional formatting, and custom environments for hypothesis reports
+- `hypothesis_report_template.tex` - Complete LaTeX template with main text structure and comprehensive appendix sections
+- `FORMATTING_GUIDE.md` - Quick reference guide with examples of all box types, color schemes, citation practices, and troubleshooting tips
