@@ -6,6 +6,178 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.6.0] - 2025-11-17
+
+### ✨ Added
+
+#### Professional Hypothesis Generation Reports
+
+- **Scientific Hypothesis Generation Skill** - Comprehensive framework for developing testable scientific hypotheses
+  - Systematic workflow from observations to testable predictions
+  - Evidence-based approach with literature synthesis
+  - Generates 3-5 competing mechanistic hypotheses
+  - Professional LaTeX reports with beautiful colored boxes
+  - Structured as concise main text (8-14 pages) with comprehensive appendices
+
+- **Hypothesis Report Features**
+  - **Colored Box System** - Visual organization with custom LaTeX environments:
+    - 5 distinct hypothesis boxes (blue, green, purple, teal, orange)
+    - Prediction boxes for testable predictions (amber)
+    - Comparison boxes for distinguishing hypotheses (steel gray)
+    - Evidence boxes for highlighting key support (light blue)
+    - Summary boxes for executive overview
+  - **Professional Structure**:
+    - Executive Summary - One-page high-level overview
+    - Competing Hypotheses - Each in dedicated colored box with mechanism, evidence, and assumptions
+    - Testable Predictions - Specific, measurable predictions for each hypothesis
+    - Critical Comparisons - How to experimentally distinguish between hypotheses
+  - **Comprehensive Appendices**:
+    - Appendix A: Literature Review (40-60+ citations)
+    - Appendix B: Detailed Experimental Designs
+    - Appendix C: Quality Assessment Tables
+    - Appendix D: Supplementary Evidence and Analogous Systems
+
+- **Rigorous Quality Framework** - Seven-dimensional evaluation system:
+  - **Testability** - Can be empirically tested with current methods
+  - **Falsifiability** - Clear conditions that would disprove hypothesis
+  - **Parsimony** - Simplest explanation fitting the evidence (Occam's Razor)
+  - **Explanatory Power** - Accounts for substantial portion of observations
+  - **Scope** - Range of phenomena and contexts covered
+  - **Consistency** - Alignment with established knowledge
+  - **Novelty** - New insights beyond restating known facts
+
+- **Comprehensive Resources**
+  - `hypothesis_generation.sty` - Professional LaTeX style package with colored boxes
+  - `hypothesis_report_template.tex` - Complete template with main text and appendices
+  - `hypothesis_quality_criteria.md` - Detailed evaluation framework (200+ lines)
+  - `experimental_design_patterns.md` - Common approaches across domains
+  - `literature_search_strategies.md` - Effective search techniques
+  - `FORMATTING_GUIDE.md` - Quick reference for all formatting features
+
+### 🔧 Improvements
+
+#### Enhanced Scientific Workflow
+
+- **Literature Integration** - Dual search strategy:
+  - PubMed for biomedical topics
+  - General web search for broader scientific domains
+  - Synthesis of 50+ references per report (15-20 main text, 40-60+ appendix)
+  - Evidence-based hypothesis development
+
+- **Mechanistic Focus** - Emphasis on explanatory mechanisms:
+  - Each hypothesis explains HOW and WHY (not just WHAT)
+  - Multiple levels of explanation (molecular, cellular, systemic, population)
+  - Novel combinations of known mechanisms
+  - Challenge of assumptions in existing explanations
+
+- **Experimental Design** - Practical testing strategies:
+  - Laboratory experiments (in vitro, in vivo, computational)
+  - Observational studies (cross-sectional, longitudinal, case-control)
+  - Clinical trials (where applicable)
+  - Natural experiments and quasi-experimental designs
+
+### 🎯 Usage Examples
+
+#### CLI - Generate Hypothesis Report
+
+```bash
+scientific-writer
+> Generate competing hypotheses for why NAD+ levels decline with aging
+
+# The system will:
+# ✓ Search biomedical literature via PubMed and web
+# ✓ Synthesize current understanding
+# ✓ Generate 3-5 mechanistic hypotheses
+# ✓ Evaluate each hypothesis on 7 quality dimensions
+# ✓ Design experiments to test predictions
+# ✓ Create professional LaTeX report with colored boxes
+# ✓ Compile to beautiful PDF
+```
+
+#### API - Programmatic Hypothesis Generation
+
+```python
+import asyncio
+from scientific_writer import generate_paper
+
+async def main():
+    async for update in generate_paper(
+        "What mechanisms could explain the obesity paradox in heart failure patients?"
+    ):
+        if update["type"] == "progress":
+            print(f"[{update['percentage']}%] {update['message']}")
+        else:
+            print(f"Report: {update['files']['pdf_final']}")
+
+asyncio.run(main())
+```
+
+#### Research Applications
+
+```bash
+# Cancer biology
+> Why do some tumors respond to immunotherapy while others don't?
+
+# Neuroscience
+> What mechanisms could explain the therapeutic effect of ketamine in depression?
+
+# Climate science
+> Generate hypotheses for accelerated ice sheet melting in Greenland
+
+# Materials science
+> Why does this novel catalyst show unexpected selectivity?
+```
+
+### 💡 Key Features
+
+- **Evidence-Based** - All hypotheses grounded in literature with extensive citations
+- **Mechanistic** - Focus on explanatory mechanisms, not just descriptive patterns
+- **Testable** - Specific, measurable predictions for each hypothesis
+- **Comprehensive** - Multiple competing explanations systematically evaluated
+- **Beautiful** - Professional LaTeX formatting with colored visual organization
+- **Rigorous** - Seven-dimensional quality assessment framework
+- **Practical** - Detailed experimental designs ready for implementation
+
+### 📝 Files Added
+
+- `skills/hypothesis-generation/` - Complete hypothesis generation skill
+  - `SKILL.md` - Comprehensive workflow documentation (200+ lines)
+  - `assets/hypothesis_generation.sty` - LaTeX style package with colored boxes
+  - `assets/hypothesis_report_template.tex` - Professional report template
+  - `assets/FORMATTING_GUIDE.md` - Quick reference for formatting
+  - `references/hypothesis_quality_criteria.md` - Evaluation framework
+  - `references/experimental_design_patterns.md` - Design strategies
+  - `references/literature_search_strategies.md` - Search techniques
+
+### 🎨 Report Structure
+
+The hypothesis generation system creates beautifully formatted reports:
+
+**Main Text (Concise):**
+- Executive Summary (1 page)
+- Competing Hypotheses (3-5 hypotheses in colored boxes)
+- Testable Predictions (amber boxes)
+- Critical Comparisons (gray boxes)
+
+**Appendices (Comprehensive):**
+- Literature Review (40-60+ citations)
+- Experimental Designs (detailed protocols)
+- Quality Assessment (systematic evaluation)
+- Supplementary Evidence (supporting data)
+
+### 🔬 Scientific Rigor
+
+The system ensures high-quality hypotheses through:
+
+1. **Systematic Literature Search** - Comprehensive review of existing evidence
+2. **Multiple Hypotheses** - 3-5 competing explanations, not just one
+3. **Quality Evaluation** - Seven-dimensional assessment framework
+4. **Experimental Tests** - Detailed designs to distinguish hypotheses
+5. **Clear Predictions** - Specific, quantitative, falsifiable predictions
+6. **Professional Presentation** - Publication-ready LaTeX reports
+
+---
+
 ## [2.5.0] - 2025-11-11
 
 ### ✨ Added
