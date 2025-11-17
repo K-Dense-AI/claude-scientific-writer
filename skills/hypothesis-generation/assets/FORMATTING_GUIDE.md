@@ -81,11 +81,12 @@ xelatex your_document.tex
 
 **Use for:** Presenting each competing hypothesis with its mechanism, evidence, and assumptions
 
-**Best practices:**
-- Keep mechanistic explanations to 2-3 paragraphs
-- Include 3-5 key evidence points with citations
-- List 2-4 core assumptions
+**Best practices for 4-page main text:**
+- Keep mechanistic explanations to 1-2 brief paragraphs only
+- Include 2-3 most essential evidence points with citations
+- List 1-2 most critical assumptions
 - Ensure each hypothesis is genuinely distinct
+- All detailed explanations go to Appendix A
 
 ---
 
@@ -104,11 +105,12 @@ xelatex your_document.tex
 
 **Use for:** Testable predictions derived from each hypothesis
 
-**Best practices:**
+**Best practices for 4-page main text:**
 - Make predictions specific and quantitative when possible
 - Clearly state conditions under which prediction should hold
 - Always specify falsification criteria
-- Include 2-4 predictions per hypothesis
+- Include only 1-2 most critical predictions per hypothesis in main text
+- Additional predictions go to appendices
 
 ---
 
@@ -176,31 +178,32 @@ xelatex your_document.tex
 
 ## Document Structure
 
-### Main Text (Concise, Focused)
+### Main Text (Maximum 4 Pages - Highly Concise)
 
-1. **Executive Summary** (1 page)
+1. **Executive Summary** (0.5-1 page)
    - Use `summarybox`
-   - Phenomenon overview
-   - List all hypotheses briefly
+   - Brief phenomenon overview
+   - List all hypotheses in 1 sentence each
    - Recommended approach
 
-2. **Competing Hypotheses** (3-6 pages)
+2. **Competing Hypotheses** (2-2.5 pages)
    - Use `hypothesisbox1`, `hypothesisbox2`, etc.
    - One box per hypothesis
-   - Mechanistic explanation + key evidence + assumptions
+   - Brief mechanistic explanation (1-2 paragraphs) + essential evidence (2-3 points) + key assumptions (1-2)
    - Target: 3-5 hypotheses
+   - Keep highly concise - details go to appendices
 
-3. **Testable Predictions** (2-4 pages)
+3. **Testable Predictions** (0.5-1 page)
    - Use `predictionbox` for each hypothesis
-   - 2-4 specific predictions per hypothesis
-   - Include conditions, expected outcomes, falsification
+   - 1-2 most critical predictions per hypothesis only
+   - Very brief - full predictions in appendices
 
-4. **Critical Comparisons** (2-3 pages)
-   - Use `comparisonbox` for each comparison
-   - Show how to distinguish hypotheses
-   - Identify priority experiments
+4. **Critical Comparisons** (0.5-1 page)
+   - Use `comparisonbox` for highest priority comparison only
+   - Show how to distinguish top hypotheses
+   - Additional comparisons in appendices
 
-**Main text total: ~8-14 pages**
+**Main text total: Maximum 4 pages - be extremely selective about what goes here**
 
 ### Appendices (Comprehensive, Detailed)
 
@@ -249,10 +252,12 @@ xelatex your_document.tex
 - Cite every claim and piece of evidence
 
 ### Citation Density Guidelines
-- Main hypothesis boxes: 3-5 citations per box
+- Main hypothesis boxes: 2-3 citations per box (most essential only)
+- Main text total: 10-15 citations maximum (keep concise)
 - Appendix A literature sections: 8-15 citations per subsection
 - Experimental designs: 2-5 citations for methods/precedents
 - Quality assessments: Citations as needed for evaluation criteria
+- Total document: 50+ citations (vast majority in appendices)
 
 ## Tables
 
@@ -468,20 +473,21 @@ tlmgr install tcolorbox xcolor fontspec fancyhdr titlesec enumitem booktabs natb
 Before finalizing your document:
 
 - [ ] Title page has phenomenon name
-- [ ] Executive summary is concise (≤1 page)
+- [ ] **Main text is 4 pages maximum**
+- [ ] Executive summary is concise (0.5-1 page)
 - [ ] Each hypothesis in its own colored box
 - [ ] 3-5 hypotheses presented (not more)
-- [ ] Each hypothesis has mechanistic explanation (2-3 paragraphs)
-- [ ] Each hypothesis has 3-5 key evidence points with citations
-- [ ] Each hypothesis has 2-4 core assumptions
-- [ ] Predictions boxes for each hypothesis (2-4 predictions each)
-- [ ] Comparison boxes for major hypothesis pairs
+- [ ] Each hypothesis has brief mechanistic explanation (1-2 paragraphs)
+- [ ] Each hypothesis has 2-3 most essential evidence points with citations
+- [ ] Each hypothesis has 1-2 most critical assumptions
+- [ ] Predictions boxes with 1-2 key predictions per hypothesis
+- [ ] Priority comparison box in main text (others in appendix)
 - [ ] Priority experiments identified
-- [ ] Appendix A has comprehensive literature review
+- [ ] Appendix A has comprehensive literature review with detailed evidence
 - [ ] Appendix B has detailed experimental protocols
 - [ ] Appendix C has quality assessment tables
 - [ ] Appendix D has supplementary evidence
-- [ ] 15-20 citations in main text
+- [ ] 10-15 citations in main text (selective)
 - [ ] 50+ total citations in full document
 - [ ] All boxes use correct colors
 - [ ] Document compiles without errors

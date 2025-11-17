@@ -127,11 +127,13 @@ Generate a professional LaTeX document using the template in `assets/hypothesis_
 
 **Document Structure:**
 
-**Main Text (Concise, 8-14 pages):**
-1. **Executive Summary** - One-page overview in summary box
-2. **Competing Hypotheses** - Each hypothesis in its own colored box (3-5 hypotheses)
-3. **Testable Predictions** - Predictions in amber boxes for each hypothesis
-4. **Critical Comparisons** - Comparison boxes showing how to distinguish hypotheses
+**Main Text (Maximum 4 pages):**
+1. **Executive Summary** - Brief overview in summary box (0.5-1 page)
+2. **Competing Hypotheses** - Each hypothesis in its own colored box with brief mechanistic explanation and key evidence (2-2.5 pages for 3-5 hypotheses)
+3. **Testable Predictions** - Key predictions in amber boxes (0.5-1 page)
+4. **Critical Comparisons** - Priority comparison boxes (0.5-1 page)
+
+Keep main text highly concise - only the most essential information. All details go to appendices.
 
 **Appendices (Comprehensive, Detailed):**
 - **Appendix A:** Comprehensive literature review with extensive citations
@@ -149,19 +151,21 @@ Use the custom box environments from `hypothesis_generation.sty`:
 - `evidencebox` - For supporting evidence highlights (light blue)
 - `summarybox` - For executive summary (blue)
 
-**Each hypothesis box should contain:**
-- **Mechanistic Explanation:** 2-3 paragraphs explaining HOW and WHY
-- **Key Supporting Evidence:** 3-5 bullet points with citations
-- **Core Assumptions:** 2-4 enumerated assumptions
+**Each hypothesis box should contain (keep concise for 4-page limit):**
+- **Mechanistic Explanation:** 1-2 brief paragraphs explaining HOW and WHY
+- **Key Supporting Evidence:** 2-3 bullet points with citations (most important evidence only)
+- **Core Assumptions:** 1-2 critical assumptions
+
+All detailed explanations, additional evidence, and comprehensive discussions belong in the appendices.
 
 **Citation Requirements:**
 
 Aim for extensive citation to support all claims:
-- **Main text:** 15-20 key citations for most important evidence
-- **Appendix A:** 40-60+ comprehensive citations covering all relevant literature
+- **Main text:** 10-15 key citations for most important evidence only (keep concise for 4-page limit)
+- **Appendix A:** 40-70+ comprehensive citations covering all relevant literature
 - **Total target:** 50+ references in bibliography
 
-Every mechanism, evidence point, and claim should be supported by citations. Use `\citep{author2023}` for parenthetical citations.
+Main text citations should be selective - cite only the most critical papers. All comprehensive citation and detailed literature discussion belongs in the appendices. Use `\citep{author2023}` for parenthetical citations.
 
 **LaTeX Compilation:**
 
