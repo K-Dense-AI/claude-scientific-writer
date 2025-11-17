@@ -3,6 +3,7 @@
 Research Information Lookup Tool
 Uses Perplexity's Sonar Pro or Sonar Reasoning Pro models through OpenRouter.
 Automatically selects the appropriate model based on query complexity.
+Supports parallel research query execution for improved performance.
 """
 
 import os
@@ -12,6 +13,8 @@ import time
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 from urllib.parse import quote
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 
 
 class ResearchLookup:
@@ -231,8 +234,178 @@ Remember: This is for academic research purposes. Prioritize accuracy, completen
 
         return citations
 
-    def batch_lookup(self, queries: List[str], delay: float = 1.0) -> List[Dict[str, Any]]:
-        """Perform multiple research lookups with optional delay between requests."""
+    def identify_research_topics(self, text: str, output_file: Optional[str] = None) -> List[str]:
+        """
+        Identify research topics/questions from a text that need to be looked up.
+        
+        Args:
+            text: Input text to analyze for research topics
+            output_file: Optional path to save identified topics
+            
+        Returns:
+            List of identified research topics/questions
+        """
+        print("[Research] Identifying research topics...")
+        
+        # Use the API to identify research topics
+        messages = [
+            {
+                "role": "system",
+                "content": "You are a research assistant. Extract and list all specific research topics, questions, or areas that would benefit from literature lookup. Each topic should be a clear, focused research question."
+            },
+            {
+                "role": "user",
+                "content": f"""Analyze the following text and identify all research topics, questions, or areas that would benefit from academic literature lookup.
+
+Format your response as a numbered list, with each item being a specific, focused research question or topic.
+
+Text to analyze:
+{text}
+
+Provide ONLY the numbered list of research topics, one per line, without any additional explanation."""
+            }
+        ]
+        
+        try:
+            # Use the pro model for this task (fast and efficient)
+            response = self._make_request(messages, model=self.model_pro)
+            
+            if "choices" in response and len(response["choices"]) > 0:
+                content = response["choices"][0]["message"]["content"]
+                
+                # Parse the numbered list into individual topics
+                topics = []
+                for line in content.strip().split('\n'):
+                    line = line.strip()
+                    if line and (line[0].isdigit() or line.startswith('-') or line.startswith('•')):
+                        # Remove numbering/bullets
+                        topic = line.lstrip('0123456789.-•) ').strip()
+                        if topic:
+                            topics.append(topic)
+                
+                print(f"[Research] Identified {len(topics)} research topics")
+                
+                # Save to file if requested
+                if output_file:
+                    self.save_topics_to_file(topics, output_file)
+                    
+                return topics
+            else:
+                raise Exception("Failed to identify research topics")
+                
+        except Exception as e:
+            print(f"[Research] Error identifying topics: {str(e)}")
+            return []
+    
+    def save_topics_to_file(self, topics: List[str], filepath: str) -> None:
+        """
+        Save research topics to a text file.
+        
+        Args:
+            topics: List of research topics
+            filepath: Path to output file
+        """
+        output_path = Path(filepath)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(f"# Research Topics Identified\n")
+            f.write(f"# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"# Total topics: {len(topics)}\n\n")
+            
+            for i, topic in enumerate(topics, 1):
+                f.write(f"{i}. {topic}\n")
+        
+        print(f"[Research] Saved {len(topics)} topics to {filepath}")
+    
+    def load_topics_from_file(self, filepath: str) -> List[str]:
+        """
+        Load research topics from a text file.
+        
+        Args:
+            filepath: Path to input file
+            
+        Returns:
+            List of research topics
+        """
+        topics = []
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                # Skip comments and empty lines
+                if line and not line.startswith('#'):
+                    # Remove numbering if present
+                    topic = line.lstrip('0123456789.-•) ').strip()
+                    if topic:
+                        topics.append(topic)
+        
+        print(f"[Research] Loaded {len(topics)} topics from {filepath}")
+        return topics
+    
+    def parallel_lookup(self, queries: List[str], max_workers: int = 5) -> List[Dict[str, Any]]:
+        """
+        Perform multiple research lookups in parallel using ThreadPoolExecutor.
+        
+        Args:
+            queries: List of research queries
+            max_workers: Maximum number of parallel workers (default: 5)
+            
+        Returns:
+            List of results in the same order as input queries
+        """
+        print(f"[Research] Starting parallel lookup for {len(queries)} queries with {max_workers} workers...")
+        
+        results = [None] * len(queries)  # Pre-allocate results list
+        
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit all queries
+            future_to_index = {
+                executor.submit(self.lookup, query): i 
+                for i, query in enumerate(queries)
+            }
+            
+            # Process results as they complete
+            completed = 0
+            for future in as_completed(future_to_index):
+                index = future_to_index[future]
+                try:
+                    result = future.result()
+                    results[index] = result
+                    completed += 1
+                    
+                    query_preview = queries[index][:50]
+                    status = "✓" if result["success"] else "✗"
+                    print(f"[Research] {status} Completed {completed}/{len(queries)}: {query_preview}...")
+                    
+                except Exception as e:
+                    print(f"[Research] ✗ Error in query {index + 1}: {str(e)}")
+                    results[index] = {
+                        "success": False,
+                        "query": queries[index],
+                        "error": str(e),
+                        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    }
+        
+        print(f"[Research] Parallel lookup complete. {sum(1 for r in results if r and r['success'])}/{len(queries)} successful")
+        return results
+
+    def batch_lookup(self, queries: List[str], delay: float = 1.0, parallel: bool = False, max_workers: int = 5) -> List[Dict[str, Any]]:
+        """
+        Perform multiple research lookups with optional delay between requests.
+        
+        Args:
+            queries: List of research queries
+            delay: Delay between sequential requests (ignored if parallel=True)
+            parallel: If True, run queries in parallel (default: False for backward compatibility)
+            max_workers: Maximum parallel workers when parallel=True (default: 5)
+            
+        Returns:
+            List of results
+        """
+        if parallel:
+            return self.parallel_lookup(queries, max_workers=max_workers)
+        
+        # Sequential execution (original behavior)
         results = []
 
         for i, query in enumerate(queries):
@@ -246,6 +419,70 @@ Remember: This is for academic research purposes. Prioritize accuracy, completen
             print(f"[Research] Completed query {i+1}/{len(queries)}: {query[:50]}...")
 
         return results
+
+    def identify_and_research(
+        self, 
+        text: str, 
+        topics_file: Optional[str] = None,
+        parallel: bool = True,
+        max_workers: int = 5,
+        output_file: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Complete workflow: identify research topics and conduct parallel research.
+        
+        Args:
+            text: Input text to analyze for research topics
+            topics_file: Optional path to save identified topics
+            parallel: Whether to run queries in parallel (default: True)
+            max_workers: Maximum parallel workers (default: 5)
+            output_file: Optional path to save results JSON
+            
+        Returns:
+            Dictionary containing topics and results
+        """
+        print("[Research] Starting complete research workflow...")
+        
+        # Step 1: Identify research topics
+        topics = self.identify_research_topics(text, output_file=topics_file)
+        
+        if not topics:
+            return {
+                "success": False,
+                "error": "No research topics identified",
+                "topics": [],
+                "results": []
+            }
+        
+        # Step 2: Conduct research
+        print(f"\n[Research] Conducting research on {len(topics)} topics...")
+        results = self.batch_lookup(topics, parallel=parallel, max_workers=max_workers)
+        
+        # Step 3: Save results if requested
+        if output_file:
+            output_path = Path(output_file)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            output_data = {
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "total_topics": len(topics),
+                "successful_queries": sum(1 for r in results if r["success"]),
+                "topics": topics,
+                "results": results
+            }
+            
+            with open(output_path, 'w', encoding='utf-8') as f:
+                json.dump(output_data, f, indent=2, ensure_ascii=False)
+            
+            print(f"[Research] Complete results saved to {output_file}")
+        
+        return {
+            "success": True,
+            "topics": topics,
+            "results": results,
+            "successful_queries": sum(1 for r in results if r["success"]),
+            "total_queries": len(results)
+        }
 
     def get_model_info(self) -> Dict[str, Any]:
         """Get information about available models from OpenRouter."""
@@ -265,12 +502,39 @@ def main():
     """Command-line interface for testing the research lookup tool."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Research Information Lookup Tool")
+    parser = argparse.ArgumentParser(
+        description="Research Information Lookup Tool with Parallel Execution",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Single query
+  python research_lookup.py "Recent advances in CRISPR"
+  
+  # Identify research topics from text and save to file
+  python research_lookup.py --identify input.txt --topics-file topics.txt
+  
+  # Run parallel research from saved topics
+  python research_lookup.py --topics-file topics.txt --parallel --max-workers 10
+  
+  # Batch queries with parallel execution
+  python research_lookup.py --batch "CRISPR" "mRNA vaccines" "AI in medicine" --parallel
+        """
+    )
     parser.add_argument("query", nargs="?", help="Research query to look up")
     parser.add_argument("--model-info", action="store_true", help="Show available models")
     parser.add_argument("--batch", nargs="+", help="Run multiple queries")
     parser.add_argument("--force-model", choices=['pro', 'reasoning'], 
                        help="Force use of specific model (pro=fast lookup, reasoning=deep analysis)")
+    parser.add_argument("--parallel", action="store_true", 
+                       help="Run batch queries in parallel (much faster)")
+    parser.add_argument("--max-workers", type=int, default=5,
+                       help="Maximum parallel workers (default: 5)")
+    parser.add_argument("--identify", type=str, metavar="FILE",
+                       help="Identify research topics from input text file")
+    parser.add_argument("--topics-file", type=str, metavar="FILE",
+                       help="Save identified topics to or load topics from this file")
+    parser.add_argument("--output", type=str, metavar="FILE",
+                       help="Save research results to JSON file")
 
     args = parser.parse_args()
 
@@ -293,18 +557,75 @@ def main():
                         print(f"  - {model['id']}: {model.get('name', 'N/A')}")
             return 0
 
-        if not args.query and not args.batch:
+        # Handle topic identification
+        if args.identify:
+            if not os.path.exists(args.identify):
+                print(f"Error: Input file not found: {args.identify}")
+                return 1
+            
+            with open(args.identify, 'r', encoding='utf-8') as f:
+                text = f.read()
+            
+            topics = research.identify_research_topics(text, output_file=args.topics_file)
+            
+            if not topics:
+                print("No research topics identified.")
+                return 1
+            
+            print(f"\nIdentified {len(topics)} research topics:")
+            for i, topic in enumerate(topics, 1):
+                print(f"  {i}. {topic}")
+            
+            # If no topics file specified, don't continue to research
+            if not args.topics_file:
+                return 0
+            
+            # Continue to research the identified topics
+            queries = topics
+            
+        # Load topics from file if specified and not identifying
+        elif args.topics_file and os.path.exists(args.topics_file):
+            queries = research.load_topics_from_file(args.topics_file)
+            if not queries:
+                print(f"No topics found in {args.topics_file}")
+                return 1
+                
+        # Handle batch queries
+        elif args.batch:
+            queries = args.batch
+            
+        # Handle single query
+        elif args.query:
+            queries = [args.query]
+            
+        else:
             parser.print_help()
             return 1
 
-        if args.batch:
-            print(f"Running batch research for {len(args.batch)} queries...")
-            results = research.batch_lookup(args.batch)
+        # Execute research queries
+        if len(queries) > 1:
+            print(f"\n{'='*80}")
+            print(f"Researching {len(queries)} queries...")
+            if args.parallel:
+                print(f"Mode: PARALLEL with {args.max_workers} workers")
+            else:
+                print("Mode: SEQUENTIAL")
+            print(f"{'='*80}\n")
+            
+            results = research.batch_lookup(
+                queries, 
+                parallel=args.parallel, 
+                max_workers=args.max_workers
+            )
         else:
-            print(f"Researching: {args.query}")
-            results = [research.lookup(args.query)]
+            print(f"Researching: {queries[0]}")
+            results = [research.lookup(queries[0])]
 
         # Display results
+        print(f"\n{'='*80}")
+        print("RESULTS")
+        print(f"{'='*80}\n")
+        
         for i, result in enumerate(results):
             if result["success"]:
                 print(f"\n{'='*80}")
@@ -322,12 +643,29 @@ def main():
                 if result["usage"]:
                     print(f"\nUsage: {result['usage']}")
             else:
-                print(f"\nError in query {i+1}: {result['error']}")
+                print(f"\n{'='*80}")
+                print(f"Query {i+1} FAILED: {result['query']}")
+                print(f"Error: {result['error']}")
+                print(f"{'='*80}")
+
+        # Save results to file if requested
+        if args.output:
+            with open(args.output, 'w', encoding='utf-8') as f:
+                json.dump(results, f, indent=2, ensure_ascii=False)
+            print(f"\n[Research] Results saved to {args.output}")
+
+        # Summary
+        successful = sum(1 for r in results if r["success"])
+        print(f"\n{'='*80}")
+        print(f"SUMMARY: {successful}/{len(results)} queries completed successfully")
+        print(f"{'='*80}")
 
         return 0
 
     except Exception as e:
         print(f"Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return 1
 
 

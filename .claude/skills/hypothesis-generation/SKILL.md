@@ -1,6 +1,7 @@
 ---
 name: hypothesis-generation
 description: "Generate testable hypotheses. Formulate from observations, design experiments, explore competing explanations, develop predictions, propose mechanisms, for scientific inquiry across domains."
+allowed-tools: [Read, Write, Edit, Bash]
 ---
 
 # Scientific Hypothesis Generation
@@ -122,15 +123,64 @@ For each hypothesis, generate specific, quantitative predictions:
 
 ### 8. Present Structured Output
 
-Use the template in `assets/hypothesis_output_template.md` to present hypotheses in a clear, consistent format:
+Generate a professional LaTeX document using the template in `assets/hypothesis_report_template.tex`. The report should be well-formatted with colored boxes for visual organization and divided into a concise main text with comprehensive appendices.
 
-**Standard structure:**
-1. **Background & Context** - Phenomenon and literature summary
-2. **Competing Hypotheses** - Enumerated hypotheses with mechanistic explanations
-3. **Quality Assessment** - Evaluation of each hypothesis
-4. **Experimental Designs** - Proposed tests for each hypothesis
-5. **Testable Predictions** - Specific, measurable predictions
-6. **Critical Comparisons** - How to distinguish between hypotheses
+**Document Structure:**
+
+**Main Text (Maximum 4 pages):**
+1. **Executive Summary** - Brief overview in summary box (0.5-1 page)
+2. **Competing Hypotheses** - Each hypothesis in its own colored box with brief mechanistic explanation and key evidence (2-2.5 pages for 3-5 hypotheses)
+3. **Testable Predictions** - Key predictions in amber boxes (0.5-1 page)
+4. **Critical Comparisons** - Priority comparison boxes (0.5-1 page)
+
+Keep main text highly concise - only the most essential information. All details go to appendices.
+
+**Appendices (Comprehensive, Detailed):**
+- **Appendix A:** Comprehensive literature review with extensive citations
+- **Appendix B:** Detailed experimental designs with full protocols
+- **Appendix C:** Quality assessment tables and detailed evaluations
+- **Appendix D:** Supplementary evidence and analogous systems
+
+**Colored Box Usage:**
+
+Use the custom box environments from `hypothesis_generation.sty`:
+
+- `hypothesisbox1` through `hypothesisbox5` - For each competing hypothesis (blue, green, purple, teal, orange)
+- `predictionbox` - For testable predictions (amber)
+- `comparisonbox` - For critical comparisons (steel gray)
+- `evidencebox` - For supporting evidence highlights (light blue)
+- `summarybox` - For executive summary (blue)
+
+**Each hypothesis box should contain (keep concise for 4-page limit):**
+- **Mechanistic Explanation:** 1-2 brief paragraphs explaining HOW and WHY
+- **Key Supporting Evidence:** 2-3 bullet points with citations (most important evidence only)
+- **Core Assumptions:** 1-2 critical assumptions
+
+All detailed explanations, additional evidence, and comprehensive discussions belong in the appendices.
+
+**Citation Requirements:**
+
+Aim for extensive citation to support all claims:
+- **Main text:** 10-15 key citations for most important evidence only (keep concise for 4-page limit)
+- **Appendix A:** 40-70+ comprehensive citations covering all relevant literature
+- **Total target:** 50+ references in bibliography
+
+Main text citations should be selective - cite only the most critical papers. All comprehensive citation and detailed literature discussion belongs in the appendices. Use `\citep{author2023}` for parenthetical citations.
+
+**LaTeX Compilation:**
+
+The template requires XeLaTeX or LuaLaTeX for proper rendering:
+
+```bash
+xelatex hypothesis_report.tex
+bibtex hypothesis_report
+xelatex hypothesis_report.tex
+xelatex hypothesis_report.tex
+```
+
+**Required packages:** The `hypothesis_generation.sty` style package must be in the same directory or LaTeX path. It requires: tcolorbox, xcolor, fontspec, fancyhdr, titlesec, enumitem, booktabs, natbib.
+
+**Quick Reference:** See `assets/FORMATTING_GUIDE.md` for detailed examples of all box types, color schemes, and common formatting patterns.
 
 ## Quality Standards
 
@@ -152,4 +202,6 @@ Ensure all generated hypotheses meet these standards:
 
 ### assets/
 
-- `hypothesis_output_template.md` - Structured format for presenting hypotheses consistently with all required sections
+- `hypothesis_generation.sty` - LaTeX style package providing colored boxes, professional formatting, and custom environments for hypothesis reports
+- `hypothesis_report_template.tex` - Complete LaTeX template with main text structure and comprehensive appendix sections
+- `FORMATTING_GUIDE.md` - Quick reference guide with examples of all box types, color schemes, citation practices, and troubleshooting tips
