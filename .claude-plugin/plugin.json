@@ -1,0 +1,11 @@
+{
+  "name": "claude-scientific-writer",
+  "description": "Skills and setup for scientific writing (papers, grants, posters, clinical reports) using the scientific-writer toolkit.",
+  "version": "0.1.0",
+  "author": {
+    "name": "K-Dense",
+    "url": "https://k-dense.ai"
+  },
+  "homepage": "https://github.com/K-Dense-AI/claude-scientific-writer"
+}
+

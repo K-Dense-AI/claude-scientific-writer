@@ -1,0 +1,162 @@
+% Biological Pathway Template
+% For signaling cascades, metabolic pathways, and molecular interactions
+%
+% Usage:
+%   1. Copy and customize this template
+%   2. Modify node positions and labels
+%   3. Compile with: pdflatex pathway_template.tex
+%   4. Include in paper with: \includegraphics{pathway.pdf}
+
+\documentclass[tikz, border=5mm]{standalone}
+\usepackage{tikz}
+
+% Load shared styles
+\input{tikz_styles.tex}
+
+\begin{document}
+
+\begin{tikzpicture}[pathway]
+
+% === Example: MAPK Signaling Pathway ===
+
+% Nodes (proteins, genes, etc.)
+\node[protein] (ligand) at (0, 6) {Growth\\Factor};
+\node[protein] (receptor) at (2, 6) {Receptor};
+\node[protein] (ras) at (4, 6) {RAS};
+\node[protein] (raf) at (6, 6) {RAF};
+\node[protein] (mek) at (8, 6) {MEK};
+\node[protein] (erk) at (10, 6) {ERK};
+
+% Transcription factor (different style)
+\node[protein, fill=okabe-purple!20] (tf) at (10, 4) {TF};
+
+% Gene (italics, green)
+\node[gene] (target) at (10, 2) {\textit{Target\\Gene}};
+
+% === Interactions ===
+
+% Activation arrows (main cascade)
+\draw[activation-arrow] (ligand) -- (receptor);
+\draw[activation-arrow] (receptor) -- node[above, font=\footnotesize] {activates} (ras);
+\draw[activation-arrow] (ras) -- (raf);
+\draw[activation-arrow] (raf) -- (mek);
+\draw[activation-arrow] (mek) -- (erk);
+\draw[activation-arrow] (erk) -- (tf);
+\draw[activation-arrow] (tf) -- node[right, font=\footnotesize] {transcription} (target);
+
+% === Optional: Add inhibitor ===
+% Uncomment to show an inhibitor
+
+% \node[protein, fill=okabe-vermillion!20] (inhibitor) at (5, 8) {Inhibitor};
+% \draw[inhibit-arrow] (inhibitor) -- (raf);
+
+% === Optional: Add feedback loop ===
+% Uncomment to show negative feedback
+
+% \draw[inhibit-arrow, bend right=45] (erk) to node[left, font=\footnotesize] {feedback} (ras);
+
+% === Optional: Add complex formation ===
+% Uncomment to show protein complex
+
+% \node[complex] (complex) at (7, 4) {RAF-MEK\\Complex};
+% \draw[arrow, dashed] (raf) -- (complex);
+% \draw[arrow, dashed] (mek) -- (complex);
+
+% === Optional: Add subcellular compartments ===
+% Uncomment to show membrane, cytoplasm, nucleus
+
+% % Membrane
+% \draw[thick, okabe-dblue] (-0.5, 5) -- (11, 5) node[right, font=\small] {Plasma Membrane};
+%
+% % Nuclear membrane
+% \draw[thick, okabe-green] (9.5, 3) rectangle (10.5, 1.5);
+% \node[font=\small, okabe-green] at (10, 1.2) {Nucleus};
+
+\end{tikzpicture}
+
+\vspace{1cm}
+
+% === Example 2: Simple Linear Pathway ===
+\begin{tikzpicture}[pathway, node distance=2.5cm]
+
+% Linear pathway with enzyme catalysis
+\node[metabolite] (s1) {Substrate\\A};
+\node[metabolite, right=of s1] (s2) {Product\\B};
+\node[metabolite, right=of s2] (s3) {Product\\C};
+
+% Enzymes (above)
+\node[enzyme, above=1cm of s1] (e1) {Enzyme 1};
+\node[enzyme, above=1cm of s2] (e2) {Enzyme 2};
+
+% Catalysis arrows
+\draw[arrow, dashed] (e1) -- (s1);
+\draw[activation-arrow] (s1) -- node[above, font=\footnotesize] {catalyzed} (s2);
+\draw[arrow, dashed] (e2) -- (s2);
+\draw[activation-arrow] (s2) -- (s3);
+
+\end{tikzpicture}
+
+\end{document}
+
+% === Customization Guide ===
+%
+% NODE TYPES (from tikz_styles.tex):
+%   protein  - Rounded rectangle, blue
+%   gene     - Rectangle, green, italic text
+%   metabolite - Circle, yellow
+%   enzyme   - Ellipse, dark blue
+%   complex  - Rounded rectangle, orange, thick border
+%
+% ARROW TYPES:
+%   activation-arrow - Solid arrow, activation
+%   inhibit-arrow    - Blunt end, inhibition (red)
+%   arrow, dashed    - Dashed arrow, indirect effect
+%
+% POSITIONING:
+%   \node[protein] (name) at (x, y) {Label};
+%   or
+%   \node[protein, right=2cm of other] (name) {Label};
+%   or
+%   \node[protein, below=of other] (name) {Label};
+%
+% COLORS (Okabe-Ito colorblind-safe):
+%   okabe-blue, okabe-orange, okabe-green, okabe-yellow
+%   okabe-dblue, okabe-vermillion, okabe-purple
+%
+% SUBCELLULAR COMPARTMENTS:
+% Draw rectangles or regions to show membrane, cytoplasm, nucleus:
+%
+%   % Nucleus boundary
+%   \node[rectangle, draw=okabe-green, thick, minimum width=3cm, 
+%         minimum height=2cm] at (10, 3) {};
+%   \node[font=\small] at (10, 1) {Nucleus};
+%
+%   % Membrane
+%   \draw[very thick, okabe-dblue] (0, 5) -- (12, 5);
+%   \node[right, font=\small] at (12, 5) {Membrane};
+%
+% PATHWAY CONVENTIONS:
+%   - Proteins: Regular font
+%   - Genes: Italic font (\textit{gene} or use gene style)
+%   - Phosphorylation: Add "P" in circle or use annotation
+%     \node[circle, draw, fill=white, inner sep=1pt, font=\tiny] at (x,y) {P};
+%   - Ubiquitination: "Ub" annotation
+%   - Degradation: Dashed arrow to a "trash" symbol or text
+%
+% TYPICAL USAGE IN PAPER:
+%
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=0.8\textwidth]{pathway.pdf}
+%   \caption{MAPK signaling pathway. Growth factor binding activates
+%            receptor, triggering cascade through RAS, RAF, MEK, ERK to
+%            transcription factor (TF) and target gene expression.
+%            Arrows indicate activation.}
+%   \label{fig:pathway}
+% \end{figure}
+%
+% RESOURCES:
+% - Systems Biology Graphical Notation (SBGN): https://sbgn.github.io/
+% - Pathway Commons: https://www.pathwaycommons.org/
+% - KEGG Pathways: https://www.genome.jp/kegg/pathway.html
+

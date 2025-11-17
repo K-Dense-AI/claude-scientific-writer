@@ -1,0 +1,161 @@
+% CONSORT-Style Flowchart Template
+% For methodology sections, participant flow diagrams, and study design
+%
+% Usage:
+%   1. Copy this template
+%   2. Modify node contents and participant numbers
+%   3. Add/remove nodes as needed
+%   4. Compile with: pdflatex flowchart_template.tex
+%   5. Include in paper with: \input{flowchart.tex} or \includegraphics{flowchart.pdf}
+
+\documentclass[tikz, border=5mm]{standalone}
+\usepackage{tikz}
+
+% Load shared styles
+\input{tikz_styles.tex}
+
+\begin{document}
+
+\begin{tikzpicture}[consort]
+
+% === Nodes ===
+% Modify these to match your study
+
+% Initial assessment
+\node[flowbox] (assessed) {
+  Assessed for eligibility\\
+  (n=500)
+};
+
+% Exclusions
+\node[flowbox, below=of assessed] (excluded) {
+  Excluded (n=150)
+};
+
+% Exclusion criteria (side annotation)
+\node[infobox, right=of excluded] (reasons) {
+  \textbf{Exclusion criteria:}\\
+  Age $<$ 18 years: n=80\\
+  Declined participation: n=50\\
+  Other reasons: n=20
+};
+
+% Randomization
+\node[flowbox, below=of excluded] (randomized) {
+  Randomized\\
+  (n=350)
+};
+
+% Treatment groups
+\node[groupbox, below left=2cm and 1.5cm of randomized] (treatment) {
+  \textbf{Treatment Group}\\
+  Allocated to intervention\\
+  (n=175)
+};
+
+\node[groupbox, below right=2cm and 1.5cm of randomized] (control) {
+  \textbf{Control Group}\\
+  Allocated to control\\
+  (n=175)
+};
+
+% Follow-up (treatment)
+\node[flowbox, below=of treatment] (followup-t) {
+  Completed follow-up\\
+  (n=168)
+};
+
+\node[infobox, right=of followup-t] (lost-t) {
+  Lost to follow-up: n=7\\
+  (withdrew: n=5, other: n=2)
+};
+
+% Follow-up (control)
+\node[flowbox, below=of control] (followup-c) {
+  Completed follow-up\\
+  (n=170)
+};
+
+\node[infobox, left=of followup-c] (lost-c) {
+  Lost to follow-up: n=5\\
+  (withdrew: n=3, other: n=2)
+};
+
+% Analysis
+\node[flowbox, below=2.5cm of randomized] (analyzed) {
+  Analyzed\\
+  (n=338)
+};
+
+% === Connections ===
+% Arrows showing flow
+
+% Main flow
+\draw[arrow] (assessed) -- (excluded);
+\draw[arrow] (excluded) -- (randomized);
+
+% Randomization to groups
+\draw[arrow] (randomized) -| (treatment);
+\draw[arrow] (randomized) -| (control);
+
+% Follow-up
+\draw[arrow] (treatment) -- (followup-t);
+\draw[arrow] (control) -- (followup-c);
+
+% To analysis
+\draw[arrow] (followup-t) |- (analyzed);
+\draw[arrow] (followup-c) |- (analyzed);
+
+% === Optional Elements ===
+
+% Add panel label if part of multi-panel figure
+% \node[font=\large\bfseries, above left=0.2cm of assessed] {A};
+
+% Add study phase labels
+% \node[annotation, left=2cm of assessed] {Enrollment};
+% \node[annotation, left=2cm of randomized] {Allocation};
+% \node[annotation, left=2cm of followup-t] {Follow-up};
+% \node[annotation, left=2cm of analyzed] {Analysis};
+
+\end{tikzpicture}
+
+\end{document}
+
+% === Customization Notes ===
+%
+% 1. Change participant numbers (n=X) to match your study
+%
+% 2. Add more exclusion criteria in the infobox:
+%    \node[infobox, right=of excluded] (reasons) {
+%      \textbf{Exclusion criteria:}\\
+%      Criterion 1: n=XX\\
+%      Criterion 2: n=YY\\
+%      Criterion 3: n=ZZ
+%    };
+%
+% 3. Add more treatment arms (for 3+ group studies):
+%    \node[groupbox, below=2cm of randomized] (group3) {
+%      \textbf{Group 3}\\
+%      Description\\
+%      (n=XX)
+%    };
+%    \draw[arrow] (randomized) -- (group3);
+%
+% 4. Add intervention details:
+%    \node[infobox, right=of treatment] (intervention) {
+%      Received intervention: n=XXX\\
+%      Did not receive: n=YY\\
+%      \quad Reason 1: n=Z
+%    };
+%
+% 5. Modify colors by changing node styles in tikz_styles.tex
+%
+% 6. To use in your paper:
+%    \begin{figure}[h]
+%      \centering
+%      \includegraphics[width=0.9\textwidth]{flowchart.pdf}
+%      \caption{Study participant flow diagram following CONSORT guidelines.
+%               Boxes show participant numbers (n) at each stage.}
+%      \label{fig:consort}
+%    \end{figure}
+

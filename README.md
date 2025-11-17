@@ -77,6 +77,33 @@ async def main():
 asyncio.run(main())
 ```
 
+### Use as a Claude Code Plugin
+
+This repository can be used as a Claude Code (Cursor) plugin to provide scientific writing skills and templates directly in your IDE.
+
+#### Installation
+
+1. **Install the plugin** in Claude Code:
+   ```bash
+   # In Claude Code, run:
+   /plugin marketplace add https://github.com/K-Dense-AI/claude-scientific-writer
+   /plugin install claude-scientific-writer
+   ```
+
+2. **Initialize in your project**:
+   ```bash
+   # In any project directory:
+   /scientific-writer:init
+   ```
+   This creates a `CLAUDE.md` file with scientific writing instructions and makes all skills available.
+
+3. **Start using**:
+   - Ask Claude to "Create a Nature paper on [topic]"
+   - Use any of the 19+ available skills (research-lookup, peer-review, clinical-reports, etc.)
+   - All capabilities work directly in your IDE
+
+See the [Plugin Testing Guide](#plugin-testing-local-development) below for local development instructions.
+
 ## Features
 
 ### 📝 Document Generation
@@ -223,6 +250,95 @@ async for update in generate_paper(
     if update["type"] == "progress":
         print(f"[{update['percentage']}%] {update['message']}")
 ```
+
+## Plugin Testing (Local Development)
+
+For developers working on the plugin or testing locally:
+
+### Setup Local Marketplace
+
+1. **Create a test marketplace** in the parent directory:
+   ```bash
+   cd ..
+   mkdir -p test-marketplace/.claude-plugin
+   ```
+
+2. **Create marketplace configuration** (`test-marketplace/.claude-plugin/marketplace.json`):
+   ```json
+   {
+     "name": "test-marketplace",
+     "owner": { "name": "K-Dense" },
+     "plugins": [
+       {
+         "name": "claude-scientific-writer",
+         "source": "./claude-scientific-writer",
+         "description": "Scientific writing skills and CLAUDE.md initializer"
+       }
+     ]
+   }
+   ```
+
+### Install and Test
+
+3. **Add the test marketplace** in Claude Code:
+   ```bash
+   /plugin marketplace add ./test-marketplace
+   ```
+
+4. **Install the plugin**:
+   ```bash
+   /plugin install claude-scientific-writer@test-marketplace
+   ```
+
+5. **Restart Claude Code** when prompted.
+
+6. **Test the plugin**:
+   - Open any project directory
+   - Run `/scientific-writer:init`
+   - Verify CLAUDE.md is created
+   - Test skills: "What skills are available?"
+   - Try creating a document: "Create a short scientific abstract on quantum computing"
+
+### Verify Plugin Structure
+
+Your plugin should have this structure:
+```
+claude-scientific-writer/
+├── .claude-plugin/
+│   └── plugin.json          # Plugin metadata
+├── commands/
+│   └── scientific-writer-init.md  # /scientific-writer:init command
+├── skills/                  # All 19 skills
+│   ├── citation-management/
+│   ├── clinical-decision-support/
+│   ├── clinical-reports/
+│   ├── document-skills/
+│   ├── hypothesis-generation/
+│   ├── latex-posters/
+│   ├── literature-review/
+│   ├── markitdown/
+│   ├── paper-2-web/
+│   ├── peer-review/
+│   ├── research-grants/
+│   ├── research-lookup/
+│   ├── scholar-evaluation/
+│   ├── scientific-critical-thinking/
+│   ├── scientific-schematics/
+│   ├── scientific-slides/
+│   ├── scientific-writing/
+│   ├── treatment-plans/
+│   └── venue-templates/
+├── templates/
+│   └── CLAUDE.scientific-writer.md  # CLAUDE.md template
+└── ... (existing Python package files)
+```
+
+### Troubleshooting Plugin Installation
+
+- **Skills not showing**: Verify each `SKILL.md` has valid YAML frontmatter (name, description, allowed-tools)
+- **Command not working**: Check `commands/scientific-writer-init.md` exists and has proper frontmatter
+- **Template not found**: Ensure `templates/CLAUDE.scientific-writer.md` is present
+- **Marketplace not loading**: Verify `marketplace.json` syntax and relative path to plugin
 
 ## Documentation
 

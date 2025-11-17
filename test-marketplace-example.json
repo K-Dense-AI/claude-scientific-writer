@@ -1,0 +1,12 @@
+{
+  "name": "test-marketplace",
+  "owner": { "name": "K-Dense" },
+  "plugins": [
+    {
+      "name": "claude-scientific-writer",
+      "source": "./claude-scientific-writer",
+      "description": "Scientific writing skills and CLAUDE.md initializer"
+    }
+  ]
+}
+
