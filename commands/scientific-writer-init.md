@@ -18,14 +18,29 @@ When the user runs `/scientific-writer:init`, do the following:
    
 3. Wait for user response before proceeding.
 
-## Step 2: Create or Update CLAUDE.md
+## Step 2: Locate the Template
 
-Based on the user's choice:
+First, find the Scientific Writer template file. Try these methods in order:
+
+1. Search for the template file in the plugin directory:
+   - Look in the claude-scientific-writer plugin's `templates/` directory
+   - File name: `CLAUDE.scientific-writer.md`
+   - Full path should be: `{plugin_dir}/templates/CLAUDE.scientific-writer.md`
+
+2. If search fails, use the Read tool to directly access:
+   - Try: `/Users/vinayak/Documents/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
+   - Or search the plugins directory: `~/.claude/plugins/*/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
+
+3. Read the complete contents of the template file.
+
+## Step 3: Create or Update CLAUDE.md
+
+Based on the user's choice (or create new if no existing file):
 
 ### Option A: Replace (with backup)
 - Rename existing `CLAUDE.md` to `CLAUDE.md.bak`
 - Create new `CLAUDE.md` in the project root
-- Use the contents of `@templates/CLAUDE.scientific-writer.md` as the source
+- Write the complete contents from the template file
 - Print: "✅ Backed up existing CLAUDE.md to CLAUDE.md.bak and created new Scientific Writer configuration"
 
 ### Option B: Merge
@@ -37,16 +52,16 @@ Based on the user's choice:
   # Scientific Writer Configuration (Added by Plugin)
   
   ```
-- Append the contents of `@templates/CLAUDE.scientific-writer.md` (excluding the HTML comment header)
+- Append the contents from the template file (excluding the HTML comment header if present)
 - Print: "✅ Merged Scientific Writer configuration into existing CLAUDE.md"
 
-### Option C: Create New
+### Option C: Create New (Default)
 If no existing file:
 - Create `CLAUDE.md` in the project root
-- Use the contents of `@templates/CLAUDE.scientific-writer.md` as the source
+- Write the complete contents from the template file
 - Print: "✅ Created CLAUDE.md with Scientific Writer configuration"
 
-## Step 3: Summarize What Was Installed
+## Step 4: Summarize What Was Installed
 
 After writing the file, provide a brief summary:
 
@@ -94,7 +109,7 @@ After writing the file, provide a brief summary:
 Happy writing! 🔬📄
 ```
 
-## Step 4: Final Reminders
+## Step 5: Final Reminders
 
 Remind the user:
 - The `CLAUDE.md` file can be opened and edited manually at any time
@@ -107,5 +122,8 @@ Remind the user:
 If any errors occur during file creation:
 - Report the specific error to the user
 - Suggest manual steps (e.g., creating the file manually)
-- Provide the template path: `templates/CLAUDE.scientific-writer.md` in the plugin directory
+- Provide the template paths to try:
+  - `/Users/vinayak/Documents/claude-scientific-writer/templates/CLAUDE.scientific-writer.md` (local dev)
+  - `~/.claude/plugins/*/claude-scientific-writer/templates/CLAUDE.scientific-writer.md` (installed plugin)
+- If template still can't be found, offer to create a basic CLAUDE.md with minimal scientific writing instructions
 
