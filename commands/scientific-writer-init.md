@@ -40,7 +40,7 @@ Based on the user's choice (or create new if no existing file):
 ### Option A: Replace (with backup)
 - Rename existing `CLAUDE.md` to `CLAUDE.md.bak`
 - Create new `CLAUDE.md` in the project root
-- Write the complete contents from the template file
+- Copy the complete contents from the template file as is
 - Print: "✅ Backed up existing CLAUDE.md to CLAUDE.md.bak and created new Scientific Writer configuration"
 
 ### Option B: Merge
