@@ -96,8 +96,8 @@ This repository can be used as a Claude Code (Cursor) plugin to provide scientif
 3. **Restart Claude Code** when prompted.
 
 4. **Initialize in your project**:
+    # In any project directory:
    ```bash
-   # In any project directory:
    /scientific-writer:init
    ```
    This creates a `CLAUDE.md` file with scientific writing instructions and makes all 19 skills available.
