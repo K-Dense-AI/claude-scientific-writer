@@ -11,7 +11,7 @@
   },
   "plugins": [
     {
-      "name": "skills",
+      "name": "claude-scientific-writer",
       "description": "Collection of scientific writer skills",
       "source": "./",
       "strict": false,
