@@ -82,11 +82,13 @@ xelatex your_document.tex
 **Use for:** Presenting each competing hypothesis with its mechanism, evidence, and assumptions
 
 **Best practices for 4-page main text:**
-- Keep mechanistic explanations to 1-2 brief paragraphs only
+- Keep mechanistic explanations to 1-2 brief paragraphs only (6-10 sentences max)
 - Include 2-3 most essential evidence points with citations
 - List 1-2 most critical assumptions
 - Ensure each hypothesis is genuinely distinct
 - All detailed explanations go to Appendix A
+- **Use `\newpage` before each hypothesis box to prevent overflow**
+- Each complete hypothesis box should be ≤0.6 pages
 
 ---
 
@@ -291,13 +293,15 @@ Data row 2 & Data \\
 ### Hypothesis Section Pattern
 
 ```latex
+% Use \newpage before hypothesis box to prevent overflow
+\newpage
 \subsection*{Hypothesis N: [Concise Title]}
 
 \begin{hypothesisboxN}[Hypothesis N: [Title]]
 
 \textbf{Mechanistic Explanation:}
 
-[2-3 paragraphs of explanation]
+[1-2 brief paragraphs of explanation - 6-10 sentences max]
 
 \vspace{0.3cm}
 
@@ -320,6 +324,8 @@ Data row 2 & Data \\
 
 \vspace{0.5cm}
 ```
+
+**Note:** The `\newpage` before the hypothesis box ensures it starts on a fresh page, preventing overflow. This is especially important when boxes contain substantial content.
 
 ### Prediction Section Pattern
 
@@ -379,9 +385,75 @@ Data row 2 & Data \\
 - `\vspace{0.5cm}` - Between major sections or boxes
 - `\vspace{1cm}` - After title, before main content
 
-### Page Breaks
-- `\newpage` - Force new page (use before appendices)
-- `\clearpage` - Force new page and flush floats
+### Page Breaks and Overflow Prevention
+
+**CRITICAL: Prevent Content Overflow**
+
+LaTeX boxes (tcolorbox environments) do not automatically break across pages. Content that exceeds the remaining page space will overflow and cause formatting issues. Follow these guidelines:
+
+1. **Strategic Page Breaks Before Long Boxes:**
+```latex
+\newpage  % Start on fresh page if box will be long
+\begin{hypothesisbox1}[Hypothesis 1: Title]
+  % Substantial content here
+\end{hypothesisbox1}
+```
+
+2. **Monitor Box Content Length:**
+   - Each hypothesis box should be ≤0.7 pages maximum
+   - If mechanistic explanation + evidence + assumptions exceeds ~0.6 pages, content is too long
+   - Solution: Move detailed content to appendices, keep only essentials in main text boxes
+
+3. **When to Use `\newpage`:**
+   - Before any hypothesis box with >3 subsections or >15 lines of content
+   - Before comparison boxes with extensive experimental descriptions
+   - Between major appendix sections
+   - If less than 0.6 pages remain on current page before starting a new box
+
+4. **Content Length Guidelines for Main Text:**
+   - Executive summary box: 0.5-0.8 pages max
+   - Each hypothesis box: 0.4-0.6 pages max
+   - Each prediction box: 0.3-0.5 pages max
+   - Each comparison box: 0.4-0.6 pages max
+
+5. **Breaking Up Long Content:**
+   ```latex
+   % GOOD: Concise main text with page break
+   \newpage
+   \begin{hypothesisbox1}[Hypothesis 1: Brief Title]
+   \textbf{Mechanistic Explanation:}
+   Brief overview in 1-2 paragraphs (6-10 sentences).
+   
+   \textbf{Key Supporting Evidence:}
+   \begin{itemize}
+     \item Evidence 1 \citep{ref1}
+     \item Evidence 2 \citep{ref2}
+   \end{itemize}
+   
+   \textbf{Core Assumptions:}
+   \begin{enumerate}
+     \item Assumption 1
+   \end{enumerate}
+   
+   See Appendix A for detailed mechanism and comprehensive evidence.
+   \end{hypothesisbox1}
+   ```
+
+   ```latex
+   % BAD: Overly long content that will overflow
+   \begin{hypothesisbox1}[Hypothesis 1]
+   \subsection{Very Long Section}
+   Multiple paragraphs...
+   \subsection{Another Long Section}
+   More paragraphs...
+   \subsection{Even More Content}
+   [Content continues beyond page boundary → OVERFLOW!]
+   \end{hypothesisbox1}
+   ```
+
+6. **Page Break Commands:**
+   - `\newpage` - Force new page (recommended before long boxes)
+   - `\clearpage` - Force new page and flush floats (use before appendices)
 
 ### Section Spacing
 Already handled by style package, but you can adjust:
@@ -418,6 +490,21 @@ xelatex yourfile.tex
 
 **Issue: Tables too wide**
 - Solution: Use `\small` or `\footnotesize` before tabular, or use `p{width}` column specs
+
+**Issue: Content overflowing off the page**
+- **Cause:** Boxes (tcolorbox environments) are too long to fit on remaining page space
+- **Solution 1:** Add `\newpage` before the box to start it on a fresh page
+- **Solution 2:** Reduce box content - move detailed information to appendices
+- **Solution 3:** Break content into multiple smaller boxes
+- **Prevention:** Keep each hypothesis box to 0.4-0.6 pages maximum; use `\newpage` liberally before boxes with substantial content
+
+**Issue: Main text exceeds 4 pages**
+- **Cause:** Boxes contain too much detailed information
+- **Solution:** Aggressively move content to appendices - main text boxes should contain only:
+  - Brief mechanistic overview (1-2 paragraphs)
+  - 2-3 key evidence bullets
+  - 1-2 core assumptions
+- All detailed explanations, additional evidence, and comprehensive discussions belong in Appendix A
 
 ### Package Requirements
 
@@ -483,6 +570,9 @@ Before finalizing your document:
 - [ ] Predictions boxes with 1-2 key predictions per hypothesis
 - [ ] Priority comparison box in main text (others in appendix)
 - [ ] Priority experiments identified
+- [ ] **Page breaks (`\newpage`) used before long boxes to prevent overflow**
+- [ ] **No content overflows off page boundaries (check PDF carefully)**
+- [ ] **Each hypothesis box is ≤0.6 pages (if longer, move details to appendix)**
 - [ ] Appendix A has comprehensive literature review with detailed evidence
 - [ ] Appendix B has detailed experimental protocols
 - [ ] Appendix C has quality assessment tables
@@ -492,6 +582,7 @@ Before finalizing your document:
 - [ ] All boxes use correct colors
 - [ ] Document compiles without errors
 - [ ] References formatted correctly
+- [ ] **Compiled PDF checked visually for overflow issues**
 
 ## Example Minimal Document
 
@@ -513,14 +604,29 @@ Brief overview of phenomenon and hypotheses.
 
 \section{Competing Hypotheses}
 
+% Use \newpage before each hypothesis box to prevent overflow
+\newpage
 \subsection*{Hypothesis 1: Title}
 \begin{hypothesisbox1}[Hypothesis 1: Title]
-Content here with \citep{ref1}.
+\textbf{Mechanistic Explanation:}
+Brief explanation in 1-2 paragraphs.
+
+\textbf{Key Supporting Evidence:}
+\begin{itemize}
+  \item Evidence point \citep{ref1}
+\end{itemize}
 \end{hypothesisbox1}
 
+\newpage
 \subsection*{Hypothesis 2: Title}
 \begin{hypothesisbox2}[Hypothesis 2: Title]
-Content here with \citep{ref2}.
+\textbf{Mechanistic Explanation:}
+Brief explanation in 1-2 paragraphs.
+
+\textbf{Key Supporting Evidence:}
+\begin{itemize}
+  \item Evidence point \citep{ref2}
+\end{itemize}
 \end{hypothesisbox2}
 
 \section{Testable Predictions}
@@ -537,6 +643,7 @@ Predictions here.
 Comparison here.
 \end{comparisonbox}
 
+% Force new page before appendices
 \appendix
 \newpage
 \appendixsection{Appendix A: Literature Review}
@@ -548,6 +655,12 @@ Detailed literature review here.
 
 \end{document}
 ```
+
+**Key Points:**
+- `\newpage` used before each hypothesis box to ensure they start on fresh pages
+- This prevents content overflow issues
+- Main text boxes kept concise (1-2 paragraphs + bullet points)
+- Detailed content goes to appendices
 
 ## Additional Resources
 
