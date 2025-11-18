@@ -81,23 +81,28 @@ asyncio.run(main())
 
 This repository can be used as a Claude Code (Cursor) plugin to provide scientific writing skills and templates directly in your IDE.
 
-#### Installation
+#### Installation Steps
 
-1. **Install the plugin** in Claude Code:
+1. **Add the plugin marketplace** in Claude Code:
    ```bash
-   # In Claude Code, run:
    /plugin marketplace add https://github.com/K-Dense-AI/claude-scientific-writer
+   ```
+
+2. **Install the plugin**:
+   ```bash
    /plugin install claude-scientific-writer
    ```
 
-2. **Initialize in your project**:
+3. **Restart Claude Code** when prompted.
+
+4. **Initialize in your project**:
    ```bash
    # In any project directory:
-   /claude-scientific-writer:scientific-writer-init
+   /scientific-writer:init
    ```
-   This creates a `CLAUDE.md` file with scientific writing instructions and makes all skills available.
+   This creates a `CLAUDE.md` file with scientific writing instructions and makes all 19 skills available.
 
-3. **Start using**:
+5. **Start using**:
    - Ask Claude to "Create a Nature paper on [topic]"
    - Use any of the 19+ available skills (research-lookup, peer-review, clinical-reports, etc.)
    - All capabilities work directly in your IDE
@@ -264,6 +269,8 @@ For developers working on the plugin or testing locally:
    ```
 
 2. **Create marketplace configuration** (`test-marketplace/.claude-plugin/marketplace.json`):
+   
+   Copy the example from `test-marketplace-example.json` or create:
    ```json
    {
      "name": "test-marketplace",
@@ -271,19 +278,23 @@ For developers working on the plugin or testing locally:
      "plugins": [
        {
          "name": "claude-scientific-writer",
-         "source": "./claude-scientific-writer",
+         "source": "../claude-scientific-writer",
          "description": "Scientific writing skills and CLAUDE.md initializer"
        }
      ]
    }
    ```
+   
+   **Note**: Update the `source` path to match your local directory structure (relative to the test-marketplace directory).
 
 ### Install and Test
 
 3. **Add the test marketplace** in Claude Code:
    ```bash
-   /plugin marketplace add ./test-marketplace
+   /plugin marketplace add ../test-marketplace
    ```
+   
+   (Use the correct relative or absolute path to your test-marketplace directory)
 
 4. **Install the plugin**:
    ```bash
