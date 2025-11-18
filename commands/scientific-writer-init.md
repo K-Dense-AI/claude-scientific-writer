@@ -6,6 +6,10 @@ description: Initialize the current project to use the Scientific Writer CLAUDE.
 
 When the user runs `/scientific-writer:init`, do the following:
 
+## ⚠️ CRITICAL RULE: NEVER READ THE TEMPLATE FILE
+
+**Throughout this entire process, you must NEVER use the read_file tool on the template file. The template file is 1362 lines long and reading it wastes time and tokens. Only use terminal commands (`cp`, `cat`, `mv`) to handle the file.**
+
 ## Step 1: Check for Existing CLAUDE.md
 
 1. Check if a `CLAUDE.md` file exists in the current working directory.
@@ -18,43 +22,57 @@ When the user runs `/scientific-writer:init`, do the following:
    
 3. Wait for user response before proceeding.
 
-## Step 2: Locate the Template
+## Step 2: Locate the Template File Path
 
-First, find the Scientific Writer template file. Try these methods in order:
+**CRITICAL: Do NOT use the read_file tool. Do NOT read the template contents. Only locate the file path.**
 
-1. Search for the template file in the plugin directory:
-   - Look in the claude-scientific-writer plugin's `templates/` directory
-   - File name: `CLAUDE.scientific-writer.md`
-   - Full path should be: `{plugin_dir}/templates/CLAUDE.scientific-writer.md`
+Find the path to the Scientific Writer template file. Use one of these methods:
 
-2. If search fails, try these paths:
+1. **Use glob_file_search** to find `CLAUDE.scientific-writer.md` in the templates directory
+2. **Use list_dir** to check if the file exists in known locations
+3. **Directly try these paths** (in order):
    - `/Users/vinayak/Documents/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
-   - Or search the plugins directory: `~/.claude/plugins/*/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
+   - `~/.claude/plugins/*/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
+
+Once you have the path, immediately proceed to Step 3. **Do NOT read or verify the file contents.**
 
 ## Step 3: Create or Update CLAUDE.md
+
+**All options below must use terminal commands only. Do NOT read the template file contents.**
 
 Based on the user's choice (or create new if no existing file):
 
 ### Option A: Replace (with backup)
-- Rename existing `CLAUDE.md` to `CLAUDE.md.bak`
-- Copy the template file to `CLAUDE.md` in the project root (use terminal `cp` command)
-- Print: "✅ Backed up existing CLAUDE.md to CLAUDE.md.bak and created new Scientific Writer configuration"
+Use terminal commands to:
+1. Rename existing `CLAUDE.md` to `CLAUDE.md.bak`:
+   ```bash
+   mv CLAUDE.md CLAUDE.md.bak
+   ```
+2. Copy the template file to `CLAUDE.md`:
+   ```bash
+   cp {template_path} CLAUDE.md
+   ```
+3. Print: "✅ Backed up existing CLAUDE.md to CLAUDE.md.bak and created new Scientific Writer configuration"
 
 ### Option B: Merge
-- Append a separator to existing `CLAUDE.md` using `echo`:
-  ```bash
-  echo -e "\n\n---\n\n# Scientific Writer Configuration (Added by Plugin)\n" >> CLAUDE.md
-  ```
-- Append the template file contents using `cat`:
-  ```bash
-  cat {template_path} >> CLAUDE.md
-  ```
-- Print: "✅ Merged Scientific Writer configuration into existing CLAUDE.md"
+Use terminal commands to:
+1. Append a separator to existing `CLAUDE.md`:
+   ```bash
+   echo -e "\n\n---\n\n# Scientific Writer Configuration (Added by Plugin)\n" >> CLAUDE.md
+   ```
+2. Append the template file contents directly (without reading):
+   ```bash
+   cat {template_path} >> CLAUDE.md
+   ```
+3. Print: "✅ Merged Scientific Writer configuration into existing CLAUDE.md"
 
 ### Option C: Create New (Default)
-If no existing file:
-- Copy the template file to `CLAUDE.md` in the project root (use terminal `cp` command)
-- Print: "✅ Created CLAUDE.md with Scientific Writer configuration"
+If no existing file, use terminal command to:
+1. Copy the template file to `CLAUDE.md`:
+   ```bash
+   cp {template_path} CLAUDE.md
+   ```
+2. Print: "✅ Created CLAUDE.md with Scientific Writer configuration"
 
 ## Step 4: Summarize What Was Installed
 
