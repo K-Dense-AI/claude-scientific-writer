@@ -27,11 +27,9 @@ First, find the Scientific Writer template file. Try these methods in order:
    - File name: `CLAUDE.scientific-writer.md`
    - Full path should be: `{plugin_dir}/templates/CLAUDE.scientific-writer.md`
 
-2. If search fails, use the Read tool to directly access:
-   - Try: `/Users/vinayak/Documents/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
+2. If search fails, try these paths:
+   - `/Users/vinayak/Documents/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
    - Or search the plugins directory: `~/.claude/plugins/*/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
-
-3. Read the complete contents of the template file.
 
 ## Step 3: Create or Update CLAUDE.md
 
@@ -39,26 +37,23 @@ Based on the user's choice (or create new if no existing file):
 
 ### Option A: Replace (with backup)
 - Rename existing `CLAUDE.md` to `CLAUDE.md.bak`
-- Create new `CLAUDE.md` in the project root
-- Copy the complete contents from the template file as is
+- Copy the template file to `CLAUDE.md` in the project root (use terminal `cp` command)
 - Print: "✅ Backed up existing CLAUDE.md to CLAUDE.md.bak and created new Scientific Writer configuration"
 
 ### Option B: Merge
-- Append a separator to existing `CLAUDE.md`:
-  ```markdown
-  
-  ---
-  
-  # Scientific Writer Configuration (Added by Plugin)
-  
+- Append a separator to existing `CLAUDE.md` using `echo`:
+  ```bash
+  echo -e "\n\n---\n\n# Scientific Writer Configuration (Added by Plugin)\n" >> CLAUDE.md
   ```
-- Append the contents from the template file (excluding the HTML comment header if present)
+- Append the template file contents using `cat`:
+  ```bash
+  cat {template_path} >> CLAUDE.md
+  ```
 - Print: "✅ Merged Scientific Writer configuration into existing CLAUDE.md"
 
 ### Option C: Create New (Default)
 If no existing file:
-- Create `CLAUDE.md` in the project root
-- Write the complete contents from the template file
+- Copy the template file to `CLAUDE.md` in the project root (use terminal `cp` command)
 - Print: "✅ Created CLAUDE.md with Scientific Writer configuration"
 
 ## Step 4: Summarize What Was Installed
