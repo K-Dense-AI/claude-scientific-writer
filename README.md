@@ -93,7 +93,7 @@ This repository can be used as a Claude Code (Cursor) plugin to provide scientif
 2. **Initialize in your project**:
    ```bash
    # In any project directory:
-   /scientific-writer:init
+   /claude-scientific-writer:scientific-writer-init
    ```
    This creates a `CLAUDE.md` file with scientific writing instructions and makes all skills available.
 
