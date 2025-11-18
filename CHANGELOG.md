@@ -6,6 +6,138 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.7.0] - 2025-01-22
+
+### 🎯 Claude Code Plugin Focus
+
+This release emphasizes using Scientific Writer as a **Claude Code (Cursor) plugin**, making it easier than ever to access scientific writing capabilities directly in your IDE.
+
+### ✨ Added
+
+#### Enhanced Plugin Experience
+
+- **Streamlined Plugin Installation** - Improved documentation and setup process for Claude Code plugin usage
+  - Clear step-by-step installation guide
+  - Marketplace integration instructions
+  - Local development and testing guide
+  - Troubleshooting for common plugin issues
+
+- **Optimized Plugin Structure** - Better organization for plugin usage
+  - All 19+ skills automatically available when plugin is installed
+  - `/scientific-writer:init` command creates comprehensive `CLAUDE.md` configuration
+  - Skills accessible directly in IDE without additional setup
+  - Template files optimized for plugin context
+
+- **Plugin-First Documentation** - Enhanced README with prominent plugin section
+  - Plugin installation prominently featured at the top
+  - Clear examples for using skills within Claude Code
+  - Plugin testing guide for developers
+  - Troubleshooting section for plugin-specific issues
+
+### 🔧 Improvements
+
+#### Better IDE Integration
+
+- **Seamless Skill Access** - All skills work natively within Claude Code
+  - No need to switch between CLI and IDE
+  - Skills automatically discoverable via `@skill-name` syntax
+  - Context-aware skill suggestions
+  - Direct file editing and creation within IDE
+
+- **Improved Initialization Command** - Enhanced `/scientific-writer:init` experience
+  - Better handling of existing `CLAUDE.md` files
+  - Backup and merge options for existing configurations
+  - Clear feedback on what was installed
+  - Summary of available skills and capabilities
+
+- **Plugin-Optimized Workflows** - Workflows designed for IDE usage
+  - File operations work directly in project directory
+  - No need for separate data folders - use project structure
+  - Skills integrate with IDE's file system
+  - Better progress feedback within IDE context
+
+### 📝 Documentation Updates
+
+- **Plugin Quick Start** - New quick start guide for plugin users
+- **Plugin Examples** - Real-world examples of using skills in Claude Code
+- **Skill Reference** - Complete list of all 19+ available skills
+- **Troubleshooting** - Common plugin installation and usage issues
+
+### 🎯 Usage Examples
+
+#### Plugin Installation
+
+```bash
+# Add marketplace
+/plugin marketplace add https://github.com/K-Dense-AI/claude-scientific-writer
+
+# Install plugin
+/plugin install claude-scientific-writer
+
+# Initialize in your project
+/scientific-writer:init
+```
+
+#### Using Skills in Claude Code
+
+```bash
+# Create a paper (skill automatically used)
+> Create a Nature paper on CRISPR gene editing
+
+# Use specific skills
+> @research-lookup Find recent papers on mRNA vaccines
+> @peer-review Evaluate this manuscript
+> @clinical-reports Create a case report for this patient
+
+# Generate documents
+> Create an NSF grant proposal for quantum computing
+> Generate conference slides from my paper
+> Create a research poster for NeurIPS
+```
+
+### 💡 Key Benefits for Plugin Users
+
+- **No CLI Required** - Everything works directly in Claude Code
+- **Instant Access** - All 19+ skills available immediately after installation
+- **IDE Integration** - Files created and edited directly in your project
+- **Context Aware** - Skills understand your project structure
+- **Seamless Workflow** - No switching between tools
+
+### 🚀 Migration from CLI to Plugin
+
+For existing CLI users:
+- Plugin provides same functionality with better IDE integration
+- Skills work identically in both CLI and plugin modes
+- Can use both CLI and plugin in the same project
+- Plugin is recommended for IDE-based workflows
+
+### 📦 Plugin Structure
+
+```
+claude-scientific-writer/
+├── .claude-plugin/          # Plugin metadata (if exists)
+├── commands/                 # Plugin commands
+│   └── scientific-writer-init.md
+├── skills/                   # All 19+ skills
+│   ├── research-lookup/
+│   ├── peer-review/
+│   ├── clinical-reports/
+│   └── ... (16 more)
+├── templates/                # CLAUDE.md template
+│   └── CLAUDE.scientific-writer.md
+└── ... (Python package files)
+```
+
+### 🎨 Plugin Features
+
+- **19+ Specialized Skills** - Research, writing, review, and more
+- **One-Command Setup** - `/scientific-writer:init` configures everything
+- **Skill Discovery** - Ask "What skills are available?" to see full list
+- **Direct Integration** - Skills work with IDE's file operations
+- **Template System** - Professional templates for all document types
+
+---
+
 ## [2.6.1] - 2025-11-17
 
 ### ⚡ Performance

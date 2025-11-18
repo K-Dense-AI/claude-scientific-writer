@@ -6,12 +6,12 @@
 
 A Python package and CLI for generating publication-ready scientific papers, reports, posters, grant proposals, and more academic documents with Claude Sonnet 4.5. Features real-time research lookup, intelligent paper detection, and comprehensive document conversion. Version 2.0 adds a fully typed, programmatic API while keeping the CLI 100% backward compatible.
 
-**✨ What's New in v2.4.0**
-- **Smart File Routing** - Automatic categorization of manuscript, source, data, and image files
-- **Enhanced Editing Mode** - .tex files automatically routed to drafts/ for seamless editing
-- **Sources Folder** - Separate folder for reference materials (.md, .docx, .pdf) to keep context organized
-- **Improved File Processing** - Better error handling and user feedback during file operations
-- **Streamlined Workflow** - Clearer distinction between editable manuscripts and reference materials
+**✨ What's New in v2.7.0 - Claude Code Plugin Focus**
+- **Enhanced Plugin Experience** - Optimized for use as a Claude Code (Cursor) plugin
+- **Streamlined Installation** - One-command setup with `/scientific-writer:init`
+- **IDE Integration** - All 19+ skills work directly in Claude Code without CLI
+- **Plugin-First Documentation** - Comprehensive guides for plugin users
+- **Seamless Workflows** - Skills integrate natively with IDE file operations
 
 **✨ Previous Features (v2.0+)**
 - Programmatic Python API with async support
@@ -30,16 +30,19 @@ A Python package and CLI for generating publication-ready scientific papers, rep
 - Python 3.10-3.12
 - ANTHROPIC_API_KEY (required), OPENROUTER_API_KEY (optional for research lookup)
 
-### Install
+### Installation Options
 
-#### Option 1: Install from PyPI (Recommended)
+#### Option 1: Claude Code Plugin (Recommended) ⭐
+The easiest way to use Scientific Writer is as a Claude Code plugin. See the [Plugin Installation](#-use-as-a-claude-code-plugin-recommended) section above.
+
+#### Option 2: Install from PyPI (CLI/API Usage)
 ```bash
 pip install scientific-writer
 ```
 
-#### Option 2: Install from source with uv
+#### Option 3: Install from source with uv
 ```bash
-git clone https://github.com/yourusername/claude-scientific-writer.git
+git clone https://github.com/K-Dense-AI/claude-scientific-writer.git
 cd claude-scientific-writer
 uv sync
 ```
@@ -53,7 +56,17 @@ echo "OPENROUTER_API_KEY=your_openrouter_key" >> .env
 export ANTHROPIC_API_KEY='your_key'
 ```
 
-### Use the CLI
+### Usage Options
+
+#### Use as Plugin (Recommended)
+After installing the plugin and running `/scientific-writer:init`, simply ask Claude:
+```bash
+> Create a Nature paper on CRISPR gene editing
+> Generate an NSF grant proposal
+> @research-lookup Find papers on mRNA vaccines
+```
+
+#### Use the CLI
 ```bash
 # If installed via pip
 scientific-writer
@@ -62,7 +75,7 @@ scientific-writer
 uv run scientific-writer
 ```
 
-### Use the Python API
+#### Use the Python API
 ```python
 import asyncio
 from scientific_writer import generate_paper
@@ -77,11 +90,11 @@ async def main():
 asyncio.run(main())
 ```
 
-### Use as a Claude Code Plugin
+## 🎯 Use as a Claude Code Plugin (Recommended)
 
-This repository can be used as a Claude Code (Cursor) plugin to provide scientific writing skills and templates directly in your IDE.
+**Scientific Writer works best as a Claude Code (Cursor) plugin**, providing seamless access to all scientific writing capabilities directly in your IDE. No CLI required!
 
-#### Installation Steps
+### Quick Start - Plugin Installation
 
 1. **Add the plugin marketplace** in Claude Code:
    ```bash
@@ -99,12 +112,41 @@ This repository can be used as a Claude Code (Cursor) plugin to provide scientif
    ```bash
    /scientific-writer:init
    ```
-   This creates a `CLAUDE.md` file with scientific writing instructions and makes all 19 skills available.
+   This creates a `CLAUDE.md` file with comprehensive scientific writing instructions and makes all 19+ skills available.
 
-5. **Start using**:
-   - Ask Claude to "Create a Nature paper on [topic]"
-   - Use any of the 22+ available skills (research-lookup, peer-review, clinical-reports, etc.)
-   - All capabilities work directly in your IDE
+5. **Start using immediately**:
+   ```bash
+   # Create papers, grants, reports, and more
+   > Create a Nature paper on CRISPR gene editing
+   > Write an NSF grant proposal for quantum computing
+   > Generate conference slides from my paper
+   
+   # Use specific skills
+   > @research-lookup Find recent papers on mRNA vaccines
+   > @peer-review Evaluate this manuscript
+   > @clinical-reports Create a case report
+   ```
+
+### Why Use the Plugin?
+
+- ✅ **No CLI Required** - Everything works directly in Claude Code
+- ✅ **Instant Access** - All 19+ skills available immediately
+- ✅ **IDE Integration** - Files created and edited in your project
+- ✅ **Context Aware** - Skills understand your project structure
+- ✅ **Seamless Workflow** - No switching between tools
+
+### Available Skills
+
+When installed as a plugin, you get instant access to:
+- `research-lookup` - Real-time literature search
+- `peer-review` - Systematic manuscript evaluation
+- `citation-management` - BibTeX and reference handling
+- `clinical-reports` - Medical documentation standards
+- `research-grants` - NSF, NIH, DOE proposal support
+- `scientific-slides` - Research presentations
+- `latex-posters` - Conference poster generation
+- `hypothesis-generation` - Scientific hypothesis development
+- And 11+ more specialized skills...
 
 See the [Plugin Testing Guide](#plugin-testing-local-development) below for local development instructions.
 
