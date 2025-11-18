@@ -96,7 +96,6 @@ This repository can be used as a Claude Code (Cursor) plugin to provide scientif
 3. **Restart Claude Code** when prompted.
 
 4. **Initialize in your project**:
-    # In any project directory:
    ```bash
    /scientific-writer:init
    ```
@@ -104,7 +103,7 @@ This repository can be used as a Claude Code (Cursor) plugin to provide scientif
 
 5. **Start using**:
    - Ask Claude to "Create a Nature paper on [topic]"
-   - Use any of the 19+ available skills (research-lookup, peer-review, clinical-reports, etc.)
+   - Use any of the 22+ available skills (research-lookup, peer-review, clinical-reports, etc.)
    - All capabilities work directly in your IDE
 
 See the [Plugin Testing Guide](#plugin-testing-local-development) below for local development instructions.
@@ -271,6 +270,7 @@ For developers working on the plugin or testing locally:
 2. **Create marketplace configuration** (`test-marketplace/.claude-plugin/marketplace.json`):
    
    Copy the example from `test-marketplace-example.json` or create:
+   
    ```json
    {
      "name": "test-marketplace",
