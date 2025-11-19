@@ -4,6 +4,8 @@ Welcome to the Scientific Writer documentation! This guide will help you navigat
 
 ## 📚 Documentation Overview
 
+> 💡 **New!** Check out the [Complete Documentation Index](DOCUMENTATION_INDEX.md) for a comprehensive navigation guide with learning paths and quick reference.
+
 ### For New Users
 
 Start here to get up and running quickly:
@@ -11,6 +13,7 @@ Start here to get up and running quickly:
 1. **[Main README](../README.md)** - Quick start, installation, and basic usage
 2. **[Complete Features Guide](FEATURES.md)** - Comprehensive overview of all capabilities
 3. **[Skills Overview](SKILLS.md)** - Available skills and what they can do
+4. **[Plugin Installation](../README.md#-use-as-a-claude-code-plugin-recommended)** - Claude Code plugin setup (recommended)
 
 ### For Developers
 
@@ -26,6 +29,26 @@ Having issues? Check these resources:
 
 1. **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions
 2. **[Changelog](../CHANGELOG.md)** - Version history and breaking changes
+
+## 🎯 Usage Modes
+
+Scientific Writer can be used in three ways:
+
+1. **🌟 Claude Code Plugin (Recommended)** - Use directly in your IDE
+   - One-command setup: `/scientific-writer:init`
+   - All 19+ skills available immediately
+   - No CLI required
+   - See: [Plugin Installation Guide](../README.md#-use-as-a-claude-code-plugin-recommended)
+
+2. **💻 Command Line Interface (CLI)** - Interactive scientific writing
+   - Run: `scientific-writer` or `uv run scientific-writer`
+   - Full-featured interactive mode
+   - See: [CLI Quick Start](../README.md#use-the-cli)
+
+3. **🔧 Python API** - Programmatic integration
+   - Import: `from scientific_writer import generate_paper`
+   - Async API with progress streaming
+   - See: [API Reference](API.md)
 
 ## 🎯 Quick Navigation by Task
 
@@ -161,5 +184,5 @@ If you can't find what you're looking for:
 
 ---
 
-**Last Updated**: October 30, 2025 (v2.0.1)
+**Last Updated**: January 22, 2025 (v2.7.0)
 

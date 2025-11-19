@@ -1,8 +1,10 @@
 # Development and Architecture
 
-This document is for contributors and maintainers. It summarizes the package architecture, design decisions, and development workflow for Scientific Writer v2.0.
+This document is for contributors and maintainers. It summarizes the package architecture, design decisions, and development workflow for Scientific Writer v2.7.0.
 
 ## Architecture Overview
+
+### Package Structure
 
 ```
 scientific_writer/
@@ -14,6 +16,24 @@ scientific_writer/
 └── utils.py             # Helper functions (paper detection, file scanning)
 ```
 
+### Plugin Structure
+
+```
+claude-scientific-writer/
+├── .claude-plugin/          # Plugin metadata
+│   └── plugin.json
+├── commands/                # Plugin commands
+│   └── scientific-writer-init.md
+├── skills/                  # All 19+ skills
+│   ├── citation-management/
+│   ├── clinical-reports/
+│   ├── research-lookup/
+│   └── ... (16+ more)
+├── templates/               # CLAUDE.md template
+│   └── CLAUDE.scientific-writer.md
+└── scientific_writer/       # Python package
+```
+
 ### Key Components
 
 - `api.generate_paper`: Async generator streaming progress and yielding a comprehensive result
@@ -21,6 +41,7 @@ scientific_writer/
 - `core`: Shared logic for API key retrieval, instruction loading, output management, data handling
 - `models`: Typed dataclasses for API responses
 - `utils`: File scanning, paper detection, and helpers
+- **Plugin System**: Commands, skills, and templates for Claude Code integration
 
 ## Data Models
 
@@ -67,7 +88,73 @@ uv run python example_api_usage.py
 - Lint/format according to project defaults
 - Validate imports and API signatures locally via example usage
 
+## Plugin Development
+
+### Testing Plugin Locally
+
+For local plugin development and testing:
+
+1. **Create test marketplace** (see `TESTING_INSTRUCTIONS.md`):
+   ```bash
+   cd ..
+   mkdir -p test-marketplace/.claude-plugin
+   ```
+
+2. **Configure marketplace** with relative path to your local plugin:
+   ```json
+   {
+     "name": "test-marketplace",
+     "plugins": [{
+       "name": "claude-scientific-writer",
+       "source": "../claude-scientific-writer"
+     }]
+   }
+   ```
+
+3. **Add marketplace in Claude Code**:
+   ```
+   /plugin marketplace add ../test-marketplace
+   ```
+
+4. **Install plugin**:
+   ```
+   /plugin install claude-scientific-writer@test-marketplace
+   ```
+
+5. **Test in a project**:
+   ```
+   /scientific-writer:init
+   ```
+
+### Plugin Structure Requirements
+
+- **`.claude-plugin/plugin.json`** - Plugin metadata
+- **`commands/`** - Command definitions (YAML frontmatter required)
+- **`skills/`** - Skill definitions (each with SKILL.md + YAML frontmatter)
+- **`templates/`** - Template files (CLAUDE.scientific-writer.md)
+
+### Adding New Skills
+
+1. Create directory in `skills/`
+2. Add `SKILL.md` with YAML frontmatter:
+   ```yaml
+   ---
+   name: skill-name
+   description: Brief description
+   allowed-tools: [read_file, write, etc.]
+   ---
+   ```
+3. Add references, scripts, assets as needed
+4. Test skill availability after plugin reinstall
+
 ## Release Notes
+
+v2.7.0 highlights:
+
+- **Claude Code Plugin Focus** - Optimized for IDE integration
+- Plugin installation with `/scientific-writer:init`
+- All 19+ skills accessible via plugin
+- Streamlined IDE workflow
 
 v2.0 highlights:
 
@@ -78,7 +165,9 @@ v2.0 highlights:
 
 See `CHANGELOG.md` for details.
 
-## Migration (v1.x -> v2.0)
+## Migration Guides
+
+### v1.x -> v2.0
 
 - CLI remains identical (`scientific-writer`)
 - New package structure replaces single-file script
@@ -90,13 +179,23 @@ Example:
 from scientific_writer import generate_paper
 ```
 
+### CLI/API -> Plugin (v2.7.0)
+
+For best IDE experience:
+- Install as Claude Code plugin (recommended)
+- Use `/scientific-writer:init` in your project
+- Access all skills directly in IDE
+- No CLI required for most workflows
+
 ## Contributing
 
 1. Fork and create a feature branch
-2. `uv sync`
+2. `uv sync` to install dependencies
 3. Make changes with clear commits
-4. Ensure examples run
-5. Open a pull request with a concise description
+4. Test locally (CLI, API, and plugin if applicable)
+5. Ensure all examples run
+6. Update documentation if needed
+7. Open a pull request with a concise description
 
 ## Project Links
 
