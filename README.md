@@ -500,6 +500,23 @@ claude-scientific-writer/
 - **Template not found**: Ensure `templates/CLAUDE.scientific-writer.md` is present
 - **Marketplace not loading**: Verify `marketplace.json` syntax and relative path to plugin
 
+## 📄 Example Outputs
+
+Want to see what Scientific Writer can create? Check out real examples in the [`docs/examples/`](docs/examples/) directory!
+
+| Document Type | Example | Description |
+|--------------|---------|-------------|
+| **Research Paper** | Coming soon | Full scientific papers with IMRaD structure |
+| **Grant Proposal** | [NSF Proposal](docs/examples/grants/v6_draft.pdf) | Complete NSF grant with budget and timeline |
+| **Research Poster** | [Conference Poster](docs/examples/poster/poster.pdf) | LaTeX-generated academic poster |
+| **Presentation Slides** | [AI Scientist Talk](docs/examples/slides/ai_scientist_talk.pdf) | Professional research presentation |
+| **Clinical Report** | [Treatment Plan](docs/examples/treatment_plan/GERD.pdf) | Patient treatment documentation |
+| **Clinical Decision Support** | [Breast Cancer](docs/examples/clinical_decision_support/breast_cancer.pdf) | Evidence-based clinical recommendations |
+| **Hypothesis Generation** | [AI Weather Prediction](docs/examples/hypotheses_generation/AI_in_weather.pdf) | Research hypothesis development |
+| **Market Research** | [Agentic AI Report](docs/examples/market%20research%20reports/agentic_ai_life_sciences.pdf) | Industry analysis and market insights |
+
+**🎯 Browse the examples** to see formatting, structure, and quality before starting your own projects!
+
 ## Documentation
 
 ### User Guides
