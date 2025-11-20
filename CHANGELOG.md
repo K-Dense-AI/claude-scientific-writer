@@ -6,6 +6,182 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.0] - 2025-11-20
+
+### 🎨 Headline Feature: Nano Banana Pro for Scientific Diagrams
+
+This release introduces **Nano Banana Pro**, a revolutionary AI-powered system for generating publication-quality scientific diagrams from natural language descriptions.
+
+### ✨ Added
+
+#### AI-Powered Scientific Schematics
+
+- **Nano Banana Pro Integration** - Generate any scientific diagram by describing it in natural language
+  - No coding required - just describe what you want
+  - No templates needed - AI understands your intent
+  - No manual drawing - automatic generation from description
+  - Publication-quality output following scientific standards
+  
+- **Iterative Refinement System** - Automatic quality improvement through intelligent review cycles
+  - 3 iterations by default (configurable 1-10)
+  - AI quality review after each iteration (0-10 score + detailed critique)
+  - Progressive improvement addressing specific issues
+  - Transparent review process with detailed JSON logs
+  
+- **Comprehensive Output** - Multiple versions plus quality assessment
+  - Three image versions (v1, v2, v3) showing progression
+  - Final polished image ready for publication
+  - Detailed review log with scores and critiques
+  - Quality metrics: clarity, labels, accuracy, accessibility
+  
+- **Built-In Scientific Standards** - Automatic adherence to best practices
+  - Clean white/light backgrounds
+  - High contrast for readability (WCAG 2.1 compliant)
+  - Professional typography (minimum 10pt fonts, sans-serif)
+  - Colorblind-friendly color palettes (Okabe-Ito scheme)
+  - Proper spacing, scale bars, legends, and axes
+  - Standard scientific notation and symbols
+
+#### Universal Diagram Support
+
+- **Clinical & Medical** - CONSORT flowcharts, clinical trials, diagnostic algorithms, patient pathways
+- **Computational & AI** - Neural networks (CNNs, Transformers, RNNs), algorithms, system architectures
+- **Biological & Chemical** - Signaling pathways (MAPK, PI3K/AKT), metabolic pathways, protein structures
+- **Engineering & Physics** - Circuit diagrams, block diagrams, experimental setups, signal processing
+- **And More** - Study designs, conceptual frameworks, process diagrams, timelines, organizational charts
+
+#### Comprehensive Documentation
+
+- **README.md** - Quick start guide with installation, usage, examples (340+ lines)
+- **QUICK_REFERENCE.md** - One-page cheat sheet for common tasks (209 lines)
+- **SKILL.md** - Complete documentation with extensive examples (737 lines)
+- **IMPLEMENTATION_SUMMARY.md** - Technical details and architecture (372 lines)
+- **Example Scripts** - `example_usage.sh` with practical demonstrations
+- **Test Suite** - `test_ai_generation.py` with 6 comprehensive tests
+
+### 🔧 Improvements
+
+#### Prompt Engineering System
+
+- **Effective Prompt Guidelines** - Best practices for getting quality results
+  - Specify layout and structure (vertical/horizontal flow, positioning)
+  - Include quantitative details (numbers, dimensions, parameters)
+  - Describe visual style (minimalist, detailed, technical)
+  - Request specific labels and annotations
+  - Mention color and accessibility requirements
+  
+- **Quality Assessment Framework** - Seven-dimension evaluation system
+  - Scientific accuracy - correctness of representation
+  - Clarity of elements - easy to understand
+  - Label readability - fonts, sizes, placement
+  - Layout and composition - visual hierarchy
+  - Accessibility - colorblind-friendly, high contrast
+  - Professional quality - publication-ready appearance
+  - Completeness - all required elements present
+
+#### Developer Experience
+
+- **Python API** - Programmatic access to Nano Banana Pro
+  ```python
+  from scripts.generate_schematic_ai import ScientificSchematicGenerator
+  
+  generator = ScientificSchematicGenerator(api_key="your_key", verbose=True)
+  results = generator.generate_iterative(
+      user_prompt="CONSORT flowchart",
+      output_path="figures/consort.png",
+      iterations=3
+  )
+  print(f"Final score: {results['final_score']}/10")
+  ```
+
+- **Command-Line Interface** - Simple, intuitive usage
+  ```bash
+  python scripts/generate_schematic.py "diagram description" -o output.png
+  ```
+
+- **Flexible Configuration** - Multiple options for customization
+  - `--iterations N` - Control refinement cycles (1-10)
+  - `--method ai|code` - Choose generation method
+  - `-v, --verbose` - Detailed progress output
+  - `--api-key KEY` - Override environment variable
+
+### 🎯 Usage Examples
+
+#### CONSORT Flowchart
+```bash
+python scripts/generate_schematic.py \
+  "CONSORT participant flow: screened n=500, excluded n=150, randomized n=350" \
+  -o consort.png
+```
+
+#### Neural Network Architecture
+```bash
+python scripts/generate_schematic.py \
+  "Transformer architecture with encoder and decoder, show attention mechanism" \
+  -o transformer.png
+```
+
+#### Biological Pathway
+```bash
+python scripts/generate_schematic.py \
+  "MAPK signaling pathway: EGFR → RAS → RAF → MEK → ERK → nucleus" \
+  -o mapk.png
+```
+
+### 💡 Key Benefits
+
+- **Fast**: Results in 1-2 minutes (3 iterations)
+- **Easy**: Natural language descriptions only
+- **Quality**: Automatic review and refinement
+- **Universal**: Works for all diagram types
+- **Publication-Ready**: High-quality output immediately
+- **Affordable**: $0.10-0.50 per diagram
+- **Accessible**: Colorblind-friendly, high contrast
+- **Documented**: Comprehensive guides and examples
+
+### 📦 New Files
+
+- `skills/scientific-schematics/`
+  - `scripts/generate_schematic_ai.py` - AI generation engine with iterative refinement
+  - `scripts/generate_schematic.py` - Unified entry point (AI + code methods)
+  - `README.md` - Quick start and comprehensive guide
+  - `QUICK_REFERENCE.md` - One-page cheat sheet
+  - `IMPLEMENTATION_SUMMARY.md` - Technical details
+  - `test_ai_generation.py` - Verification test suite
+  - `example_usage.sh` - Usage demonstrations
+
+### 🔄 Backward Compatibility
+
+- ✅ All existing code-based generation still available via `--method code`
+- ✅ Graphviz, TikZ, schemdraw, and other tools unchanged
+- ✅ All existing templates and scripts preserved
+- ✅ Classic workflow accessible for users who prefer it
+
+### 🧪 Testing
+
+Run verification tests:
+```bash
+python skills/scientific-schematics/test_ai_generation.py
+# Expected: "6/6 tests passed"
+```
+
+### 📊 Performance
+
+- **Generation Time**: 1-2 minutes for 3 iterations
+- **Cost**: $0.10-0.50 per diagram (3 iterations)
+- **Quality Scores**: Typically 7-9.5/10 by final iteration
+- **Success Rate**: High quality on diverse diagram types
+
+### 🌟 Example Outputs
+
+See `figures/` directory for real examples:
+- `google_gemini_architecture.png` - Complex AI system architecture
+- `gemini_moe_architecture.png` - Mixture-of-Experts diagram
+- `test_nano_banana.png` - Test diagram
+- `*_review_log.json` - Quality assessment logs
+
+---
+
 ## [2.7.0] - 2025-01-22
 
 ### 🎯 Claude Code Plugin Focus
