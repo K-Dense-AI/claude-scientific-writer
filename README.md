@@ -4,25 +4,7 @@
 [![Total Downloads](https://static.pepy.tech/badge/scientific-writer)](https://pepy.tech/project/scientific-writer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Python package and CLI for generating publication-ready scientific papers, reports, posters, grant proposals, and more academic documents with Claude Sonnet 4.5. Features real-time research lookup, intelligent paper detection, and comprehensive document conversion. Version 2.0 adds a fully typed, programmatic API while keeping the CLI 100% backward compatible.
-
-**✨ What's New in v2.7.0 - Claude Code Plugin Focus**
-- **Enhanced Plugin Experience** - Optimized for use as a Claude Code (Cursor) plugin
-- **Streamlined Installation** - One-command setup with `/scientific-writer:init`
-- **IDE Integration** - All 19+ skills work directly in Claude Code without CLI
-- **Plugin-First Documentation** - Comprehensive guides for plugin users
-- **Seamless Workflows** - Skills integrate natively with IDE file operations
-
-**✨ Previous Features (v2.0+)**
-- Programmatic Python API with async support
-- Research lookup with Perplexity Sonar Pro
-- Intelligent paper detection (auto-resume editing)
-- Clinical reports (case reports, diagnostic reports, trial reports, HIPAA compliance)
-- Grant proposal generation (NSF, NIH, DOE, DARPA)
-- Research posters with LaTeX
-- Scientific schematics (CONSORT, circuits, pathways)
-- Document conversion (15+ formats with MarkItDown)
-- ScholarEval peer review framework
+A Python package and CLI for generating publication-ready scientific papers, reports, posters, grant proposals, and more academic documents with Claude Sonnet 4.5. Features real-time research lookup, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro. Version 2.0 adds a fully typed, programmatic API while keeping the CLI 100% backward compatible.
 
 ## Quick Start
 
@@ -174,6 +156,7 @@ asyncio.run(main())
 ### Available Skills
 
 When installed as a plugin, you get instant access to:
+- `scientific-schematics` - AI diagram generation with Nano Banana Pro (CONSORT, neural networks, pathways)
 - `research-lookup` - Real-time literature search
 - `peer-review` - Systematic manuscript evaluation
 - `citation-management` - BibTeX and reference handling
@@ -194,10 +177,11 @@ See the [Plugin Testing Guide](#plugin-testing-local-development) below for loca
 - **Research posters** using LaTeX (beamerposter, tikzposter, baposter)
 - **Grant proposals** (NSF, NIH, DOE, DARPA) with agency-specific formatting
 - **Literature reviews** with systematic citation management
-- **Scientific schematics** (CONSORT diagrams, circuit diagrams, biological pathways)
+- **Scientific schematics** powered by Nano Banana Pro (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
 
 ### 🤖 AI-Powered Capabilities
 - **Real-time research lookup** using Perplexity Sonar Pro (via OpenRouter)
+- **AI-powered diagram generation** with Nano Banana Pro - create any scientific diagram from natural language descriptions
 - **Intelligent paper detection** - automatically identifies references to existing papers
 - **Peer review feedback** with quantitative ScholarEval framework (8-dimension scoring)
 - **Iterative editing** with context-aware revision suggestions
@@ -304,7 +288,7 @@ asyncio.run(main())
 | **Grants** | `> NSF proposal for optogenetics. Present pilot_data/ with behavioral_results.csv (n=24 mice), neural_activation_maps.png, circuit_tracing.tif, and projection_analysis.csv showing 78% success in behavior modification. Include 5-year timeline with milestones.xlsx.` |
 | **Posters** | `> A0 poster for ASCO conference. Feature trial_demographics.csv (n=200), primary_outcome_kaplan_meier.png, adverse_events_heatmap.png, biomarker_correlations.csv, mechanism_schematic.png. Highlight 8.5 month median PFS improvement.` |
 | **Reviews** | `> Systematic review of immunotherapy combinations. Reference extracted_data.csv from 85 trials, include forest_plot_OS.png and forest_plot_PFS.png for meta-analysis, risk_of_bias_summary.png, network_meta_analysis.csv comparing 12 regimens.` |
-| **Schematics** | `> CONSORT diagram for RCT. Use enrollment_data.csv (n=450 screened, 312 randomized), show flowchart with allocation, follow_up_rates.csv, and intention_to_treat_analysis.png with dropout reasons from attrition_reasons.csv.` |
+| **Schematics** | `> Generate CONSORT diagram for RCT using Nano Banana Pro. Use enrollment_data.csv (n=450 screened, 312 randomized), show flowchart with allocation. Create transformer architecture diagram showing encoder-decoder. Generate biological pathway diagrams for MAPK signaling.` |
 
 ### File Handling
 
