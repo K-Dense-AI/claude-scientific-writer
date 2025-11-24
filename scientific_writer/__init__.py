@@ -29,7 +29,7 @@ Example:
 from .api import generate_paper
 from .models import ProgressUpdate, PaperResult, PaperMetadata, PaperFiles
 
-__version__ = "2.8.0"
+__version__ = "2.8.1"
 __author__ = "K-Dense"
 __license__ = "MIT"
 

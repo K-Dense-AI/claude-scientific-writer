@@ -43,6 +43,7 @@ uv.lock
 
 # Output directories
 paper_outputs/
+writing_outputs/
 data/
 
 # LaTeX auxiliary files

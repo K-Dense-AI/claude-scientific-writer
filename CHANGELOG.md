@@ -6,6 +6,16 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.1] - 2025-11-24
+
+### 🔧 Changed
+
+- **Output Directory Renamed** - Changed default output directory from `paper_outputs/` to `writing_outputs/` to better reflect the broader scope of document types supported (papers, slides, posters, reports, etc.)
+  - Updated all documentation and templates to reference `writing_outputs/`
+  - Added `writing_outputs/` to `.gitignore`
+
+---
+
 ## [2.8.0] - 2025-11-20
 
 ### 🎨 Headline Feature: Nano Banana Pro for Scientific Diagrams

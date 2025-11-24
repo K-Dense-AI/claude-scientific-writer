@@ -67,8 +67,8 @@ This is non-negotiable:
 Once the plan is presented:
 
 1. **Create Unique Project Folder**
-   - All work goes in: `paper_outputs/<timestamp>_<brief_description>/`
-   - Example: `paper_outputs/20241027_143022_neurips_attention_paper/`
+   - All work goes in: `writing_outputs/<timestamp>_<brief_description>/`
+   - Example: `writing_outputs/20241027_143022_neurips_attention_paper/`
    - Create subfolders: `drafts/`, `references/`, `figures/`, `final/`
 
 2. **Initialize Progress Tracking**
@@ -159,7 +159,7 @@ Once the plan is presented:
 ### Folder Structure
 
 ```
-paper_outputs/
+writing_outputs/
 └── YYYYMMDD_HHMMSS_<description>/
     ├── progress.md                 # Real-time progress log
     ├── SUMMARY.md                  # Final summary and guide
@@ -222,7 +222,7 @@ paper_outputs/
 
 5. **Example Scenario:**
    - User places `my_paper.tex` in `data/` folder
-   - System creates: `paper_outputs/20241104_143000_edit_paper/`
+   - System creates: `writing_outputs/20241104_143000_edit_paper/`
    - System copies: `my_paper.tex` → `drafts/my_paper.tex`
    - System recognizes: "This is an editing task"
    - System prints: `[HH:MM:SS] EDITING MODE: Found manuscript my_paper.tex in drafts/`
@@ -1200,7 +1200,7 @@ Request: "Create a NeurIPS paper on attention mechanisms"
 
 **Response Flow:**
 1. Present plan: LaTeX format, IMRaD structure, NeurIPS template, ~30-40 BibTeX citations
-2. Create folder: `paper_outputs/20241027_143022_neurips_attention_paper/`
+2. Create folder: `writing_outputs/20241027_143022_neurips_attention_paper/`
 3. Build skeleton with all sections
 4. Research-lookup per section (finding REAL papers only)
 5. Write section-by-section with verified citations
@@ -1215,7 +1215,7 @@ Request: "Create 15-minute slides on my CRISPR research"
 
 **Response Flow:**
 1. Present plan: 15-min talk, 16 slides, PowerPoint format, modern design, research-lookup for citations
-2. Create folder: `paper_outputs/20241110_154500_crispr_conference_talk/`
+2. Create folder: `writing_outputs/20241110_154500_crispr_conference_talk/`
 3. Research-lookup: Find 8 background papers, 5 comparison papers (REAL papers only)
 4. Design: Select modern color palette matching biotechnology topic (e.g., Teal & Coral)
 5. Create slide outline with citation mapping and visual plan (figure/image per slide)
