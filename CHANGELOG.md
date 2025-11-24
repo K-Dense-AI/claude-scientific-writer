@@ -6,6 +6,17 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.2] - 2025-11-24
+
+### 🔧 Fixed
+
+- **API Critical Bug Fix** - Fixed parameter naming conflict in `generate_paper()` function
+  - The `query` parameter was shadowing the imported `query` function from `claude_agent_sdk`
+  - Renamed SDK import to `claude_query` to avoid the conflict
+  - API now works correctly for programmatic paper generation
+
+---
+
 ## [2.8.1] - 2025-11-24
 
 ### 🔧 Changed
