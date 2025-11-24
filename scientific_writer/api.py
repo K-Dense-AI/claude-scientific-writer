@@ -7,7 +7,7 @@ from typing import Optional, List, Dict, Any, AsyncGenerator, Union
 from datetime import datetime
 from dotenv import load_dotenv
 
-from claude_agent_sdk import query, ClaudeAgentOptions
+from claude_agent_sdk import query as claude_query, ClaudeAgentOptions
 
 from .core import (
     get_api_key,
@@ -157,7 +157,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
     # Execute query with Claude
     try:
         accumulated_text = ""
-        async for message in query(prompt=query, options=options):
+        async for message in claude_query(prompt=query, options=options):
             if hasattr(message, "content") and message.content:
                 for block in message.content:
                     if hasattr(block, "text"):
