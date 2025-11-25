@@ -7,16 +7,30 @@ from datetime import datetime
 
 @dataclass
 class ProgressUpdate:
-    """Progress update during paper generation."""
+    """Progress update during paper generation.
+    
+    Attributes:
+        type: Always "progress" to distinguish from result messages
+        timestamp: ISO 8601 timestamp of the update
+        message: Human-readable progress message
+        stage: Current workflow stage (initialization|planning|research|writing|compilation|complete)
+        percentage: Completion percentage (0-100)
+        details: Optional dictionary with additional context (tool name, files created, etc.)
+    """
     type: str = "progress"
     timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat() + "Z")
     message: str = ""
-    stage: str = "initialization"  # initialization|research|writing|compilation|complete
+    stage: str = "initialization"  # initialization|planning|research|writing|compilation|complete
     percentage: int = 0
+    details: Optional[Dict[str, Any]] = None
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
-        return asdict(self)
+        result = asdict(self)
+        # Remove details if None to keep output clean
+        if result.get('details') is None:
+            del result['details']
+        return result
 
 
 @dataclass

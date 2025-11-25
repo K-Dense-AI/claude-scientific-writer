@@ -6,6 +6,59 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.3] - 2025-11-25
+
+### ✨ Enhanced
+
+- **Detailed API Progress Updates** - Significantly improved progress tracking in the programmatic API
+  - **Tool-aware progress tracking** - Detects and reports on specific tool usage (Read, Write, Edit, Bash)
+  - **File operation tracking** - Reports when files are being read, written, or edited with file names
+  - **Compilation detection** - Identifies pdflatex, bibtex, and latexmk commands with specific messages
+  - **Research lookup tracking** - Shows when research queries are being executed
+  - **25+ detailed progress indicators** - Granular messages for each stage of paper generation:
+    - Planning: outline creation, requirements analysis
+    - Research: database searching, publication gathering, synthesis
+    - Writing: abstract, introduction, methods, results, discussion, conclusion, bibliography
+    - Compilation: LaTeX creation, pdflatex passes, bibtex processing
+    - Finalization: file verification, directory organization
+  - **New `details` field** - Progress updates now include optional context:
+    - `tool`: Name of the tool being used
+    - `tool_calls`: Count of tool invocations
+    - `files_created`: Number of files written
+  - **Non-duplicate filtering** - Avoids repeating the same progress message
+
+### 📝 API Changes
+
+- `ProgressUpdate` model now includes optional `details: Dict[str, Any]` field
+- New `planning` stage added to progress stages
+- Progress percentages are now more granular (22%, 28%, 35%, etc. vs just 30%, 50%, 80%)
+
+### 🎯 Example Output
+
+```python
+async for update in generate_paper("Create a paper on AI"):
+    if update["type"] == "progress":
+        print(f"[{update['percentage']:3d}%] {update['message']}")
+        if update.get('details'):
+            print(f"       Tool: {update['details'].get('tool')}")
+```
+
+Output:
+```
+[ 10%] Starting paper generation with Claude
+[ 22%] Searching literature databases
+[ 30%] Researching: quantum computing applications...
+[ 45%] Writing introduction section
+[ 55%] Writing LaTeX document: main.tex
+[ 68%] Creating bibliography: references.bib
+[ 78%] Compiling LaTeX to PDF
+[ 82%] Processing bibliography with BibTeX
+[ 92%] Verifying output files
+[100%] Paper generation complete
+```
+
+---
+
 ## [2.8.2] - 2025-11-24
 
 ### 🔧 Fixed
