@@ -32,12 +32,44 @@ except ImportError:
     print("Error: requests library not found. Install with: pip install requests")
     sys.exit(1)
 
-# Try to load .env file if python-dotenv is available
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass  # python-dotenv not installed, will use environment variables directly
+# Try to load .env file from multiple potential locations
+def _load_env_file():
+    """Load .env file from current directory, parent directories, or package directory."""
+    try:
+        from dotenv import load_dotenv
+        from pathlib import Path
+        
+        # Try current working directory first
+        if load_dotenv():
+            return True
+            
+        # Try parent directories (up to 5 levels)
+        cwd = Path.cwd()
+        for _ in range(5):
+            env_path = cwd / ".env"
+            if env_path.exists():
+                load_dotenv(dotenv_path=env_path)
+                return True
+            cwd = cwd.parent
+            if cwd == cwd.parent:  # Reached root
+                break
+        
+        # Try the package's parent directory (scientific-writer project root)
+        script_dir = Path(__file__).resolve().parent
+        for _ in range(5):
+            env_path = script_dir / ".env"
+            if env_path.exists():
+                load_dotenv(dotenv_path=env_path)
+                return True
+            script_dir = script_dir.parent
+            if script_dir == script_dir.parent:
+                break
+                
+        return False
+    except ImportError:
+        return False  # python-dotenv not installed
+
+_load_env_file()
 
 
 class ScientificSchematicGenerator:
@@ -142,8 +174,22 @@ LAYOUT:
                 json=payload,
                 timeout=120
             )
-            response.raise_for_status()
-            return response.json()
+            
+            # Try to get response body even on error
+            try:
+                response_json = response.json()
+            except json.JSONDecodeError:
+                response_json = {"raw_text": response.text[:500]}
+            
+            # Check for HTTP errors but include response body in error message
+            if response.status_code != 200:
+                error_detail = response_json.get("error", response_json)
+                self._log(f"HTTP {response.status_code}: {error_detail}")
+                raise RuntimeError(f"API request failed (HTTP {response.status_code}): {error_detail}")
+            
+            return response_json
+        except requests.exceptions.Timeout:
+            raise RuntimeError("API request timed out after 120 seconds")
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"API request failed: {str(e)}")
     
@@ -278,15 +324,49 @@ LAYOUT:
                 modalities=["image", "text"]
             )
             
+            # Debug: print response structure if verbose
+            if self.verbose:
+                self._log(f"Response keys: {response.keys()}")
+                if "error" in response:
+                    self._log(f"API Error: {response['error']}")
+                if "choices" in response and response["choices"]:
+                    msg = response["choices"][0].get("message", {})
+                    self._log(f"Message keys: {msg.keys()}")
+                    # Show content preview without printing huge base64 data
+                    content = msg.get("content", "")
+                    if isinstance(content, str):
+                        preview = content[:200] + "..." if len(content) > 200 else content
+                        self._log(f"Content preview: {preview}")
+                    elif isinstance(content, list):
+                        self._log(f"Content is list with {len(content)} items")
+                        for i, item in enumerate(content[:3]):
+                            if isinstance(item, dict):
+                                self._log(f"  Item {i}: type={item.get('type')}")
+            
+            # Check for API errors in response
+            if "error" in response:
+                error_msg = response["error"]
+                if isinstance(error_msg, dict):
+                    error_msg = error_msg.get("message", str(error_msg))
+                print(f"✗ API Error: {error_msg}")
+                return None
+            
             image_data = self._extract_image_from_response(response)
             if image_data:
                 self._log(f"✓ Generated image ({len(image_data)} bytes)")
             else:
                 self._log("✗ No image data in response")
+                # Additional debug info when image extraction fails
+                if self.verbose and "choices" in response:
+                    msg = response["choices"][0].get("message", {})
+                    self._log(f"Full message structure: {json.dumps({k: type(v).__name__ for k, v in msg.items()})}")
             
             return image_data
         except Exception as e:
             self._log(f"✗ Generation failed: {str(e)}")
+            import traceback
+            if self.verbose:
+                traceback.print_exc()
             return None
     
     def review_image(self, image_path: str, original_prompt: str, 
