@@ -151,12 +151,12 @@ IMPORTANT - CONVERSATION CONTINUITY:
     files_written = []
     
     yield ProgressUpdate(
-        message="Starting document generation with Claude",
+        message="Starting document generation",
         stage="initialization",
-        details={"model": model, "query_length": len(query)},
+        details={"query_length": len(query)},
     ).to_dict()
     
-    # Execute query with Claude
+    # Execute query
     try:
         accumulated_text = ""
         async for message in claude_query(prompt=query, options=options):
@@ -167,10 +167,11 @@ IMPORTANT - CONVERSATION CONTINUITY:
                         text = block.text
                         accumulated_text += text
                         
-                        # Analyze text for progress indicators
+                        # Analyze text for major stage transitions (fallback)
                         stage, msg = _analyze_progress(accumulated_text, current_stage)
                         
-                        if stage != current_stage and msg != last_message:
+                        # Only yield if we have a stage change with a message
+                        if stage != current_stage and msg and msg != last_message:
                             current_stage = stage
                             last_message = msg
                             
@@ -263,10 +264,13 @@ IMPORTANT - CONVERSATION CONTINUITY:
 
 def _analyze_progress(text: str, current_stage: str) -> tuple:
     """
-    Analyze accumulated text to determine current progress stage.
+    Minimal fallback for progress detection from text.
+    
+    Primary progress updates come from tool usage analysis (_analyze_tool_use).
+    This function only detects major stage transitions when no tool updates available.
     
     Returns:
-        Tuple of (stage, message)
+        Tuple of (stage, message) - returns current stage if no transition detected
     """
     text_lower = text.lower()
     
@@ -274,92 +278,69 @@ def _analyze_progress(text: str, current_stage: str) -> tuple:
     stage_order = ["initialization", "planning", "research", "writing", "compilation", "complete"]
     current_idx = stage_order.index(current_stage) if current_stage in stage_order else 0
     
-    # Progress indicators with specific messages (stage, message, keywords)
-    progress_indicators = [
-        # Planning stage
-        ("planning", "Creating outline and structure", 
-         ["outline", "structure", "plan", "sections"]),
-        ("planning", "Analyzing requirements and scope",
-         ["analyzing", "requirements", "scope"]),
-        
-        # Research stage
-        ("research", "Searching literature databases",
-         ["searching", "pubmed", "arxiv", "scholar", "database"]),
-        ("research", "Gathering relevant publications",
-         ["publications", "references", "citations"]),
-        ("research", "Synthesizing research findings",
-         ["synthesiz", "review", "findings"]),
-        
-        # Writing stage
-        ("writing", "Writing abstract",
-         ["abstract"]),
-        ("writing", "Writing introduction section",
-         ["introduction", "background"]),
-        ("writing", "Writing methods section",
-         ["methods", "methodology", "materials"]),
-        ("writing", "Writing results section",
-         ["results", "findings", "analysis"]),
-        ("writing", "Writing discussion section",
-         ["discussion", "implications"]),
-        ("writing", "Writing conclusion",
-         ["conclusion", "concluding", "summary"]),
-        ("writing", "Formatting bibliography",
-         ["bibliography", "bibtex", "references.bib"]),
-        
-        # Compilation stage
-        ("compilation", "Creating LaTeX document",
-         ["\\documentclass", "\\begin{document}", ".tex"]),
-        ("compilation", "Running pdflatex compilation",
-         ["pdflatex", "latexmk", "compiling"]),
-        ("compilation", "Processing bibliography with BibTeX",
-         ["bibtex", "processing citations"]),
-        ("compilation", "Final PDF compilation",
-         ["final compilation", "recompiling"]),
-        
-        # Finalization stage
-        ("complete", "Verifying output files",
-         ["verifying", "checking", "output"]),
-        ("complete", "Organizing output directory",
-         ["organizing", "directory", "files"]),
-    ]
+    # Only detect major stage transitions - let tool analysis handle specifics
+    # Check for compilation indicators (most definitive)
+    if current_idx < stage_order.index("compilation"):
+        if "pdflatex" in text_lower or "latexmk" in text_lower or "compiling" in text_lower:
+            return "compilation", "Compiling document"
     
-    # Find the most advanced matching indicator
-    best_match = None
-    best_idx = current_idx
-    for stage, message, keywords in progress_indicators:
-        if any(kw in text_lower for kw in keywords):
-            stage_idx = stage_order.index(stage) if stage in stage_order else 0
-            if stage_idx > best_idx:
-                best_match = (stage, message)
-                best_idx = stage_idx
+    # Check for completion indicators
+    if current_idx < stage_order.index("complete"):
+        if "successfully compiled" in text_lower or "pdf generated" in text_lower:
+            return "complete", "Finalizing output"
     
-    if best_match:
-        return best_match
+    # No stage transition detected - return current stage without message change
+    return current_stage, None
+
+
+def _detect_document_type(file_path: str) -> str:
+    """Detect document type from file path."""
+    path_lower = file_path.lower()
+    if "slide" in path_lower or "presentation" in path_lower or "beamer" in path_lower:
+        return "slides"
+    elif "poster" in path_lower:
+        return "poster"
+    elif "report" in path_lower:
+        return "report"
+    elif "grant" in path_lower or "proposal" in path_lower:
+        return "grant"
+    return "document"
+
+
+def _get_section_from_filename(filename: str) -> str:
+    """Extract section name from filename for more descriptive messages."""
+    name_lower = filename.lower().replace('.tex', '').replace('.md', '')
     
-    # Fallback to simple keyword detection
-    if "research" in text_lower or "literature" in text_lower:
-        if current_idx < stage_order.index("research"):
-            return "research", "Conducting literature research"
+    section_mappings = {
+        'abstract': 'abstract',
+        'intro': 'introduction',
+        'introduction': 'introduction',
+        'method': 'methods',
+        'methods': 'methods',
+        'methodology': 'methodology',
+        'result': 'results',
+        'results': 'results',
+        'discussion': 'discussion',
+        'conclusion': 'conclusion',
+        'conclusions': 'conclusions',
+        'background': 'background',
+        'related': 'related work',
+        'experiment': 'experiments',
+        'experiments': 'experiments',
+        'evaluation': 'evaluation',
+        'appendix': 'appendix',
+        'supplement': 'supplementary material',
+    }
     
-    if "writing" in text_lower:
-        if current_idx < stage_order.index("writing"):
-            return "writing", "Writing document sections"
-    
-    if "compil" in text_lower or "latex" in text_lower or "pdf" in text_lower:
-        if current_idx < stage_order.index("compilation"):
-            return "compilation", "Compiling LaTeX to PDF"
-    
-    if "complete" in text_lower or "finished" in text_lower or "done" in text_lower:
-        if current_idx < stage_order.index("complete"):
-            return "complete", "Finalizing document"
-    
-    # No change detected
-    return current_stage, "Processing..."
+    for key, section in section_mappings.items():
+        if key in name_lower:
+            return section
+    return None
 
 
 def _analyze_tool_use(tool_name: str, tool_input: Dict[str, Any], current_stage: str) -> tuple:
     """
-    Analyze tool usage to provide detailed progress updates.
+    Analyze tool usage to provide dynamic, context-aware progress updates.
     
     Args:
         tool_name: Name of the tool being used
@@ -376,57 +357,125 @@ def _analyze_tool_use(tool_name: str, tool_input: Dict[str, Any], current_stage:
     # Extract relevant info from tool input
     file_path = tool_input.get("file_path", tool_input.get("path", ""))
     command = tool_input.get("command", "")
+    filename = Path(file_path).name if file_path else ""
+    doc_type = _detect_document_type(file_path)
     
     # Read tool - detect what's being read
     if tool_name.lower() == "read":
         if ".bib" in file_path:
-            return ("writing", f"Reading bibliography: {Path(file_path).name}")
+            return ("writing", f"Reading bibliography: {filename}")
         elif ".tex" in file_path:
-            return ("compilation", f"Reading LaTeX file: {Path(file_path).name}")
-        elif ".pdf" in file_path or ".csv" in file_path or ".json" in file_path:
-            return ("research", f"Reading data file: {Path(file_path).name}")
-        else:
-            return (current_stage, f"Reading: {Path(file_path).name}")
+            section = _get_section_from_filename(filename)
+            if section:
+                return ("writing", f"Reading {section} section")
+            return ("writing", f"Reading {filename}")
+        elif ".pdf" in file_path:
+            return ("research", f"Analyzing PDF: {filename}")
+        elif ".csv" in file_path:
+            return ("research", f"Loading data from {filename}")
+        elif ".json" in file_path:
+            return ("research", f"Reading configuration: {filename}")
+        elif ".md" in file_path:
+            return ("planning", f"Reading {filename}")
+        elif file_path:
+            return (current_stage, f"Reading {filename}")
+        return None
     
     # Write tool - detect what's being written
     elif tool_name.lower() == "write":
         if ".bib" in file_path:
-            return ("writing", f"Creating bibliography: {Path(file_path).name}")
+            return ("writing", f"Creating bibliography with references")
         elif ".tex" in file_path:
-            filename = Path(file_path).name
-            if "main" in filename.lower() or current_idx < stage_order.index("writing"):
-                return ("writing", f"Writing LaTeX document: {filename}")
+            section = _get_section_from_filename(filename)
+            if section:
+                return ("writing", f"Writing {section} section")
+            elif "main" in filename.lower():
+                return ("writing", f"Creating main {doc_type} structure")
+            elif current_idx < stage_order.index("writing"):
+                return ("writing", f"Writing {doc_type}: {filename}")
             else:
-                return ("compilation", f"Updating LaTeX: {filename}")
+                return ("compilation", f"Updating {filename}")
         elif ".md" in file_path:
-            return ("writing", f"Writing document: {Path(file_path).name}")
-        else:
-            return (current_stage, f"Writing: {Path(file_path).name}")
+            if "progress" in filename.lower():
+                return ("writing", "Updating progress log")
+            elif "readme" in filename.lower():
+                return ("complete", "Creating documentation")
+            return ("writing", f"Writing {filename}")
+        elif ".sty" in file_path:
+            return ("writing", f"Creating style file: {filename}")
+        elif ".cls" in file_path:
+            return ("writing", f"Creating document class: {filename}")
+        elif file_path:
+            return (current_stage, f"Creating {filename}")
+        return None
     
     # Edit tool
     elif tool_name.lower() == "edit":
         if ".tex" in file_path:
-            return ("writing", f"Editing LaTeX: {Path(file_path).name}")
-        else:
-            return (current_stage, f"Editing: {Path(file_path).name}")
+            section = _get_section_from_filename(filename)
+            if section:
+                return ("writing", f"Refining {section} section")
+            return ("writing", f"Editing {filename}")
+        elif ".bib" in file_path:
+            return ("writing", "Updating bibliography")
+        elif file_path:
+            return (current_stage, f"Editing {filename}")
+        return None
     
     # Bash tool - detect compilation and other commands
     elif tool_name.lower() == "bash":
-        if "pdflatex" in command or "latexmk" in command:
+        if "pdflatex" in command:
+            # Try to extract filename from command
+            if "-output-directory" in command:
+                return ("compilation", "Compiling PDF with output directory")
             return ("compilation", "Compiling LaTeX to PDF")
+        elif "latexmk" in command:
+            return ("compilation", "Running full LaTeX compilation pipeline")
         elif "bibtex" in command:
-            return ("compilation", "Processing bibliography with BibTeX")
+            return ("compilation", "Processing bibliography citations")
+        elif "makeindex" in command:
+            return ("compilation", "Building document index")
         elif "mkdir" in command:
-            return ("initialization", "Creating output directory")
-        elif "cp " in command or "mv " in command:
-            return ("complete", "Organizing output files")
-        else:
-            return (current_stage, f"Running: {command[:50]}...")
+            # Try to extract directory purpose
+            if "paper_outputs" in command or "output" in command.lower():
+                return ("initialization", "Creating output directory")
+            elif "figures" in command.lower():
+                return ("initialization", "Setting up figures directory")
+            elif "drafts" in command.lower():
+                return ("initialization", "Setting up drafts directory")
+            return ("initialization", "Creating directory structure")
+        elif "cp " in command:
+            if ".pdf" in command:
+                return ("complete", "Copying final PDF to output")
+            elif ".tex" in command:
+                return ("complete", "Archiving LaTeX source")
+            return ("complete", "Organizing files")
+        elif "mv " in command:
+            return ("complete", "Moving files to final location")
+        elif "ls " in command or "cat " in command:
+            return None  # Don't report on inspection commands
+        elif command:
+            # Truncate long commands intelligently
+            cmd_preview = command.split()[0] if command.split() else command[:30]
+            return (current_stage, f"Running {cmd_preview}")
+        return None
     
     # Research lookup tool
     elif "research" in tool_name.lower() or "lookup" in tool_name.lower():
-        query_text = tool_input.get("query", "")[:40]
-        return ("research", f"Researching: {query_text}...")
+        query_text = tool_input.get("query", "")
+        if query_text:
+            # Truncate but keep meaningful content
+            truncated = query_text[:50] + "..." if len(query_text) > 50 else query_text
+            return ("research", f"Searching: {truncated}")
+        return ("research", "Searching literature databases")
+    
+    # Web search or similar tools
+    elif "search" in tool_name.lower() or "web" in tool_name.lower():
+        query_text = tool_input.get("query", tool_input.get("search_term", ""))
+        if query_text:
+            truncated = query_text[:40] + "..." if len(query_text) > 40 else query_text
+            return ("research", f"Web search: {truncated}")
+        return ("research", "Searching online resources")
     
     return None
 
