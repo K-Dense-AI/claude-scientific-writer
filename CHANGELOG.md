@@ -6,6 +6,48 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.5] - 2025-11-25
+
+### ✨ Enhanced
+
+- **Smarter context-aware progress messages** - Progress updates are now more intelligent and descriptive
+  - Detects document type (slides, poster, report, grant) from file paths
+  - Extracts section names from filenames (introduction, methods, results, etc.)
+  - Messages like "Writing introduction section" instead of "Writing file.tex"
+
+- **Cleaner progress output** - Reduced noise in progress updates
+  - Inspection commands (ls, cat) no longer generate progress updates
+  - Text-based progress analysis is now minimal fallback only
+  - Tool usage drives primary progress updates
+
+- **Enhanced tool analysis** - More detailed messages for all tool types
+  - Read: "Analyzing PDF", "Loading data from file.csv", "Reading introduction section"
+  - Write: "Creating main document structure", "Writing methods section", "Creating bibliography with references"
+  - Edit: "Refining introduction section", "Updating bibliography"
+  - Bash: "Running full LaTeX compilation pipeline", "Processing bibliography citations", "Copying final PDF to output"
+  - Research: "Searching: [query preview]", "Web search: [query preview]"
+
+### 🔧 Improvements
+
+- **Document type detection** - New `_detect_document_type()` identifies:
+  - Slides/presentations (beamer)
+  - Posters
+  - Reports
+  - Grants/proposals
+  - Generic documents
+
+- **Section name extraction** - New `_get_section_from_filename()` recognizes:
+  - abstract, introduction, methods, results, discussion, conclusion
+  - background, related work, experiments, evaluation
+  - appendix, supplementary material
+
+- **Simplified text analysis** - `_analyze_progress()` now only detects major stage transitions
+  - Compilation indicators (pdflatex, latexmk)
+  - Completion indicators (successfully compiled, pdf generated)
+  - Returns `None` message when no transition detected
+
+---
+
 ## [2.8.4] - 2025-11-25
 
 ### 🔄 Changed
