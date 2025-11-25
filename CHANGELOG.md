@@ -6,6 +6,47 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.4] - 2025-11-25
+
+### 🔄 Changed
+
+- **Removed percentage from progress updates** - Progress updates now use stage-based tracking instead of percentages
+  - Cleaner API response without arbitrary percentage values
+  - Progress is tracked via stages: `initialization` → `planning` → `research` → `writing` → `compilation` → `complete`
+
+- **Generic document terminology** - Replaced "paper" with "document" throughout the API
+  - Supports all document types: papers, slides, posters, reports, grants, etc.
+  - Messages now say "document generation" instead of "paper generation"
+  - More accurate for the tool's actual capabilities
+
+### 📝 API Changes
+
+- `ProgressUpdate` model no longer has a `percentage` field
+- Progress updates now return only: `type`, `timestamp`, `message`, `stage`, and optional `details`
+- `_analyze_progress()` returns `(stage, message)` tuple instead of `(stage, percentage, message)`
+- `_analyze_tool_use()` returns `(stage, message)` tuple instead of `(stage, percentage, message)`
+
+### 🎯 Example Output
+
+```python
+async for update in generate_paper("Create conference slides on AI"):
+    if update["type"] == "progress":
+        print(f"[{update['stage']:12}] {update['message']}")
+```
+
+Output:
+```
+[initialization] Starting document generation with Claude
+[research     ] Searching literature databases
+[research     ] Researching: machine learning applications...
+[writing      ] Writing introduction section
+[writing      ] Writing LaTeX document: main.tex
+[compilation  ] Compiling LaTeX to PDF
+[complete     ] Document generation complete
+```
+
+---
+
 ## [2.8.3] - 2025-11-25
 
 ### ✨ Enhanced

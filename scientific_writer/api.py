@@ -1,4 +1,4 @@
-"""Async API for programmatic scientific paper generation."""
+"""Async API for programmatic scientific document generation."""
 
 import asyncio
 import time
@@ -37,13 +37,15 @@ async def generate_paper(
     cwd: Optional[str] = None,
 ) -> AsyncGenerator[Dict[str, Any], None]:
     """
-    Generate a scientific paper asynchronously with progress updates.
+    Generate a scientific document asynchronously with progress updates.
     
     This is a stateless async generator that yields progress updates during
-    execution and a final comprehensive result with all paper details.
+    execution and a final comprehensive result with all document details.
+    Supports papers, slides, posters, reports, grants, and other document types.
     
     Args:
-        query: The paper generation request (e.g., "Create a Nature paper on CRISPR")
+        query: The document generation request (e.g., "Create a Nature paper on CRISPR",
+               "Generate conference slides on AI", "Create a research poster")
         output_dir: Optional custom output directory (defaults to cwd/paper_outputs)
         api_key: Optional Anthropic API key (defaults to ANTHROPIC_API_KEY env var)
         model: Claude model to use (default: claude-sonnet-4-20250514)
@@ -52,15 +54,15 @@ async def generate_paper(
     
     Yields:
         Progress updates (dict with type="progress") during execution
-        Final result (dict with type="result") containing all paper information
+        Final result (dict with type="result") containing all document information
         
     Example:
         ```python
         async for update in generate_paper("Create a NeurIPS paper on transformers"):
             if update["type"] == "progress":
-                print(f"[{update['percentage']}%] {update['message']}")
+                print(f"[{update['stage']}] {update['message']}")
             else:
-                print(f"Paper created: {update['paper_directory']}")
+                print(f"Document created: {update['paper_directory']}")
                 print(f"PDF: {update['files']['pdf_final']}")
         ```
     """
@@ -97,9 +99,8 @@ async def generate_paper(
     
     # Initial progress update
     yield ProgressUpdate(
-        message="Initializing paper generation",
+        message="Initializing document generation",
         stage="initialization",
-        percentage=0,
     ).to_dict()
     
     # Load system instructions from .claude/WRITER.md in working directory
@@ -126,11 +127,10 @@ IMPORTANT - CONVERSATION CONTINUITY:
     if data_files:
         data_file_paths = get_data_files(work_dir, data_files)
         if data_file_paths:
-            # We'll need to process these after the paper directory is created
+            # We'll need to process these after the output directory is created
             yield ProgressUpdate(
                 message=f"Found {len(data_file_paths)} data file(s) to process",
                 stage="initialization",
-                percentage=5,
             ).to_dict()
     
     # Configure Claude agent options
@@ -145,16 +145,14 @@ IMPORTANT - CONVERSATION CONTINUITY:
     
     # Track progress through message analysis
     current_stage = "initialization"
-    current_percentage = 10
-    paper_directory = None
+    output_directory = None
     last_message = ""  # Track last message to avoid duplicates
     tool_call_count = 0
     files_written = []
     
     yield ProgressUpdate(
-        message="Starting paper generation with Claude",
+        message="Starting document generation with Claude",
         stage="initialization",
-        percentage=10,
         details={"model": model, "query_length": len(query)},
     ).to_dict()
     
@@ -170,17 +168,15 @@ IMPORTANT - CONVERSATION CONTINUITY:
                         accumulated_text += text
                         
                         # Analyze text for progress indicators
-                        stage, percentage, msg = _analyze_progress(accumulated_text, current_stage, current_percentage)
+                        stage, msg = _analyze_progress(accumulated_text, current_stage)
                         
-                        if (stage != current_stage or percentage != current_percentage) and msg != last_message:
+                        if stage != current_stage and msg != last_message:
                             current_stage = stage
-                            current_percentage = percentage
                             last_message = msg
                             
                             yield ProgressUpdate(
                                 message=msg,
                                 stage=stage,
-                                percentage=percentage,
                             ).to_dict()
                     
                     # Handle tool use blocks - provide detailed progress on actions
@@ -196,19 +192,17 @@ IMPORTANT - CONVERSATION CONTINUITY:
                                 files_written.append(file_path)
                         
                         # Analyze tool usage for progress
-                        tool_progress = _analyze_tool_use(tool_name, tool_input, current_stage, current_percentage)
+                        tool_progress = _analyze_tool_use(tool_name, tool_input, current_stage)
                         
                         if tool_progress:
-                            stage, percentage, msg = tool_progress
-                            if percentage > current_percentage or msg != last_message:
+                            stage, msg = tool_progress
+                            if msg != last_message:
                                 current_stage = stage
-                                current_percentage = percentage
                                 last_message = msg
                                 
                                 yield ProgressUpdate(
                                     message=msg,
                                     stage=stage,
-                                    percentage=percentage,
                                     details={
                                         "tool": tool_name,
                                         "tool_calls": tool_call_count,
@@ -216,28 +210,27 @@ IMPORTANT - CONVERSATION CONTINUITY:
                                     },
                                 ).to_dict()
         
-        # Paper generation complete - now scan for results
+        # Document generation complete - now scan for results
         yield ProgressUpdate(
-            message="Scanning paper output directory",
+            message="Scanning output directory",
             stage="complete",
-            percentage=95,
         ).to_dict()
         
-        # Find the most recently created paper directory
-        paper_directory = _find_most_recent_paper(output_folder, start_time)
+        # Find the most recently created output directory
+        output_directory = _find_most_recent_output(output_folder, start_time)
         
-        if not paper_directory:
-            yield _create_error_result("Paper directory not found after generation")
+        if not output_directory:
+            yield _create_error_result("Output directory not found after generation")
             return
         
-        # Process any data files now if we have a paper directory
+        # Process any data files now if we have an output directory
         if data_files:
             data_file_paths = get_data_files(work_dir, data_files)
             if data_file_paths:
                 processed_info = process_data_files(
                     work_dir, 
                     data_file_paths, 
-                    str(paper_directory),
+                    str(output_directory),
                     delete_originals=False  # Don't delete when using programmatic API
                 )
                 if processed_info:
@@ -248,118 +241,123 @@ IMPORTANT - CONVERSATION CONTINUITY:
                     yield ProgressUpdate(
                         message=message,
                         stage="complete",
-                        percentage=97,
                     ).to_dict()
         
-        # Scan the paper directory for all files
-        file_info = scan_paper_directory(paper_directory)
+        # Scan the output directory for all files
+        file_info = scan_paper_directory(output_directory)
         
         # Build comprehensive result
-        result = _build_paper_result(paper_directory, file_info)
+        result = _build_paper_result(output_directory, file_info)
         
         yield ProgressUpdate(
-            message="Paper generation complete",
+            message="Document generation complete",
             stage="complete",
-            percentage=100,
         ).to_dict()
         
         # Final result
         yield result.to_dict()
         
     except Exception as e:
-        yield _create_error_result(f"Error during paper generation: {str(e)}")
+        yield _create_error_result(f"Error during document generation: {str(e)}")
 
 
-def _analyze_progress(text: str, current_stage: str, current_percentage: int) -> tuple:
+def _analyze_progress(text: str, current_stage: str) -> tuple:
     """
     Analyze accumulated text to determine current progress stage.
     
     Returns:
-        Tuple of (stage, percentage, message)
+        Tuple of (stage, message)
     """
     text_lower = text.lower()
     
-    # More detailed progress indicators with specific messages
+    # Stage order for progression tracking
+    stage_order = ["initialization", "planning", "research", "writing", "compilation", "complete"]
+    current_idx = stage_order.index(current_stage) if current_stage in stage_order else 0
+    
+    # Progress indicators with specific messages (stage, message, keywords)
     progress_indicators = [
-        # Planning stage (10-20%)
-        ("planning", 12, "Creating paper outline and structure", 
+        # Planning stage
+        ("planning", "Creating outline and structure", 
          ["outline", "structure", "plan", "sections"]),
-        ("planning", 15, "Analyzing requirements and scope",
+        ("planning", "Analyzing requirements and scope",
          ["analyzing", "requirements", "scope"]),
         
-        # Research stage (20-40%)
-        ("research", 22, "Searching literature databases",
+        # Research stage
+        ("research", "Searching literature databases",
          ["searching", "pubmed", "arxiv", "scholar", "database"]),
-        ("research", 28, "Gathering relevant publications",
-         ["publications", "papers", "references", "citations"]),
-        ("research", 35, "Synthesizing research findings",
+        ("research", "Gathering relevant publications",
+         ["publications", "references", "citations"]),
+        ("research", "Synthesizing research findings",
          ["synthesiz", "review", "findings"]),
         
-        # Writing stage (40-70%)
-        ("writing", 42, "Writing abstract",
+        # Writing stage
+        ("writing", "Writing abstract",
          ["abstract"]),
-        ("writing", 45, "Writing introduction section",
+        ("writing", "Writing introduction section",
          ["introduction", "background"]),
-        ("writing", 50, "Writing methods section",
+        ("writing", "Writing methods section",
          ["methods", "methodology", "materials"]),
-        ("writing", 55, "Writing results section",
+        ("writing", "Writing results section",
          ["results", "findings", "analysis"]),
-        ("writing", 60, "Writing discussion section",
+        ("writing", "Writing discussion section",
          ["discussion", "implications"]),
-        ("writing", 65, "Writing conclusion",
+        ("writing", "Writing conclusion",
          ["conclusion", "concluding", "summary"]),
-        ("writing", 68, "Formatting bibliography",
+        ("writing", "Formatting bibliography",
          ["bibliography", "bibtex", "references.bib"]),
         
-        # Compilation stage (70-90%)
-        ("compilation", 72, "Creating LaTeX document",
+        # Compilation stage
+        ("compilation", "Creating LaTeX document",
          ["\\documentclass", "\\begin{document}", ".tex"]),
-        ("compilation", 78, "Running pdflatex compilation",
+        ("compilation", "Running pdflatex compilation",
          ["pdflatex", "latexmk", "compiling"]),
-        ("compilation", 82, "Processing bibliography with bibtex",
+        ("compilation", "Processing bibliography with BibTeX",
          ["bibtex", "processing citations"]),
-        ("compilation", 85, "Final PDF compilation pass",
+        ("compilation", "Final PDF compilation",
          ["final compilation", "recompiling"]),
         
-        # Finalization stage (90-95%)
-        ("complete", 92, "Verifying output files",
+        # Finalization stage
+        ("complete", "Verifying output files",
          ["verifying", "checking", "output"]),
-        ("complete", 94, "Organizing paper directory",
+        ("complete", "Organizing output directory",
          ["organizing", "directory", "files"]),
     ]
     
     # Find the most advanced matching indicator
     best_match = None
-    for stage, percentage, message, keywords in progress_indicators:
+    best_idx = current_idx
+    for stage, message, keywords in progress_indicators:
         if any(kw in text_lower for kw in keywords):
-            if best_match is None or percentage > best_match[1]:
-                best_match = (stage, percentage, message)
+            stage_idx = stage_order.index(stage) if stage in stage_order else 0
+            if stage_idx > best_idx:
+                best_match = (stage, message)
+                best_idx = stage_idx
     
-    if best_match and best_match[1] > current_percentage:
+    if best_match:
         return best_match
     
-    # Fallback to simple keyword detection for backwards compatibility
+    # Fallback to simple keyword detection
     if "research" in text_lower or "literature" in text_lower:
-        if current_percentage < 30:
-            return "research", 30, "Conducting literature research"
+        if current_idx < stage_order.index("research"):
+            return "research", "Conducting literature research"
     
     if "writing" in text_lower:
-        if current_percentage < 50:
-            return "writing", 50, "Writing paper sections"
+        if current_idx < stage_order.index("writing"):
+            return "writing", "Writing document sections"
     
     if "compil" in text_lower or "latex" in text_lower or "pdf" in text_lower:
-        if current_percentage < 80:
-            return "compilation", 80, "Compiling LaTeX to PDF"
+        if current_idx < stage_order.index("compilation"):
+            return "compilation", "Compiling LaTeX to PDF"
     
     if "complete" in text_lower or "finished" in text_lower or "done" in text_lower:
-        if current_percentage < 90:
-            return "complete", 90, "Finalizing paper"
+        if current_idx < stage_order.index("complete"):
+            return "complete", "Finalizing document"
     
     # No change detected
-    return current_stage, current_percentage, "Processing..."
+    return current_stage, "Processing..."
 
 
-def _analyze_tool_use(tool_name: str, tool_input: Dict[str, Any], current_stage: str, current_percentage: int) -> tuple:
+def _analyze_tool_use(tool_name: str, tool_input: Dict[str, Any], current_stage: str) -> tuple:
     """
     Analyze tool usage to provide detailed progress updates.
     
@@ -367,11 +365,14 @@ def _analyze_tool_use(tool_name: str, tool_input: Dict[str, Any], current_stage:
         tool_name: Name of the tool being used
         tool_input: Input parameters to the tool
         current_stage: Current progress stage
-        current_percentage: Current percentage
         
     Returns:
-        Tuple of (stage, percentage, message) or None if no update needed
+        Tuple of (stage, message) or None if no update needed
     """
+    # Stage order for progression
+    stage_order = ["initialization", "planning", "research", "writing", "compilation", "complete"]
+    current_idx = stage_order.index(current_stage) if current_stage in stage_order else 0
+    
     # Extract relevant info from tool input
     file_path = tool_input.get("file_path", tool_input.get("path", ""))
     command = tool_input.get("command", "")
@@ -379,82 +380,82 @@ def _analyze_tool_use(tool_name: str, tool_input: Dict[str, Any], current_stage:
     # Read tool - detect what's being read
     if tool_name.lower() == "read":
         if ".bib" in file_path:
-            return ("writing", max(current_percentage, 65), f"Reading bibliography: {Path(file_path).name}")
+            return ("writing", f"Reading bibliography: {Path(file_path).name}")
         elif ".tex" in file_path:
-            return ("compilation", max(current_percentage, 70), f"Reading LaTeX file: {Path(file_path).name}")
+            return ("compilation", f"Reading LaTeX file: {Path(file_path).name}")
         elif ".pdf" in file_path or ".csv" in file_path or ".json" in file_path:
-            return ("research", max(current_percentage, 25), f"Reading data file: {Path(file_path).name}")
+            return ("research", f"Reading data file: {Path(file_path).name}")
         else:
-            return (current_stage, current_percentage, f"Reading: {Path(file_path).name}")
+            return (current_stage, f"Reading: {Path(file_path).name}")
     
     # Write tool - detect what's being written
     elif tool_name.lower() == "write":
         if ".bib" in file_path:
-            return ("writing", max(current_percentage, 68), f"Creating bibliography: {Path(file_path).name}")
+            return ("writing", f"Creating bibliography: {Path(file_path).name}")
         elif ".tex" in file_path:
             filename = Path(file_path).name
-            if "main" in filename.lower() or current_percentage < 50:
-                return ("writing", max(current_percentage, 55), f"Writing LaTeX document: {filename}")
+            if "main" in filename.lower() or current_idx < stage_order.index("writing"):
+                return ("writing", f"Writing LaTeX document: {filename}")
             else:
-                return ("compilation", max(current_percentage, 72), f"Updating LaTeX: {filename}")
+                return ("compilation", f"Updating LaTeX: {filename}")
         elif ".md" in file_path:
-            return ("writing", max(current_percentage, 45), f"Writing document: {Path(file_path).name}")
+            return ("writing", f"Writing document: {Path(file_path).name}")
         else:
-            return (current_stage, current_percentage, f"Writing: {Path(file_path).name}")
+            return (current_stage, f"Writing: {Path(file_path).name}")
     
     # Edit tool
     elif tool_name.lower() == "edit":
         if ".tex" in file_path:
-            return ("writing", max(current_percentage, 60), f"Editing LaTeX: {Path(file_path).name}")
+            return ("writing", f"Editing LaTeX: {Path(file_path).name}")
         else:
-            return (current_stage, current_percentage, f"Editing: {Path(file_path).name}")
+            return (current_stage, f"Editing: {Path(file_path).name}")
     
     # Bash tool - detect compilation and other commands
     elif tool_name.lower() == "bash":
         if "pdflatex" in command or "latexmk" in command:
-            return ("compilation", max(current_percentage, 78), "Compiling LaTeX to PDF")
+            return ("compilation", "Compiling LaTeX to PDF")
         elif "bibtex" in command:
-            return ("compilation", max(current_percentage, 82), "Processing bibliography with BibTeX")
-        elif "mkdir" in command and "paper_outputs" in command:
-            return ("initialization", max(current_percentage, 15), "Creating output directory")
+            return ("compilation", "Processing bibliography with BibTeX")
+        elif "mkdir" in command:
+            return ("initialization", "Creating output directory")
         elif "cp " in command or "mv " in command:
-            return ("complete", max(current_percentage, 90), "Organizing output files")
+            return ("complete", "Organizing output files")
         else:
-            return (current_stage, current_percentage, f"Running: {command[:50]}...")
+            return (current_stage, f"Running: {command[:50]}...")
     
     # Research lookup tool
     elif "research" in tool_name.lower() or "lookup" in tool_name.lower():
         query_text = tool_input.get("query", "")[:40]
-        return ("research", max(current_percentage, 30), f"Researching: {query_text}...")
+        return ("research", f"Researching: {query_text}...")
     
     return None
 
 
-def _find_most_recent_paper(output_folder: Path, start_time: float) -> Optional[Path]:
+def _find_most_recent_output(output_folder: Path, start_time: float) -> Optional[Path]:
     """
-    Find the most recently created/modified paper directory.
+    Find the most recently created/modified output directory.
     
     Args:
-        output_folder: Path to paper_outputs folder
+        output_folder: Path to output folder
         start_time: Start time of generation (to filter relevant directories)
     
     Returns:
-        Path to paper directory or None
+        Path to output directory or None
     """
     try:
-        paper_dirs = [d for d in output_folder.iterdir() if d.is_dir()]
-        if not paper_dirs:
+        output_dirs = [d for d in output_folder.iterdir() if d.is_dir()]
+        if not output_dirs:
             return None
         
         # Filter to only directories modified after start_time
         recent_dirs = [
-            d for d in paper_dirs 
+            d for d in output_dirs 
             if d.stat().st_mtime >= start_time - 5  # 5 second buffer
         ]
         
         if not recent_dirs:
             # Fallback to most recent directory overall
-            recent_dirs = paper_dirs
+            recent_dirs = output_dirs
         
         # Return the most recent
         most_recent = max(recent_dirs, key=lambda d: d.stat().st_mtime)
