@@ -68,17 +68,6 @@ echo "OPENROUTER_API_KEY=sk-or-v1-..." >> .env
 pip install requests
 ```
 
-### For Code-Based Generation
-
-```bash
-# Install Graphviz
-brew install graphviz  # macOS
-sudo apt-get install graphviz  # Linux
-
-# Install Python packages
-pip install graphviz schemdraw networkx matplotlib
-```
-
 ## Usage Examples
 
 ### Example 1: CONSORT Flowchart
@@ -138,9 +127,7 @@ python scripts/generate_schematic.py \
 python scripts/generate_schematic.py [OPTIONS] "description" -o output.png
 
 Options:
-  --method ai|code        Generation method (default: ai)
   --iterations N          Number of AI refinement iterations (default: 3)
-  --type TYPE            Diagram type for code method (flowchart|circuit|pathway)
   --api-key KEY          OpenRouter API key (or use env var)
   -v, --verbose          Verbose output
   -h, --help             Show help message

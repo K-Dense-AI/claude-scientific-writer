@@ -272,7 +272,6 @@ convert diagram.pdf -colorspace gray diagram_gray.pdf
 **Problem**: Different styles for same elements across figures
 **Solution**:
 - Create and use style templates
-- Define reusable TikZ styles
 - Use the same color palette throughout
 - Document your style choices
 
@@ -412,14 +411,12 @@ convert diagram.pdf -colorspace gray diagram_gray.pdf
 
 ## Software-Specific Export Settings
 
-### LaTeX/TikZ to PDF
+### AI-Generated Images
 
-```bash
-# Compile with pdflatex
-pdflatex diagram.tex
+AI-generated diagrams are exported as PNG images and can be included in LaTeX documents using:
 
-# Or use standalone class for cropped PDF
-\documentclass[tikz, border=2mm]{standalone}
+```latex
+\includegraphics[width=\textwidth]{diagram.png}
 ```
 
 ### Python (Matplotlib) Export

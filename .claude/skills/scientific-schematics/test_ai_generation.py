@@ -118,16 +118,6 @@ def test_wrapper_script():
         print("✓ generate_schematic imports successfully")
         
         # Check main functions exist
-        if not hasattr(generate_schematic, 'generate_ai'):
-            print("✗ Missing function: generate_ai")
-            return False
-        print("✓ Function exists: generate_ai")
-        
-        if not hasattr(generate_schematic, 'generate_code'):
-            print("✗ Missing function: generate_code")
-            return False
-        print("✓ Function exists: generate_code")
-        
         if not hasattr(generate_schematic, 'main'):
             print("✗ Missing function: main")
             return False
@@ -184,7 +174,6 @@ def test_file_paths():
     required_files = [
         "scripts/generate_schematic_ai.py",
         "scripts/generate_schematic.py",
-        "scripts/compile_tikz.py",
         "SKILL.md",
         "README.md"
     ]
@@ -251,4 +240,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

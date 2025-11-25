@@ -60,7 +60,6 @@ python scripts/generate_schematic.py \
 |--------|-------------|---------|
 | `-o, --output` | Output file path | `-o figures/diagram.png` |
 | `--iterations N` | Number of refinements (1-10) | `--iterations 5` |
-| `--method ai\|code` | Generation method | `--method ai` |
 | `-v, --verbose` | Show detailed output | `-v` |
 | `--api-key KEY` | Provide API key | `--api-key sk-or-v1-...` |
 

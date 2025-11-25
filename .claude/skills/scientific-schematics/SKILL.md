@@ -87,10 +87,6 @@ Get an API key at: https://openrouter.ai/keys
 - Proper spacing to prevent crowding
 - Scale bars, legends, axes where appropriate
 
-## Classic Code-Based Generation
-
-For reproducible, version-controlled diagrams with full programmatic control, use the traditional code-based approach.
-
 ## When to Use This Skill
 
 This skill should be used when:
@@ -387,75 +383,19 @@ python scripts/generate_schematic.py \
 
 ---
 
-# Additional Tools
+## Command-Line Usage
 
-## TikZ Compilation (compile_tikz.py)
-
-If you have existing TikZ `.tex` files that need compilation:
+The main entry point for generating scientific schematics:
 
 ```bash
-# Compile TikZ diagram to PDF
-python scripts/compile_tikz.py diagram.tex -o diagram.pdf
-
-# Compile and generate PNG
-python scripts/compile_tikz.py diagram.tex --png --dpi 300
-
-# Compile and preview
-python scripts/compile_tikz.py diagram.tex --preview
-```
-
-For details on using `compile_tikz.py`, run:
-```bash
-python scripts/compile_tikz.py --help
-```
-
----
-
-## Unified Entry Point: generate_schematic.py
-
-The main entry point supports both AI and code-based generation:
-
-```bash
-# AI generation (default)
+# Basic usage
 python scripts/generate_schematic.py "diagram description" -o output.png
 
-# Explicit AI method
-python scripts/generate_schematic.py "diagram description" -o output.png --method ai
-
-# Code-based generation
-python scripts/generate_schematic.py "1. Step one\n2. Step two" -o flow.tex --method code --type flowchart
-
-# Custom iterations for AI
+# Custom iterations for complex diagrams
 python scripts/generate_schematic.py "complex diagram" -o diagram.png --iterations 5
 
 # Verbose mode
 python scripts/generate_schematic.py "diagram" -o out.png -v
-```
-
-**Method Selection:**
-- `--method ai`: Use Nano Banana Pro with iterative refinement (default)
-- `--method code`: Use traditional code-based generation
-
-**Code-Based Types:**
-- `--type flowchart`: Generate TikZ flowchart
-- `--type circuit`: Generate circuit diagram
-- `--type pathway`: Generate biological pathway
-
-## Helper Scripts
-
-### `compile_tikz.py`
-
-Standalone TikZ compilation utility with quality checks:
-
-```bash
-# Compile TikZ to PDF with verification
-python scripts/compile_tikz.py flowchart.tex -o flowchart.pdf --verify
-
-# Generate PNG with quality report
-python scripts/compile_tikz.py flowchart.tex -o flowchart.pdf --png --dpi 300 --verify
-
-# Preview with quality overlay
-python scripts/compile_tikz.py flowchart.tex --preview --show-quality
 ```
 
 **Note:** The Nano Banana Pro AI generation system includes automatic quality review in its iterative refinement process. Each iteration is evaluated for scientific accuracy, clarity, and accessibility.
@@ -480,46 +420,34 @@ python scripts/compile_tikz.py flowchart.tex --preview --show-quality
 
 ### Integration Guidelines
 
-1. **Include in LaTeX** - Use `\input{}` for TikZ, `\includegraphics{}` for external
+1. **Include in LaTeX** - Use `\includegraphics{}` for generated images
 2. **Caption thoroughly** - Describe all elements and abbreviations
 3. **Reference in text** - Explain diagram in narrative flow
 4. **Maintain consistency** - Same style across all figures in paper
-5. **Version control** - Keep source files (.tex, .py) in repository
+5. **Version control** - Keep prompts and generated images in repository
 
 ## Troubleshooting Common Issues
 
-### TikZ Compilation Errors
-
-**Problem**: `! Package tikz Error: I do not know the key '/tikz/...`
-- **Solution**: Missing library - add `\usetikzlibrary{...}` to preamble
+### AI Generation Issues
 
 **Problem**: Overlapping text or elements
-- **Solution**: Use AI generation which automatically handles spacing
+- **Solution**: AI generation automatically handles spacing
 - **Solution**: Increase iterations: `--iterations 5` for better refinement
-- **Solution**: Use `auto_spacing=True` in pathway generator for automatic adjustment
 
-**Problem**: Arrows not connecting properly
-- **Solution**: Use anchor points: `(node.east)`, `(node.north)`, etc.
-- **Solution**: Check overlap report for arrow/node intersections
+**Problem**: Elements not connecting properly
+- **Solution**: Make your prompt more specific about connections and layout
+- **Solution**: Increase iterations for better refinement
 
-### Python Generation Issues
-
-**Problem**: Schemdraw elements not aligning
-- **Solution**: Use `.at()` method for precise positioning
-- **Solution**: Enable `auto_spacing` to prevent overlaps
-
-**Problem**: Matplotlib text rendering issues
-- **Solution**: Set `plt.rcParams['text.usetex'] = True` for LaTeX rendering
-- **Solution**: Ensure LaTeX installation is available
+### Image Quality Issues
 
 **Problem**: Export quality poor
 - **Solution**: AI generation produces high-quality images automatically
-- **Solution**: For TikZ, use: `python scripts/compile_tikz.py diagram.tex --png --dpi 300`
+- **Solution**: Increase iterations for better results: `--iterations 5`
 
 **Problem**: Elements overlap after generation
-- **Solution**: Run `detect_overlaps()` function to identify problem regions
-- **Solution**: Use iterative refinement: `iterative_diagram_refinement(create_function)`
-- **Solution**: Increase spacing between elements by 20-30%
+- **Solution**: AI generation automatically handles spacing
+- **Solution**: Increase iterations: `--iterations 5` for better refinement
+- **Solution**: Make your prompt more specific about layout and spacing requirements
 
 ### Quality Check Issues
 
@@ -569,17 +497,10 @@ python scripts/compile_tikz.py flowchart.tex --preview --show-quality
 
 Load these files for comprehensive information on specific topics:
 
-- **`references/tikz_guide.md`** - Complete TikZ syntax, positioning, styles, and techniques
 - **`references/diagram_types.md`** - Catalog of scientific diagram types with examples
 - **`references/best_practices.md`** - Publication standards and accessibility guidelines
-- **`references/python_libraries.md`** - Guide to Schemdraw, NetworkX, and Matplotlib for diagrams
 
 ### External Resources
-
-**TikZ and LaTeX**
-- TikZ & PGF Manual: https://pgf-tikz.github.io/pgf/pgfmanual.pdf
-- TeXample.net: http://www.texample.net/tikz/ (examples gallery)
-- CircuitikZ Manual: https://ctan.org/pkg/circuitikz
 
 **Python Libraries**
 - Schemdraw Documentation: https://schemdraw.readthedocs.io/
@@ -597,7 +518,7 @@ This skill works synergistically with:
 
 - **Scientific Writing** - Diagrams follow figure best practices
 - **Scientific Visualization** - Shares color palettes and styling
-- **LaTeX Posters** - Reuse TikZ styles for poster diagrams
+- **LaTeX Posters** - Generate diagrams for poster presentations
 - **Research Grants** - Methodology diagrams for proposals
 - **Peer Review** - Evaluate diagram clarity and accessibility
 
@@ -655,52 +576,8 @@ Before submitting diagrams, verify:
 - [ ] Caption appears on correct page relative to figure
 - [ ] No compilation warnings or errors related to figure
 
-## Summary: AI vs Code-Based Generation
+## Environment Setup
 
-### Quick Decision Guide
-
-**Choose AI Generation (Nano Banana Pro) if:**
-- ✓ Speed is important (get results in minutes)
-- ✓ You want automatic quality review and refinement
-- ✓ The diagram is complex with many visual elements
-- ✓ You prefer natural language over coding
-- ✓ You need publication-ready images immediately
-- ✓ You're exploring different design options
-
-**Choose Code-Based Generation if:**
-- ✓ You need exact reproducibility from source code
-- ✓ You want version control for the diagram source
-- ✓ You're generating many similar diagrams programmatically
-- ✓ You need LaTeX-native TikZ integration
-- ✓ You want pixel-perfect control over every element
-- ✓ The diagram is generated from data/algorithms
-
-### Workflow Comparison
-
-| Aspect | AI Generation | Code-Based |
-|--------|---------------|------------|
-| **Time to first result** | 2-3 minutes | 15-30 minutes |
-| **Iterations** | Automatic (3 rounds) | Manual |
-| **Quality review** | Automatic by AI | Manual or scripted |
-| **Customization** | Natural language | Full programmatic control |
-| **Reproducibility** | Prompt-based | Code-based (exact) |
-| **Learning curve** | Low (just describe) | Medium-High (learn libraries) |
-| **Output format** | PNG/JPG | PDF/SVG/EPS/PNG |
-| **Version control** | Prompt + images | Source code + outputs |
-| **Best for** | Quick iteration, complex visuals | Reproducible research, data-driven |
-
-### Hybrid Approach (Recommended)
-
-Many users find success with a hybrid workflow:
-
-1. **Prototype with AI**: Generate initial designs quickly using natural language
-2. **Review and refine**: Use the AI's iterative refinement to get close to final
-3. **Recreate in code** (optional): If exact reproducibility is needed, recreate the approved design in code
-4. **Version control**: Keep both the AI prompts and code versions
-
-### Environment Setup
-
-**For AI Generation:**
 ```bash
 # Required
 export OPENROUTER_API_KEY='your_api_key_here'
@@ -708,29 +585,14 @@ export OPENROUTER_API_KEY='your_api_key_here'
 # Get key at: https://openrouter.ai/keys
 ```
 
-**For Code-Based Generation:**
-```bash
-# Install Graphviz
-brew install graphviz  # macOS
-sudo apt-get install graphviz  # Linux
+## Getting Started
 
-# Install Python packages
-pip install graphviz schemdraw networkx matplotlib
-```
-
-### Getting Started
-
-**Simplest possible usage (AI):**
+**Simplest possible usage:**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o output.png
 ```
 
-**Simplest possible usage (Code):**
-```bash
-python scripts/generate_schematic.py "1. Step one\n2. Step two" -o flow.tex --method code
-```
-
 ---
 
-Use this skill to create clear, accessible, publication-quality diagrams that effectively communicate complex scientific concepts. The AI-powered workflow with iterative refinement ensures diagrams meet professional standards, while the code-based approach provides exact reproducibility for research publications.
+Use this skill to create clear, accessible, publication-quality diagrams that effectively communicate complex scientific concepts. The AI-powered workflow with iterative refinement ensures diagrams meet professional standards.
 
