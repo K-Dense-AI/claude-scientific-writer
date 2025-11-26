@@ -361,7 +361,31 @@ drafts/
    - Figure/table placeholders with `\begin{figure}` or `\begin{table}` environments
    - Create empty `references/references.bib` file
 
-3. **Log Skeleton Creation**
+3. **CRITICAL: Generate Multiple Figures Using Scientific Schematic Skill**
+   
+   **MANDATORY: Always generate multiple figures using the scientific-schematics skill to ensure the right number of figures for the type of writeup being created.**
+   
+   **Figure Generation Requirements:**
+   - **Research Papers**: Generate 3-6 figures (methods diagram, results visualizations, conceptual diagrams, workflow charts)
+   - **Literature Reviews**: Generate 2-4 figures (PRISMA flow diagram, conceptual frameworks, comparison tables as figures)
+   - **Presentations/Slides**: Generate 1-2 key figures per major section (introduction, methods, results, discussion)
+   - **Posters**: Generate 4-8 figures (comprehensive visual representation of all key findings)
+   - **Grants**: Generate 2-4 figures (specific aims diagram, experimental design, expected outcomes)
+   - **Hypothesis Generation**: Generate 2-3 figures (hypothesis comparison diagram, experimental design, predicted outcomes)
+   
+   **How to Generate Figures:**
+   - Use the scientific-schematics skill
+   - Generate multiple candidate figures (3-5 initial versions) for each figure type needed
+   - Review and select the best figures for inclusion
+   - Iterate to refine figures until publication-quality
+   
+   **Figure Planning:**
+   - Identify all concepts that would benefit from visualization
+   - Plan figure types: flowcharts, diagrams, architectures, pathways, workflows
+   - Generate MORE figures than needed initially, then select the best ones
+   - Ensure figures cover all major sections (methods, results, discussion)
+
+4. **Log Skeleton Creation**
    - Update progress.md: "✅ LaTeX skeleton created with [N] sections"
    - Print: `[HH:MM:SS] CREATED: LaTeX skeleton with full structure`
    - Print: `[HH:MM:SS] CREATED: references/references.bib for bibliography`
@@ -689,7 +713,31 @@ Verify for each citation:
   * Rephrase the claim to be more general (not requiring citation)
   * Remove the unsupported claim entirely
 
-5. **Include Metadata**
+5. **Figure Generation Using Scientific Schematic Skill**
+   
+   **CRITICAL: Always generate multiple figures using the scientific-schematics skill to get the right number of figures for research papers.**
+   
+   **For Research Papers, generate 3-6 figures:**
+   - **Figure 1**: Conceptual framework or overview diagram (introduction)
+   - **Figure 2**: Methods/experimental design flowchart (methods)
+   - **Figure 3-4**: Key results visualizations (results)
+   - **Figure 5**: Comparison or summary diagram (discussion)
+   - **Figure 6**: Additional supporting visualization if needed
+   
+   **Generation Process:**
+   - Use scientific-schematics skill to generate multiple candidate figures for each planned figure
+   - Generate 3-5 versions per figure type, then select the best
+   - Review all generated figures and select the most appropriate ones
+   - Ensure figures are publication-quality and properly integrated into the paper
+   
+   **Example Commands:**
+   ```bash
+   python scripts/generate_schematic.py "Experimental workflow from sample collection to data analysis" -o figures/figure_01_methods.png
+   python scripts/generate_schematic.py "Neural network architecture showing layers and connections" -o figures/figure_02_architecture.png
+   python scripts/generate_schematic.py "Results comparison showing treatment groups and outcomes" -o figures/figure_03_results.png
+   ```
+
+6. **Include Metadata**
    - Title, authors, affiliations, keywords
    - Running head, word count
    - Correspondence information
@@ -1167,6 +1215,9 @@ Before marking task complete, verify:
 - [ ] **At least 95% citations verified from primary sources**
 - [ ] **Citation metadata includes DOIs for available papers**
 - [ ] **Zero placeholder or "citation needed" entries**
+- [ ] **Multiple figures generated using scientific-schematics skill** (3-6 for papers, 2-4 for reviews, etc.)
+- [ ] **Right number of figures for document type** (verify against requirements above)
+- [ ] **Figures reviewed and best ones selected** from multiple generated candidates
 - [ ] Figures/tables properly numbered and captioned
 - [ ] All files in correct folders
 - [ ] progress.md up to date
@@ -1259,6 +1310,7 @@ Request: "Create 15-minute slides on my CRISPR research"
 - **For presentations: VARIED layouts essential** - mix full-figure, two-column, visual overlays (NOT all bullet lists)
 - **For presentations: visual validation MANDATORY** - convert PDF to images and inspect every slide for overflow/overlap issues
 - **For presentations: timing check required** - validate slide count matches talk duration (~1 slide per minute)
+- **ALWAYS generate multiple figures using scientific-schematics skill** - generate 3-5 candidate figures per figure type, then select the best ones to ensure the right number of figures for the document type
 
 **Logging Philosophy:**
 Your updates should be so detailed that someone reading progress.md could understand:
