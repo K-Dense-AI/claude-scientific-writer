@@ -63,6 +63,33 @@ class PaperFiles:
 
 
 @dataclass
+class TokenUsage:
+    """Token usage statistics from Claude Agent SDK.
+    
+    Attributes:
+        input_tokens: Total input tokens consumed
+        output_tokens: Total output tokens consumed
+        cache_creation_input_tokens: Tokens used for cache creation
+        cache_read_input_tokens: Tokens read from cache
+    """
+    input_tokens: int = 0
+    output_tokens: int = 0
+    cache_creation_input_tokens: int = 0
+    cache_read_input_tokens: int = 0
+    
+    @property
+    def total_tokens(self) -> int:
+        """Calculate total tokens (input + output)."""
+        return self.input_tokens + self.output_tokens
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        result = asdict(self)
+        result['total_tokens'] = self.total_tokens
+        return result
+
+
+@dataclass
 class PaperResult:
     """Final result containing all information about the generated paper."""
     type: str = "result"
@@ -75,6 +102,7 @@ class PaperResult:
     figures_count: int = 0
     compilation_success: bool = False
     errors: List[str] = field(default_factory=list)
+    token_usage: Optional[TokenUsage] = None
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
@@ -84,5 +112,9 @@ class PaperResult:
             result['metadata'] = self.metadata.to_dict()
         if isinstance(self.files, PaperFiles):
             result['files'] = self.files.to_dict()
+        if isinstance(self.token_usage, TokenUsage):
+            result['token_usage'] = self.token_usage.to_dict()
+        elif self.token_usage is None:
+            del result['token_usage']
         return result
 

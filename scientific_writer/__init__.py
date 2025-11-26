@@ -27,9 +27,9 @@ Example:
 """
 
 from .api import generate_paper
-from .models import ProgressUpdate, PaperResult, PaperMetadata, PaperFiles
+from .models import ProgressUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
 
-__version__ = "2.8.6"
+__version__ = "2.8.7"
 __author__ = "K-Dense"
 __license__ = "MIT"
 
@@ -39,5 +39,6 @@ __all__ = [
     "PaperResult",
     "PaperMetadata",
     "PaperFiles",
+    "TokenUsage",
 ]
 

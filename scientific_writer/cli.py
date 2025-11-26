@@ -24,10 +24,19 @@ from .core import (
     setup_claude_skills,
 )
 from .utils import find_existing_papers, detect_paper_reference, scan_paper_directory
+from .models import TokenUsage
 
 
-async def main():
-    """Main CLI loop for the scientific writer."""
+async def main(track_token_usage: bool = False) -> Optional[TokenUsage]:
+    """
+    Main CLI loop for the scientific writer.
+    
+    Args:
+        track_token_usage: If True, track and return token usage statistics
+        
+    Returns:
+        TokenUsage object if track_token_usage is True, None otherwise
+    """
     # Explicitly load .env file from current working directory
     # This ensures API keys are available in the shell environment
     cwd_resolved = Path.cwd().resolve()
@@ -88,6 +97,12 @@ IMPORTANT - CONVERSATION CONTINUITY:
     current_paper_path = None
     conversation_history = []
     
+    # Token usage tracking (accumulated across all queries in session)
+    total_input_tokens = 0
+    total_output_tokens = 0
+    total_cache_creation_tokens = 0
+    total_cache_read_tokens = 0
+    
     # Print welcome message
     print("=" * 70)
     print("Scientific Writer CLI - Powered by Claude Sonnet 4.5")
@@ -134,7 +149,15 @@ IMPORTANT - CONVERSATION CONTINUITY:
             # Handle special commands
             if user_input.lower() in ["exit", "quit"]:
                 print("\nThank you for using Scientific Writer CLI. Goodbye!")
-                break
+                # Return token usage if tracking was enabled
+                if track_token_usage:
+                    return TokenUsage(
+                        input_tokens=total_input_tokens,
+                        output_tokens=total_output_tokens,
+                        cache_creation_input_tokens=total_cache_creation_tokens,
+                        cache_read_input_tokens=total_cache_read_tokens,
+                    )
+                return None
             
             if user_input.lower() == "help":
                 _print_help()
@@ -216,6 +239,14 @@ Based on the user request: {user_input}"""
                 
                 # Send directory creation request
                 async for message in query(prompt=directory_prompt, options=options):
+                    # Track token usage silently
+                    if track_token_usage and hasattr(message, "usage") and message.usage:
+                        usage = message.usage
+                        total_input_tokens += getattr(usage, "input_tokens", 0)
+                        total_output_tokens += getattr(usage, "output_tokens", 0)
+                        total_cache_creation_tokens += getattr(usage, "cache_creation_input_tokens", 0)
+                        total_cache_read_tokens += getattr(usage, "cache_read_input_tokens", 0)
+                    
                     if hasattr(message, "content") and message.content:
                         for block in message.content:
                             if hasattr(block, "text"):
@@ -343,6 +374,14 @@ User request: {user_input}"""
             # Send query to Claude
             print()  # Add blank line before response
             async for message in query(prompt=contextual_prompt, options=options):
+                # Track token usage silently
+                if track_token_usage and hasattr(message, "usage") and message.usage:
+                    usage = message.usage
+                    total_input_tokens += getattr(usage, "input_tokens", 0)
+                    total_output_tokens += getattr(usage, "output_tokens", 0)
+                    total_cache_creation_tokens += getattr(usage, "cache_creation_input_tokens", 0)
+                    total_cache_read_tokens += getattr(usage, "cache_read_input_tokens", 0)
+                
                 # Handle AssistantMessage with content blocks
                 if hasattr(message, "content") and message.content:
                     for block in message.content:
@@ -374,6 +413,16 @@ User request: {user_input}"""
         except Exception as e:
             print(f"\nError: {str(e)}")
             print("Please try again or type 'exit' to quit.")
+    
+    # Return token usage if tracking was enabled (fallback for any exit path)
+    if track_token_usage:
+        return TokenUsage(
+            input_tokens=total_input_tokens,
+            output_tokens=total_output_tokens,
+            cache_creation_input_tokens=total_cache_creation_tokens,
+            cache_read_input_tokens=total_cache_read_tokens,
+        )
+    return None
 
 
 def _print_help():

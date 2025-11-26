@@ -18,7 +18,7 @@ from .core import (
     create_data_context_message,
     setup_claude_skills,
 )
-from .models import ProgressUpdate, PaperResult, PaperMetadata, PaperFiles
+from .models import ProgressUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
 from .utils import (
     scan_paper_directory,
     count_citations_in_bib,
@@ -35,6 +35,7 @@ async def generate_paper(
     model: str = "claude-sonnet-4-20250514",
     data_files: Optional[List[str]] = None,
     cwd: Optional[str] = None,
+    track_token_usage: bool = False,
 ) -> AsyncGenerator[Dict[str, Any], None]:
     """
     Generate a scientific document asynchronously with progress updates.
@@ -51,6 +52,7 @@ async def generate_paper(
         model: Claude model to use (default: claude-sonnet-4-20250514)
         data_files: Optional list of data file paths to include
         cwd: Optional working directory (defaults to package parent directory)
+        track_token_usage: If True, track and return token usage in the final result
     
     Yields:
         Progress updates (dict with type="progress") during execution
@@ -64,6 +66,11 @@ async def generate_paper(
             else:
                 print(f"Document created: {update['paper_directory']}")
                 print(f"PDF: {update['files']['pdf_final']}")
+        
+        # With token usage tracking:
+        async for update in generate_paper("Create a paper", track_token_usage=True):
+            if update["type"] == "result":
+                print(f"Token usage: {update.get('token_usage')}")
         ```
     """
     # Initialize
@@ -150,6 +157,12 @@ IMPORTANT - CONVERSATION CONTINUITY:
     tool_call_count = 0
     files_written = []
     
+    # Token usage tracking (when enabled)
+    total_input_tokens = 0
+    total_output_tokens = 0
+    total_cache_creation_tokens = 0
+    total_cache_read_tokens = 0
+    
     yield ProgressUpdate(
         message="Starting document generation",
         stage="initialization",
@@ -160,6 +173,14 @@ IMPORTANT - CONVERSATION CONTINUITY:
     try:
         accumulated_text = ""
         async for message in claude_query(prompt=query, options=options):
+            # Track token usage if enabled
+            if track_token_usage and hasattr(message, "usage") and message.usage:
+                usage = message.usage
+                total_input_tokens += getattr(usage, "input_tokens", 0)
+                total_output_tokens += getattr(usage, "output_tokens", 0)
+                total_cache_creation_tokens += getattr(usage, "cache_creation_input_tokens", 0)
+                total_cache_read_tokens += getattr(usage, "cache_read_input_tokens", 0)
+            
             if hasattr(message, "content") and message.content:
                 for block in message.content:
                     # Handle text blocks - analyze for progress indicators
@@ -221,7 +242,15 @@ IMPORTANT - CONVERSATION CONTINUITY:
         output_directory = _find_most_recent_output(output_folder, start_time)
         
         if not output_directory:
-            yield _create_error_result("Output directory not found after generation")
+            error_result = _create_error_result("Output directory not found after generation")
+            if track_token_usage:
+                error_result['token_usage'] = TokenUsage(
+                    input_tokens=total_input_tokens,
+                    output_tokens=total_output_tokens,
+                    cache_creation_input_tokens=total_cache_creation_tokens,
+                    cache_read_input_tokens=total_cache_read_tokens,
+                ).to_dict()
+            yield error_result
             return
         
         # Process any data files now if we have an output directory
@@ -250,6 +279,15 @@ IMPORTANT - CONVERSATION CONTINUITY:
         # Build comprehensive result
         result = _build_paper_result(output_directory, file_info)
         
+        # Add token usage if tracking is enabled
+        if track_token_usage:
+            result.token_usage = TokenUsage(
+                input_tokens=total_input_tokens,
+                output_tokens=total_output_tokens,
+                cache_creation_input_tokens=total_cache_creation_tokens,
+                cache_read_input_tokens=total_cache_read_tokens,
+            )
+        
         yield ProgressUpdate(
             message="Document generation complete",
             stage="complete",
@@ -259,7 +297,16 @@ IMPORTANT - CONVERSATION CONTINUITY:
         yield result.to_dict()
         
     except Exception as e:
-        yield _create_error_result(f"Error during document generation: {str(e)}")
+        error_result = _create_error_result(f"Error during document generation: {str(e)}")
+        # Include token usage even on error if tracking was enabled
+        if track_token_usage:
+            error_result['token_usage'] = TokenUsage(
+                input_tokens=total_input_tokens,
+                output_tokens=total_output_tokens,
+                cache_creation_input_tokens=total_cache_creation_tokens,
+                cache_read_input_tokens=total_cache_read_tokens,
+            ).to_dict()
+        yield error_result
 
 
 def _analyze_progress(text: str, current_stage: str) -> tuple:
