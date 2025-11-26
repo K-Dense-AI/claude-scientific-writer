@@ -88,7 +88,7 @@ async def main():
         ]
     ):
         if update["type"] == "progress":
-            print(f"[{update['percentage']}%] {update['message']}")
+            print(f"[{update['stage']}] {update['message']}")
         else:
             print(f"✓ PDF: {update['files']['pdf_final']}")
             print(f"  Figures: {len(update.get('figures', []))} included")
@@ -234,12 +234,16 @@ async def main():
     async for update in generate_paper(
         query="Create a NeurIPS paper on transformers",
         data_files=["results.csv", "figure.png"],
-        output_dir="./my_papers"
+        output_dir="./my_papers",
+        track_token_usage=True  # Optional: track token consumption
     ):
         if update["type"] == "progress":
-            print(f"[{update['percentage']}%] {update['message']}")
+            print(f"[{update['stage']}] {update['message']}")
         else:
             print(f"✓ PDF: {update['files']['pdf_final']}")
+            # Token usage available when track_token_usage=True
+            if "token_usage" in update:
+                print(f"  Tokens used: {update['token_usage']['total_tokens']:,}")
 
 asyncio.run(main())
 ```
@@ -354,11 +358,11 @@ async for update in generate_paper(
     output_dir="./papers"
 ):
     if update["type"] == "progress":
-        print(f"[{update['percentage']}%] {update['message']}")
+        print(f"[{update['stage']}] {update['message']}")
     elif update["type"] == "result":
         print(f"✓ Paper completed!")
         print(f"  PDF: {update['files']['pdf_final']}")
-        print(f"  LaTeX: {update['files']['tex_source']}")
+        print(f"  LaTeX: {update['files']['tex_final']}")
         print(f"  Figures: {len(update.get('figures', []))} included")
 
 # Clinical trial report with comprehensive data

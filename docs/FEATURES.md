@@ -458,10 +458,10 @@ async for update in generate_paper("Create a paper"):
     if update["type"] == "progress":
         # Progress update
         stage = update["stage"]        # initialization|research|writing|compilation|complete
-        percentage = update["percentage"]  # 0-100
-        message = update["message"]     # Human-readable message
+        message = update["message"]    # Human-readable message
+        details = update.get("details")  # Optional: tool name, files created, etc.
         
-        print(f"[{percentage}%] {message}")
+        print(f"[{stage}] {message}")
 ```
 
 ### Comprehensive Results

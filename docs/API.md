@@ -21,7 +21,7 @@ from scientific_writer import generate_paper
 async def main():
     async for update in generate_paper("Create a Nature paper on CRISPR"):
         if update["type"] == "progress":
-            print(f"[{update['percentage']}%] {update['message']}")
+            print(f"[{update['stage']}] {update['message']}")
         else:
             print(f"PDF: {update['files']['pdf_final']}")
 
@@ -45,6 +45,7 @@ async def generate_paper(
     model: str = "claude-sonnet-4-20250514",
     data_files: Optional[List[str]] = None,
     cwd: Optional[str] = None,
+    track_token_usage: bool = False,
 ) -> AsyncGenerator[Dict[str, Any], None]
 ```
 
@@ -58,6 +59,7 @@ async def generate_paper(
 | `model` | `str` | No | `"claude-sonnet-4-20250514"` | Claude model to use |
 | `data_files` | `List[str]` | No | `None` | List of file paths to include in the paper |
 | `cwd` | `str` | No | `None` | Working directory. Defaults to package parent directory |
+| `track_token_usage` | `bool` | No | `False` | If True, track and return token usage in the final result |
 
 **Returns:**
 
@@ -97,7 +99,7 @@ Progress information yielded during paper generation.
     "timestamp": str,      # ISO 8601 timestamp
     "message": str,        # Progress message
     "stage": str,          # Current stage (see stages below)
-    "percentage": int      # Completion percentage (0-100)
+    "details": dict | None # Optional additional context (tool name, files, etc.)
 }
 ```
 
@@ -124,7 +126,8 @@ Comprehensive final result with all paper information.
     "citations": dict,                # Citation information
     "figures_count": int,             # Number of figures
     "compilation_success": bool,      # Whether PDF was generated
-    "errors": List[str]               # Any error messages
+    "errors": List[str],              # Any error messages
+    "token_usage": TokenUsage | None  # Token usage (when track_token_usage=True)
 }
 ```
 
@@ -166,6 +169,32 @@ Paths to all generated paper files.
 }
 ```
 
+### `TokenUsage`
+
+Token usage statistics from the Claude Agent SDK. Only present when `track_token_usage=True`.
+
+**Fields:**
+```python
+{
+    "input_tokens": int,                  # Total input tokens consumed
+    "output_tokens": int,                 # Total output tokens generated
+    "total_tokens": int,                  # Sum of input + output tokens
+    "cache_creation_input_tokens": int,   # Tokens used for cache creation
+    "cache_read_input_tokens": int        # Tokens read from cache
+}
+```
+
+**Example:**
+```python
+async for update in generate_paper("Create a paper", track_token_usage=True):
+    if update["type"] == "result":
+        if "token_usage" in update:
+            usage = update["token_usage"]
+            print(f"Input: {usage['input_tokens']:,} tokens")
+            print(f"Output: {usage['output_tokens']:,} tokens")
+            print(f"Total: {usage['total_tokens']:,} tokens")
+```
+
 ## Usage Patterns
 
 ### Basic Paper Generation
@@ -189,19 +218,24 @@ async def create_paper():
 asyncio.run(create_paper())
 ```
 
-### Progress Tracking with Percentages
+### Progress Tracking with Stages
 
 ```python
 async def track_progress():
     async for update in generate_paper("Create a paper on ML"):
         if update["type"] == "progress":
-            # Show progress bar
-            bar_length = 50
-            filled = int(bar_length * update["percentage"] / 100)
-            bar = "█" * filled + "░" * (bar_length - filled)
-            print(f"\r[{bar}] {update['percentage']}% - {update['message']}", end="")
+            # Show stage-based progress
+            stage_icons = {
+                "initialization": "🔧",
+                "research": "🔍",
+                "writing": "✍️",
+                "compilation": "📦",
+                "complete": "✅"
+            }
+            icon = stage_icons.get(update["stage"], "⏳")
+            print(f"{icon} [{update['stage']:12}] {update['message']}")
         else:
-            print(f"\n\nComplete! PDF: {update['files']['pdf_final']}")
+            print(f"\n✅ Complete! PDF: {update['files']['pdf_final']}")
 ```
 
 ### Custom Output Directory
@@ -476,6 +510,34 @@ async for update in generate_paper(
     pass
 ```
 
+### Token Usage Tracking
+
+Track token consumption for cost monitoring and usage analysis:
+
+```python
+async for update in generate_paper(
+    query="Create a paper on quantum computing",
+    track_token_usage=True
+):
+    if update["type"] == "result":
+        if "token_usage" in update:
+            usage = update["token_usage"]
+            print(f"Token Usage Summary:")
+            print(f"  Input tokens:  {usage['input_tokens']:,}")
+            print(f"  Output tokens: {usage['output_tokens']:,}")
+            print(f"  Total tokens:  {usage['total_tokens']:,}")
+            
+            # Cache statistics (if applicable)
+            if usage.get('cache_read_input_tokens', 0) > 0:
+                print(f"  Cache reads:   {usage['cache_read_input_tokens']:,}")
+```
+
+**Notes:**
+- Token usage is returned silently (not printed to terminal)
+- Available in the final result as a dictionary
+- Also included in error results when tracking is enabled
+- Useful for cost estimation and monitoring API usage
+
 ### Metadata Extraction
 
 The API automatically extracts metadata from generated papers:
@@ -497,18 +559,23 @@ async for update in generate_paper(query):
 
 ### Progress Monitoring Patterns
 
-#### Simple Progress Bar
+#### Simple Stage Display
 
 ```python
-def print_progress_bar(percentage: int, width: int = 50):
-    filled = int(width * percentage / 100)
-    bar = "█" * filled + "░" * (width - filled)
-    return f"[{bar}] {percentage}%"
+def format_stage(stage: str) -> str:
+    """Format stage name with icon."""
+    icons = {
+        "initialization": "🔧",
+        "research": "🔍", 
+        "writing": "✍️",
+        "compilation": "📦",
+        "complete": "✅"
+    }
+    return f"{icons.get(stage, '⏳')} {stage}"
 
 async for update in generate_paper(query):
     if update["type"] == "progress":
-        print(f"\r{print_progress_bar(update['percentage'])}", end="")
-```
+        print(f"\r{format_stage(update['stage'])}: {update['message']}", end="")
 
 #### Stage-Based Updates
 
@@ -541,7 +608,7 @@ async for update in generate_paper(query):
         f.write(json.dumps(update) + "\n")
     
     if update["type"] == "progress":
-        print(f"[{update['percentage']}%] {update['message']}")
+        print(f"[{update['stage']}] {update['message']}")
 ```
 
 ### Multiple Papers

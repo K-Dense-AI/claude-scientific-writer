@@ -6,6 +6,40 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.7] - 2025-11-26
+
+### ✨ New Features
+
+- **Token Usage Tracking** - Track input/output tokens from Claude Agent SDK
+  - New `track_token_usage` parameter for `generate_paper()` API
+  - Returns `token_usage` in final result with detailed token breakdown
+  - Tracks: `input_tokens`, `output_tokens`, `total_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`
+  - Silent tracking (no terminal output) - purely returned as data for programmatic use
+
+### 📝 API Changes
+
+- New `TokenUsage` model exported from `scientific_writer`
+- `generate_paper()` accepts optional `track_token_usage: bool = False` parameter
+- When enabled, final result includes `token_usage` field with token statistics
+- Token usage also included in error results when tracking is enabled
+- CLI `main()` function now accepts `track_token_usage` parameter and returns `TokenUsage`
+
+### 🎯 Example Usage
+
+```python
+from scientific_writer import generate_paper
+
+async for update in generate_paper("Create a paper", track_token_usage=True):
+    if update["type"] == "result":
+        if "token_usage" in update:
+            usage = update["token_usage"]
+            print(f"Input tokens: {usage['input_tokens']}")
+            print(f"Output tokens: {usage['output_tokens']}")
+            print(f"Total tokens: {usage['total_tokens']}")
+```
+
+---
+
 ## [2.8.5] - 2025-11-25
 
 ### ✨ Enhanced

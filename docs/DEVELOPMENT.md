@@ -45,10 +45,11 @@ claude-scientific-writer/
 
 ## Data Models
 
-- `ProgressUpdate`: real-time progress updates (stage, percentage, message, timestamp)
-- `PaperResult`: final result with status, files, metadata, citations, and errors
+- `ProgressUpdate`: real-time progress updates (stage, message, timestamp, details)
+- `PaperResult`: final result with status, files, metadata, citations, token_usage, and errors
 - `PaperMetadata`: title, created_at, topic, word_count
 - `PaperFiles`: all relevant paths (final, drafts, references, figures, data, logs)
+- `TokenUsage`: token consumption statistics (input_tokens, output_tokens, total_tokens, cache stats)
 
 All models are fully typed and serializable to dictionaries.
 
