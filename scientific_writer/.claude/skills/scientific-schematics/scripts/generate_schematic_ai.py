@@ -32,12 +32,48 @@ except ImportError:
     print("Error: requests library not found. Install with: pip install requests")
     sys.exit(1)
 
-# Try to load .env file if python-dotenv is available
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass  # python-dotenv not installed, will use environment variables directly
+
+# Try to load .env file from multiple potential locations
+def _load_env_file():
+    """Load .env file from current directory, parent directories, or package directory.
+    
+    Returns True if a .env file was found and loaded, False otherwise.
+    Note: This does NOT override existing environment variables.
+    """
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        return False  # python-dotenv not installed
+    
+    # Try current working directory first
+    env_path = Path.cwd() / ".env"
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path, override=False)
+        return True
+        
+    # Try parent directories (up to 5 levels)
+    cwd = Path.cwd()
+    for _ in range(5):
+        env_path = cwd / ".env"
+        if env_path.exists():
+            load_dotenv(dotenv_path=env_path, override=False)
+            return True
+        cwd = cwd.parent
+        if cwd == cwd.parent:  # Reached root
+            break
+    
+    # Try the package's parent directory (scientific-writer project root)
+    script_dir = Path(__file__).resolve().parent
+    for _ in range(5):
+        env_path = script_dir / ".env"
+        if env_path.exists():
+            load_dotenv(dotenv_path=env_path, override=False)
+            return True
+        script_dir = script_dir.parent
+        if script_dir == script_dir.parent:
+            break
+            
+    return False
 
 
 class ScientificSchematicGenerator:
@@ -90,9 +126,22 @@ LAYOUT:
             api_key: OpenRouter API key (or use OPENROUTER_API_KEY env var)
             verbose: Print detailed progress information
         """
+        # Priority: 1) explicit api_key param, 2) environment variable, 3) .env file
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
+        
+        # If not found in environment, try loading from .env file
         if not self.api_key:
-            raise ValueError("OPENROUTER_API_KEY environment variable not set or api_key not provided")
+            _load_env_file()
+            self.api_key = os.getenv("OPENROUTER_API_KEY")
+        
+        if not self.api_key:
+            raise ValueError(
+                "OPENROUTER_API_KEY not found. Please either:\n"
+                "  1. Set the OPENROUTER_API_KEY environment variable\n"
+                "  2. Add OPENROUTER_API_KEY to your .env file\n"
+                "  3. Pass api_key parameter to the constructor\n"
+                "Get your API key from: https://openrouter.ai/keys"
+            )
         
         self.verbose = verbose
         self.base_url = "https://openrouter.ai/api/v1"
