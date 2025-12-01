@@ -12,10 +12,14 @@ Example:
 
         async def main():
             async for update in generate_paper("Create a Nature paper on CRISPR"):
-                if update["type"] == "progress":
-                    print(f"[{update['percentage']}%] {update['message']}")
-                else:
-                    print(f"Paper created: {update['paper_directory']}")
+                if update["type"] == "text":
+                    # Live streaming of Claude's responses
+                    print(update["content"], end="", flush=True)
+                elif update["type"] == "progress":
+                    # Structured progress updates
+                    print(f"\\n[{update['stage']}] {update['message']}")
+                elif update["type"] == "result":
+                    print(f"\\nPaper created: {update['paper_directory']}")
                     print(f"PDF: {update['files']['pdf_final']}")
 
         asyncio.run(main())
@@ -27,15 +31,16 @@ Example:
 """
 
 from .api import generate_paper
-from .models import ProgressUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
+from .models import ProgressUpdate, TextUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
 
-__version__ = "2.8.7"
+__version__ = "2.8.8"
 __author__ = "K-Dense"
 __license__ = "MIT"
 
 __all__ = [
     "generate_paper",
     "ProgressUpdate",
+    "TextUpdate",
     "PaperResult",
     "PaperMetadata",
     "PaperFiles",

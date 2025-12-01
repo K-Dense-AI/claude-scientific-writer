@@ -18,7 +18,7 @@ from .core import (
     create_data_context_message,
     setup_claude_skills,
 )
-from .models import ProgressUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
+from .models import ProgressUpdate, TextUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
 from .utils import (
     scan_paper_directory,
     count_citations_in_bib,
@@ -183,15 +183,18 @@ IMPORTANT - CONVERSATION CONTINUITY:
             
             if hasattr(message, "content") and message.content:
                 for block in message.content:
-                    # Handle text blocks - analyze for progress indicators
+                    # Handle text blocks - stream live and analyze for progress
                     if hasattr(block, "text"):
                         text = block.text
                         accumulated_text += text
                         
+                        # Yield live text update - stream Claude's actual response
+                        yield TextUpdate(content=text).to_dict()
+                        
                         # Analyze text for major stage transitions (fallback)
                         stage, msg = _analyze_progress(accumulated_text, current_stage)
                         
-                        # Only yield if we have a stage change with a message
+                        # Only yield progress if we have a stage change with a message
                         if stage != current_stage and msg and msg != last_message:
                             current_stage = stage
                             last_message = msg

@@ -6,6 +6,52 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.8] - 2025-12-01
+
+### ✨ New Features
+
+- **Live Text Streaming** - Stream Claude's actual responses through the API in real-time
+  - New `TextUpdate` model for live text output from Claude
+  - API now yields `{"type": "text", "content": "..."}` for each text block
+  - Enables displaying Claude's reasoning and explanations as they happen
+  - Works alongside existing progress updates - no breaking changes
+
+### 📝 API Changes
+
+- New `TextUpdate` model exported from `scientific_writer`
+- `generate_paper()` now yields three update types:
+  - `"text"`: Live streaming of Claude's text responses
+  - `"progress"`: Structured stage updates (unchanged)
+  - `"result"`: Final result with all paper details (unchanged)
+
+### 🎯 Example Usage
+
+```python
+from scientific_writer import generate_paper
+
+async for update in generate_paper("Create a paper on AI"):
+    if update["type"] == "text":
+        # Stream Claude's live output
+        print(update["content"], end="", flush=True)
+    elif update["type"] == "progress":
+        # Structured progress updates
+        print(f"\n[{update['stage']}] {update['message']}")
+    elif update["type"] == "result":
+        print(f"\nPaper created: {update['paper_directory']}")
+```
+
+To show only progress updates (no text streaming):
+
+```python
+async for update in generate_paper("Create a paper"):
+    if update["type"] == "text":
+        pass  # Skip text updates
+    elif update["type"] == "progress":
+        print(f"[{update['stage']}] {update['message']}")
+```
+
+---
+
 ## [2.8.7] - 2025-11-26
 
 ### ✨ New Features

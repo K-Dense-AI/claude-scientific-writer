@@ -32,6 +32,25 @@ class ProgressUpdate:
 
 
 @dataclass
+class TextUpdate:
+    """Live text output from Claude during document generation.
+    
+    Streams Claude's actual text responses in real-time, allowing API consumers
+    to display the AI's reasoning and explanations as they happen.
+    
+    Attributes:
+        type: Always "text" to distinguish from progress and result messages
+        content: The text content from Claude's response
+    """
+    type: str = "text"
+    content: str = ""
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        return asdict(self)
+
+
+@dataclass
 class PaperMetadata:
     """Metadata about the generated paper."""
     title: Optional[str] = None
