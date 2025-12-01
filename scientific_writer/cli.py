@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Scientific Writer CLI Tool
-A command-line interface for scientific writing powered by Claude Code.
+A command-line interface for scientific writing.
 """
 
 import os
@@ -83,11 +83,11 @@ IMPORTANT - CONVERSATION CONTINUITY:
 - Each new chat session should start with a new paper unless context says otherwise
 """
     
-    # Configure the Claude agent options
+    # Configure agent options
     options = ClaudeAgentOptions(
         system_prompt=system_instructions,
-        model="claude-sonnet-4-5",  # Always use Claude Sonnet 4.5
-        allowed_tools=["Read", "Write", "Edit", "Bash", "research-lookup"],  # Default Claude Code tools + research lookup
+        model="claude-sonnet-4-5",
+        allowed_tools=["Read", "Write", "Edit", "Bash", "research-lookup"],
         permission_mode="bypassPermissions",  # Execute immediately without approval prompts
         setting_sources=["project"],  # Load skills from project .claude directory
         cwd=str(cwd),  # Set working directory to user's current directory
@@ -105,7 +105,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
     
     # Print welcome message
     print("=" * 70)
-    print("Scientific Writer CLI - Powered by Claude Sonnet 4.5")
+    print("Scientific Writer CLI")
     print("=" * 70)
     print("\nWelcome! I'm your scientific writing assistant.")
     print("\nI can help you with:")
@@ -371,7 +371,7 @@ User request: {user_input}"""
                 # No data files, no detected paper
                 contextual_prompt = user_input
             
-            # Send query to Claude
+            # Send query
             print()  # Add blank line before response
             async for message in query(prompt=contextual_prompt, options=options):
                 # Track token usage silently

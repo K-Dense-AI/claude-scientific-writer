@@ -34,42 +34,45 @@ except ImportError:
 
 # Try to load .env file from multiple potential locations
 def _load_env_file():
-    """Load .env file from current directory, parent directories, or package directory."""
+    """Load .env file from current directory, parent directories, or package directory.
+    
+    Returns True if a .env file was found and loaded, False otherwise.
+    Note: This does NOT override existing environment variables.
+    """
     try:
         from dotenv import load_dotenv
-        from pathlib import Path
-        
-        # Try current working directory first
-        if load_dotenv():
-            return True
-            
-        # Try parent directories (up to 5 levels)
-        cwd = Path.cwd()
-        for _ in range(5):
-            env_path = cwd / ".env"
-            if env_path.exists():
-                load_dotenv(dotenv_path=env_path)
-                return True
-            cwd = cwd.parent
-            if cwd == cwd.parent:  # Reached root
-                break
-        
-        # Try the package's parent directory (scientific-writer project root)
-        script_dir = Path(__file__).resolve().parent
-        for _ in range(5):
-            env_path = script_dir / ".env"
-            if env_path.exists():
-                load_dotenv(dotenv_path=env_path)
-                return True
-            script_dir = script_dir.parent
-            if script_dir == script_dir.parent:
-                break
-                
-        return False
     except ImportError:
         return False  # python-dotenv not installed
-
-_load_env_file()
+    
+    # Try current working directory first
+    env_path = Path.cwd() / ".env"
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path, override=False)
+        return True
+        
+    # Try parent directories (up to 5 levels)
+    cwd = Path.cwd()
+    for _ in range(5):
+        env_path = cwd / ".env"
+        if env_path.exists():
+            load_dotenv(dotenv_path=env_path, override=False)
+            return True
+        cwd = cwd.parent
+        if cwd == cwd.parent:  # Reached root
+            break
+    
+    # Try the package's parent directory (scientific-writer project root)
+    script_dir = Path(__file__).resolve().parent
+    for _ in range(5):
+        env_path = script_dir / ".env"
+        if env_path.exists():
+            load_dotenv(dotenv_path=env_path, override=False)
+            return True
+        script_dir = script_dir.parent
+        if script_dir == script_dir.parent:
+            break
+            
+    return False
 
 
 class ScientificSchematicGenerator:
@@ -122,15 +125,30 @@ LAYOUT:
             api_key: OpenRouter API key (or use OPENROUTER_API_KEY env var)
             verbose: Print detailed progress information
         """
+        # Priority: 1) explicit api_key param, 2) environment variable, 3) .env file
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
+        
+        # If not found in environment, try loading from .env file
         if not self.api_key:
-            raise ValueError("OPENROUTER_API_KEY environment variable not set or api_key not provided")
+            _load_env_file()
+            self.api_key = os.getenv("OPENROUTER_API_KEY")
+        
+        if not self.api_key:
+            raise ValueError(
+                "OPENROUTER_API_KEY not found. Please either:\n"
+                "  1. Set the OPENROUTER_API_KEY environment variable\n"
+                "  2. Add OPENROUTER_API_KEY to your .env file\n"
+                "  3. Pass api_key parameter to the constructor\n"
+                "Get your API key from: https://openrouter.ai/keys"
+            )
         
         self.verbose = verbose
+        self._last_error = None  # Track last error for better reporting
         self.base_url = "https://openrouter.ai/api/v1"
+        # Nano Banana Pro - Google's advanced image generation model
+        # https://openrouter.ai/google/gemini-3-pro-image-preview
         self.image_model = "google/gemini-3-pro-image-preview"
-        # Use vision-capable model for review (Gemini Pro Vision or Claude Sonnet)
-        self.review_model = "google/gemini-pro-vision"
+        self.review_model = "google/gemini-3-pro-preview"
         
     def _log(self, message: str):
         """Log message if verbose mode is enabled."""
@@ -310,6 +328,8 @@ LAYOUT:
         Returns:
             Image bytes or None if generation failed
         """
+        self._last_error = None  # Reset error
+        
         messages = [
             {
                 "role": "user",
@@ -348,22 +368,29 @@ LAYOUT:
                 error_msg = response["error"]
                 if isinstance(error_msg, dict):
                     error_msg = error_msg.get("message", str(error_msg))
-                print(f"✗ API Error: {error_msg}")
+                self._last_error = f"API Error: {error_msg}"
+                print(f"✗ {self._last_error}")
                 return None
             
             image_data = self._extract_image_from_response(response)
             if image_data:
                 self._log(f"✓ Generated image ({len(image_data)} bytes)")
             else:
-                self._log("✗ No image data in response")
+                self._last_error = "No image data in API response - model may not support image generation"
+                self._log(f"✗ {self._last_error}")
                 # Additional debug info when image extraction fails
                 if self.verbose and "choices" in response:
                     msg = response["choices"][0].get("message", {})
                     self._log(f"Full message structure: {json.dumps({k: type(v).__name__ for k, v in msg.items()})}")
             
             return image_data
+        except RuntimeError as e:
+            self._last_error = str(e)
+            self._log(f"✗ Generation failed: {self._last_error}")
+            return None
         except Exception as e:
-            self._log(f"✗ Generation failed: {str(e)}")
+            self._last_error = f"Unexpected error: {str(e)}"
+            self._log(f"✗ Generation failed: {self._last_error}")
             import traceback
             if self.verbose:
                 traceback.print_exc()
@@ -536,11 +563,12 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
             image_data = self.generate_image(current_prompt)
             
             if not image_data:
-                print(f"✗ Generation failed")
+                error_msg = getattr(self, '_last_error', 'Image generation failed - no image data returned')
+                print(f"✗ Generation failed: {error_msg}")
                 results["iterations"].append({
                     "iteration": i,
                     "success": False,
-                    "error": "Image generation failed"
+                    "error": error_msg
                 })
                 continue
             

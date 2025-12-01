@@ -171,7 +171,7 @@ Paths to all generated paper files.
 
 ### `TokenUsage`
 
-Token usage statistics from the Claude Agent SDK. Only present when `track_token_usage=True`.
+Token usage statistics. Only present when `track_token_usage=True`.
 
 **Fields:**
 ```python

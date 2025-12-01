@@ -64,7 +64,7 @@ class PaperFiles:
 
 @dataclass
 class TokenUsage:
-    """Token usage statistics from Claude Agent SDK.
+    """Token usage statistics.
     
     Attributes:
         input_tokens: Total input tokens consumed

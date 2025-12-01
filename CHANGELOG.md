@@ -10,7 +10,7 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ### ✨ New Features
 
-- **Token Usage Tracking** - Track input/output tokens from Claude Agent SDK
+- **Token Usage Tracking** - Track input/output tokens during document generation
   - New `track_token_usage` parameter for `generate_paper()` API
   - Returns `token_usage` in final result with detailed token breakdown
   - Tracks: `input_tokens`, `output_tokens`, `total_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`

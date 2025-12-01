@@ -26,12 +26,10 @@ def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
     if source_claude.exists() and not dest_claude.exists():
         try:
             shutil.copytree(source_claude, dest_claude)
-            print(f"✓ Initialized Claude configuration in {dest_claude}")
-            print(f"✓ Skills and system instructions (WRITER.md) ready")
+            # Note: No print statements - API should be silent, progress comes via ProgressUpdate
         except Exception as e:
-            print(f"Warning: Could not copy Claude configuration: {e}")
-    elif not source_claude.exists():
-        print(f"Warning: .claude directory not found in package: {source_claude}")
+            pass  # Silent failure - API users can check for skills availability if needed
+    # Note: No warning prints - keep API output clean
 
 
 def get_api_key(api_key: Optional[str] = None) -> str:
