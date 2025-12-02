@@ -247,7 +247,7 @@ result = md.convert("presentation.pptx")
 
 Popular models with vision support:
 - `anthropic/claude-sonnet-4.5` - **Claude Sonnet 4.5 (recommended for scientific vision)**
-- `anthropic/claude-3.5-sonnet` - Claude 3.5 Sonnet
+- `anthropic/claude-opus-4.5` - Claude Opus 4.5
 - `openai/gpt-4o` - GPT-4 Omni
 - `openai/gpt-4-vision` - GPT-4 Vision
 - `google/gemini-pro-vision` - Gemini Pro Vision

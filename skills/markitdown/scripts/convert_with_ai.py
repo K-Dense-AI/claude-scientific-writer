@@ -168,7 +168,7 @@ Environment Variables:
 
 Popular Models (use with --model):
   anthropic/claude-sonnet-4.5 - Claude Sonnet 4.5 (recommended, vision support)
-  anthropic/claude-3.5-sonnet - Claude 3.5 Sonnet (vision support)
+  anthropic/claude-opus-4.5   - Claude Opus 4.5 (vision support)
   openai/gpt-4o              - GPT-4 Omni (vision support)
   openai/gpt-4-vision        - GPT-4 Vision
   google/gemini-pro-vision   - Gemini Pro Vision

@@ -1,5 +1,7 @@
 # Complete Features Guide
 
+**Scientific Writer is a deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs of various forms. Before generating any document, it conducts comprehensive literature searches, verifies citations, and synthesizes information—ensuring your scientific writing is backed by real, verifiable sources.
+
 This guide provides a comprehensive overview of all features available in Scientific Writer v2.0.
 
 ## Table of Contents

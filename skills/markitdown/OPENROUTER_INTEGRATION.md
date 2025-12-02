@@ -19,7 +19,7 @@ This MarkItDown skill has been configured to use **OpenRouter** instead of direc
 | Model | Provider | Use Case | Vision Support |
 |-------|----------|----------|----------------|
 | `anthropic/claude-sonnet-4.5` | Anthropic | **Recommended** - Best overall for scientific analysis | ✅ |
-| `anthropic/claude-3.5-sonnet` | Anthropic | Excellent technical analysis | ✅ |
+| `anthropic/claude-opus-4.5` | Anthropic | Excellent technical analysis | ✅ |
 | `openai/gpt-4o` | OpenAI | Strong vision understanding | ✅ |
 | `openai/gpt-4-vision` | OpenAI | GPT-4 with vision | ✅ |
 | `google/gemini-pro-vision` | Google | Cost-effective option | ✅ |
@@ -330,7 +330,7 @@ export OPENROUTER_API_KEY="sk-or-v1-your-key-here"
 python scripts/convert_with_ai.py \
   research_paper.pdf \
   output.md \
-  --model anthropic/claude-3.5-sonnet \
+  --model anthropic/claude-opus-4.5 \
   --prompt-type scientific
 
 # 3. Convert presentation with GPT-4o

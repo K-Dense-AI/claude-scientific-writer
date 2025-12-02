@@ -1,5 +1,7 @@
 # Available Skills
 
+**Scientific Writer is a deep research and writing tool** that combines AI-driven deep research with well-formatted written outputs. The skills below power this capability—from conducting literature searches and verifying citations to generating publication-ready documents in various formats.
+
 This document provides an overview of all skills available in the Scientific Writer CLI.
 
 ## Writing Skills

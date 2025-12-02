@@ -1,5 +1,7 @@
 # Scientific Writer API
 
+**Scientific Writer is a deep research and writing tool** that combines AI-driven deep research with well-formatted written outputs. This API lets you programmatically generate publication-ready documents backed by real-time literature search and verified citations.
+
 Complete reference for the Scientific Writer v2.0 programmatic API. For a quick start, see the README. This page contains full details, examples, and best practices.
 
 ## Installation

@@ -1,6 +1,8 @@
 # Scientific Writer Documentation
 
-Welcome to the Scientific Writer documentation! This guide will help you navigate the available resources.
+Welcome to the Scientific Writer documentation! **Scientific Writer is a deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs of various forms—from scientific papers and grant proposals to clinical reports and conference presentations.
+
+This guide will help you navigate the available resources.
 
 ## 📚 Documentation Overview
 

@@ -1,5 +1,5 @@
 ---
-description: Initialize the current project to use the Scientific Writer CLAUDE.md configuration.
+description: Initialize the current project with Scientific Writer - a deep research and writing tool that combines AI-driven research with well-formatted written outputs.
 ---
 
 # Scientific Writer Project Setup
@@ -82,7 +82,8 @@ After writing the file, provide a brief summary:
 🎉 Scientific Writer has been initialized in this project!
 
 📋 What's Included:
-- Complete scientific writing workflow and standards
+- A deep research and writing tool that combines AI-driven research with well-formatted written outputs
+- Complete scientific writing workflow with real-time literature search and verified citations
 - 19+ specialized skills for academic writing:
   • research-lookup: Real-time literature search
   • peer-review: Systematic manuscript evaluation
