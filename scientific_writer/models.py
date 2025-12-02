@@ -33,14 +33,14 @@ class ProgressUpdate:
 
 @dataclass
 class TextUpdate:
-    """Live text output from Claude during document generation.
+    """Live text output from Scientific-Writer during document generation.
     
-    Streams Claude's actual text responses in real-time, allowing API consumers
+    Streams Scientific-Writer's actual text responses in real-time, allowing API consumers
     to display the AI's reasoning and explanations as they happen.
     
     Attributes:
         type: Always "text" to distinguish from progress and result messages
-        content: The text content from Claude's response
+        content: The text content from Scientific-Writer's response
     """
     type: str = "text"
     content: str = ""

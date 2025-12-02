@@ -188,7 +188,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
                         text = block.text
                         accumulated_text += text
                         
-                        # Yield live text update - stream Claude's actual response
+                        # Yield live text update - stream Scientific-Writer's actual response
                         yield TextUpdate(content=text).to_dict()
                         
                         # Analyze text for major stage transitions (fallback)

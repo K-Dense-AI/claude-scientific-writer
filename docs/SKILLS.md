@@ -577,7 +577,7 @@ Claude will check if slide count is appropriate and provide timing recommendatio
 
 **Capabilities**:
 - Convert 15+ file formats to Markdown (PDF, DOCX, PPTX, XLSX, images, audio, etc.)
-- AI-enhanced image descriptions using Claude Sonnet 4.5
+- AI-enhanced image descriptions using advanced vision models
 - OCR for scanned documents and images
 - Speech-to-text transcription for audio files
 - YouTube video transcription extraction

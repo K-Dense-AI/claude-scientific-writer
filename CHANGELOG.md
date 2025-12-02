@@ -10,17 +10,17 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ### ✨ New Features
 
-- **Live Text Streaming** - Stream Claude's actual responses through the API in real-time
-  - New `TextUpdate` model for live text output from Claude
+- **Live Text Streaming** - Stream Scientific-Writer's actual responses through the API in real-time
+  - New `TextUpdate` model for live text output from Scientific-Writer
   - API now yields `{"type": "text", "content": "..."}` for each text block
-  - Enables displaying Claude's reasoning and explanations as they happen
+  - Enables displaying Scientific-Writer's reasoning and explanations as they happen
   - Works alongside existing progress updates - no breaking changes
 
 ### 📝 API Changes
 
 - New `TextUpdate` model exported from `scientific_writer`
 - `generate_paper()` now yields three update types:
-  - `"text"`: Live streaming of Claude's text responses
+  - `"text"`: Live streaming of Scientific-Writer's text responses
   - `"progress"`: Structured stage updates (unchanged)
   - `"result"`: Final result with all paper details (unchanged)
 
@@ -31,7 +31,7 @@ from scientific_writer import generate_paper
 
 async for update in generate_paper("Create a paper on AI"):
     if update["type"] == "text":
-        # Stream Claude's live output
+        # Stream Scientific-Writer's live output
         print(update["content"], end="", flush=True)
     elif update["type"] == "progress":
         # Structured progress updates

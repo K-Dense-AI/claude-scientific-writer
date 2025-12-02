@@ -27,33 +27,33 @@ class RedliningValidator:
             print(f"FAILED - Modified document.xml not found at {modified_file}")
             return False
 
-        # First, check if there are any tracked changes by Claude to validate
+        # First, check if there are any tracked changes by Scientific-Writer to validate
         try:
             import xml.etree.ElementTree as ET
 
             tree = ET.parse(modified_file)
             root = tree.getroot()
 
-            # Check for w:del or w:ins tags authored by Claude
+            # Check for w:del or w:ins tags authored by Scientific-Writer
             del_elements = root.findall(".//w:del", self.namespaces)
             ins_elements = root.findall(".//w:ins", self.namespaces)
 
-            # Filter to only include changes by Claude
-            claude_del_elements = [
+            # Filter to only include changes by Scientific-Writer
+            sw_del_elements = [
                 elem
                 for elem in del_elements
-                if elem.get(f"{{{self.namespaces['w']}}}author") == "Claude"
+                if elem.get(f"{{{self.namespaces['w']}}}author") == "Scientific-Writer"
             ]
-            claude_ins_elements = [
+            sw_ins_elements = [
                 elem
                 for elem in ins_elements
-                if elem.get(f"{{{self.namespaces['w']}}}author") == "Claude"
+                if elem.get(f"{{{self.namespaces['w']}}}author") == "Scientific-Writer"
             ]
 
-            # Redlining validation is only needed if tracked changes by Claude have been used.
-            if not claude_del_elements and not claude_ins_elements:
+            # Redlining validation is only needed if tracked changes by Scientific-Writer have been used.
+            if not sw_del_elements and not sw_ins_elements:
                 if self.verbose:
-                    print("PASSED - No tracked changes by Claude found.")
+                    print("PASSED - No tracked changes by Scientific-Writer found.")
                 return True
 
         except Exception:
@@ -91,9 +91,9 @@ class RedliningValidator:
                 print(f"FAILED - Error parsing XML files: {e}")
                 return False
 
-            # Remove Claude's tracked changes from both documents
-            self._remove_claude_tracked_changes(original_root)
-            self._remove_claude_tracked_changes(modified_root)
+            # Remove Scientific-Writer's tracked changes from both documents
+            self._remove_sw_tracked_changes(original_root)
+            self._remove_sw_tracked_changes(modified_root)
 
             # Extract and compare text content
             modified_text = self._extract_text_content(modified_root)
@@ -108,13 +108,13 @@ class RedliningValidator:
                 return False
 
             if self.verbose:
-                print("PASSED - All changes by Claude are properly tracked")
+                print("PASSED - All changes by Scientific-Writer are properly tracked")
             return True
 
     def _generate_detailed_diff(self, original_text, modified_text):
         """Generate detailed word-level differences using git word diff."""
         error_parts = [
-            "FAILED - Document text doesn't match after removing Claude's tracked changes",
+            "FAILED - Document text doesn't match after removing Scientific-Writer's tracked changes",
             "",
             "Likely causes:",
             "  1. Modified text inside another author's <w:ins> or <w:del> tags",
@@ -214,8 +214,8 @@ class RedliningValidator:
 
         return None
 
-    def _remove_claude_tracked_changes(self, root):
-        """Remove tracked changes authored by Claude from the XML root."""
+    def _remove_sw_tracked_changes(self, root):
+        """Remove tracked changes authored by Scientific-Writer from the XML root."""
         ins_tag = f"{{{self.namespaces['w']}}}ins"
         del_tag = f"{{{self.namespaces['w']}}}del"
         author_attr = f"{{{self.namespaces['w']}}}author"
@@ -224,19 +224,19 @@ class RedliningValidator:
         for parent in root.iter():
             to_remove = []
             for child in parent:
-                if child.tag == ins_tag and child.get(author_attr) == "Claude":
+                if child.tag == ins_tag and child.get(author_attr) == "Scientific-Writer":
                     to_remove.append(child)
             for elem in to_remove:
                 parent.remove(elem)
 
-        # Unwrap content in w:del elements where author is "Claude"
+        # Unwrap content in w:del elements where author is "Scientific-Writer"
         deltext_tag = f"{{{self.namespaces['w']}}}delText"
         t_tag = f"{{{self.namespaces['w']}}}t"
 
         for parent in root.iter():
             to_process = []
             for child in parent:
-                if child.tag == del_tag and child.get(author_attr) == "Claude":
+                if child.tag == del_tag and child.get(author_attr) == "Scientific-Writer":
                     to_process.append((child, list(parent).index(child)))
 
             # Process in reverse order to maintain indices

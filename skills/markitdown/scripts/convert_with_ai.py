@@ -156,7 +156,7 @@ Examples:
   # Convert a presentation with custom model
   python convert_with_ai.py slides.pptx slides.md --model anthropic/claude-sonnet-4.5 --prompt-type presentation
   
-  # Use custom prompt with Claude Sonnet 4.5
+  # Use custom prompt with advanced vision model
   python convert_with_ai.py diagram.png diagram.md --model anthropic/claude-sonnet-4.5 --custom-prompt "Describe this technical diagram"
   
   # Set API key via environment variable
@@ -167,8 +167,8 @@ Environment Variables:
   OPENROUTER_API_KEY    OpenRouter API key (required if not passed via --api-key)
 
 Popular Models (use with --model):
-  anthropic/claude-sonnet-4.5 - Claude Sonnet 4.5 (recommended, vision support)
-  anthropic/claude-opus-4.5   - Claude Opus 4.5 (vision support)
+  anthropic/claude-sonnet-4.5 - Recommended for scientific vision
+  anthropic/claude-opus-4.5   - Advanced vision model
   openai/gpt-4o              - GPT-4 Omni (vision support)
   openai/gpt-4-vision        - GPT-4 Vision
   google/gemini-pro-vision   - Gemini Pro Vision

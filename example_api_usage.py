@@ -25,7 +25,7 @@ async def simple_example():
     
     async for update in generate_paper(query):
         if update["type"] == "text":
-            # Stream Claude's live text output
+            # Stream Scientific-Writer's live text output
             print(update["content"], end="", flush=True)
         elif update["type"] == "progress":
             # Print progress updates on new line
@@ -215,7 +215,7 @@ async def main():
     print("  3. Run: python example_api_usage.py")
     print()
     print("Update Types:")
-    print("  - 'text': Live streaming of Claude's responses (content field)")
+    print("  - 'text': Live streaming of Scientific-Writer's responses (content field)")
     print("  - 'progress': Structured stage updates (stage, message fields)")
     print("  - 'result': Final result with all paper details")
 

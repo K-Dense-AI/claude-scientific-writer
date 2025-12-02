@@ -380,7 +380,7 @@ Convert 15+ file formats to Markdown for LLM processing.
 - **Code**: Various programming languages
 
 **Features:**
-- AI-enhanced image descriptions using Claude Sonnet 4.5
+- AI-enhanced image descriptions using advanced vision models
 - OCR for scanned documents
 - Speech-to-text for audio files
 - Batch processing with parallel execution

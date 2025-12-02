@@ -2,7 +2,7 @@
 Scientific Writer - AI-powered scientific writing assistant.
 
 A powerful Python package for generating scientific papers, literature reviews,
-and academic documents using Claude Sonnet 4.5.
+and academic documents.
 
 Example:
     Generate a paper programmatically::
@@ -13,7 +13,7 @@ Example:
         async def main():
             async for update in generate_paper("Create a Nature paper on CRISPR"):
                 if update["type"] == "text":
-                    # Live streaming of Claude's responses
+                    # Live streaming of Scientific-Writer's responses
                     print(update["content"], end="", flush=True)
                 elif update["type"] == "progress":
                     # Structured progress updates

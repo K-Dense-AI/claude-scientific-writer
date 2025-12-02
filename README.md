@@ -6,7 +6,7 @@
 
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
-Powered by Claude Sonnet 4.5, Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup via Perplexity Sonar Pro, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro. You have the option of using it as a claude code plugin, python package or a native CLI
+Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup via Perplexity Sonar Pro, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro. You have the option of using it as a claude code plugin, python package or a native CLI
 
 ## Quick Start
 

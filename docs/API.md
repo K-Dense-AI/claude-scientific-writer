@@ -357,7 +357,7 @@ async def list_all_files():
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | Yes* | Your Anthropic API key for Claude Sonnet 4.5 |
+| `ANTHROPIC_API_KEY` | Yes* | Your Anthropic API key for Scientific-Writer |
 | `OPENROUTER_API_KEY` | No | For real-time research lookup via Perplexity Sonar Pro |
 
 \* Can be overridden by passing `api_key` parameter to `generate_paper()`

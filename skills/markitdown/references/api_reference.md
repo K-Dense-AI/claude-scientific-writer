@@ -246,8 +246,8 @@ result = md.convert("presentation.pptx")
 ### Available Models via OpenRouter
 
 Popular models with vision support:
-- `anthropic/claude-sonnet-4.5` - **Claude Sonnet 4.5 (recommended for scientific vision)**
-- `anthropic/claude-opus-4.5` - Claude Opus 4.5
+- `anthropic/claude-sonnet-4.5` - **Recommended for scientific vision**
+- `anthropic/claude-opus-4.5` - Advanced vision model
 - `openai/gpt-4o` - GPT-4 Omni
 - `openai/gpt-4-vision` - GPT-4 Vision
 - `google/gemini-pro-vision` - Gemini Pro Vision
