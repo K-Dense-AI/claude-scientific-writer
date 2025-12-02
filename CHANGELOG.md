@@ -6,6 +6,63 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.8.9] - 2025-12-02
+
+### 🔒 Privacy & Identity Protection
+
+- **Model Identity Concealment** - Scientific-Writer never reveals underlying model or tool identity
+  - Changed all author attributions from "Claude" to "Scientific-Writer" in Word tracked changes
+  - Updated default author name in DOCX/PPTX editing from "Claude" to "Scientific-Writer"
+  - Updated default initials from "C" to "SW" in document editing features
+  - Removed model-specific branding from user-facing documentation
+  - Package descriptions now reference "Scientific-Writer" instead of underlying models
+
+### ✨ Enhanced Scientific Schematic Generation
+
+- **Smart Iteration with Quality Thresholds** - Only regenerate if quality is below document-type threshold
+  - Document-type aware quality thresholds:
+    * `journal`: 8.5/10 (Nature, Science, peer-reviewed)
+    * `conference`, `thesis`, `grant`: 8.0/10
+    * `preprint`, `report`: 7.5/10
+    * `poster`: 7.0/10
+    * `presentation`: 6.5/10
+  - **Gemini 3 Pro for Quality Review** - Superior vision and analysis for diagram evaluation
+  - Early stop when quality threshold is met (saves API calls and time)
+  - Structured review with 5 criteria: Scientific Accuracy, Clarity, Labels, Layout, Professional Appearance
+  - Automatic ACCEPTABLE/NEEDS_IMPROVEMENT verdict based on threshold
+
+- **New `--doc-type` Flag** - Specify document type for appropriate quality standards
+  - `python scripts/generate_schematic.py "diagram" -o out.png --doc-type journal`
+  - Review log now includes `doc_type`, `quality_threshold`, `needs_improvement`, `early_stop`, and `early_stop_reason`
+
+### 📝 Updated Skills & Documentation
+
+- **Scientific Schematics Skill** - Complete documentation update
+  - Smart iteration workflow with flowchart
+  - Quality threshold table for all document types
+  - Updated examples showing `--doc-type` usage
+  - Early stop behavior and benefits explained
+
+- **MarkItDown Skill** - Updated model references to generic descriptions
+  - Changed "Claude Sonnet 4.5" references to "advanced vision models"
+  - Model identifiers preserved for API compatibility
+
+### 🔧 Technical Changes
+
+- **Document Editing** - Consistent authorship across all skills
+  - `skills/document-skills/docx/scripts/document.py`: Default author "Scientific-Writer" 
+  - `skills/document-skills/docx/ooxml/scripts/validation/redlining.py`: Updated validation messages
+  - `skills/document-skills/pptx/ooxml/scripts/validation/redlining.py`: Updated validation messages
+  - All XML examples updated in documentation
+
+- **Scientific Schematic Generation** - Enhanced AI review system
+  - `scripts/generate_schematic_ai.py`: Gemini 3 Pro review integration
+  - `scripts/generate_schematic.py`: Document type support
+  - Quality threshold constants in generator class
+  - Enhanced review prompt with structured 5-criteria evaluation
+
+---
+
 ## [2.8.8] - 2025-12-01
 
 ### ✨ New Features
