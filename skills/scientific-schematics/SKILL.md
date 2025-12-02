@@ -1,6 +1,6 @@
 ---
 name: scientific-schematics
-description: "Create publication-quality scientific diagrams using Nano Banana Pro AI with iterative refinement. AI generation is the default method for all diagram types. Generates high-fidelity images with automatic quality review. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations."
+description: "Create publication-quality scientific diagrams using Nano Banana Pro AI with smart iterative refinement. Uses Gemini 3 Pro for quality review. Only regenerates if quality is below threshold for your document type. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations."
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 
@@ -8,44 +8,63 @@ allowed-tools: [Read, Write, Edit, Bash]
 
 ## Overview
 
-Scientific schematics and diagrams transform complex concepts into clear visual representations for publication. **This skill uses Nano Banana Pro AI for all diagram generation.**
+Scientific schematics and diagrams transform complex concepts into clear visual representations for publication. **This skill uses Nano Banana Pro AI for diagram generation with Gemini 3 Pro quality review.**
 
 **How it works:**
 - Describe your diagram in natural language
 - Nano Banana Pro generates publication-quality images automatically
-- Automatic iterative refinement (3 iterations by default)
-- Built-in quality review and improvement
+- **Gemini 3 Pro reviews quality** against document-type thresholds
+- **Smart iteration**: Only regenerates if quality is below threshold
 - Publication-ready output in minutes
 - No coding, templates, or manual drawing required
+
+**Quality Thresholds by Document Type:**
+| Document Type | Threshold | Description |
+|---------------|-----------|-------------|
+| journal | 8.5/10 | Nature, Science, peer-reviewed journals |
+| conference | 8.0/10 | Conference papers |
+| thesis | 8.0/10 | Dissertations, theses |
+| grant | 8.0/10 | Grant proposals |
+| preprint | 7.5/10 | arXiv, bioRxiv, etc. |
+| report | 7.5/10 | Technical reports |
+| poster | 7.0/10 | Academic posters |
+| presentation | 6.5/10 | Slides, talks |
+| default | 7.5/10 | General purpose |
 
 **Simply describe what you want, and Nano Banana Pro creates it.** All diagrams are stored in the figures/ subfolder and referenced in papers/posters.
 
 ## Quick Start: Generate Any Diagram
 
-Create any scientific diagram by simply describing it. Nano Banana Pro handles everything automatically:
+Create any scientific diagram by simply describing it. Nano Banana Pro handles everything automatically with **smart iteration**:
 
 ```bash
-# Generate any scientific diagram from a description
-python scripts/generate_schematic.py "CONSORT participant flow diagram with 500 screened, 150 excluded, 350 randomized" -o figures/consort.png
+# Generate for journal paper (highest quality threshold: 8.5/10)
+python scripts/generate_schematic.py "CONSORT participant flow diagram with 500 screened, 150 excluded, 350 randomized" -o figures/consort.png --doc-type journal
 
-# Neural network architecture
-python scripts/generate_schematic.py "Transformer encoder-decoder architecture showing multi-head attention, feed-forward layers, and residual connections" -o figures/transformer.png
+# Generate for presentation (lower threshold: 6.5/10 - faster)
+python scripts/generate_schematic.py "Transformer encoder-decoder architecture showing multi-head attention" -o figures/transformer.png --doc-type presentation
 
-# Biological pathway
-python scripts/generate_schematic.py "MAPK signaling pathway from EGFR to gene transcription" -o figures/mapk_pathway.png
+# Generate for poster (moderate threshold: 7.0/10)
+python scripts/generate_schematic.py "MAPK signaling pathway from EGFR to gene transcription" -o figures/mapk_pathway.png --doc-type poster
 
-# Custom iterations for complex diagrams
-python scripts/generate_schematic.py "Complex circuit diagram with op-amp, resistors, and capacitors" -o figures/circuit.png --iterations 5
+# Custom max iterations for complex diagrams
+python scripts/generate_schematic.py "Complex circuit diagram with op-amp, resistors, and capacitors" -o figures/circuit.png --iterations 5 --doc-type journal
 ```
 
 **What happens behind the scenes:**
 1. **Generation 1**: Nano Banana Pro creates initial image following scientific diagram best practices
-2. **Review 1**: AI evaluates clarity, labels, accuracy, and accessibility
-3. **Generation 2**: Improved prompt based on critique, regenerate
-4. **Review 2**: Second evaluation with specific feedback
-5. **Generation 3**: Final polished version addressing all critiques
+2. **Review 1**: **Gemini 3 Pro** evaluates quality against document-type threshold
+3. **Decision**: If quality >= threshold → **DONE** (no more iterations needed!)
+4. **If below threshold**: Improved prompt based on critique, regenerate
+5. **Repeat**: Until quality meets threshold OR max iterations reached
 
-**Output**: Three versions (v1, v2, v3) plus a detailed review log with quality scores and critiques.
+**Smart Iteration Benefits:**
+- ✅ Saves API calls if first generation is good enough
+- ✅ Higher quality standards for journal papers
+- ✅ Faster turnaround for presentations/posters
+- ✅ Appropriate quality for each use case
+
+**Output**: Versioned images plus a detailed review log with quality scores, critiques, and early-stop information.
 
 ### Configuration
 
@@ -128,11 +147,27 @@ python scripts/generate_schematic.py "your diagram description" -o output.png
 
 ---
 
-# AI Generation Mode (Nano Banana Pro)
+# AI Generation Mode (Nano Banana Pro + Gemini 3 Pro Review)
 
-## Iterative Refinement Workflow
+## Smart Iterative Refinement Workflow
 
-The AI generation system uses a sophisticated three-iteration refinement process:
+The AI generation system uses **smart iteration** - it only regenerates if quality is below the threshold for your document type:
+
+### How Smart Iteration Works
+
+```
+┌─────────────────────────────────────────────────────┐
+│  1. Generate image with Nano Banana Pro             │
+│                    ↓                                │
+│  2. Review quality with Gemini 3 Pro                │
+│                    ↓                                │
+│  3. Score >= threshold?                             │
+│       YES → DONE! (early stop)                      │
+│       NO  → Improve prompt, go to step 1            │
+│                    ↓                                │
+│  4. Repeat until quality met OR max iterations      │
+└─────────────────────────────────────────────────────┘
+```
 
 ### Iteration 1: Initial Generation
 **Prompt Construction:**
@@ -140,103 +175,76 @@ The AI generation system uses a sophisticated three-iteration refinement process
 Scientific diagram guidelines + User request
 ```
 
-**Example internal prompt:**
-```
-Create a high-quality scientific diagram with:
-- Clean white background
-- High contrast for readability
-- Clear labels (minimum 10pt font)
-- Professional typography
-- Colorblind-friendly colors
-- Proper spacing
-
-USER REQUEST: CONSORT participant flow diagram showing screening, 
-exclusion, randomization, and analysis phases with participant counts
-```
-
 **Output:** `diagram_v1.png`
 
-### Iteration 2: Review and Improve
-**AI Quality Review:**
-- Evaluates scientific accuracy
-- Checks label clarity and readability
-- Assesses layout and composition
-- Verifies accessibility (grayscale, colorblind)
-- Assigns quality score (0-10)
-- Provides specific improvement suggestions
+### Quality Review by Gemini 3 Pro
 
-**Example critique:**
+Gemini 3 Pro evaluates the diagram on:
+1. **Scientific Accuracy** (0-2 points) - Correct concepts, notation, relationships
+2. **Clarity and Readability** (0-2 points) - Easy to understand, clear hierarchy
+3. **Label Quality** (0-2 points) - Complete, readable, consistent labels
+4. **Layout and Composition** (0-2 points) - Logical flow, balanced, no overlaps
+5. **Professional Appearance** (0-2 points) - Publication-ready quality
+
+**Example Review Output:**
 ```
-Score: 7/10
+SCORE: 8.0
 
-Strengths:
+STRENGTHS:
 - Clear flow from top to bottom
-- Good use of colors
-- All phases labeled
+- All phases properly labeled
+- Professional typography
 
-Issues:
-- Participant counts (n=X) are too small to read
-- "Excluded" box overlaps with arrow
-- Would benefit from reasons for exclusion
+ISSUES:
+- Participant counts slightly small
+- Minor overlap on exclusion box
 
-Suggestions:
-- Increase font size for all numbers to at least 12pt
-- Add more vertical spacing between boxes
-- Include exclusion criteria in a separate annotation box
+VERDICT: ACCEPTABLE (for poster, threshold 7.0)
 ```
 
-**Improved Prompt:**
-```
-[Original guidelines + user request]
+### Decision Point: Continue or Stop?
 
-ITERATION 2: Address these improvements:
-- Increase font size for participant counts to 12pt minimum
-- Add vertical spacing to prevent overlaps
-- Include exclusion criteria in annotation box
-```
+| If Score... | Action |
+|-------------|--------|
+| >= threshold | **STOP** - Quality is good enough for this document type |
+| < threshold | Continue to next iteration with improved prompt |
 
-**Output:** `diagram_v2.png`
+**Example:**
+- For a **poster** (threshold 7.0): Score of 7.5 → **DONE after 1 iteration!**
+- For a **journal** (threshold 8.5): Score of 7.5 → Continue improving
 
-### Iteration 3: Final Polish
-**Second Review:**
-- Verifies improvements were implemented
-- Checks for any remaining issues
-- Final quality assessment
+### Subsequent Iterations (Only If Needed)
 
-**Final Generation:**
-- Incorporates all feedback
-- Produces publication-ready diagram
-
-**Output:** `diagram_v3.png` (final version)
+If quality is below threshold, the system:
+1. Extracts specific issues from Gemini 3 Pro's review
+2. Enhances the prompt with improvement instructions
+3. Regenerates with Nano Banana Pro
+4. Reviews again with Gemini 3 Pro
+5. Repeats until threshold met or max iterations reached
 
 ### Review Log
-All iterations are saved with a JSON review log:
+All iterations are saved with a JSON review log that includes early-stop information:
 ```json
 {
   "user_prompt": "CONSORT participant flow diagram...",
+  "doc_type": "poster",
+  "quality_threshold": 7.0,
   "iterations": [
     {
       "iteration": 1,
       "image_path": "figures/consort_v1.png",
-      "score": 7.0,
-      "critique": "..."
-    },
-    {
-      "iteration": 2,
-      "image_path": "figures/consort_v2.png",
-      "score": 8.5,
-      "critique": "..."
-    },
-    {
-      "iteration": 3,
-      "image_path": "figures/consort_v3.png",
-      "score": 9.5,
-      "critique": "..."
+      "score": 7.5,
+      "needs_improvement": false,
+      "critique": "SCORE: 7.5\nSTRENGTHS:..."
     }
   ],
-  "final_score": 9.5
+  "final_score": 7.5,
+  "early_stop": true,
+  "early_stop_reason": "Quality score 7.5 meets threshold 7.0 for poster"
 }
 ```
+
+**Note:** With smart iteration, you may see only 1-2 iterations instead of the full 3 if quality is achieved early!
 
 ## Advanced AI Generation Usage
 
@@ -271,10 +279,16 @@ for iteration in results['iterations']:
 ### Command-Line Options
 
 ```bash
-# Basic usage
+# Basic usage (default threshold 7.5/10)
 python scripts/generate_schematic.py "diagram description" -o output.png
 
-# Custom iterations (1-10)
+# Specify document type for appropriate quality threshold
+python scripts/generate_schematic.py "diagram" -o out.png --doc-type journal      # 8.5/10
+python scripts/generate_schematic.py "diagram" -o out.png --doc-type conference   # 8.0/10
+python scripts/generate_schematic.py "diagram" -o out.png --doc-type poster       # 7.0/10
+python scripts/generate_schematic.py "diagram" -o out.png --doc-type presentation # 6.5/10
+
+# Custom max iterations (1-10)
 python scripts/generate_schematic.py "complex diagram" -o diagram.png --iterations 5
 
 # Verbose output (see all API calls and reviews)
@@ -282,6 +296,9 @@ python scripts/generate_schematic.py "flowchart" -o flow.png -v
 
 # Provide API key via flag
 python scripts/generate_schematic.py "diagram" -o out.png --api-key "sk-or-v1-..."
+
+# Combine options
+python scripts/generate_schematic.py "neural network" -o nn.png --doc-type journal --iterations 5 -v
 ```
 
 ### Prompt Engineering Tips

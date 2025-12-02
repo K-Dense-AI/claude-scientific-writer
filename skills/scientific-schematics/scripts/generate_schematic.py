@@ -3,17 +3,20 @@
 Scientific schematic generation using Nano Banana Pro.
 
 Generate any scientific diagram by describing it in natural language.
-Nano Banana Pro handles everything automatically with iterative refinement.
+Nano Banana Pro handles everything automatically with smart iterative refinement.
+
+Smart iteration: Only regenerates if quality is below threshold for your document type.
+Quality review: Uses Gemini 3 Pro for professional scientific evaluation.
 
 Usage:
-    # Generate any diagram
-    python generate_schematic.py "CONSORT flowchart" -o flowchart.png
+    # Generate for journal paper (highest quality threshold)
+    python generate_schematic.py "CONSORT flowchart" -o flowchart.png --doc-type journal
     
-    # Neural network architecture
-    python generate_schematic.py "Transformer architecture" -o transformer.png
+    # Generate for presentation (lower threshold, faster)
+    python generate_schematic.py "Transformer architecture" -o transformer.png --doc-type presentation
     
-    # Biological pathway
-    python generate_schematic.py "MAPK signaling pathway" -o pathway.png
+    # Generate for poster
+    python generate_schematic.py "MAPK signaling pathway" -o pathway.png --doc-type poster
 """
 
 import argparse
@@ -26,22 +29,40 @@ from pathlib import Path
 def main():
     """Command-line interface."""
     parser = argparse.ArgumentParser(
-        description="Generate scientific schematics using AI with iterative refinement",
+        description="Generate scientific schematics using AI with smart iterative refinement",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 How it works:
   Simply describe your diagram in natural language
   Nano Banana Pro generates it automatically with:
-  - Iterative refinement (3 rounds by default)
-  - Automatic quality review and improvement
+  - Smart iteration (only regenerates if quality is below threshold)
+  - Quality review by Gemini 3 Pro
+  - Document-type aware quality thresholds
   - Publication-ready output
 
+Document Types (quality thresholds):
+  journal      8.5/10  - Nature, Science, peer-reviewed journals
+  conference   8.0/10  - Conference papers
+  thesis       8.0/10  - Dissertations, theses
+  grant        8.0/10  - Grant proposals
+  preprint     7.5/10  - arXiv, bioRxiv, etc.
+  report       7.5/10  - Technical reports
+  poster       7.0/10  - Academic posters
+  presentation 6.5/10  - Slides, talks
+  default      7.5/10  - General purpose
+
 Examples:
-  # Generate any diagram
-  python generate_schematic.py "CONSORT participant flow" -o flowchart.png
+  # Generate for journal paper (strict quality)
+  python generate_schematic.py "CONSORT participant flow" -o flowchart.png --doc-type journal
   
-  # Custom iterations for complex diagrams
-  python generate_schematic.py "Transformer architecture" -o arch.png --iterations 5
+  # Generate for poster (moderate quality)
+  python generate_schematic.py "Transformer architecture" -o arch.png --doc-type poster
+  
+  # Generate for slides (faster, lower threshold)
+  python generate_schematic.py "System diagram" -o system.png --doc-type presentation
+  
+  # Custom max iterations
+  python generate_schematic.py "Complex pathway" -o pathway.png --iterations 5
   
   # Verbose output
   python generate_schematic.py "Circuit diagram" -o circuit.png -v
@@ -55,8 +76,12 @@ Environment Variables:
                        help="Description of the diagram to generate")
     parser.add_argument("-o", "--output", required=True,
                        help="Output file path")
+    parser.add_argument("--doc-type", default="default",
+                       choices=["journal", "conference", "poster", "presentation",
+                               "report", "grant", "thesis", "preprint", "default"],
+                       help="Document type for quality threshold (default: default)")
     parser.add_argument("--iterations", type=int, default=3,
-                       help="Number of AI refinement iterations (default: 3)")
+                       help="Maximum refinement iterations (default: 3)")
     parser.add_argument("--api-key", 
                        help="OpenRouter API key (or use OPENROUTER_API_KEY env var)")
     parser.add_argument("-v", "--verbose", action="store_true",
@@ -85,6 +110,9 @@ Environment Variables:
     
     # Build command
     cmd = [sys.executable, str(ai_script), args.prompt, "-o", args.output]
+    
+    if args.doc_type != "default":
+        cmd.extend(["--doc-type", args.doc_type])
     
     if args.iterations != 3:
         cmd.extend(["--iterations", str(args.iterations)])

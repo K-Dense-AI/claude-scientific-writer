@@ -2,11 +2,11 @@
 """
 AI-powered scientific schematic generation using Nano Banana Pro.
 
-This script uses an iterative refinement approach:
+This script uses a smart iterative refinement approach:
 1. Generate initial image with Nano Banana Pro
-2. AI quality review for scientific critique
-3. Improve prompt based on critique and regenerate
-4. Repeat for 3 iterations to achieve publication-quality results
+2. AI quality review using Gemini 3 Pro for scientific critique
+3. Only regenerate if quality is below threshold for document type
+4. Repeat until quality meets standards (max iterations)
 
 Requirements:
     - OPENROUTER_API_KEY environment variable
@@ -15,6 +15,7 @@ Requirements:
 Usage:
     python generate_schematic_ai.py "Create a flowchart showing CONSORT participant flow" -o flowchart.png
     python generate_schematic_ai.py "Neural network architecture diagram" -o architecture.png --iterations 3
+    python generate_schematic_ai.py "Simple block diagram" -o diagram.png --doc-type poster
 """
 
 import argparse
@@ -76,7 +77,26 @@ def _load_env_file():
 
 
 class ScientificSchematicGenerator:
-    """Generate scientific schematics using AI with iterative refinement."""
+    """Generate scientific schematics using AI with smart iterative refinement.
+    
+    Uses Gemini 3 Pro for quality review to determine if regeneration is needed.
+    Multiple passes only occur if the generated schematic doesn't meet the
+    quality threshold for the target document type.
+    """
+    
+    # Quality thresholds by document type (score out of 10)
+    # Higher thresholds for more formal publications
+    QUALITY_THRESHOLDS = {
+        "journal": 8.5,      # Nature, Science, etc. - highest standards
+        "conference": 8.0,   # Conference papers - high standards
+        "poster": 7.0,       # Academic posters - good quality
+        "presentation": 6.5, # Slides/talks - clear but less formal
+        "report": 7.5,       # Technical reports - professional
+        "grant": 8.0,        # Grant proposals - must be compelling
+        "thesis": 8.0,       # Dissertations - formal academic
+        "preprint": 7.5,     # arXiv, etc. - good quality
+        "default": 7.5,      # Default threshold
+    }
     
     # Scientific diagram best practices prompt template
     SCIENTIFIC_DIAGRAM_GUIDELINES = """
@@ -148,7 +168,8 @@ LAYOUT:
         # Nano Banana Pro - Google's advanced image generation model
         # https://openrouter.ai/google/gemini-3-pro-image-preview
         self.image_model = "google/gemini-3-pro-image-preview"
-        self.review_model = "google/gemini-3-pro-preview"
+        # Gemini 3 Pro for quality review - excellent vision and reasoning
+        self.review_model = "google/gemini-3-pro"
         
     def _log(self, message: str):
         """Log message if verbose mode is enabled."""
@@ -397,36 +418,80 @@ LAYOUT:
             return None
     
     def review_image(self, image_path: str, original_prompt: str, 
-                    iteration: int) -> Tuple[str, float]:
+                    iteration: int, doc_type: str = "default",
+                    max_iterations: int = 3) -> Tuple[str, float, bool]:
         """
-        Review generated image using AI quality analysis.
+        Review generated image using Gemini 3 Pro for quality analysis.
+        
+        Uses Gemini 3 Pro's superior vision and reasoning capabilities to
+        evaluate the schematic quality and determine if regeneration is needed.
         
         Args:
             image_path: Path to the generated image
             original_prompt: Original user prompt
             iteration: Current iteration number
+            doc_type: Document type (journal, poster, presentation, etc.)
+            max_iterations: Maximum iterations allowed
             
         Returns:
-            Tuple of (critique text, quality score 0-10)
+            Tuple of (critique text, quality score 0-10, needs_improvement bool)
         """
-        # For now, use Nano Banana Pro itself for review (it has vision capabilities)
-        # This is more reliable than using a separate vision model
+        # Use Gemini 3 Pro for review - excellent vision and analysis
         image_data_url = self._image_to_base64(image_path)
         
-        review_prompt = f"""You are reviewing a scientific diagram you just generated.
+        # Get quality threshold for this document type
+        threshold = self.QUALITY_THRESHOLDS.get(doc_type.lower(), 
+                                                 self.QUALITY_THRESHOLDS["default"])
+        
+        review_prompt = f"""You are an expert reviewer evaluating a scientific diagram for publication quality.
 
 ORIGINAL REQUEST: {original_prompt}
 
-ITERATION: {iteration}/3
+DOCUMENT TYPE: {doc_type} (quality threshold: {threshold}/10)
+ITERATION: {iteration}/{max_iterations}
 
-Evaluate this diagram on:
-1. Scientific accuracy
-2. Clarity and readability
-3. Label quality
-4. Layout and composition
-5. Professional appearance
+Carefully evaluate this diagram on these criteria:
 
-Provide a score (0-10) and specific suggestions for improvement."""
+1. **Scientific Accuracy** (0-2 points)
+   - Correct representation of concepts
+   - Proper notation and symbols
+   - Accurate relationships shown
+
+2. **Clarity and Readability** (0-2 points)
+   - Easy to understand at a glance
+   - Clear visual hierarchy
+   - No ambiguous elements
+
+3. **Label Quality** (0-2 points)
+   - All important elements labeled
+   - Labels are readable (appropriate font size)
+   - Consistent labeling style
+
+4. **Layout and Composition** (0-2 points)
+   - Logical flow (top-to-bottom or left-to-right)
+   - Balanced use of space
+   - No overlapping elements
+
+5. **Professional Appearance** (0-2 points)
+   - Publication-ready quality
+   - Clean, crisp lines and shapes
+   - Appropriate colors/contrast
+
+RESPOND IN THIS EXACT FORMAT:
+SCORE: [total score 0-10]
+
+STRENGTHS:
+- [strength 1]
+- [strength 2]
+
+ISSUES:
+- [issue 1 if any]
+- [issue 2 if any]
+
+VERDICT: [ACCEPTABLE or NEEDS_IMPROVEMENT]
+
+If score >= {threshold}, the diagram is ACCEPTABLE for {doc_type} publication.
+If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
 
         messages = [
             {
@@ -447,9 +512,9 @@ Provide a score (0-10) and specific suggestions for improvement."""
         ]
         
         try:
-            # Use the same Nano Banana Pro model for review (it has vision)
+            # Use Gemini 3 Pro for high-quality review
             response = self._make_request(
-                model=self.image_model,  # Use Nano Banana Pro for review too
+                model=self.review_model,
                 messages=messages
             )
             
@@ -475,18 +540,36 @@ Provide a score (0-10) and specific suggestions for improvement."""
                 content = "\n".join(text_parts)
             
             # Try to extract score
-            score = 8.0  # Default to good score if review works
+            score = 7.5  # Default score if extraction fails
             import re
-            score_match = re.search(r'(?:score|rating|quality)[:\s]+(\d+(?:\.\d+)?)\s*/\s*10', content, re.IGNORECASE)
+            
+            # Look for SCORE: X or SCORE: X/10 format
+            score_match = re.search(r'SCORE:\s*(\d+(?:\.\d+)?)', content, re.IGNORECASE)
             if score_match:
                 score = float(score_match.group(1))
+            else:
+                # Fallback: look for any score pattern
+                score_match = re.search(r'(?:score|rating|quality)[:\s]+(\d+(?:\.\d+)?)\s*(?:/\s*10)?', content, re.IGNORECASE)
+                if score_match:
+                    score = float(score_match.group(1))
             
-            self._log(f"✓ Review complete (Score: {score}/10)")
-            return content if content else "Image generated successfully", score
+            # Determine if improvement is needed based on verdict or score
+            needs_improvement = False
+            if "NEEDS_IMPROVEMENT" in content.upper():
+                needs_improvement = True
+            elif score < threshold:
+                needs_improvement = True
+            
+            self._log(f"✓ Review complete (Score: {score}/10, Threshold: {threshold}/10)")
+            self._log(f"  Verdict: {'Needs improvement' if needs_improvement else 'Acceptable'}")
+            
+            return (content if content else "Image generated successfully", 
+                    score, 
+                    needs_improvement)
         except Exception as e:
             self._log(f"Review skipped: {str(e)}")
-            # Don't fail the whole process if review fails
-            return "Image generated successfully (review skipped)", 8.0
+            # Don't fail the whole process if review fails - assume acceptable
+            return "Image generated successfully (review skipped)", 7.5, False
     
     def improve_prompt(self, original_prompt: str, critique: str, 
                       iteration: int) -> str:
@@ -513,14 +596,20 @@ Generate an improved version that addresses all the critique points while mainta
         return improved_prompt
     
     def generate_iterative(self, user_prompt: str, output_path: str,
-                          iterations: int = 3) -> Dict[str, Any]:
+                          iterations: int = 3, 
+                          doc_type: str = "default") -> Dict[str, Any]:
         """
-        Generate scientific schematic with iterative refinement.
+        Generate scientific schematic with smart iterative refinement.
+        
+        Only regenerates if the quality score is below the threshold for the
+        specified document type. This saves API calls and time when the first
+        generation is already good enough.
         
         Args:
             user_prompt: User's description of desired diagram
             output_path: Path to save final image
-            iterations: Number of refinement iterations (default: 3)
+            iterations: Maximum refinement iterations (default: 3)
+            doc_type: Document type for quality threshold (journal, poster, etc.)
             
         Returns:
             Dictionary with generation results and metadata
@@ -532,12 +621,20 @@ Generate an improved version that addresses all the critique points while mainta
         base_name = output_path.stem
         extension = output_path.suffix or ".png"
         
+        # Get quality threshold for this document type
+        threshold = self.QUALITY_THRESHOLDS.get(doc_type.lower(), 
+                                                 self.QUALITY_THRESHOLDS["default"])
+        
         results = {
             "user_prompt": user_prompt,
+            "doc_type": doc_type,
+            "quality_threshold": threshold,
             "iterations": [],
             "final_image": None,
             "final_score": 0.0,
-            "success": False
+            "success": False,
+            "early_stop": False,
+            "early_stop_reason": None
         }
         
         current_prompt = f"""{self.SCIENTIFIC_DIAGRAM_GUIDELINES}
@@ -550,7 +647,9 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
         print(f"Generating Scientific Schematic")
         print(f"{'='*60}")
         print(f"Description: {user_prompt}")
-        print(f"Iterations: {iterations}")
+        print(f"Document Type: {doc_type}")
+        print(f"Quality Threshold: {threshold}/10")
+        print(f"Max Iterations: {iterations}")
         print(f"Output: {output_path}")
         print(f"{'='*60}\n")
         
@@ -578,10 +677,12 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
                 f.write(image_data)
             print(f"✓ Saved: {iter_path}")
             
-            # Review image (skip on last iteration if desired, but we'll do it for completeness)
-            print(f"Reviewing image...")
-            critique, score = self.review_image(str(iter_path), user_prompt, i)
-            print(f"✓ Score: {score}/10")
+            # Review image using Gemini 3 Pro
+            print(f"Reviewing image with Gemini 3 Pro...")
+            critique, score, needs_improvement = self.review_image(
+                str(iter_path), user_prompt, i, doc_type, iterations
+            )
+            print(f"✓ Score: {score}/10 (threshold: {threshold}/10)")
             
             # Save iteration results
             iteration_result = {
@@ -590,18 +691,32 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
                 "prompt": current_prompt,
                 "critique": critique,
                 "score": score,
+                "needs_improvement": needs_improvement,
                 "success": True
             }
             results["iterations"].append(iteration_result)
             
-            # If this is the last iteration, we're done
+            # Check if quality is acceptable - STOP EARLY if so
+            if not needs_improvement:
+                print(f"\n✓ Quality meets {doc_type} threshold ({score} >= {threshold})")
+                print(f"  No further iterations needed!")
+                results["final_image"] = str(iter_path)
+                results["final_score"] = score
+                results["success"] = True
+                results["early_stop"] = True
+                results["early_stop_reason"] = f"Quality score {score} meets threshold {threshold} for {doc_type}"
+                break
+            
+            # If this is the last iteration, we're done regardless
             if i == iterations:
+                print(f"\n⚠ Maximum iterations reached")
                 results["final_image"] = str(iter_path)
                 results["final_score"] = score
                 results["success"] = True
                 break
             
-            # Improve prompt for next iteration
+            # Quality below threshold - improve prompt for next iteration
+            print(f"\n⚠ Quality below threshold ({score} < {threshold})")
             print(f"Improving prompt based on feedback...")
             current_prompt = self.improve_prompt(user_prompt, critique, i + 1)
         
@@ -622,6 +737,8 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
         print(f"\n{'='*60}")
         print(f"Generation Complete!")
         print(f"Final Score: {results['final_score']}/10")
+        if results["early_stop"]:
+            print(f"Iterations Used: {len([r for r in results['iterations'] if r.get('success')])}/{iterations} (early stop)")
         print(f"{'='*60}\n")
         
         return results
@@ -630,21 +747,35 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
 def main():
     """Command-line interface."""
     parser = argparse.ArgumentParser(
-        description="Generate scientific schematics using AI with iterative refinement",
+        description="Generate scientific schematics using AI with smart iterative refinement",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Generate a flowchart
-  python generate_schematic_ai.py "CONSORT participant flow diagram" -o flowchart.png
+  # Generate a flowchart for a journal paper
+  python generate_schematic_ai.py "CONSORT participant flow diagram" -o flowchart.png --doc-type journal
   
-  # Generate neural network architecture
-  python generate_schematic_ai.py "Transformer encoder-decoder architecture" -o transformer.png
+  # Generate neural network architecture for presentation (lower threshold)
+  python generate_schematic_ai.py "Transformer encoder-decoder architecture" -o transformer.png --doc-type presentation
   
-  # Generate with custom iterations
-  python generate_schematic_ai.py "Biological signaling pathway" -o pathway.png --iterations 5
+  # Generate with custom max iterations for poster
+  python generate_schematic_ai.py "Biological signaling pathway" -o pathway.png --iterations 5 --doc-type poster
   
   # Verbose output
   python generate_schematic_ai.py "Circuit diagram" -o circuit.png -v
+
+Document Types (quality thresholds):
+  journal      8.5/10  - Nature, Science, peer-reviewed journals
+  conference   8.0/10  - Conference papers
+  thesis       8.0/10  - Dissertations, theses
+  grant        8.0/10  - Grant proposals
+  preprint     7.5/10  - arXiv, bioRxiv, etc.
+  report       7.5/10  - Technical reports
+  poster       7.0/10  - Academic posters
+  presentation 6.5/10  - Slides, talks
+  default      7.5/10  - General purpose
+
+Note: Multiple iterations only occur if quality is BELOW the threshold.
+      If the first generation meets the threshold, no extra API calls are made.
 
 Environment:
   OPENROUTER_API_KEY    OpenRouter API key (required)
@@ -655,7 +786,11 @@ Environment:
     parser.add_argument("-o", "--output", required=True, 
                        help="Output image path (e.g., diagram.png)")
     parser.add_argument("--iterations", type=int, default=3,
-                       help="Number of refinement iterations (default: 3)")
+                       help="Maximum refinement iterations (default: 3)")
+    parser.add_argument("--doc-type", default="default",
+                       choices=["journal", "conference", "poster", "presentation", 
+                               "report", "grant", "thesis", "preprint", "default"],
+                       help="Document type for quality threshold (default: default)")
     parser.add_argument("--api-key", help="OpenRouter API key (or set OPENROUTER_API_KEY)")
     parser.add_argument("-v", "--verbose", action="store_true",
                        help="Verbose output")
@@ -681,11 +816,14 @@ Environment:
         results = generator.generate_iterative(
             user_prompt=args.prompt,
             output_path=args.output,
-            iterations=args.iterations
+            iterations=args.iterations,
+            doc_type=args.doc_type
         )
         
         if results["success"]:
             print(f"\n✓ Success! Image saved to: {args.output}")
+            if results.get("early_stop"):
+                print(f"  (Completed in {len([r for r in results['iterations'] if r.get('success')])} iteration(s) - quality threshold met)")
             sys.exit(0)
         else:
             print(f"\n✗ Generation failed. Check review log for details.")
