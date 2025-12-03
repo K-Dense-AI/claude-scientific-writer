@@ -9,6 +9,7 @@ dependencies = [
     "claude-agent-sdk>=0.1.0",
     "python-dotenv>=1.0.0",
     "requests>=2.31.0",
+    "pdf2image>=1.16.0",
 ]
 
 # System Dependencies (must be installed separately):
@@ -24,6 +25,12 @@ dependencies = [
 # Required LaTeX packages (usually included in full distributions):
 #   - pdflatex, bibtex, latexmk
 #   - Common packages: amsmath, graphicx, hyperref, natbib, geometry
+#
+# PDF to Image Conversion (required for pdf2image):
+#   - macOS: brew install poppler
+#   - Linux: sudo apt-get install poppler-utils (Ubuntu/Debian)
+#            sudo dnf install poppler-utils (Fedora)
+#   - Windows: Download from https://github.com/osber/poppler-windows
 #
 # Optional but recommended:
 #   - Ghostscript (for PDF manipulation)
