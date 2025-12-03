@@ -677,6 +677,16 @@ drafts/
       - If issues persist after 3 iterations, note them and proceed
       - Print: `[HH:MM:SS] PDF REVIEW: Completed [N] formatting improvement iterations`
    
+   f. **Cleanup Review Images (MANDATORY after review cycle completes):**
+      - After the review cycle is finished (either no issues found OR all iterations complete):
+      - Print: `[HH:MM:SS] PDF REVIEW: Cleaning up temporary review images`
+      - Remove all generated page images:
+        ```bash
+        rm -rf review/
+        ```
+      - Print: `[HH:MM:SS] PDF REVIEW: ✓ Removed temporary review images`
+      - **Do NOT leave review images in the output directory**
+   
    **Update Progress:**
    - Update progress.md with formatting review results
    - Log all issues found and fixes applied
