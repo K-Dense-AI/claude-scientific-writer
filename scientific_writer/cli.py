@@ -59,7 +59,7 @@ async def main(track_token_usage: bool = False) -> Optional[TokenUsage]:
     # Set up Claude skills in the working directory (includes WRITER.md)
     setup_claude_skills(package_dir, cwd)
     
-    # Ensure paper_outputs folder exists in user's directory
+    # Ensure writing_outputs folder exists in user's directory
     output_folder = ensure_output_folder(cwd)
     
     # Load system instructions from .claude/WRITER.md in working directory
@@ -71,9 +71,9 @@ async def main(track_token_usage: bool = False) -> Optional[TokenUsage]:
     system_instructions += "\n\n" + f"""
 IMPORTANT - WORKING DIRECTORY:
 - Your working directory is: {cwd}
-- ALWAYS create paper_outputs folder in this directory: {cwd}/paper_outputs/
+- ALWAYS create writing_outputs folder in this directory: {cwd}/writing_outputs/
 - NEVER write to /tmp/ or any other temporary directory
-- All paper outputs MUST go to: {cwd}/paper_outputs/<timestamp>_<description>/
+- All paper outputs MUST go to: {cwd}/writing_outputs/<timestamp>_<description>/
 
 IMPORTANT - CONVERSATION CONTINUITY:
 - The user will provide context in their prompt if they want to continue working on an existing paper
@@ -117,7 +117,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
     print("\n📋 Workflow:")
     print("  1. I'll present a brief plan and immediately start execution")
     print("  2. I'll provide continuous updates during the process")
-    print("  3. All outputs saved to: paper_outputs/<timestamp_description>/")
+    print("  3. All outputs saved to: writing_outputs/<timestamp_description>/")
     print("  4. Progress tracked in real-time in progress.md")
     print(f"\n📁 Working directory: {cwd}")
     print(f"📁 Output folder: {output_folder}")
@@ -218,8 +218,8 @@ IMPORTANT - CONVERSATION CONTINUITY:
                 print("⏳ Step 1/2: Creating paper directory...\n")
                 
                 # Create directory structure first
-                directory_prompt = f"""Create a new paper directory structure in paper_outputs/ following the standard format:
-paper_outputs/YYYYMMDD_HHMMSS_<description>/
+                directory_prompt = f"""Create a new paper directory structure in writing_outputs/ following the standard format:
+writing_outputs/YYYYMMDD_HHMMSS_<description>/
 
 Create these folders:
 - drafts/
@@ -392,7 +392,7 @@ User request: {user_input}"""
             
             # Try to detect if a new paper directory was created (for cases without data files)
             if not current_paper_path and not data_files:
-                # Look for the most recently modified directory in paper_outputs
+                # Look for the most recently modified directory in writing_outputs
                 # Only update if it was modified in the last 10 seconds (indicating it was just created)
                 try:
                     paper_dirs = [d for d in output_folder.iterdir() if d.is_dir()]
@@ -441,7 +441,7 @@ def _print_help():
     print("  1. You describe what you need")
     print("  2. I present a brief plan and start execution immediately")
     print("  3. I provide continuous progress updates")
-    print("  4. All files organized in paper_outputs/ folder")
+    print("  4. All files organized in writing_outputs/ folder")
     print("\n💡 Example Requests:")
     print("  'Create a NeurIPS paper on transformer attention mechanisms'")
     print("  'Write a literature review on CRISPR gene editing'")
@@ -450,7 +450,7 @@ def _print_help():
     print("  'Create a Nature paper on climate change impacts'")
     print("  'Format 20 citations in IEEE style'")
     print("\n📁 File Organization:")
-    print("  All work saved to: paper_outputs/<timestamp>_<description>/")
+    print("  All work saved to: writing_outputs/<timestamp>_<description>/")
     print("  - drafts/ - Working versions")
     print("  - final/ - Completed documents")
     print("  - references/ - Bibliography files")

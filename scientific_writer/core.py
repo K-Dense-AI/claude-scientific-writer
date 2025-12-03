@@ -82,7 +82,7 @@ def load_system_instructions(work_dir: Path) -> str:
 
 def ensure_output_folder(cwd: Path, custom_dir: Optional[str] = None) -> Path:
     """
-    Ensure the paper_outputs folder exists.
+    Ensure the writing_outputs folder exists.
     
     Args:
         cwd: Current working directory (project root).
@@ -94,7 +94,7 @@ def ensure_output_folder(cwd: Path, custom_dir: Optional[str] = None) -> Path:
     if custom_dir:
         output_folder = Path(custom_dir).resolve()
     else:
-        output_folder = cwd / "paper_outputs"
+        output_folder = cwd / "writing_outputs"
     
     output_folder.mkdir(exist_ok=True, parents=True)
     return output_folder

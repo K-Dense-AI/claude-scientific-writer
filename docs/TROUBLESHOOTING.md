@@ -346,7 +346,7 @@ chmod u+w /path/to/claude-scientific-writer
 
 ### Problem: Cannot find existing papers
 
-1. Papers must be in the `paper_outputs/` directory
+1. Papers must be in the `writing_outputs/` directory
 2. Paper directories should follow the format: `YYYYMMDD_HHMMSS_topic_description`
 3. Use keywords from the paper topic when referencing it
 4. Try using explicit continuation keywords like "continue", "update", "the paper"

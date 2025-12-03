@@ -236,6 +236,7 @@ This skill integrates with OpenRouter (openrouter.ai) to access Perplexity's Son
   - `perplexity/sonar-pro-online` (fast lookup)
   - `perplexity/sonar-reasoning-pro-online` (deep analysis)
 - **Search Mode**: Academic/scholarly mode (prioritizes peer-reviewed sources)
+- **Search Context**: Always uses `high` search context for deeper, more comprehensive research results
 - **Context Window**: 200K+ tokens for comprehensive research
 - **Capabilities**: Academic paper search, citation generation, scholarly analysis
 - **Output**: Rich responses with citations and source links from academic databases

@@ -96,8 +96,9 @@ class ResearchLookup:
         data = {
             "model": model,
             "messages": messages,
-            "max_tokens": 4000,
+            "max_tokens": 8000,
             "temperature": 0.1,  # Low temperature for factual research
+            "search_context_size": "high",  # Always use high context for deeper research
             "provider": {
                 "order": ["Perplexity"],
                 "allow_fallbacks": False

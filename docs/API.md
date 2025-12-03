@@ -56,7 +56,7 @@ async def generate_paper(
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
 | `query` | `str` | Yes | - | The paper generation request (e.g., "Create a Nature paper on CRISPR") |
-| `output_dir` | `str` | No | `None` | Custom output directory. Defaults to `cwd/paper_outputs` |
+| `output_dir` | `str` | No | `None` | Custom output directory. Defaults to `cwd/writing_outputs` |
 | `api_key` | `str` | No | `None` | Anthropic API key. Defaults to `ANTHROPIC_API_KEY` env var |
 | `model` | `str` | No | `"claude-sonnet-4-20250514"` | Claude model to use |
 | `data_files` | `List[str]` | No | `None` | List of file paths to include in the paper |

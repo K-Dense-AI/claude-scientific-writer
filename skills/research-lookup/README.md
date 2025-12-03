@@ -49,6 +49,7 @@ The research lookup tool is automatically available in Claude Code when you:
 - **Current Information:** Focuses on recent publications (2020-2024)
 - **Complete Citations:** Provides full bibliographic information with DOIs
 - **Multiple Formats:** Supports various query types and research needs
+- **High Search Context:** Always uses high search context for deeper, more comprehensive research
 - **Cost Effective:** Typically $0.01-0.05 per research query
 
 ## Query Examples

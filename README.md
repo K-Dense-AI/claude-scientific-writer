@@ -205,7 +205,7 @@ See the [Plugin Testing Guide](#plugin-testing-local-development) below for loca
 ### CLI Usage
 1. Place figures and data in `data/` at the project root (images → `figures/`, files → `data/` automatically)
 2. Run `scientific-writer` and describe what you want
-3. Follow progress updates; outputs saved to `paper_outputs/<timestamp>_<topic>/`
+3. Follow progress updates; outputs saved to `writing_outputs/<timestamp>_<topic>/`
 
 ```bash
 # Start a new paper with figures and data

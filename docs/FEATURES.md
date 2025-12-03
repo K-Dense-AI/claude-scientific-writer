@@ -36,7 +36,7 @@ Generate publication-ready papers in LaTeX with proper IMRaD structure.
 
 **Output Structure:**
 ```
-paper_outputs/20241030_<topic>/
+writing_outputs/20241030_<topic>/
 ├── drafts/
 │   ├── v1_draft.tex
 │   ├── v1_draft.pdf

@@ -47,7 +47,7 @@ async def generate_paper(
     Args:
         query: The document generation request (e.g., "Create a Nature paper on CRISPR",
                "Generate conference slides on AI", "Create a research poster")
-        output_dir: Optional custom output directory (defaults to cwd/paper_outputs)
+        output_dir: Optional custom output directory (defaults to cwd/writing_outputs)
         api_key: Optional Anthropic API key (defaults to ANTHROPIC_API_KEY env var)
         model: Claude model to use (default: claude-sonnet-4-20250514)
         data_files: Optional list of data file paths to include
@@ -117,13 +117,13 @@ async def generate_paper(
     system_instructions += "\n\n" + f"""
 IMPORTANT - WORKING DIRECTORY:
 - Your working directory is: {work_dir}
-- ALWAYS create paper_outputs folder in this directory: {work_dir}/paper_outputs/
+- ALWAYS create writing_outputs folder in this directory: {work_dir}/writing_outputs/
 - NEVER write to /tmp/ or any other temporary directory
-- All paper outputs MUST go to: {work_dir}/paper_outputs/<timestamp>_<description>/
+- All paper outputs MUST go to: {work_dir}/writing_outputs/<timestamp>_<description>/
 
 IMPORTANT - CONVERSATION CONTINUITY:
 - This is a NEW paper request - create a new paper directory
-- Create a unique timestamped directory in the paper_outputs folder
+- Create a unique timestamped directory in the writing_outputs folder
 - Do NOT assume there's an existing paper unless explicitly told in the prompt context
 """
     
@@ -487,7 +487,7 @@ def _analyze_tool_use(tool_name: str, tool_input: Dict[str, Any], current_stage:
             return ("compilation", "Building document index")
         elif "mkdir" in command:
             # Try to extract directory purpose
-            if "paper_outputs" in command or "output" in command.lower():
+            if "writing_outputs" in command or "output" in command.lower():
                 return ("initialization", "Creating output directory")
             elif "figures" in command.lower():
                 return ("initialization", "Setting up figures directory")
