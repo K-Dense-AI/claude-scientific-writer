@@ -492,6 +492,21 @@ drafts/
    
    **CRITICAL: This step is MANDATORY after any PDF is generated.**
    
+   **System Dependency Required for PDF-to-Image Conversion:**
+   
+   The PDF review workflow uses `pdftoppm` (from poppler) to convert PDFs to images. Install it:
+   - **macOS**: `brew install poppler`
+   - **Linux (Ubuntu/Debian)**: `sudo apt-get install poppler-utils`
+   - **Linux (Fedora)**: `sudo dnf install poppler-utils`
+   - **Windows**: Download from https://github.com/osber/poppler-windows
+   
+   **If PDF-to-image conversion fails (poppler not installed):**
+   - Print: `[HH:MM:SS] PDF REVIEW: ⚠️ Cannot convert PDF to images - poppler/pdftoppm not installed`
+   - Print: `[HH:MM:SS] PDF REVIEW: Skipping visual review. Install poppler to enable: brew install poppler (macOS) or apt-get install poppler-utils (Linux)`
+   - **Skip the PDF review step entirely** and proceed with delivery
+   - Note in progress.md: "PDF visual review skipped - poppler not installed"
+   - The PDF is still valid; only the automated visual inspection is skipped
+   
    After compiling a PDF, MUST automatically perform visual formatting review:
    
    - Print: `[HH:MM:SS] PDF REVIEW: Starting automatic formatting inspection`
