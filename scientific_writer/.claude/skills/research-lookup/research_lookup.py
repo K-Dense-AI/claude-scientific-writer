@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Research Information Lookup Tool
-Uses Perplexity's Sonar Pro or Sonar Reasoning Pro models through OpenRouter.
+Uses Perplexity's Sonar Pro Search or Sonar Reasoning Pro models through OpenRouter.
 Automatically selects the appropriate model based on query complexity.
 Supports parallel research query execution for improved performance.
 """
@@ -46,7 +46,7 @@ class ResearchLookup:
             raise ValueError("OPENROUTER_API_KEY environment variable not set")
 
         self.base_url = "https://openrouter.ai/api/v1"
-        self.model_pro = "perplexity/sonar-pro"  # Fast, efficient lookup
+        self.model_pro = "perplexity/sonar-pro-search"  # Fast, efficient lookup
         self.model_reasoning = "perplexity/sonar-reasoning-pro"  # Deep analysis
         self.force_model = force_model
         self.headers = {

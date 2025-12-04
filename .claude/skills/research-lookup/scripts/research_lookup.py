@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Research Information Lookup Tool
-Uses Perplexity's Sonar Pro model through OpenRouter for academic research queries.
+Uses Perplexity's Sonar Pro Search model through OpenRouter for academic research queries.
 """
 
 import os
@@ -14,7 +14,7 @@ from urllib.parse import quote
 
 
 class ResearchLookup:
-    """Research information lookup using Perplexity Sonar Pro via OpenRouter."""
+    """Research information lookup using Perplexity Sonar Pro Search via OpenRouter."""
 
     def __init__(self):
         """Initialize the research lookup tool."""
@@ -23,7 +23,7 @@ class ResearchLookup:
             raise ValueError("OPENROUTER_API_KEY environment variable not set")
 
         self.base_url = "https://openrouter.ai/api/v1"
-        self.model = "perplexity/sonar-reasoning-pro"  # Perplexity Sonar Pro with online search
+        self.model = "perplexity/sonar-reasoning-pro"  # Perplexity Sonar Reasoning Pro with online search
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",

@@ -168,7 +168,7 @@ Publication-quality diagrams and visualizations.
 
 ### Real-Time Research Lookup
 
-Powered by Perplexity Sonar Pro via OpenRouter API.
+Powered by Perplexity Sonar Pro Search via OpenRouter API.
 
 **Features:**
 - Live internet search during paper generation

@@ -1,6 +1,6 @@
 # Research Lookup Skill
 
-This skill provides real-time research information lookup using Perplexity's Sonar Pro and Sonar Reasoning Pro models through OpenRouter.
+This skill provides real-time research information lookup using Perplexity's Sonar Pro Search and Sonar Reasoning Pro models through OpenRouter.
 
 **NEW FEATURES:**
 - 🚀 **Parallel Research Execution** - Research multiple topics simultaneously (5-10x faster)
@@ -132,7 +132,7 @@ The research lookup tool is automatically available in Claude Code when you:
 - **Current Information:** Focuses on recent publications (2020-2024)
 - **Complete Citations:** Provides full bibliographic information with DOIs
 - **Multiple Formats:** Supports various query types and research needs
-- **Intelligent Model Selection:** Automatically chooses between Sonar Pro (fast) and Sonar Reasoning Pro (deep analysis)
+- **Intelligent Model Selection:** Automatically chooses between Sonar Pro Search (fast) and Sonar Reasoning Pro (deep analysis)
 
 ### New Parallel Research Features
 - **🚀 Parallel Execution:** Research multiple topics simultaneously (5-10x faster)

@@ -268,7 +268,7 @@ SUMMARY: 6/6 queries completed successfully
       "query": "CRISPR-Cas9 clinical trials for sickle cell disease",
       "response": "...",
       "citations": [...],
-      "model": "perplexity/sonar-pro"
+      "model": "perplexity/sonar-pro-search"
     },
     ...
   ]
@@ -298,7 +298,7 @@ Round 3: Deep Dive
 
 ### 1. Start Broad, Then Narrow
 ```
-Round 1: 5 broad topics (Sonar Pro)
+Round 1: 5 broad topics (Sonar Pro Search)
   ↓ Identify gaps
 Round 2: 3 specific topics (Sonar Reasoning Pro for analysis)
 ```

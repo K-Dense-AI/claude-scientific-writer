@@ -6,7 +6,7 @@
 
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
-Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup via Perplexity Sonar Pro, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro. You have the option of using it as a claude code plugin, python package or a native CLI
+Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup via Perplexity Sonar Pro Search, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro. You have the option of using it as a claude code plugin, python package or a native CLI
 
 ## Quick Start
 
@@ -182,7 +182,7 @@ See the [Plugin Testing Guide](#plugin-testing-local-development) below for loca
 - **Scientific schematics** powered by Nano Banana Pro (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
 
 ### 🤖 AI-Powered Capabilities
-- **Real-time research lookup** using Perplexity Sonar Pro (via OpenRouter)
+- **Real-time research lookup** using Perplexity Sonar Pro Search (via OpenRouter)
 - **AI-powered diagram generation** with Nano Banana Pro - create any scientific diagram from natural language descriptions
 - **Intelligent paper detection** - automatically identifies references to existing papers
 - **Peer review feedback** with quantitative ScholarEval framework (8-dimension scoring)

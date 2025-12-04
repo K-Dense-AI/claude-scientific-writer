@@ -1,6 +1,6 @@
 ---
 name: research-lookup
-description: "Look up current research information using Perplexity's Sonar Pro or Sonar Reasoning Pro models through OpenRouter. Automatically selects the best model based on query complexity. Search academic papers, recent studies, technical documentation, and general research information with citations."
+description: "Look up current research information using Perplexity's Sonar Pro Search or Sonar Reasoning Pro models through OpenRouter. Automatically selects the best model based on query complexity. Search academic papers, recent studies, technical documentation, and general research information with citations."
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 
@@ -8,7 +8,7 @@ allowed-tools: [Read, Write, Edit, Bash]
 
 ## Overview
 
-This skill enables real-time research information lookup using Perplexity's Sonar models through OpenRouter. It intelligently selects between **Sonar Pro** (fast, efficient lookup) and **Sonar Reasoning Pro** (deep analytical reasoning) based on query complexity. The skill provides access to current academic literature, recent studies, technical documentation, and general research information with proper citations and source attribution.
+This skill enables real-time research information lookup using Perplexity's Sonar models through OpenRouter. It intelligently selects between **Sonar Pro Search** (fast, efficient lookup) and **Sonar Reasoning Pro** (deep analytical reasoning) based on query complexity. The skill provides access to current academic literature, recent studies, technical documentation, and general research information with proper citations and source attribution.
 
 ## When to Use This Skill
 
@@ -142,7 +142,7 @@ This skill features **intelligent model selection** based on query complexity:
 
 ### Model Types
 
-**1. Sonar Pro** (`perplexity/sonar-pro`)
+**1. Sonar Pro Search** (`perplexity/sonar-pro-search`)
 - **Use Case**: Straightforward information lookup
 - **Best For**: 
   - Simple fact-finding queries
@@ -188,7 +188,7 @@ The skill automatically detects query complexity using these indicators:
 
 **Example Query Classification**:
 
-✅ **Sonar Pro** (straightforward lookup):
+✅ **Sonar Pro Search** (straightforward lookup):
 - "Recent advances in CRISPR gene editing 2024"
 - "Prevalence of diabetes in US population"
 - "Western blot protocol for protein detection"
@@ -203,7 +203,7 @@ The skill automatically detects query complexity using these indicators:
 You can force a specific model using the `force_model` parameter:
 
 ```python
-# Force Sonar Pro for fast lookup
+# Force Sonar Pro Search for fast lookup
 research = ResearchLookup(force_model='pro')
 
 # Force Sonar Reasoning Pro for deep analysis
@@ -271,7 +271,7 @@ This skill integrates with OpenRouter (openrouter.ai) to access Perplexity's Son
 
 ### 1. Model Selection Strategy
 
-**For Simple Lookups (Sonar Pro)**:
+**For Simple Lookups (Sonar Pro Search)**:
 - Recent papers on a specific topic
 - Statistical data or prevalence rates
 - Standard protocols or methodologies
@@ -352,11 +352,11 @@ This skill enhances scientific writing by providing:
 
 ## Usage Examples
 
-### Example 1: Simple Literature Search (Sonar Pro)
+### Example 1: Simple Literature Search (Sonar Pro Search)
 
 **Query**: "Recent advances in transformer attention mechanisms 2024"
 
-**Model Selected**: Sonar Pro (straightforward lookup)
+**Model Selected**: Sonar Pro Search (straightforward lookup)
 
 **Response Includes**:
 - Summary of 5 key papers from 2024
@@ -379,11 +379,11 @@ This skill enhances scientific writing by providing:
 - Synthesis of evidence from multiple studies
 - Discussion of ongoing debates in the field
 
-### Example 3: Method Verification (Sonar Pro)
+### Example 3: Method Verification (Sonar Pro Search)
 
 **Query**: "Standard protocols for flow cytometry analysis"
 
-**Model Selected**: Sonar Pro (protocol lookup)
+**Model Selected**: Sonar Pro Search (protocol lookup)
 
 **Response Includes**:
 - Step-by-step protocol from recent review
@@ -406,11 +406,11 @@ This skill enhances scientific writing by providing:
 - Integration of immunology and pharmacology concepts
 - Evidence from recent research
 
-### Example 5: Statistical Data (Sonar Pro)
+### Example 5: Statistical Data (Sonar Pro Search)
 
 **Query**: "Global AI adoption in healthcare statistics 2024"
 
-**Model Selected**: Sonar Pro (data lookup)
+**Model Selected**: Sonar Pro Search (data lookup)
 
 **Response Includes**:
 - Current adoption rates by region
@@ -423,7 +423,7 @@ This skill enhances scientific writing by providing:
 
 ### Response Times
 
-**Sonar Pro**:
+**Sonar Pro Search**:
 - Typical response time: 5-15 seconds
 - Best for rapid information gathering
 - Suitable for batch queries
@@ -436,20 +436,20 @@ This skill enhances scientific writing by providing:
 ### Cost Optimization
 
 **Automatic Selection Benefits**:
-- Saves costs by using Sonar Pro for straightforward queries
+- Saves costs by using Sonar Pro Search for straightforward queries
 - Reserves Sonar Reasoning Pro for queries that truly benefit from deeper analysis
 - Optimizes the balance between cost and quality
 
 **Manual Override Use Cases**:
-- Force Sonar Pro when budget is constrained and speed is priority
+- Force Sonar Pro Search when budget is constrained and speed is priority
 - Force Sonar Reasoning Pro when working on critical research requiring maximum depth
-- Use for specific sections of papers (e.g., Pro for methods, Reasoning for discussion)
+- Use for specific sections of papers (e.g., Pro Search for methods, Reasoning for discussion)
 
 **Best Practices**:
 1. Trust the automatic selection for most use cases
-2. Review query results - if Sonar Pro doesn't provide sufficient depth, rephrase with reasoning keywords
+2. Review query results - if Sonar Pro Search doesn't provide sufficient depth, rephrase with reasoning keywords
 3. Use batch queries strategically - combine simple lookups to minimize total query count
-4. For literature reviews, start with Sonar Pro for breadth, then use Sonar Reasoning Pro for synthesis
+4. For literature reviews, start with Sonar Pro Search for breadth, then use Sonar Reasoning Pro for synthesis
 
 ## Security and Ethical Considerations
 
@@ -470,8 +470,8 @@ This skill enhances scientific writing by providing:
 
 This skill serves as a powerful research assistant with intelligent dual-model selection:
 
-- **Automatic Intelligence**: Analyzes query complexity and selects the optimal model (Sonar Pro or Sonar Reasoning Pro)
-- **Cost-Effective**: Uses faster, cheaper Sonar Pro for straightforward lookups
+- **Automatic Intelligence**: Analyzes query complexity and selects the optimal model (Sonar Pro Search or Sonar Reasoning Pro)
+- **Cost-Effective**: Uses faster, cheaper Sonar Pro Search for straightforward lookups
 - **Deep Analysis**: Automatically engages Sonar Reasoning Pro for complex comparative, analytical, and theoretical queries
 - **Flexible Control**: Manual override available when you know exactly what level of analysis you need
 - **Academic Focus**: Both models configured to prioritize peer-reviewed sources and scholarly literature

@@ -22,10 +22,10 @@ def example_automatic_selection():
     
     research = ResearchLookup()
     
-    # Simple lookup - will use Sonar Pro
+    # Simple lookup - will use Sonar Pro Search
     query1 = "Recent advances in CRISPR gene editing 2024"
     print(f"Query: {query1}")
-    print(f"Expected model: Sonar Pro (fast lookup)")
+    print(f"Expected model: Sonar Pro Search (fast lookup)")
     result1 = research.lookup(query1)
     print(f"Actual model: {result1.get('model')}")
     print()
@@ -46,11 +46,11 @@ def example_manual_override():
     print("=" * 80)
     print()
     
-    # Force Sonar Pro for budget-constrained rapid lookup
+    # Force Sonar Pro Search for budget-constrained rapid lookup
     research_pro = ResearchLookup(force_model='pro')
     query = "Explain the mechanism of CRISPR-Cas9"
     print(f"Query: {query}")
-    print(f"Forced model: Sonar Pro")
+    print(f"Forced model: Sonar Pro Search")
     result = research_pro.lookup(query)
     print(f"Model used: {result.get('model')}")
     print()
@@ -75,9 +75,9 @@ def example_batch_queries():
     
     # Mix of simple and complex queries
     queries = [
-        "Recent clinical trials for Alzheimer's disease",  # Sonar Pro
+        "Recent clinical trials for Alzheimer's disease",  # Sonar Pro Search
         "Compare deep learning vs traditional ML in drug discovery",  # Sonar Reasoning Pro
-        "Statistical power analysis methods",  # Sonar Pro
+        "Statistical power analysis methods",  # Sonar Pro Search
     ]
     
     print("Processing batch queries...")
@@ -112,7 +112,7 @@ def example_scientific_writing_workflow():
     
     for query in lit_queries:
         print(f"  - {query}")
-        # These will automatically use Sonar Pro
+        # These will automatically use Sonar Pro Search
     print()
     
     # Discussion phase - use Reasoning Pro for synthesis
@@ -162,7 +162,7 @@ def main():
     
     for query, expected in test_queries:
         complexity = research._assess_query_complexity(query)
-        model_name = "Sonar Reasoning Pro" if complexity == "reasoning" else "Sonar Pro"
+        model_name = "Sonar Reasoning Pro" if complexity == "reasoning" else "Sonar Pro Search"
         status = "✓" if complexity == expected else "✗"
         print(f"{status} '{query}'")
         print(f"  → {model_name}")
