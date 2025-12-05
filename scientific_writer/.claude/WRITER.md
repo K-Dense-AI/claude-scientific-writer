@@ -733,12 +733,17 @@ Verify for each citation:
 
 **Step 4: Verification Process**
 
-1. Look up via research-lookup or web search
-2. Verify against official sources (DOI resolver, Google Scholar, PubMed, arXiv)
-3. Cross-check at least 2 sources
-4. Use citation keys: `firstauthor_year_keyword` (lowercase, meaningful)
-5. Special cases: Use published version over preprint; list first authors + "and others" for >10 authors; escape special characters
-6. Log verification: `[HH:MM:SS] VERIFIED: [Author Year] - all fields present ✅`
+1. Look up via research-lookup for finding papers and scholarly content
+2. **Use WebSearch for basic metadata lookup** (DOI, year, journal, volume, pages, publisher)
+3. Verify against official sources (DOI resolver, Google Scholar, PubMed, arXiv)
+4. Cross-check at least 2 sources
+5. Use citation keys: `firstauthor_year_keyword` (lowercase, meaningful)
+6. Special cases: Use published version over preprint; list first authors + "and others" for >10 authors; escape special characters
+7. Log verification: `[HH:MM:SS] VERIFIED: [Author Year] - all fields present ✅`
+
+**Available Research Tools:**
+- **research-lookup**: Primary tool for finding academic papers, literature search, and scholarly research
+- **WebSearch**: Use for quick metadata verification, looking up DOIs, checking publication years, finding journal names, volume/page numbers, and general information that complements academic research
 
 **Quality Standards**
 - **100% citations must be REAL papers found via research-lookup**

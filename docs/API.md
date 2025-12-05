@@ -373,6 +373,17 @@ When `OPENROUTER_API_KEY` is set, the system gains access to real-time research 
 
 The research lookup is automatically invoked when needed - you don't need to explicitly request it.
 
+### Native Web Search
+
+In addition to research lookup, the system includes Claude's native **WebSearch** tool for:
+
+- **Current events** and general information
+- **Non-academic sources** (news, blogs, documentation)
+- **Real-time information** that may not be in academic databases
+- **Fact-checking** and verification from diverse sources
+
+Both tools work together: use research-lookup for scholarly/academic content, and WebSearch for broader web information.
+
 **Setup:**
 ```bash
 # Add to your .env file

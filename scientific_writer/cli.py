@@ -87,7 +87,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
     options = ClaudeAgentOptions(
         system_prompt=system_instructions,
         model="claude-sonnet-4-5",
-        allowed_tools=["Read", "Write", "Edit", "Bash", "research-lookup"],
+        allowed_tools=["Read", "Write", "Edit", "Bash", "WebSearch", "research-lookup"],
         permission_mode="bypassPermissions",  # Execute immediately without approval prompts
         setting_sources=["project"],  # Load skills from project .claude directory
         cwd=str(cwd),  # Set working directory to user's current directory
@@ -113,6 +113,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
     print("  • Literature reviews and citation management")
     print("  • Peer review feedback")
     print("  • Real-time research lookup using Perplexity Sonar Pro Search")
+    print("  • Native web search for current information")
     print("  • Document manipulation (docx, pdf, pptx, xlsx)")
     print("\n📋 Workflow:")
     print("  1. I'll present a brief plan and immediately start execution")
@@ -435,6 +436,7 @@ def _print_help():
     print("  • Literature reviews with citation management")
     print("  • Peer review feedback on drafts")
     print("  • Real-time research lookup using Perplexity Sonar Pro Search")
+    print("  • Native web search for current events and general information")
     print("  • Format citations in any style (APA, IEEE, Nature, etc.)")
     print("  • Document manipulation (docx, pdf, pptx, xlsx)")
     print("\n🔄 How I Work:")

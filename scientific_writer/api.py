@@ -144,7 +144,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
     options = ClaudeAgentOptions(
         system_prompt=system_instructions,
         model=model,
-        allowed_tools=["Read", "Write", "Edit", "Bash", "research-lookup"],
+        allowed_tools=["Read", "Write", "Edit", "Bash", "WebSearch", "research-lookup"],
         permission_mode="bypassPermissions",
         setting_sources=["project"],  # Load skills from project .claude directory
         cwd=str(work_dir),  # User's working directory
