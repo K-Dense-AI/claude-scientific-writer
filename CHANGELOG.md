@@ -6,6 +6,24 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.9.0] - 2025-12-05
+
+### 🚀 Release
+
+- **Version 2.9.0** - Major release with enhanced citation verification and research workflows
+  - Upgraded Sonar Pro to Sonar Pro Search for improved research lookup accuracy
+  - Enhanced citation verification process with WebSearch tool integration
+  - Improved metadata verification for academic citations
+  - Better documentation for output directory organization
+
+### 🔧 Improvements
+
+- **Citation Verification** - Enhanced process using WebSearch for metadata validation
+- **Research Lookup** - Updated to use Sonar Pro Search for more accurate results
+- **Documentation** - Updated output directory references throughout codebase
+
+---
+
 ## [2.8.9] - 2025-12-02
 
 ### 🔒 Privacy & Identity Protection
