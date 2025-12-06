@@ -1,5 +1,8 @@
 # Claude Scientific Writer
 
+[![Run in Smithery](https://smithery.ai/badge/skills/K-Dense-AI)](https://smithery.ai/skills?ns=K-Dense-AI&utm_source=github&utm_medium=badge)
+
+
 [![PyPI version](https://img.shields.io/pypi/v/scientific-writer.svg)](https://pypi.org/project/scientific-writer/)
 [![Total Downloads](https://static.pepy.tech/badge/scientific-writer)](https://pepy.tech/project/scientific-writer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
