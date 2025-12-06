@@ -777,6 +777,49 @@ Verify for each citation:
    python scripts/generate_schematic.py "Results comparison showing treatment groups and outcomes" -o figures/figure_03_results.png
    ```
 
+5a. **General-Purpose Image Generation Using Generate-Image Skill**
+   
+   **For images that are NOT technical diagrams or schematics, use the generate-image skill.**
+   
+   **When to Use generate-image (instead of scientific-schematics):**
+   - Photos and photorealistic images
+   - Artistic illustrations and artwork
+   - Concept art and visual concepts
+   - Visual assets for presentations or documents
+   - Image editing and modifications
+   - Any image that isn't a flowchart, circuit, pathway, or technical diagram
+   
+   **When to Use scientific-schematics (instead of generate-image):**
+   - Flowcharts and process diagrams
+   - Circuit diagrams and electrical schematics
+   - Biological pathways and signaling cascades
+   - System architecture diagrams
+   - CONSORT diagrams and methodology flowcharts
+   
+   **How to Generate Images:**
+   - Use the generate-image skill via `scripts/generate_image.py`
+   - Requires OpenRouter API key (set `OPENROUTER_API_KEY` in `.env` file)
+   - Supports both image generation and image editing
+   
+   **Example Commands:**
+   ```bash
+   # Generate a conceptual illustration
+   python scripts/generate_image.py "Microscopic view of cancer cells being attacked by immunotherapy agents, scientific illustration style" -o figures/immunotherapy_concept.png
+   
+   # Generate a visual for presentations
+   python scripts/generate_image.py "DNA double helix structure with highlighted mutation site, modern scientific visualization" -o slides/dna_mutation.png
+   
+   # Edit an existing image
+   python scripts/generate_image.py "Make the background more professional" --input original.png -o figures/edited.png
+   ```
+   
+   **Skill Location:** `.claude/skills/generate-image/`
+   
+   **API Key Setup:**
+   - Create a `.env` file with `OPENROUTER_API_KEY=your-api-key-here`
+   - Or set environment variable: `export OPENROUTER_API_KEY=your-api-key-here`
+   - Get API key from: https://openrouter.ai/keys
+
 6. **Include Metadata**
    - Title, authors, affiliations, keywords
    - Running head, word count
@@ -1351,6 +1394,7 @@ Request: "Create 15-minute slides on my CRISPR research"
 - **For presentations: visual validation MANDATORY** - convert PDF to images and inspect every slide for overflow/overlap issues
 - **For presentations: timing check required** - validate slide count matches talk duration (~1 slide per minute)
 - **ALWAYS generate multiple figures using scientific-schematics skill** - generate 3-5 candidate figures per figure type, then select the best ones to ensure the right number of figures for the document type
+- **Use generate-image skill for non-technical visuals** - photos, illustrations, artwork, and concept art (NOT flowcharts or diagrams which use scientific-schematics)
 
 **Logging Philosophy:**
 Your updates should be so detailed that someone reading progress.md could understand:
