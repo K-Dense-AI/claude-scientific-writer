@@ -14,7 +14,7 @@ Requirements:
 
 Usage:
     python generate_schematic_ai.py "Create a flowchart showing CONSORT participant flow" -o flowchart.png
-    python generate_schematic_ai.py "Neural network architecture diagram" -o architecture.png --iterations 3
+    python generate_schematic_ai.py "Neural network architecture diagram" -o architecture.png --iterations 2
     python generate_schematic_ai.py "Simple block diagram" -o diagram.png --doc-type poster
 """
 
@@ -419,7 +419,7 @@ LAYOUT:
     
     def review_image(self, image_path: str, original_prompt: str, 
                     iteration: int, doc_type: str = "default",
-                    max_iterations: int = 3) -> Tuple[str, float, bool]:
+                    max_iterations: int = 2) -> Tuple[str, float, bool]:
         """
         Review generated image using Gemini 3 Pro for quality analysis.
         
@@ -596,7 +596,7 @@ Generate an improved version that addresses all the critique points while mainta
         return improved_prompt
     
     def generate_iterative(self, user_prompt: str, output_path: str,
-                          iterations: int = 3, 
+                          iterations: int = 2, 
                           doc_type: str = "default") -> Dict[str, Any]:
         """
         Generate scientific schematic with smart iterative refinement.
@@ -608,7 +608,7 @@ Generate an improved version that addresses all the critique points while mainta
         Args:
             user_prompt: User's description of desired diagram
             output_path: Path to save final image
-            iterations: Maximum refinement iterations (default: 3)
+            iterations: Maximum refinement iterations (default: 2, max: 2)
             doc_type: Document type for quality threshold (journal, poster, etc.)
             
         Returns:
@@ -758,7 +758,7 @@ Examples:
   python generate_schematic_ai.py "Transformer encoder-decoder architecture" -o transformer.png --doc-type presentation
   
   # Generate with custom max iterations for poster
-  python generate_schematic_ai.py "Biological signaling pathway" -o pathway.png --iterations 5 --doc-type poster
+  python generate_schematic_ai.py "Biological signaling pathway" -o pathway.png --iterations 2 --doc-type poster
   
   # Verbose output
   python generate_schematic_ai.py "Circuit diagram" -o circuit.png -v
@@ -785,8 +785,8 @@ Environment:
     parser.add_argument("prompt", help="Description of the diagram to generate")
     parser.add_argument("-o", "--output", required=True, 
                        help="Output image path (e.g., diagram.png)")
-    parser.add_argument("--iterations", type=int, default=3,
-                       help="Maximum refinement iterations (default: 3)")
+    parser.add_argument("--iterations", type=int, default=2,
+                       help="Maximum refinement iterations (default: 2, max: 2)")
     parser.add_argument("--doc-type", default="default",
                        choices=["journal", "conference", "poster", "presentation", 
                                "report", "grant", "thesis", "preprint", "default"],
@@ -806,9 +806,9 @@ Environment:
         print("\nOr provide via --api-key flag")
         sys.exit(1)
     
-    # Validate iterations
-    if args.iterations < 1 or args.iterations > 10:
-        print("Error: Iterations must be between 1 and 10")
+    # Validate iterations - enforce max of 2
+    if args.iterations < 1 or args.iterations > 2:
+        print("Error: Iterations must be between 1 and 2")
         sys.exit(1)
     
     try:

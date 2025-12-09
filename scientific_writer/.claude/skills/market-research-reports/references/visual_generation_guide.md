@@ -1,12 +1,34 @@
 # Visual Generation Guide for Market Research Reports
 
-Complete prompts and guidance for generating all visualizations in market research reports.
+Complete prompts and guidance for generating visualizations in market research reports.
 
 ---
 
 ## Overview
 
-Market research reports require approximately **25-30 visuals** to be professionally complete. This guide provides ready-to-use prompts for the `scientific-schematics` and `generate-image` skills.
+Market research reports should start with **5-6 essential visuals** to establish the analytical framework. Additional visuals can be generated as needed when writing specific sections. This guide provides ready-to-use prompts for the `scientific-schematics` and `generate-image` skills.
+
+### Core Visuals (Generate First - Priority 1-6)
+
+Start every market report by generating these 5-6 core visuals:
+
+1. **Market Growth Trajectory Chart** - Shows market size trends
+2. **TAM/SAM/SOM Diagram** - Market opportunity breakdown
+3. **Porter's Five Forces** - Competitive dynamics framework
+4. **Competitive Positioning Matrix** - Strategic positioning
+5. **Risk Heatmap** - Risk assessment visualization
+6. **Executive Summary Infographic** (optional) - Report overview
+
+### Extended Visuals (Generate as Needed - Priority 7+)
+
+Additional visuals can be generated during writing when specific sections require visual support:
+- Regional breakdown charts
+- Segment analysis
+- Customer journey maps
+- Technology roadmaps
+- Regulatory timelines
+- Financial projections
+- Implementation timelines
 
 ### Tool Selection
 
@@ -23,22 +45,27 @@ Market research reports require approximately **25-30 visuals** to be profession
 
 ## Visual Naming Convention
 
-Use consistent file naming:
+### Core Visuals (Generate First)
 ```
 figures/
-├── 01_cover_image.png
-├── 02_exec_summary_infographic.png
-├── 03_industry_ecosystem.png
-├── 04_market_growth_trajectory.png
-├── 05_tam_sam_som.png
-├── 06_regional_breakdown.png
-├── 07_segment_growth.png
-├── 08_driver_impact_matrix.png
-├── 09_pestle_analysis.png
-├── 10_trends_timeline.png
-├── 11_porters_five_forces.png
-├── 12_market_share.png
-├── 13_competitive_positioning.png
+├── 01_market_growth_trajectory.png      # PRIORITY 1
+├── 02_tam_sam_som.png                   # PRIORITY 2
+├── 03_porters_five_forces.png           # PRIORITY 3
+├── 04_competitive_positioning.png       # PRIORITY 4
+├── 05_risk_heatmap.png                  # PRIORITY 5
+└── 06_exec_summary_infographic.png      # PRIORITY 6 (optional)
+```
+
+### Extended Visuals (Generate as Needed)
+```
+figures/
+├── 07_industry_ecosystem.png
+├── 08_regional_breakdown.png
+├── 09_segment_growth.png
+├── 10_driver_impact_matrix.png
+├── 11_pestle_analysis.png
+├── 12_trends_timeline.png
+├── 13_market_share.png
 ├── 14_strategic_groups.png
 ├── 15_customer_segments.png
 ├── 16_segment_attractiveness.png
@@ -46,21 +73,118 @@ figures/
 ├── 18_technology_roadmap.png
 ├── 19_innovation_curve.png
 ├── 20_regulatory_timeline.png
-├── 21_risk_heatmap.png
-├── 22_risk_mitigation.png
-├── 23_opportunity_matrix.png
-├── 24_recommendation_priority.png
-├── 25_implementation_timeline.png
-├── 26_milestone_tracker.png
-├── 27_financial_projections.png
-└── 28_scenario_analysis.png
+├── 21_risk_mitigation.png
+├── 22_opportunity_matrix.png
+├── 23_recommendation_priority.png
+├── 24_implementation_timeline.png
+├── 25_milestone_tracker.png
+├── 26_financial_projections.png
+└── 27_scenario_analysis.png
 ```
+
+---
+
+## CORE VISUALS (Priority 1-6) - Generate These First
+
+### Priority 1: Market Growth Trajectory Chart
+
+**Tool:** scientific-schematics
+
+**Purpose:** Foundation visual showing historical and projected market size
+
+**Command:**
+```bash
+python skills/scientific-schematics/scripts/generate_schematic.py \
+  "Bar chart market growth 2020 to 2034. Historical bars 2020-2024 in dark blue, projected bars 2025-2034 in light blue. Y-axis billions USD, X-axis years. CAGR annotation. Data labels on each bar. Vertical dashed line between 2024 and 2025. Title: Market Growth Trajectory. Professional white background" \
+  -o figures/01_market_growth_trajectory.png --doc-type report
+```
+
+---
+
+### Priority 2: TAM/SAM/SOM Diagram
+
+**Tool:** scientific-schematics
+
+**Purpose:** Market opportunity sizing visualization
+
+**Command:**
+```bash
+python skills/scientific-schematics/scripts/generate_schematic.py \
+  "TAM SAM SOM concentric circles. Outer circle TAM Total Addressable Market. Middle circle SAM Serviceable Addressable Market. Inner circle SOM Serviceable Obtainable Market. Each labeled with acronym, full name, placeholder for dollar value. Arrows pointing to each with descriptions. Blue gradient darkest outer to lightest inner. White background professional appearance" \
+  -o figures/02_tam_sam_som.png --doc-type report
+```
+
+---
+
+### Priority 3: Porter's Five Forces Diagram
+
+**Tool:** scientific-schematics
+
+**Purpose:** Competitive dynamics framework
+
+**Command:**
+```bash
+python skills/scientific-schematics/scripts/generate_schematic.py \
+  "Porter's Five Forces diagram. Center box Competitive Rivalry with rating. Four surrounding boxes with arrows to center: Top Threat of New Entrants, Left Bargaining Power Suppliers, Right Bargaining Power Buyers, Bottom Threat of Substitutes. Color code HIGH red, MEDIUM yellow, LOW green. Include 2-3 key factors per box. Professional appearance" \
+  -o figures/03_porters_five_forces.png --doc-type report
+```
+
+---
+
+### Priority 4: Competitive Positioning Matrix
+
+**Tool:** scientific-schematics
+
+**Purpose:** Strategic positioning of key market players
+
+**Command:**
+```bash
+python skills/scientific-schematics/scripts/generate_schematic.py \
+  "2x2 competitive positioning matrix. X-axis Market Focus Niche to Broad. Y-axis Solution Approach Product to Platform. Quadrants: Upper-right Platform Leaders, Upper-left Niche Platforms, Lower-right Product Leaders, Lower-left Specialists. Plot 8-10 company circles with names. Circle size = market share. Legend for sizes. Professional appearance" \
+  -o figures/04_competitive_positioning.png --doc-type report
+```
+
+---
+
+### Priority 5: Risk Heatmap
+
+**Tool:** scientific-schematics
+
+**Purpose:** Visual risk assessment matrix
+
+**Command:**
+```bash
+python skills/scientific-schematics/scripts/generate_schematic.py \
+  "Risk heatmap matrix. X-axis Impact Low Medium High Critical. Y-axis Probability Unlikely Possible Likely Very Likely. Cell colors: Green low risk, Yellow medium, Orange high, Red critical. Plot 10-12 numbered risks R1 R2 etc as labeled points. Legend with risk names. Professional clear" \
+  -o figures/05_risk_heatmap.png --doc-type report
+```
+
+---
+
+### Priority 6: Executive Summary Infographic (Optional)
+
+**Tool:** generate-image
+
+**Purpose:** High-level visual synthesis for cover or executive summary
+
+**Command:**
+```bash
+python skills/generate-image/scripts/generate_image.py \
+  "Executive summary infographic for market research, one page layout, central large metric showing market size, four quadrants showing growth rate key players top segments regional leaders, modern flat design, professional blue and green color scheme, clean white background, corporate business aesthetic" \
+  --output figures/06_exec_summary_infographic.png
+```
+
+---
+
+## EXTENDED VISUALS - Generate During Writing as Needed
+
+The following visuals can be generated when writing specific chapters that require them.
 
 ---
 
 ## Front Matter Visuals
 
-### 1. Cover Image / Hero Visual
+### Extended: Cover Image / Hero Visual
 
 **Tool:** generate-image
 
@@ -912,15 +1036,28 @@ python skills/scientific-schematics/scripts/generate_schematic.py \
 
 ## Batch Generation Script
 
-For convenience, use the `generate_market_visuals.py` script to generate all visuals at once:
+For convenience, use the `generate_market_visuals.py` script to batch generate visuals:
 
 ```bash
+# Generate core 5-6 visuals only (recommended for starting reports)
 python skills/market-research-reports/scripts/generate_market_visuals.py \
   --topic "Electric Vehicle Charging Infrastructure" \
   --output-dir figures/
+
+# Generate all 27 visuals (core + extended, for comprehensive coverage)
+python skills/market-research-reports/scripts/generate_market_visuals.py \
+  --topic "Electric Vehicle Charging Infrastructure" \
+  --output-dir figures/ \
+  --all
+
+# Skip already generated files
+python skills/market-research-reports/scripts/generate_market_visuals.py \
+  --topic "Your Market" \
+  --output-dir figures/ \
+  --skip-existing
 ```
 
-This will generate all 25-30 standard visuals with appropriate prompts customized to the market topic.
+**Default behavior**: Generates only the 5-6 core priority visuals. Use `--all` flag if you need comprehensive visual coverage for all sections.
 
 ---
 

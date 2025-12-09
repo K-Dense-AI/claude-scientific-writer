@@ -47,8 +47,8 @@ python scripts/generate_schematic.py "Transformer encoder-decoder architecture s
 # Generate for poster (moderate threshold: 7.0/10)
 python scripts/generate_schematic.py "MAPK signaling pathway from EGFR to gene transcription" -o figures/mapk_pathway.png --doc-type poster
 
-# Custom max iterations for complex diagrams
-python scripts/generate_schematic.py "Complex circuit diagram with op-amp, resistors, and capacitors" -o figures/circuit.png --iterations 5 --doc-type journal
+# Custom max iterations (max 2)
+python scripts/generate_schematic.py "Complex circuit diagram with op-amp, resistors, and capacitors" -o figures/circuit.png --iterations 2 --doc-type journal
 ```
 
 **What happens behind the scenes:**
@@ -244,7 +244,7 @@ All iterations are saved with a JSON review log that includes early-stop informa
 }
 ```
 
-**Note:** With smart iteration, you may see only 1-2 iterations instead of the full 3 if quality is achieved early!
+**Note:** With smart iteration, you may see only 1 iteration instead of the full 2 if quality is achieved early!
 
 ## Advanced AI Generation Usage
 
@@ -259,11 +259,11 @@ generator = ScientificSchematicGenerator(
     verbose=True
 )
 
-# Generate with iterative refinement
+# Generate with iterative refinement (max 2 iterations)
 results = generator.generate_iterative(
     user_prompt="Transformer architecture diagram",
     output_path="figures/transformer.png",
-    iterations=3
+    iterations=2
 )
 
 # Access results
@@ -288,8 +288,8 @@ python scripts/generate_schematic.py "diagram" -o out.png --doc-type conference 
 python scripts/generate_schematic.py "diagram" -o out.png --doc-type poster       # 7.0/10
 python scripts/generate_schematic.py "diagram" -o out.png --doc-type presentation # 6.5/10
 
-# Custom max iterations (1-10)
-python scripts/generate_schematic.py "complex diagram" -o diagram.png --iterations 5
+# Custom max iterations (1-2)
+python scripts/generate_schematic.py "complex diagram" -o diagram.png --iterations 2
 
 # Verbose output (see all API calls and reviews)
 python scripts/generate_schematic.py "flowchart" -o flow.png -v
@@ -298,7 +298,7 @@ python scripts/generate_schematic.py "flowchart" -o flow.png -v
 python scripts/generate_schematic.py "diagram" -o out.png --api-key "sk-or-v1-..."
 
 # Combine options
-python scripts/generate_schematic.py "neural network" -o nn.png --doc-type journal --iterations 5 -v
+python scripts/generate_schematic.py "neural network" -o nn.png --doc-type journal --iterations 2 -v
 ```
 
 ### Prompt Engineering Tips
@@ -366,7 +366,7 @@ python scripts/generate_schematic.py \
    Show cross-attention connection from encoder to decoder with dashed line. \
    Use light blue for encoder, light red for decoder. \
    Label all components clearly." \
-  -o figures/transformer.png --iterations 3
+  -o figures/transformer.png --iterations 2
 ```
 
 ### Example 3: Biological Pathway
@@ -408,8 +408,8 @@ The main entry point for generating scientific schematics:
 # Basic usage
 python scripts/generate_schematic.py "diagram description" -o output.png
 
-# Custom iterations for complex diagrams
-python scripts/generate_schematic.py "complex diagram" -o diagram.png --iterations 5
+# Custom iterations (max 2)
+python scripts/generate_schematic.py "complex diagram" -o diagram.png --iterations 2
 
 # Verbose mode
 python scripts/generate_schematic.py "diagram" -o out.png -v
@@ -449,7 +449,7 @@ python scripts/generate_schematic.py "diagram" -o out.png -v
 
 **Problem**: Overlapping text or elements
 - **Solution**: AI generation automatically handles spacing
-- **Solution**: Increase iterations: `--iterations 5` for better refinement
+- **Solution**: Increase iterations: `--iterations 2` for better refinement
 
 **Problem**: Elements not connecting properly
 - **Solution**: Make your prompt more specific about connections and layout
@@ -459,11 +459,11 @@ python scripts/generate_schematic.py "diagram" -o out.png -v
 
 **Problem**: Export quality poor
 - **Solution**: AI generation produces high-quality images automatically
-- **Solution**: Increase iterations for better results: `--iterations 5`
+- **Solution**: Increase iterations for better results: `--iterations 2`
 
 **Problem**: Elements overlap after generation
 - **Solution**: AI generation automatically handles spacing
-- **Solution**: Increase iterations: `--iterations 5` for better refinement
+- **Solution**: Increase iterations: `--iterations 2` for better refinement
 - **Solution**: Make your prompt more specific about layout and spacing requirements
 
 ### Quality Check Issues
@@ -474,7 +474,7 @@ python scripts/generate_schematic.py "diagram" -o out.png -v
 
 **Problem**: Generated image quality is low
 - **Solution**: AI generation produces high-quality images by default
-- **Solution**: Increase iterations for better results: `--iterations 5`
+- **Solution**: Increase iterations for better results: `--iterations 2`
 
 **Problem**: Colorblind simulation shows poor contrast
 - **Solution**: Switch to Okabe-Ito palette explicitly in code

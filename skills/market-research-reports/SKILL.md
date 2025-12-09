@@ -12,7 +12,7 @@ Market research reports are comprehensive strategic documents that analyze indus
 
 **Key Features:**
 - **Comprehensive length**: Reports are designed to be 50+ pages with no token constraints
-- **Visual-rich content**: 25-30 generated diagrams and visualizations per report
+- **Visual-rich content**: 5-6 key diagrams generated at start (more added as needed during writing)
 - **Data-driven analysis**: Deep integration with research-lookup for market data
 - **Multi-framework approach**: Porter's Five Forces, PESTLE, SWOT, BCG Matrix, TAM/SAM/SOM
 - **Professional formatting**: Consulting-firm quality typography, colors, and layout
@@ -36,9 +36,9 @@ This skill should be used when:
 
 ## Visual Enhancement Requirements
 
-**CRITICAL: Market research reports MUST include extensive visual content.**
+**CRITICAL: Market research reports should include key visual content.**
 
-Every report should generate approximately **25-30 visuals** distributed across sections. This is not optional—professional market reports are highly visual documents.
+Every report should generate **5-6 essential visuals** at the start, with additional visuals added as needed during writing. Start with the most critical visualizations to establish the report framework.
 
 ### Visual Generation Tools
 
@@ -81,24 +81,19 @@ python skills/generate-image/scripts/generate_image.py \
   --output figures/executive_summary.png
 ```
 
-### Visual Count by Section
+### Recommended Visuals by Section (Generate as Needed)
 
-| Section | Required Visuals | Types |
-|---------|------------------|-------|
-| Cover Page | 1 | Hero image/infographic |
-| Executive Summary | 1-2 | Key metrics infographic, market snapshot |
-| Market Overview | 2 | Market definition diagram, ecosystem map |
-| Market Size & Growth | 4 | Growth trajectory, TAM/SAM/SOM, regional breakdown, segment growth |
-| Industry Drivers | 3 | Trends diagram, driver analysis, PESTLE |
-| Competitive Landscape | 4 | Porter's Five Forces, positioning matrix, market share, competitor profiles |
-| Customer Segmentation | 3 | Segment breakdown, customer journey, value proposition |
-| Technology Landscape | 2 | Technology roadmap, innovation matrix |
-| Regulatory Environment | 1 | Regulatory timeline or framework |
-| Risk Analysis | 2 | Risk heatmap, mitigation matrix |
-| Strategic Recommendations | 3 | Opportunity matrix, priority framework, action roadmap |
-| Implementation Roadmap | 2 | Timeline/Gantt, milestone tracker |
-| Investment Thesis | 2 | Financial projections, scenario analysis |
-| **TOTAL** | **25-30** | |
+| Section | Priority Visuals | Optional Visuals |
+|---------|-----------------|------------------|
+| Executive Summary | Market growth chart, TAM/SAM/SOM | Executive infographic |
+| Market Size & Growth | Growth trajectory (START), TAM/SAM/SOM (START) | Regional breakdown, segment growth |
+| Competitive Landscape | Porter's Five Forces (START), Positioning matrix (START) | Market share chart, strategic groups |
+| Risk Analysis | Risk heatmap (START) | Mitigation matrix |
+| Strategic Recommendations | Opportunity matrix | Priority framework |
+| Implementation Roadmap | Timeline/Gantt | Milestone tracker |
+| Investment Thesis | Financial projections | Scenario analysis |
+
+**Start with 5-6 priority visuals** (marked as START above), then generate additional visuals as specific sections are written and require visual support.
 
 ---
 
@@ -514,15 +509,35 @@ python skills/market-research-reports/scripts/generate_market_visuals.py \
 Or generate individually:
 
 ```bash
-# Market growth trajectory
+# 1. Market growth trajectory
 python skills/scientific-schematics/scripts/generate_schematic.py \
-  "Bar chart showing market growth from 2020 to 2030, with historical bars in blue (2020-2024) and projected bars in light blue (2025-2030). Y-axis shows market size in billions USD. Include CAGR label of 15.3%" \
+  "Bar chart showing market growth from 2020 to 2034, with historical bars in dark blue (2020-2024) and projected bars in light blue (2025-2034). Y-axis shows market size in billions USD. Include CAGR annotation" \
   -o figures/01_market_growth.png --doc-type report
 
-# Competitive positioning matrix
+# 2. TAM/SAM/SOM breakdown
 python skills/scientific-schematics/scripts/generate_schematic.py \
-  "2x2 competitive positioning matrix with X-axis 'Market Focus (Niche to Broad)' and Y-axis 'Solution Approach (Product to Platform)'. Plot 8 competitors as labeled circles. Include quadrant labels: Specialists (bottom-left), Product Leaders (bottom-right), Platform Players (top-right), Niche Platforms (top-left)" \
-  -o figures/05_competitive_positioning.png --doc-type report
+  "TAM SAM SOM concentric circles diagram. Outer circle TAM Total Addressable Market, middle circle SAM Serviceable Addressable Market, inner circle SOM Serviceable Obtainable Market. Each labeled with acronym and description. Blue gradient" \
+  -o figures/02_tam_sam_som.png --doc-type report
+
+# 3. Porter's Five Forces
+python skills/scientific-schematics/scripts/generate_schematic.py \
+  "Porter's Five Forces diagram with center box 'Competitive Rivalry' connected to four surrounding boxes: Threat of New Entrants (top), Bargaining Power of Suppliers (left), Bargaining Power of Buyers (right), Threat of Substitutes (bottom). Color code by rating: High=red, Medium=yellow, Low=green" \
+  -o figures/03_porters_five_forces.png --doc-type report
+
+# 4. Competitive positioning matrix
+python skills/scientific-schematics/scripts/generate_schematic.py \
+  "2x2 competitive positioning matrix with X-axis 'Market Focus (Niche to Broad)' and Y-axis 'Solution Approach (Product to Platform)'. Plot 8-10 competitors as labeled circles of varying sizes. Include quadrant labels" \
+  -o figures/04_competitive_positioning.png --doc-type report
+
+# 5. Risk heatmap
+python skills/scientific-schematics/scripts/generate_schematic.py \
+  "Risk heatmap matrix. X-axis Impact (Low to Critical), Y-axis Probability (Unlikely to Very Likely). Color gradient: Green (low risk) to Red (critical risk). Plot 10-12 risks as labeled points" \
+  -o figures/05_risk_heatmap.png --doc-type report
+
+# 6. (Optional) Executive summary infographic
+python skills/generate-image/scripts/generate_image.py \
+  "Professional executive summary infographic for market research report, modern data visualization style, blue and green color scheme, clean minimalist design" \
+  --output figures/06_exec_summary.png
 ```
 
 ### Phase 4: Report Writing
@@ -579,7 +594,7 @@ xelatex v1_market_report.tex
 Verify the report meets quality standards:
 
 - [ ] Total page count is 50+ pages
-- [ ] All 25-30 visuals are included and render correctly
+- [ ] All essential visuals (5-6 core + any additional) are included and render correctly
 - [ ] Executive summary captures key findings
 - [ ] All data points have sources cited
 - [ ] Analysis frameworks are properly applied
@@ -801,29 +816,27 @@ Before finalizing the report, verify:
 - [ ] Appendix C: Company profiles
 - [ ] References/Bibliography
 
-### Visual Completeness
-- [ ] Cover/hero image generated
-- [ ] Executive summary infographic
+### Visual Completeness (Core 5-6)
+- [ ] Market growth trajectory chart (Priority 1)
+- [ ] TAM/SAM/SOM diagram (Priority 2)
+- [ ] Porter's Five Forces (Priority 3)
+- [ ] Competitive positioning matrix (Priority 4)
+- [ ] Risk heatmap (Priority 5)
+- [ ] Executive summary infographic (Priority 6, optional)
+
+### Additional Visuals (Generate as Needed)
 - [ ] Market ecosystem diagram
-- [ ] Market growth chart
-- [ ] TAM/SAM/SOM diagram
 - [ ] Regional breakdown chart
 - [ ] Segment growth chart
-- [ ] Industry trends diagram
-- [ ] PESTLE or driver matrix
-- [ ] Porter's Five Forces
+- [ ] Industry trends/PESTLE diagram
 - [ ] Market share chart
-- [ ] Competitive positioning matrix
-- [ ] Strategic group map
 - [ ] Customer segmentation chart
-- [ ] Value proposition/journey diagram
 - [ ] Technology roadmap
 - [ ] Regulatory timeline
-- [ ] Risk heatmap
 - [ ] Opportunity matrix
-- [ ] Priority framework
 - [ ] Implementation timeline
 - [ ] Financial projections chart
+- [ ] Other section-specific visuals
 
 ### Content Quality
 - [ ] All statistics have sources

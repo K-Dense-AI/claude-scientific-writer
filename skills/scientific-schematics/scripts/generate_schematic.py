@@ -62,7 +62,7 @@ Examples:
   python generate_schematic.py "System diagram" -o system.png --doc-type presentation
   
   # Custom max iterations
-  python generate_schematic.py "Complex pathway" -o pathway.png --iterations 5
+  python generate_schematic.py "Complex pathway" -o pathway.png --iterations 2
   
   # Verbose output
   python generate_schematic.py "Circuit diagram" -o circuit.png -v
@@ -80,8 +80,8 @@ Environment Variables:
                        choices=["journal", "conference", "poster", "presentation",
                                "report", "grant", "thesis", "preprint", "default"],
                        help="Document type for quality threshold (default: default)")
-    parser.add_argument("--iterations", type=int, default=3,
-                       help="Maximum refinement iterations (default: 3)")
+    parser.add_argument("--iterations", type=int, default=2,
+                       help="Maximum refinement iterations (default: 2, max: 2)")
     parser.add_argument("--api-key", 
                        help="OpenRouter API key (or use OPENROUTER_API_KEY env var)")
     parser.add_argument("-v", "--verbose", action="store_true",
@@ -114,8 +114,10 @@ Environment Variables:
     if args.doc_type != "default":
         cmd.extend(["--doc-type", args.doc_type])
     
-    if args.iterations != 3:
-        cmd.extend(["--iterations", str(args.iterations)])
+    # Enforce max 2 iterations
+    iterations = min(args.iterations, 2)
+    if iterations != 2:
+        cmd.extend(["--iterations", str(iterations)])
     
     if api_key:
         cmd.extend(["--api-key", api_key])

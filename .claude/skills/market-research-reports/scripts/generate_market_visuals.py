@@ -2,12 +2,21 @@
 """
 Market Research Report Visual Generator
 
-Batch generates all standard visuals for a market research report using
+Batch generates visuals for a market research report using
 scientific-schematics and generate-image skills.
 
+Default behavior: Generate 5-6 core visuals only
+Use --all flag to generate all 28 extended visuals
+
 Usage:
+    # Generate core 5-6 visuals (recommended for starting a report)
     python generate_market_visuals.py --topic "Electric Vehicle Charging" --output-dir figures/
-    python generate_market_visuals.py --topic "AI in Healthcare" --output-dir figures/ --skip-existing
+    
+    # Generate all 28 visuals (for comprehensive coverage)
+    python generate_market_visuals.py --topic "AI in Healthcare" --output-dir figures/ --all
+    
+    # Skip existing files
+    python generate_market_visuals.py --topic "Topic" --output-dir figures/ --skip-existing
 """
 
 import argparse
@@ -18,28 +27,78 @@ from pathlib import Path
 
 
 # Visual definitions with prompts
-# Each tuple: (filename, tool, prompt_template)
-VISUALS = [
-    # Front Matter
+# Each tuple: (filename, tool, prompt_template, is_core)
+# is_core=True for the 5-6 essential visuals to generate first
+
+CORE_VISUALS = [
+    # Priority 1: Market Growth Trajectory
     (
-        "01_cover_image.png",
-        "generate-image",
-        "Professional executive summary infographic for {topic} market research report, "
-        "modern data visualization style, key metrics display, blue and green corporate "
-        "color scheme, clean minimalist design with icons, high resolution publication quality"
+        "01_market_growth_trajectory.png",
+        "scientific-schematics",
+        "Bar chart {topic} market growth 2020 to 2034. Historical bars 2020-2024 in dark blue, "
+        "projected bars 2025-2034 in light blue. Y-axis billions USD, X-axis years. "
+        "CAGR annotation. Data labels on each bar. Vertical dashed line "
+        "between 2024 and 2025. Title: Market Growth Trajectory. Professional white background"
     ),
+    
+    # Priority 2: TAM/SAM/SOM
     (
-        "02_exec_summary_infographic.png",
+        "02_tam_sam_som.png",
+        "scientific-schematics",
+        "TAM SAM SOM concentric circles for {topic} market. Outer circle TAM Total Addressable "
+        "Market. Middle circle SAM Serviceable Addressable Market. Inner circle SOM Serviceable "
+        "Obtainable Market. Each labeled with acronym, full name. "
+        "Blue gradient darkest outer to lightest inner. White background professional appearance"
+    ),
+    
+    # Priority 3: Porter's Five Forces
+    (
+        "03_porters_five_forces.png",
+        "scientific-schematics",
+        "Porter's Five Forces diagram for {topic}. Center box Competitive Rivalry with rating. "
+        "Four surrounding boxes with arrows to center: Top Threat of New Entrants, "
+        "Left Bargaining Power Suppliers, Right Bargaining Power Buyers, "
+        "Bottom Threat of Substitutes. Color code HIGH red, MEDIUM yellow, LOW green. "
+        "Include 2-3 key factors per box. Professional appearance"
+    ),
+    
+    # Priority 4: Competitive Positioning Matrix
+    (
+        "04_competitive_positioning.png",
+        "scientific-schematics",
+        "2x2 competitive positioning matrix {topic}. X-axis Market Focus Niche to Broad. "
+        "Y-axis Solution Approach Product to Platform. Quadrants: Upper-right Platform Leaders, "
+        "Upper-left Niche Platforms, Lower-right Product Leaders, Lower-left Specialists. "
+        "Plot 8-10 company circles with names. Circle size = market share. "
+        "Legend for sizes. Professional appearance"
+    ),
+    
+    # Priority 5: Risk Heatmap
+    (
+        "05_risk_heatmap.png",
+        "scientific-schematics",
+        "Risk heatmap matrix {topic}. X-axis Impact Low Medium High Critical. "
+        "Y-axis Probability Unlikely Possible Likely Very Likely. "
+        "Cell colors: Green low risk, Yellow medium, Orange high, Red critical. "
+        "Plot 10-12 numbered risks R1 R2 etc as labeled points. "
+        "Legend with risk names. Professional clear"
+    ),
+    
+    # Priority 6: Executive Summary Infographic (Optional)
+    (
+        "06_exec_summary_infographic.png",
         "generate-image",
         "Executive summary infographic for {topic} market research, one page layout, "
         "central large metric showing market size, four quadrants showing growth rate "
         "key players top segments regional leaders, modern flat design, professional "
         "blue and green color scheme, clean white background, corporate business aesthetic"
     ),
-    
-    # Chapter 1: Market Overview
+]
+
+EXTENDED_VISUALS = [
+    # Industry Ecosystem
     (
-        "03_industry_ecosystem.png",
+        "07_industry_ecosystem.png",
         "scientific-schematics",
         "Industry ecosystem value chain diagram for {topic} market. Horizontal flow left "
         "to right: Suppliers box → Manufacturers box → Distributors box → End Users box. "
@@ -48,34 +107,20 @@ VISUALS = [
         "Professional blue color scheme, white background, clear labels"
     ),
     
-    # Chapter 2: Market Size & Growth
+    # Regional Breakdown
     (
-        "04_market_growth_trajectory.png",
+        "08_regional_breakdown.png",
         "scientific-schematics",
-        "Bar chart {topic} market growth 2020 to 2034. Historical bars 2020-2024 in dark blue, "
-        "projected bars 2025-2034 in light blue. Y-axis billions USD, X-axis years. "
-        "CAGR annotation 15-25% typical range. Data labels on each bar. Vertical dashed line "
-        "between 2024 and 2025. Title: Market Growth Trajectory. Professional white background"
-    ),
-    (
-        "05_tam_sam_som.png",
-        "scientific-schematics",
-        "TAM SAM SOM concentric circles for {topic} market. Outer circle TAM Total Addressable "
-        "Market. Middle circle SAM Serviceable Addressable Market. Inner circle SOM Serviceable "
-        "Obtainable Market. Each labeled with acronym, full name, placeholder for dollar value. "
-        "Arrows pointing to each with descriptions. Blue gradient darkest outer to lightest inner. "
-        "White background professional appearance"
-    ),
-    (
-        "06_regional_breakdown.png",
         "scientific-schematics",
         "Pie chart regional market breakdown for {topic}. North America 40% dark blue, "
         "Europe 28% medium blue, Asia-Pacific 22% teal, Latin America 6% light blue, "
         "Middle East Africa 4% gray blue. Show percentage for each slice. Legend on right. "
         "Title: Market Size by Region. Professional appearance"
     ),
+    
+    # Segment Growth
     (
-        "07_segment_growth.png",
+        "09_segment_growth.png",
         "scientific-schematics",
         "Horizontal bar chart {topic} segment growth comparison. Y-axis 5-6 segment names, "
         "X-axis CAGR percentage 0-30%. Bars colored green highest to blue lowest. "
@@ -83,9 +128,9 @@ VISUALS = [
         "Title: Segment Growth Rate Comparison. Include market average line"
     ),
     
-    # Chapter 3: Industry Drivers & Trends
+    # Driver Impact Matrix
     (
-        "08_driver_impact_matrix.png",
+        "10_driver_impact_matrix.png",
         "scientific-schematics",
         "2x2 matrix driver impact assessment for {topic}. X-axis Impact Low to High, "
         "Y-axis Probability Low to High. Quadrants: Upper-right CRITICAL DRIVERS red, "
@@ -93,8 +138,10 @@ VISUALS = [
         "Lower-left LOWER PRIORITY green. Plot 8 labeled driver circles at positions. "
         "Circle size indicates current impact. Professional clear labels"
     ),
+    
+    # PESTLE Analysis
     (
-        "09_pestle_analysis.png",
+        "11_pestle_analysis.png",
         "scientific-schematics",
         "PESTLE hexagonal diagram for {topic} market. Center hexagon labeled Market Analysis. "
         "Six surrounding hexagons: Political red, Economic blue, Social green, "
@@ -102,8 +149,10 @@ VISUALS = [
         "has 2-3 bullet points of key factors. Lines connecting center to each. "
         "Professional appearance clear readable text"
     ),
+    
+    # Trends Timeline
     (
-        "10_trends_timeline.png",
+        "12_trends_timeline.png",
         "scientific-schematics",
         "Horizontal timeline {topic} trends 2024 to 2030. Plot 6-8 emerging trends at "
         "different years. Each trend with icon, name, brief description. Color code: "
@@ -111,18 +160,9 @@ VISUALS = [
         "Current marker at 2024. Professional clear labels"
     ),
     
-    # Chapter 4: Competitive Landscape
+    # Market Share Chart
     (
-        "11_porters_five_forces.png",
-        "scientific-schematics",
-        "Porter's Five Forces diagram for {topic}. Center box Competitive Rivalry with rating. "
-        "Four surrounding boxes with arrows to center: Top Threat of New Entrants, "
-        "Left Bargaining Power Suppliers, Right Bargaining Power Buyers, "
-        "Bottom Threat of Substitutes. Color code HIGH red, MEDIUM yellow, LOW green. "
-        "Include 2-3 key factors per box. Professional appearance"
-    ),
-    (
-        "12_market_share.png",
+        "13_market_share.png",
         "scientific-schematics",
         "Pie chart market share {topic} top 10 companies. Company A 18% dark blue, "
         "Company B 15% medium blue, Company C 12% teal, Company D 10% light blue, "
@@ -130,15 +170,8 @@ VISUALS = [
         "Percentage labels on slices. Legend with company names. "
         "Title: Market Share by Company. Colorblind-friendly colors professional"
     ),
-    (
-        "13_competitive_positioning.png",
-        "scientific-schematics",
-        "2x2 competitive positioning matrix {topic}. X-axis Market Focus Niche to Broad. "
-        "Y-axis Solution Approach Product to Platform. Quadrants: Upper-right Platform Leaders, "
-        "Upper-left Niche Platforms, Lower-right Product Leaders, Lower-left Specialists. "
-        "Plot 8-10 company circles with names. Circle size = market share. "
-        "Legend for sizes. Professional appearance"
-    ),
+    
+    # Strategic Groups Map
     (
         "14_strategic_groups.png",
         "scientific-schematics",
@@ -149,7 +182,7 @@ VISUALS = [
         "Different colors per group. Professional clear labels"
     ),
     
-    # Chapter 5: Customer Analysis
+    # Customer Segments
     (
         "15_customer_segments.png",
         "scientific-schematics",
@@ -176,7 +209,7 @@ VISUALS = [
         "Color gradient light to dark. Professional clear labels"
     ),
     
-    # Chapter 6: Technology Landscape
+    # Technology Roadmap
     (
         "18_technology_roadmap.png",
         "scientific-schematics",
@@ -194,7 +227,7 @@ VISUALS = [
         "Plot 6-8 technologies on curve with labels. Color by category. Professional clear labels"
     ),
     
-    # Chapter 7: Regulatory Environment
+    # Regulatory Timeline
     (
         "20_regulatory_timeline.png",
         "scientific-schematics",
@@ -203,18 +236,9 @@ VISUALS = [
         "brief description. Vertical NOW line at 2024. Professional appearance clear labels"
     ),
     
-    # Chapter 8: Risk Analysis
+    # Risk Mitigation Matrix
     (
-        "21_risk_heatmap.png",
-        "scientific-schematics",
-        "Risk heatmap matrix {topic}. X-axis Impact Low Medium High Critical. "
-        "Y-axis Probability Unlikely Possible Likely Very Likely. "
-        "Cell colors: Green low risk, Yellow medium, Orange high, Red critical. "
-        "Plot 10-12 numbered risks R1 R2 etc as labeled points. "
-        "Legend with risk names. Professional clear"
-    ),
-    (
-        "22_risk_mitigation.png",
+        "21_risk_mitigation.png",
         "scientific-schematics",
         "Risk mitigation diagram {topic}. Left column risks in orange/red boxes. "
         "Right column mitigation strategies in green/blue boxes. Arrows connecting "
@@ -222,9 +246,9 @@ VISUALS = [
         "Include prevention and response. Professional clear labels"
     ),
     
-    # Chapter 9: Strategic Recommendations
+    # Opportunity Matrix
     (
-        "23_opportunity_matrix.png",
+        "22_opportunity_matrix.png",
         "scientific-schematics",
         "2x2 opportunity matrix {topic}. X-axis Market Attractiveness Low to High. "
         "Y-axis Ability to Win Low to High. Quadrants: Upper-right PURSUE AGGRESSIVELY green, "
@@ -232,8 +256,10 @@ VISUALS = [
         "Lower-left AVOID red. Plot 6-8 opportunity circles with labels. "
         "Size = opportunity value. Professional"
     ),
+    
+    # Recommendation Priority Matrix
     (
-        "24_recommendation_priority.png",
+        "23_recommendation_priority.png",
         "scientific-schematics",
         "2x2 priority matrix {topic} recommendations. X-axis Effort Low to High. "
         "Y-axis Impact Low to High. Quadrants: Upper-left QUICK WINS green Do First, "
@@ -241,17 +267,19 @@ VISUALS = [
         "Lower-right THANKLESS TASKS red Avoid. Plot 6-8 numbered recommendations. Professional"
     ),
     
-    # Chapter 10: Implementation Roadmap
+    # Implementation Timeline
     (
-        "25_implementation_timeline.png",
+        "24_implementation_timeline.png",
         "scientific-schematics",
         "Gantt chart implementation {topic} 24 months. Phase 1 Foundation months 1-6 dark blue. "
         "Phase 2 Build months 4-12 medium blue. Phase 3 Scale months 10-18 teal. "
         "Phase 4 Optimize months 16-24 light blue. Overlapping bars. "
         "Key milestones as diamonds. Month markers X-axis. Professional"
     ),
+    
+    # Milestone Tracker
     (
-        "26_milestone_tracker.png",
+        "25_milestone_tracker.png",
         "scientific-schematics",
         "Milestone tracker {topic} horizontal timeline 8-10 milestones. "
         "Each shows date, name, status: Completed green check, In Progress yellow circle, "
@@ -259,17 +287,19 @@ VISUALS = [
         "Connected timeline line. Professional"
     ),
     
-    # Chapter 11: Investment Thesis
+    # Financial Projections
     (
-        "27_financial_projections.png",
+        "26_financial_projections.png",
         "scientific-schematics",
         "Combined bar and line chart {topic} 5-year projections. Bar chart revenue "
         "primary Y-axis dollars. Line chart growth rate secondary Y-axis percent. "
         "Three scenarios: Conservative gray, Base Case blue, Optimistic green. "
         "X-axis Year 1-5. Data labels. Legend. Title Financial Projections 5-Year. Professional"
     ),
+    
+    # Scenario Analysis
     (
-        "28_scenario_analysis.png",
+        "27_scenario_analysis.png",
         "scientific-schematics",
         "Grouped bar chart {topic} scenario comparison. X-axis metrics: Revenue Y5, "
         "EBITDA Y5, Market Share, ROI. Three bars per metric: Conservative gray, "
@@ -369,7 +399,7 @@ def generate_visual(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate all visuals for a market research report"
+        description="Generate visuals for a market research report (default: 5-6 core visuals)"
     )
     parser.add_argument(
         "--topic", "-t",
@@ -380,6 +410,11 @@ def main():
         "--output-dir", "-o",
         default="figures",
         help="Output directory for generated images (default: figures)"
+    )
+    parser.add_argument(
+        "--all", "-a",
+        action="store_true",
+        help="Generate all 27 extended visuals (default: only core 5-6)"
     )
     parser.add_argument(
         "--skip-existing", "-s",
@@ -414,11 +449,19 @@ def main():
     print(f"{'='*60}")
     print(f"Topic: {args.topic}")
     print(f"Output Directory: {output_dir.absolute()}")
+    print(f"Mode: {'All Visuals (27)' if args.all else 'Core Visuals Only (5-6)'}")
     print(f"Skip Existing: {args.skip_existing}")
     print(f"{'='*60}\n")
     
+    # Select visual set based on --all flag
+    if args.all:
+        visuals_to_generate = CORE_VISUALS + EXTENDED_VISUALS
+        print("Generating ALL visuals (core + extended)\n")
+    else:
+        visuals_to_generate = CORE_VISUALS
+        print("Generating CORE visuals only (use --all for extended set)\n")
+    
     # Filter visuals if --only specified
-    visuals_to_generate = VISUALS
     if args.only:
         pattern = args.only.lower()
         visuals_to_generate = [
