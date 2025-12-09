@@ -113,6 +113,62 @@ When the user requests "hypothesis generation", "generate hypotheses", "competin
    - Step 7: Formulate testable predictions
    - Step 8: Present structured output using the colored-box template
 
+**MARKET RESEARCH REPORTS:**
+
+When the user requests "market research", "market analysis", "industry report", "competitive analysis", "market sizing", or similar:
+
+**MUST use the market-research-reports skill with its comprehensive template:**
+
+1. **Detection Keywords:**
+   - "market research" or "market analysis"
+   - "industry report" or "industry analysis"
+   - "competitive landscape" or "competitive analysis"
+   - "market sizing" or "TAM/SAM/SOM"
+   - "market report" or "market intelligence"
+   - Any request to analyze markets, industries, or competitive dynamics
+
+2. **Required Format:**
+   - **MUST use the professional LaTeX template** from market-research-reports skill
+   - Template location: `.claude/skills/market-research-reports/assets/market_report_template.tex`
+   - Style file: `.claude/skills/market-research-reports/assets/market_research.sty`
+   - Formatting guide: `.claude/skills/market-research-reports/assets/FORMATTING_GUIDE.md`
+
+3. **Key Requirements:**
+   - **Minimum 50 pages** - comprehensive reports with no token constraints
+   - **25-30 visuals** generated using scientific-schematics and generate-image skills
+   - Use professional box environments (`keyinsightbox`, `marketdatabox`, `riskbox`, `recommendationbox`)
+   - Multi-framework analysis (Porter's Five Forces, PESTLE, SWOT, TAM/SAM/SOM)
+   - Compile with **XeLaTeX**: `xelatex → bibtex → xelatex → xelatex`
+
+4. **Structure Requirements (50+ pages):**
+   - Front Matter: Cover page, TOC, Executive Summary (5 pages)
+   - Chapter 1: Market Overview & Definition (4-5 pages, 2 visuals)
+   - Chapter 2: Market Size & Growth - TAM/SAM/SOM (6-8 pages, 4 visuals)
+   - Chapter 3: Industry Drivers & Trends (5-6 pages, 3 visuals)
+   - Chapter 4: Competitive Landscape (6-8 pages, 4 visuals)
+   - Chapter 5: Customer Analysis & Segmentation (4-5 pages, 3 visuals)
+   - Chapter 6: Technology & Innovation Landscape (4-5 pages, 2 visuals)
+   - Chapter 7: Regulatory & Policy Environment (3-4 pages, 1 visual)
+   - Chapter 8: Risk Analysis (3-4 pages, 2 visuals)
+   - Chapter 9: Strategic Opportunities & Recommendations (4-5 pages, 3 visuals)
+   - Chapter 10: Implementation Roadmap (3-4 pages, 2 visuals)
+   - Chapter 11: Investment Thesis & Financial Projections (3-4 pages, 2 visuals)
+   - Back Matter: Methodology, Data Tables, Company Profiles (5 pages)
+
+5. **Print Detection Message:**
+   ```
+   [HH:MM:SS] DETECTED: Market research report requested
+   [HH:MM:SS] FORMAT: Using professional LaTeX template (market_report_template.tex)
+   [HH:MM:SS] COMPILER: XeLaTeX required for proper rendering
+   [HH:MM:SS] STRUCTURE: 50+ page report with 25-30 visuals
+   ```
+
+6. **Visual Generation Workflow:**
+   - Generate ALL visuals BEFORE writing the report
+   - Use scientific-schematics for charts, diagrams, matrices
+   - Use generate-image for infographics and conceptual illustrations
+   - Run batch generation: `python skills/market-research-reports/scripts/generate_market_visuals.py --topic "[MARKET]" --output-dir figures/`
+
 **OTHER SPECIAL DOCUMENT TYPES:**
 
 - **Treatment Plans**: Use treatment-plans skill with professional medical formatting

@@ -169,7 +169,8 @@ When installed as a plugin, you get instant access to:
 - `scientific-slides` - Research presentations
 - `latex-posters` - Conference poster generation
 - `hypothesis-generation` - Scientific hypothesis development
-- And 11+ more specialized skills...
+- `market-research-reports` - Comprehensive 50+ page market analysis reports with visuals
+- And 10+ more specialized skills...
 
 See the [Plugin Testing Guide](#plugin-testing-local-development) below for local development instructions.
 
@@ -460,7 +461,7 @@ claude-scientific-writer/
 │   └── plugin.json          # Plugin metadata
 ├── commands/
 │   └── scientific-writer-init.md  # /scientific-writer:init command
-├── skills/                  # All 19 skills
+├── skills/                  # All 20 skills
 │   ├── citation-management/
 │   ├── clinical-decision-support/
 │   ├── clinical-reports/
@@ -468,6 +469,7 @@ claude-scientific-writer/
 │   ├── hypothesis-generation/
 │   ├── latex-posters/
 │   ├── literature-review/
+│   ├── market-research-reports/
 │   ├── markitdown/
 │   ├── paper-2-web/
 │   ├── peer-review/

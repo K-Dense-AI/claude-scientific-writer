@@ -570,6 +570,79 @@ Claude will check if slide count is appropriate and provide timing recommendatio
 
 ---
 
+### 11. Market Research Reports
+**Location**: `.claude/skills/market-research-reports/`
+
+**Capabilities**:
+- Generate comprehensive market research reports (50+ pages) in consulting-firm style
+- Professional LaTeX formatting with custom `market_research.sty` style package
+- Extensive visual generation (25-30 diagrams per report) using scientific-schematics
+- Multi-framework strategic analysis (Porter's Five Forces, PESTLE, SWOT, BCG Matrix)
+- TAM/SAM/SOM market sizing with data-driven projections
+- Competitive landscape analysis with positioning matrices
+- Risk assessment with heatmaps and mitigation frameworks
+- Strategic recommendations with implementation roadmaps
+- Investment thesis development with financial projections
+
+**References**:
+- `report_structure_guide.md`: Detailed section-by-section content requirements for all 11 chapters
+- `visual_generation_guide.md`: Complete prompts for generating all 28 standard report visuals
+- `data_analysis_patterns.md`: Templates for Porter's, PESTLE, SWOT, BCG Matrix, TAM/SAM/SOM
+
+**Scripts**:
+- `generate_market_visuals.py`: Batch generate all standard market report visuals with a single command
+
+**Assets**:
+- `market_research.sty`: LaTeX style package with professional colors, box environments, and formatting
+- `market_report_template.tex`: Complete 50+ page LaTeX template with all chapters pre-structured
+- `FORMATTING_GUIDE.md`: Quick reference for box environments, colors, tables, and styling
+
+**Features**:
+- **Comprehensive Length**: Reports designed for 50+ pages with no token constraints
+- **Visual Density**: 25-30 generated images/diagrams (approximately 1 per 2 pages)
+- **Data-Driven**: Deep integration with research-lookup for market data and statistics
+- **Multi-Framework**: Porter's Five Forces, PESTLE, SWOT, BCG Matrix, Value Chain Analysis
+- **Professional Formatting**: Consulting-firm quality typography, colors, and layout
+- **Actionable Recommendations**: Strategic focus with prioritization matrices and implementation roadmaps
+
+**Report Structure (50+ Pages)**:
+- Front Matter: Cover page, TOC, Executive Summary (5 pages)
+- Core Analysis: Market Overview, Market Size & Growth, Industry Drivers, Competitive Landscape, Customer Analysis, Technology Landscape, Regulatory Environment, Risk Analysis (35 pages)
+- Strategic Recommendations: Opportunities, Implementation Roadmap, Investment Thesis (10 pages)
+- Back Matter: Methodology, Data Tables, Company Profiles, References (5 pages)
+
+**When to Use**:
+- Creating comprehensive market analysis for investment decisions
+- Developing industry reports for strategic planning
+- Analyzing competitive landscapes and market dynamics
+- Conducting market sizing exercises (TAM/SAM/SOM)
+- Evaluating market entry opportunities
+- Preparing due diligence materials for M&A activities
+- Creating thought leadership content
+- Developing go-to-market strategy documentation
+
+**Example Usage**:
+
+### Generate Market Research Report
+```
+> Create a comprehensive market research report on the Electric Vehicle Charging Infrastructure market
+```
+Claude will use the market-research-reports skill to create a 50+ page professional report with extensive visuals.
+
+### Market Sizing Analysis
+```
+> Analyze the AI in Healthcare market with TAM/SAM/SOM breakdown and 10-year projections
+```
+Claude will provide comprehensive market sizing with growth trajectory charts and regional breakdowns.
+
+### Competitive Landscape Report
+```
+> Create a competitive landscape analysis for the Cloud Computing market including Porter's Five Forces and positioning matrix
+```
+Claude will generate competitive analysis with strategic frameworks and visualizations.
+
+---
+
 ## Document Manipulation Skills
 
 ### 12. MarkItDown - Universal File to Markdown Converter
