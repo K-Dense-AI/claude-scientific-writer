@@ -3,7 +3,7 @@
 import asyncio
 import time
 from pathlib import Path
-from typing import Optional, List, Dict, Any, AsyncGenerator, Union
+from typing import Optional, List, Dict, Any, AsyncGenerator, Union, Literal
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -27,12 +27,20 @@ from .utils import (
     extract_title_from_tex,
 )
 
+# Model mapping for effort levels
+EFFORT_LEVEL_MODELS = {
+    "low": "claude-haiku-4-5",
+    "medium": "claude-sonnet-4-5",
+    "high": "claude-opus-4-5",
+}
+
 
 async def generate_paper(
     query: str,
     output_dir: Optional[str] = None,
     api_key: Optional[str] = None,
-    model: str = "claude-sonnet-4-20250514",
+    model: str = "claude-sonnet-4-5",
+    effort_level: Optional[Literal["low", "medium", "high"]] = None,
     data_files: Optional[List[str]] = None,
     cwd: Optional[str] = None,
     track_token_usage: bool = False,
@@ -49,7 +57,12 @@ async def generate_paper(
                "Generate conference slides on AI", "Create a research poster")
         output_dir: Optional custom output directory (defaults to cwd/writing_outputs)
         api_key: Optional Anthropic API key (defaults to ANTHROPIC_API_KEY env var)
-        model: Claude model to use (default: claude-sonnet-4-20250514)
+        model: Claude model to use (default: claude-sonnet-4-5). Overridden by effort_level if provided.
+        effort_level: Optional effort level that determines the model to use:
+            - "low": Uses Claude Haiku 4.5 (fastest, most economical)
+            - "medium": Uses Claude Sonnet 4.5 (balanced)
+            - "high": Uses Claude Opus 4.5 (most capable)
+            If provided, this overrides the model parameter.
         data_files: Optional list of data file paths to include
         cwd: Optional working directory (defaults to package parent directory)
         track_token_usage: If True, track and return token usage in the final result
@@ -75,6 +88,10 @@ async def generate_paper(
     """
     # Initialize
     start_time = time.time()
+    
+    # Resolve model from effort_level if provided
+    if effort_level:
+        model = EFFORT_LEVEL_MODELS.get(effort_level, model)
     
     # Explicitly load .env file from working directory
     # Determine working directory first
