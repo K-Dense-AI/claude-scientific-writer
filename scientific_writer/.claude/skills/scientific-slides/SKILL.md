@@ -100,7 +100,23 @@ To ensure unified formatting across all slides in a presentation:
    - For multiple citations, list them all in the prompt
    - Citations should appear in small text at the bottom of the slide or near relevant content
 
-**Example with formatting consistency and citations:**
+5. **Attach existing figures/data for results slides** (CRITICAL for data-driven presentations):
+   - When creating slides about results, ALWAYS check for existing figures in:
+     - The working directory (e.g., `figures/`, `results/`, `plots/`, `images/`)
+     - User-provided input files or directories
+     - Any data visualizations, charts, or graphs relevant to the presentation
+   - Use `--attach` to include these figures so Nano Banana Pro can incorporate them:
+     - Attach the actual data figure/chart for results slides
+     - Attach relevant diagrams for methodology slides
+     - Attach logos or institutional images for title slides
+   - When attaching data figures, describe what you want in the prompt:
+     - "Create a slide presenting the attached results chart with key findings highlighted"
+     - "Build a slide around this attached figure, add title and bullet points explaining the data"
+     - "Incorporate the attached graph into a results slide with interpretation"
+   - **Before generating results slides**: List files in the working directory to find relevant figures
+   - Multiple figures can be attached: `--attach fig1.png --attach fig2.png`
+
+**Example with formatting consistency, citations, and figure attachments:**
 
 ```bash
 # Title slide (first slide - establishes the style)
@@ -112,9 +128,22 @@ python scripts/generate_slide_image.py "Presentation slide titled 'Why Machine L
 # Background slide with multiple citations
 python scripts/generate_slide_image.py "Presentation slide titled 'Deep Learning Revolution'. Key milestones: ImageNet breakthrough (2012), transformer architecture (2017), GPT models (2018-present). CITATIONS: Show references at bottom: (Krizhevsky et al., 2012; Vaswani et al., 2017; Brown et al., 2020). FORMATTING GOAL: Match attached slide style exactly - same colors, fonts, minimal design." -o slides/03_background.png --attach slides/02_intro.png
 
-# Diagram slide (attach previous slide for consistency)
-python scripts/generate_slide_image.py "Presentation slide titled 'The Three Types of Learning'. Shows three simple boxes side by side: Supervised Learning, Unsupervised Learning, Reinforcement Learning. Brief description under each. FORMATTING GOAL: Match attached slide style exactly - same colors, fonts, minimal design." -o slides/04_types.png --attach slides/03_background.png
+# RESULTS SLIDE - Attach actual data figure from working directory
+# First, check what figures exist: ls figures/ or ls results/
+python scripts/generate_slide_image.py "Presentation slide titled 'Model Performance Results'. Create a slide presenting the attached accuracy chart. Key findings to highlight: 1) 95% accuracy achieved, 2) Outperforms baseline by 12%, 3) Consistent across test sets. CITATIONS: Include at bottom: (Our results, 2025). FORMATTING GOAL: Match attached slide style exactly." -o slides/04_results.png --attach slides/03_background.png --attach figures/accuracy_chart.png
+
+# RESULTS SLIDE - Multiple figures comparison
+python scripts/generate_slide_image.py "Presentation slide titled 'Before vs After Comparison'. Build a side-by-side comparison slide using the two attached figures. Left: baseline results, Right: our improved results. Add brief labels explaining the improvement. FORMATTING GOAL: Match attached slide style exactly." -o slides/05_comparison.png --attach slides/04_results.png --attach figures/baseline.png --attach figures/improved.png
+
+# METHODOLOGY SLIDE - Attach existing diagram
+python scripts/generate_slide_image.py "Presentation slide titled 'System Architecture'. Present the attached architecture diagram with brief explanatory bullet points: 1) Input processing, 2) Model inference, 3) Output generation. FORMATTING GOAL: Match attached slide style exactly." -o slides/06_architecture.png --attach slides/05_comparison.png --attach diagrams/system_architecture.png
 ```
+
+**IMPORTANT: Before creating results slides, always:**
+1. List files in working directory: `ls -la figures/` or `ls -la results/`
+2. Check user-provided directories for relevant figures
+3. Attach ALL relevant figures that should appear on the slide
+4. Describe how Nano Banana Pro should incorporate the attached figures
 
 **Prompt Template:**
 
