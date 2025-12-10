@@ -18,6 +18,9 @@ Market research reports are comprehensive strategic documents that analyze indus
 - **Professional formatting**: Consulting-firm quality typography, colors, and layout
 - **Actionable recommendations**: Strategic focus with implementation roadmaps
 
+**CRITICAL - AUTONOMOUS COMPLETION:**
+When generating market research reports, you MUST complete the ENTIRE report from start to finish without stopping or asking for permission to continue. Your context window will be automatically compacted as needed, allowing indefinite continuation. Write all sections fully (50+ pages total) without abbreviation. Never stop mid-task to ask "Would you like me to continue?" - this is a professional deliverable that must be completed in full.
+
 **Output Format:** LaTeX with professional styling, compiled to PDF. Uses the `market_research.sty` style package for consistent, professional formatting.
 
 ## When to Use This Skill
