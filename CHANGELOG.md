@@ -6,6 +6,44 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.9.5] - 2025-12-10
+
+### 🎨 Scientific Slides Skill Enhancements
+
+- **Professional Minimalism** - Enhanced Nano Banana Pro system prompts for cleaner slides
+  - Minimal extra elements - no decorative borders, shadows, or flourishes
+  - Generic, simple images - avoid overly specific or detailed imagery
+  - Professional, corporate/academic aesthetic with restraint
+  - Default author set to "K-Dense" for all presentations
+
+- **Formatting Consistency Protocol** - New workflow for unified slide design
+  - Define a Formatting Goal (color scheme, typography, visual style) in EVERY prompt
+  - Always attach the previous slide using `--attach` for visual continuity
+  - Include citations directly in prompts (e.g., `CITATIONS: Include at bottom: (Author et al., Year)`)
+  - Attach existing figures/data for results slides from working directory
+
+- **Results Slide Integration** - New guidelines for data-driven presentations
+  - Check for existing figures in `figures/`, `results/`, `plots/`, `images/` directories
+  - Attach actual data figures to Nano Banana Pro using `--attach`
+  - Multiple figures support: `--attach fig1.png --attach fig2.png`
+  - Describe how to incorporate attached figures in the prompt
+
+- **Clean Output** - Only one image file saved per slide
+  - Intermediate iterations saved to temp files and cleaned up
+  - No `_v1`, `_v2`, or `_review_log.json` files left behind
+  - Final image saved directly to specified output path
+
+### 🔧 Technical Changes
+
+- `generate_slide_image_ai.py`: Updated FULL_SLIDE_GUIDELINES with professional minimalism
+- `generate_slide_image_ai.py`: Updated VISUAL_ONLY_GUIDELINES with generic imagery preference
+- `generate_slide_image_ai.py`: Refactored to use temp files and only save final output
+- `SKILL.md`: Added Formatting Consistency Protocol with 5-point checklist
+- `SKILL.md`: Added examples with figure attachments for results slides
+- `SKILL.md`: Updated Quick Start Guide with new workflow
+
+---
+
 ## [2.9.0] - 2025-12-05
 
 ### 🚀 Release
