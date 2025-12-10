@@ -19,7 +19,7 @@ This MarkItDown skill has been configured to use **OpenRouter** instead of direc
 | Model | Provider | Use Case | Vision Support |
 |-------|----------|----------|----------------|
 | `anthropic/claude-sonnet-4.5` | Anthropic | **Recommended** - Best overall for scientific analysis | ✅ |
-| `anthropic/claude-3.5-sonnet` | Anthropic | Excellent technical analysis | ✅ |
+| `anthropic/claude-opus-4.5` | Anthropic | Excellent technical analysis | ✅ |
 | `openai/gpt-4o` | OpenAI | Strong vision understanding | ✅ |
 | `openai/gpt-4-vision` | OpenAI | GPT-4 with vision | ✅ |
 | `google/gemini-pro-vision` | Google | Cost-effective option | ✅ |
@@ -82,7 +82,7 @@ All skill scripts have been updated to use OpenRouter:
 # Set API key
 export OPENROUTER_API_KEY="sk-or-v1-..."
 
-# Convert with default model (Claude Sonnet 4.5)
+# Convert with default model (advanced vision model)
 python scripts/convert_with_ai.py paper.pdf output.md --prompt-type scientific
 
 # Use GPT-4o as alternative
@@ -102,22 +102,22 @@ python scripts/convert_with_ai.py --list-prompts
 ### Choosing the Right Model
 
 ```bash
-# For scientific papers - use Claude Sonnet 4.5 for technical analysis
+# For scientific papers - use advanced vision model for technical analysis
 python scripts/convert_with_ai.py research.pdf output.md \
   --model anthropic/claude-sonnet-4.5 \
   --prompt-type scientific
 
-# For presentations - use Claude Sonnet 4.5 for vision
+# For presentations - use advanced vision model
 python scripts/convert_with_ai.py slides.pptx output.md \
   --model anthropic/claude-sonnet-4.5 \
   --prompt-type presentation
 
-# For data visualizations - use Claude Sonnet 4.5
+# For data visualizations - use advanced vision model
 python scripts/convert_with_ai.py charts.pdf output.md \
   --model anthropic/claude-sonnet-4.5 \
   --prompt-type data_viz
 
-# For medical images - use Claude Sonnet 4.5 for detailed analysis
+# For medical images - use advanced vision model for detailed analysis
 python scripts/convert_with_ai.py xray.jpg output.md \
   --model anthropic/claude-sonnet-4.5 \
   --prompt-type medical
@@ -138,7 +138,7 @@ client = OpenAI(
     base_url="https://openrouter.ai/api/v1"
 )
 
-# Use Claude Sonnet 4.5 for image descriptions
+# Use advanced vision model for image descriptions
 md = MarkItDown(
     llm_client=client,
     llm_model="anthropic/claude-sonnet-4.5"
@@ -163,21 +163,21 @@ client = OpenAI(
 # Use different models for different file types
 def convert_with_best_model(filepath):
     if filepath.endswith('.pdf'):
-        # Use Claude Sonnet 4.5 for technical PDFs
+        # Use advanced vision model for technical PDFs
         md = MarkItDown(
             llm_client=client,
             llm_model="anthropic/claude-sonnet-4.5",
             llm_prompt="Describe scientific figures with technical precision"
         )
     elif filepath.endswith('.pptx'):
-        # Use Claude Sonnet 4.5 for presentations
+        # Use advanced vision model for presentations
         md = MarkItDown(
             llm_client=client,
             llm_model="anthropic/claude-sonnet-4.5",
             llm_prompt="Describe slide content and visual elements"
         )
     else:
-        # Use Claude Sonnet 4.5 as default
+        # Use advanced vision model as default
         md = MarkItDown(
             llm_client=client,
             llm_model="anthropic/claude-sonnet-4.5"
@@ -200,7 +200,7 @@ client = OpenAI(
     base_url="https://openrouter.ai/api/v1"
 )
 
-# Scientific analysis with Claude Sonnet 4.5
+# Scientific analysis with advanced vision model
 scientific_prompt = """
 Analyze this scientific figure. Provide:
 1. Type of visualization and methodology
@@ -216,7 +216,7 @@ md_scientific = MarkItDown(
     llm_prompt=scientific_prompt
 )
 
-# Visual analysis with Claude Sonnet 4.5
+# Visual analysis with advanced vision model
 visual_prompt = """
 Describe this image comprehensively:
 1. Main visual elements and composition
@@ -268,7 +268,7 @@ md_visual = MarkItDown(
 OpenRouter pricing varies by model. Check current rates at https://openrouter.ai/models
 
 **Tips for Cost Optimization:**
-1. Use Claude Sonnet 4.5 for best quality on complex scientific content
+1. Use advanced vision models for best quality on complex scientific content
 2. Use cheaper models (Gemini) for simple images
 3. Batch process similar content with the same model
 4. Use appropriate prompts to get better results in fewer retries
@@ -330,7 +330,7 @@ export OPENROUTER_API_KEY="sk-or-v1-your-key-here"
 python scripts/convert_with_ai.py \
   research_paper.pdf \
   output.md \
-  --model anthropic/claude-3.5-sonnet \
+  --model anthropic/claude-opus-4.5 \
   --prompt-type scientific
 
 # 3. Convert presentation with GPT-4o

@@ -595,41 +595,33 @@ drafts/
    - ❌ NEVER read PDF text for presentations - it will FAIL with buffer overflow
    - ❌ NEVER use "alternative approach" that involves reading PDF directly
    
-   **For ALL Documents (Papers, Reports, Articles, and Everything Else):**
+   **For Regular Documents (Papers, Reports, Articles):**
    
-   **CRITICAL: NEVER read PDF files directly. ALWAYS convert to images first.**
+   - **Size Check First (CRITICAL for Large PDFs):**
+   - Before reading the PDF, check its size using file system tools
+   - If the PDF text representation would be >40,000 lines or >800KB:
+     * Print: `[HH:MM:SS] PDF REVIEW: ⚠️ Large PDF detected - using chunked review mode`
+     * Skip full PDF reading to avoid buffer overflow errors
+     * Instead, perform **chunked review** (review whole PDF in parts):
+       1. Check LaTeX .log file for errors, warnings, overfull/underfull boxes
+       2. Determine total page count from PDF
+       3. Divide PDF into chunks of 10-15 pages each
+       4. For each chunk:
+          - Read that chunk of pages using offset/limit parameters
+          - Print: `[HH:MM:SS] PDF REVIEW: Analyzing chunk [N/M] (pages X-Y)`
+          - Check for formatting issues in that section
+          - Document any issues found with page numbers
+       5. After all chunks reviewed, aggregate findings
+       6. Print: `[HH:MM:SS] PDF REVIEW: Completed chunked review - [N] total issues found`
+       7. If issues found, apply fixes to LaTeX source
+       8. Recompile once if fixes applied (no iterative recompilation for large PDFs)
+     * Log in progress.md: "Large PDF - reviewed in chunks to avoid buffer overflow"
    
-   PDFs cannot be properly interpreted by reading the binary file directly. You MUST convert
-   the PDF to images and then read the images for visual inspection.
-   
-   **MANDATORY Image Conversion Workflow (No Exceptions):**
-   
-   1. **FIRST**: Print: `[HH:MM:SS] PDF REVIEW: Converting PDF to images for visual inspection`
-   2. **SECOND**: Create review directory if not exists: `mkdir -p review/`
-   3. **THIRD**: Convert ALL PDF pages to images using pdftoppm:
-      ```bash
-      pdftoppm -jpeg -r 150 document.pdf review/page
-      # Creates: review/page-1.jpg, review/page-2.jpg, etc.
-      ```
-   4. **FOURTH**: Print: `[HH:MM:SS] PDF REVIEW: Converted [N] pages to images in review/ directory`
-   5. **FIFTH**: Count number of page images created
-   6. **SIXTH**: Read and inspect EACH page image file sequentially (page-1.jpg, page-2.jpg, etc.):
-      - Print: `[HH:MM:SS] PDF REVIEW: Inspecting page [N]/[TOTAL]`
-      - Check for: text overflow, element overlap, figure placement, margins, spacing
-      - Document any problems with specific page numbers
-   7. **SEVENTH**: After all page images reviewed:
-      - Print: `[HH:MM:SS] PDF REVIEW: Completed image-based review - [N] total issues found`
-      - List specific issues with page numbers
-   8. **EIGHTH**: If issues found, apply fixes to source (.tex), recompile, and re-review
-   
-   **Log in progress.md:** "PDF reviewed via page images (mandatory image-based workflow)"
-   
-   **What NEVER to do with ANY PDF:**
-   - ❌ NEVER use read_file tool on PDF files
-   - ❌ NEVER attempt to read PDF content directly
-   - ❌ NEVER skip the image conversion step
-   - ❌ NEVER assume a PDF is "small enough" to read directly
-   - ❌ NEVER use chunked reading of PDF binary content
+   - If PDF is normal size (<40,000 lines):
+     * Proceed with full automatic review as described below
+     * **Read the entire PDF file** using the Read tool
+     * **Visually inspect all pages** for formatting issues
+     * Print: `[HH:MM:SS] PDF REVIEW: Analyzing [N] pages for formatting issues`
    
    **Focus Areas (Check Every PDF):**
    1. **Text Overlaps**: Text overlapping with figures, tables, equations, or margins
@@ -646,7 +638,7 @@ drafts/
    **Review Process:**
    
    a. **Initial Review:**
-      - Read all page images sequentially
+      - Read the PDF completely
       - Document ALL formatting issues found (be thorough)
       - For each issue, note: page number, location, specific problem
    
@@ -676,16 +668,6 @@ drafts/
       - Maximum 3 formatting review iterations
       - If issues persist after 3 iterations, note them and proceed
       - Print: `[HH:MM:SS] PDF REVIEW: Completed [N] formatting improvement iterations`
-   
-   f. **Cleanup Review Images (MANDATORY after review cycle completes):**
-      - After the review cycle is finished (either no issues found OR all iterations complete):
-      - Print: `[HH:MM:SS] PDF REVIEW: Cleaning up temporary review images`
-      - Remove all generated page images:
-        ```bash
-        rm -rf review/
-        ```
-      - Print: `[HH:MM:SS] PDF REVIEW: ✓ Removed temporary review images`
-      - **Do NOT leave review images in the output directory**
    
    **Update Progress:**
    - Update progress.md with formatting review results

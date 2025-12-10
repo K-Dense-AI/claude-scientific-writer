@@ -24,7 +24,7 @@ python scripts/generate_schematic.py "MAPK signaling pathway" -o figures/pathway
 
 ### What You Get
 
-- **Three iterations** (v1, v2, v3) with progressive refinement
+- **Up to two iterations** (v1, v2) with progressive refinement
 - **Automatic quality review** after each iteration
 - **Detailed review log** with scores and critiques (JSON format)
 - **Publication-ready images** following scientific standards
@@ -99,7 +99,7 @@ python scripts/generate_schematic.py \
    decoder on right (masked attention, cross-attention, feed-forward). \
    Show cross-attention connection from encoder to decoder." \
   -o figures/transformer.png \
-  --iterations 3
+  --iterations 2
 ```
 
 ### Example 3: Biological Pathway
@@ -127,7 +127,7 @@ python scripts/generate_schematic.py \
 python scripts/generate_schematic.py [OPTIONS] "description" -o output.png
 
 Options:
-  --iterations N          Number of AI refinement iterations (default: 3)
+  --iterations N          Number of AI refinement iterations (default: 2, max: 2)
   --api-key KEY          OpenRouter API key (or use env var)
   -v, --verbose          Verbose output
   -h, --help             Show help message
@@ -148,7 +148,7 @@ generator = ScientificSchematicGenerator(
 results = generator.generate_iterative(
     user_prompt="CONSORT flowchart",
     output_path="figures/consort.png",
-    iterations=3
+    iterations=2
 )
 
 # Access results
@@ -276,7 +276,7 @@ If iterations consistently score below 7/10:
 1. Make your prompt more specific
 2. Include more details about layout and labels
 3. Specify visual requirements explicitly
-4. Increase iterations: `--iterations 5`
+4. Increase iterations: `--iterations 2`
 
 ## Testing
 
@@ -300,8 +300,8 @@ OpenRouter pricing for models used:
 - **Nano Banana Pro**: ~$2/M input tokens, ~$12/M output tokens
 
 Typical costs per diagram:
-- Simple diagram (3 iterations): ~$0.10-0.30
-- Complex diagram (5 iterations): ~$0.30-0.50
+- Simple diagram (1 iteration): ~$0.05-0.15
+- Complex diagram (2 iterations): ~$0.10-0.30
 
 ## Examples Gallery
 

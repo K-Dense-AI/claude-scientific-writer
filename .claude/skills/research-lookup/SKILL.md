@@ -215,7 +215,7 @@ research = ResearchLookup()
 
 Command-line usage:
 ```bash
-# Force Sonar Pro
+# Force Sonar Pro Search
 python research_lookup.py "your query" --force-model pro
 
 # Force Sonar Reasoning Pro
@@ -233,9 +233,10 @@ This skill integrates with OpenRouter (openrouter.ai) to access Perplexity's Son
 
 **Model Specifications**:
 - **Models**: 
-  - `perplexity/sonar-pro-online` (fast lookup)
+  - `perplexity/sonar-pro-search` (fast lookup)
   - `perplexity/sonar-reasoning-pro-online` (deep analysis)
 - **Search Mode**: Academic/scholarly mode (prioritizes peer-reviewed sources)
+- **Search Context**: Always uses `high` search context for deeper, more comprehensive research results
 - **Context Window**: 200K+ tokens for comprehensive research
 - **Capabilities**: Academic paper search, citation generation, scholarly analysis
 - **Output**: Rich responses with citations and source links from academic databases
@@ -291,7 +292,7 @@ This skill integrates with OpenRouter (openrouter.ai) to access Perplexity's Son
 ### 2. Specific and Focused Queries
 
 **Good Queries** (will trigger appropriate model):
-- "Randomized controlled trials of mRNA vaccines for cancer treatment 2023-2024" → Sonar Pro
+- "Randomized controlled trials of mRNA vaccines for cancer treatment 2023-2024" → Sonar Pro Search
 - "Compare the efficacy and safety of mRNA vaccines vs traditional vaccines for cancer treatment" → Sonar Reasoning Pro
 - "Explain the mechanism by which CRISPR off-target effects occur and strategies to minimize them" → Sonar Reasoning Pro
 
@@ -466,6 +467,27 @@ This skill enhances scientific writing by providing:
 - Follow institutional guidelines for AI tool usage
 - Maintain transparency about research methods
 
+## Complementary Tools
+
+In addition to research-lookup, the scientific writer has access to **WebSearch** for:
+
+- **Quick metadata verification**: Look up DOIs, publication years, journal names, volume/page numbers
+- **Non-academic sources**: News, blogs, technical documentation, current events
+- **General information**: Company info, product details, current statistics
+- **Cross-referencing**: Verify citation details found through research-lookup
+
+**When to use which tool:**
+| Task | Tool |
+|------|------|
+| Find academic papers | research-lookup |
+| Literature search | research-lookup |
+| Deep analysis/comparison | research-lookup (Sonar Reasoning Pro) |
+| Look up DOI/metadata | WebSearch |
+| Verify publication year | WebSearch |
+| Find journal volume/pages | WebSearch |
+| Current events/news | WebSearch |
+| Non-scholarly sources | WebSearch |
+
 ## Summary
 
 This skill serves as a powerful research assistant with intelligent dual-model selection:
@@ -475,5 +497,6 @@ This skill serves as a powerful research assistant with intelligent dual-model s
 - **Deep Analysis**: Automatically engages Sonar Reasoning Pro for complex comparative, analytical, and theoretical queries
 - **Flexible Control**: Manual override available when you know exactly what level of analysis you need
 - **Academic Focus**: Both models configured to prioritize peer-reviewed sources and scholarly literature
+- **Complementary WebSearch**: Use alongside WebSearch for metadata verification and non-academic sources
 
 Whether you need quick fact-finding or deep analytical synthesis, this skill automatically adapts to deliver the right level of research support for your scientific writing needs.

@@ -1192,12 +1192,35 @@ Check with: `python scripts/validate_presentation.py presentation.pdf --duration
 
 ## Decision Making
 
-### When to Ask for User Input
+### CRITICAL: Complete Tasks Without Pausing
 
-- Critical information missing (journal name, citation style)
-- Errors requiring user guidance
-- Request is ambiguous and needs clarification
-- User feedback could significantly improve outcome
+**NEVER pause mid-task to ask for confirmation or offer choices.**
+
+When given a task (especially long documents like market research reports, comprehensive papers, or multi-section documents):
+- **Complete the ENTIRE task** from start to finish without stopping
+- **Do NOT ask** "Would you like me to continue?" or offer multiple options mid-execution
+- **Do NOT wait** for user confirmation between sections
+- **Do NOT offer** condensed versions or shortcuts unless explicitly requested upfront
+- **Continue working** until the document is fully complete
+- **If the task is large**, simply proceed section by section, logging progress, until done
+- **Token usage is not your concern** - the user has accepted this; your job is completion
+
+**Autonomous Completion Philosophy:**
+You are a professional assistant hired to complete a job. Complete it fully. Do not ask your employer for permission to continue working on each chapter. Write the entire document, compile it, and deliver the finished product.
+
+### When to Ask for User Input (RARE)
+
+Only ask for input when:
+- **BEFORE starting**: Critical information is genuinely missing and cannot be reasonably inferred (e.g., which specific journal format among 5+ options)
+- Unrecoverable errors occur that require user guidance
+- The initial request is fundamentally ambiguous
+
+**DO NOT ask for input when:**
+- The task is long but clear (just complete it)
+- You're between sections (keep writing)
+- You've completed some work and want approval (finish first)
+- You're offering multiple approaches (pick the best one and execute)
+- You're concerned about output length (complete the full document)
 
 ### When to Make Independent Decisions
 
@@ -1205,6 +1228,8 @@ Check with: `python scripts/validate_presentation.py presentation.pdf --duration
 - File organization (follow structure above)
 - Technical details (LaTeX packages, document settings)
 - Recovery from minor errors
+- Choosing between acceptable approaches (pick one and proceed)
+- Document length decisions (follow the requested length, don't ask)
 
 ## Best Practices
 

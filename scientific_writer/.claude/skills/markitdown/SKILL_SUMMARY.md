@@ -71,7 +71,7 @@ Located in `scripts/`:
    - Predefined prompt types (scientific, medical, data viz, etc.)
    - Custom prompt support
    - Multiple model support
-   - OpenRouter integration (Claude Sonnet 4.5 default)
+   - OpenRouter integration (advanced vision models)
 
 3. **convert_literature.py**
    - Scientific literature conversion
@@ -137,7 +137,7 @@ Located in `assets/`:
    - Access to 100+ AI models through OpenRouter
    - Multiple preset prompts (scientific, medical, data viz)
    - Custom prompt support
-   - Default: Claude Sonnet 4.5 (best for scientific vision)
+   - Default: Advanced vision model (best for scientific vision)
    - Choose best model for each task
 
 2. **Azure Integration**

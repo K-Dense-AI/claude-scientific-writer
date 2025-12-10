@@ -173,7 +173,7 @@ echo 'export OPENROUTER_API_KEY="sk-or-v1-..."' >> ~/.zshrc   # macOS
 
 **Popular Models for Image Description:**
 - `anthropic/claude-sonnet-4.5` - **Recommended** - Best for scientific vision
-- `anthropic/claude-3.5-sonnet` - Excellent technical analysis
+- `anthropic/claude-opus-4.5` - Excellent technical analysis
 - `openai/gpt-4o` - Good vision understanding
 - `google/gemini-pro-vision` - Cost-effective option
 

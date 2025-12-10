@@ -59,7 +59,7 @@ python scripts/generate_schematic.py \
 | Option | Description | Example |
 |--------|-------------|---------|
 | `-o, --output` | Output file path | `-o figures/diagram.png` |
-| `--iterations N` | Number of refinements (1-10) | `--iterations 5` |
+| `--iterations N` | Number of refinements (1-2) | `--iterations 2` |
 | `-v, --verbose` | Show detailed output | `-v` |
 | `--api-key KEY` | Provide API key | `--api-key sk-or-v1-...` |
 
@@ -121,7 +121,7 @@ gen = ScientificSchematicGenerator(api_key="your_key")
 results = gen.generate_iterative(
     user_prompt="diagram description",
     output_path="output.png",
-    iterations=3
+    iterations=2
 )
 
 # Check quality
@@ -149,7 +149,7 @@ pip install requests
 - Make prompt more specific
 - Include layout details (left-to-right, top-to-bottom)
 - Specify label requirements
-- Increase iterations: `--iterations 5`
+- Increase iterations: `--iterations 2`
 
 ## Testing
 
@@ -162,9 +162,9 @@ python test_ai_generation.py
 
 ## Cost
 
-Typical cost per diagram (3 iterations):
-- Simple: $0.10-0.30
-- Complex: $0.30-0.50
+Typical cost per diagram (max 2 iterations):
+- Simple (1 iteration): $0.05-0.15
+- Complex (2 iterations): $0.10-0.30
 
 ## How Nano Banana Pro Works
 
