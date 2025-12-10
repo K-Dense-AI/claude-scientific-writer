@@ -75,17 +75,54 @@ Before generating, create a detailed plan for your presentation:
 
 **Step 2: Generate Each Slide**
 
-Use the `generate_slide_image.py` script to create each slide:
+Use the `generate_slide_image.py` script to create each slide.
+
+**CRITICAL: Formatting Consistency Protocol**
+
+To ensure unified formatting across all slides in a presentation:
+
+1. **Define a Formatting Goal** at the start of your presentation and include it in EVERY prompt:
+   - Color scheme (e.g., "dark blue background, white text, gold accents")
+   - Typography style (e.g., "bold sans-serif titles, clean body text")
+   - Visual style (e.g., "minimal, professional, corporate aesthetic")
+   - Layout approach (e.g., "generous white space, left-aligned content")
+
+2. **Always attach the previous slide** when generating subsequent slides using `--attach`:
+   - This allows Nano Banana Pro to see and match the existing style
+   - Creates visual continuity throughout the deck
+   - Ensures consistent colors, fonts, and design language
+
+3. **Default author is "K-Dense"** unless another name is specified
+
+4. **Include citations directly in the prompt** for slides that reference research:
+   - Add citations in the prompt text so they appear on the generated slide
+   - Use format: "Include citation: (Author et al., Year)" or "Show reference: Author et al., Year"
+   - For multiple citations, list them all in the prompt
+   - Citations should appear in small text at the bottom of the slide or near relevant content
+
+**Example with formatting consistency and citations:**
 
 ```bash
-# Title slide
-python scripts/generate_slide_image.py "Title slide for presentation: 'Machine Learning: From Theory to Practice'. Subtitle: 'AI Conference 2025'. Speaker: Dr. Jane Smith. Modern, professional design with abstract neural network visualization in background. Dark blue and gold color scheme." -o slides/01_title.png
+# Title slide (first slide - establishes the style)
+python scripts/generate_slide_image.py "Title slide for presentation: 'Machine Learning: From Theory to Practice'. Subtitle: 'AI Conference 2025'. Speaker: K-Dense. FORMATTING GOAL: Dark blue background (#1a237e), white text, gold accents (#ffc107), minimal design, sans-serif fonts, generous margins, no decorative elements." -o slides/01_title.png
 
-# Content slide
-python scripts/generate_slide_image.py "Presentation slide titled 'Why Machine Learning Matters'. Three key points with icons: 1) Industry adoption (factory icon), 2) Breakthrough applications (lightbulb icon), 3) Future potential (rocket icon). Modern design, dark blue background, white text, gold accents." -o slides/02_intro.png
+# Content slide with citations (attach previous slide for consistency)
+python scripts/generate_slide_image.py "Presentation slide titled 'Why Machine Learning Matters'. Three key points with simple icons: 1) Industry adoption, 2) Breakthrough applications, 3) Future potential. CITATIONS: Include at bottom in small text: (LeCun et al., 2015; Goodfellow et al., 2016). FORMATTING GOAL: Match attached slide style - dark blue background, white text, gold accents, minimal professional design, no visual clutter." -o slides/02_intro.png --attach slides/01_title.png
 
-# Diagram slide
-python scripts/generate_slide_image.py "Presentation slide titled 'The Three Types of Learning'. Shows three boxes side by side: Supervised Learning (with labeled data icon), Unsupervised Learning (with clustering icon), Reinforcement Learning (with robot icon). Brief description under each. Clean, professional design." -o slides/03_types.png
+# Background slide with multiple citations
+python scripts/generate_slide_image.py "Presentation slide titled 'Deep Learning Revolution'. Key milestones: ImageNet breakthrough (2012), transformer architecture (2017), GPT models (2018-present). CITATIONS: Show references at bottom: (Krizhevsky et al., 2012; Vaswani et al., 2017; Brown et al., 2020). FORMATTING GOAL: Match attached slide style exactly - same colors, fonts, minimal design." -o slides/03_background.png --attach slides/02_intro.png
+
+# Diagram slide (attach previous slide for consistency)
+python scripts/generate_slide_image.py "Presentation slide titled 'The Three Types of Learning'. Shows three simple boxes side by side: Supervised Learning, Unsupervised Learning, Reinforcement Learning. Brief description under each. FORMATTING GOAL: Match attached slide style exactly - same colors, fonts, minimal design." -o slides/04_types.png --attach slides/03_background.png
+```
+
+**Prompt Template:**
+
+Include these elements in every prompt (customize as needed):
+```
+[Slide content description]
+CITATIONS: Include at bottom: (Author1 et al., Year; Author2 et al., Year)
+FORMATTING GOAL: [Background color], [text color], [accent color], minimal professional design, no decorative elements, consistent with attached slide style.
 ```
 
 **Step 3: Combine to PDF**
@@ -1016,14 +1053,18 @@ Comprehensive guides for specific aspects:
    - Target 15-18 slides
 
 2. **Generate Slides with Nano Banana Pro** (1-2 hours):
+   
+   **Important: Use consistent formatting, attach previous slides, and include citations!**
+   
    ```bash
-   # Title slide
-   python scripts/generate_slide_image.py "Title slide: 'Your Research Title'. Conference name, your name and affiliation. Professional design with relevant background imagery." -o slides/01_title.png
+   # Title slide (establishes style - default author: K-Dense)
+   python scripts/generate_slide_image.py "Title slide: 'Your Research Title'. Conference name, K-Dense. FORMATTING GOAL: [your color scheme], minimal professional design, no decorative elements, clean and corporate." -o slides/01_title.png
    
-   # Introduction slide
-   python scripts/generate_slide_image.py "Slide titled 'Why This Matters'. Three key points with icons. Modern design." -o slides/02_intro.png
+   # Introduction slide with citations (attach previous for consistency)
+   python scripts/generate_slide_image.py "Slide titled 'Why This Matters'. Three key points with simple icons. CITATIONS: Include at bottom: (Smith et al., 2023; Jones et al., 2024). FORMATTING GOAL: Match attached slide style exactly." -o slides/02_intro.png --attach slides/01_title.png
    
-   # Continue for each slide...
+   # Continue for each slide (always attach previous, include citations where relevant)
+   python scripts/generate_slide_image.py "Slide titled 'Methods'. Key methodology points. CITATIONS: (Based on Chen et al., 2022). FORMATTING GOAL: Match attached slide style exactly." -o slides/03_methods.png --attach slides/02_intro.png
    
    # Combine to PDF
    python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf

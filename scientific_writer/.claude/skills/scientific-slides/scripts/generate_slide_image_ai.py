@@ -111,18 +111,29 @@ TYPOGRAPHY:
 - High contrast text (dark on light or light on dark)
 - Bullet points or key phrases, NOT paragraphs
 - Maximum 5-6 lines of text content
+- Default author/presenter: "K-Dense" (use this unless another name is specified)
 
 VISUAL ELEMENTS:
-- Include relevant imagery, icons, or diagrams
-- Visuals should support and enhance the message
-- Professional, clean aesthetic
-- Consistent color scheme (2-3 main colors)
+- Use GENERIC, simple images and icons - avoid overly specific or detailed imagery
+- MINIMAL extra elements - no decorative borders, shadows, or flourishes
+- Visuals should support and enhance the message, not distract
+- Professional, clean aesthetic with restraint
+- Consistent color scheme (2-3 main colors only)
+- Prefer abstract/conceptual visuals over literal representations
+
+PROFESSIONAL MINIMALISM:
+- Less is more: favor empty space over additional elements
+- No unnecessary decorations, gradients, or visual noise
+- Clean lines and simple shapes
+- Focused content without visual clutter
+- Corporate/academic level of professionalism
 
 PRESENTATION QUALITY:
 - Designed for projection (high contrast)
 - Bold, impactful design that commands attention
 - Professional and polished appearance
 - No cluttered or busy layouts
+- Consistent styling throughout the deck
 """
 
     # Guidelines for generating slide visuals only (figures/images for PPT)
@@ -135,16 +146,25 @@ IMAGE QUALITY:
 - Suitable for embedding in a slide
 
 DESIGN:
-- Simple, clear composition
+- Simple, clear composition with MINIMAL elements
 - High contrast for projection readability
 - No text unless essential to the visual
 - Transparent or white background preferred
+- GENERIC imagery - avoid overly specific or detailed visuals
+
+PROFESSIONAL MINIMALISM:
+- Favor simplicity over complexity
+- No decorative elements, shadows, or flourishes
+- Clean lines and simple shapes only
+- Remove any unnecessary visual noise
+- Abstract/conceptual rather than literal representations
 
 STYLE:
 - Modern, professional aesthetic
 - Colorblind-friendly colors
-- Bold, impactful imagery
+- Bold but restrained imagery
 - Suitable for scientific/professional presentations
+- Corporate/academic level of polish
 """
     
     def __init__(self, api_key: Optional[str] = None, verbose: bool = False):
@@ -568,6 +588,10 @@ Generate a high-quality {'visual/figure' if visual_only else 'presentation slide
         print(f"Output: {output_path}")
         print(f"{'='*60}\n")
         
+        # Track temporary files for cleanup
+        temp_files = []
+        final_image_data = None
+        
         for i in range(1, iterations + 1):
             print(f"\n[Iteration {i}/{iterations}]")
             print("-" * 40)
@@ -585,20 +609,25 @@ Generate a high-quality {'visual/figure' if visual_only else 'presentation slide
                 })
                 continue
             
-            iter_path = output_dir / f"{base_name}_v{i}{extension}"
-            with open(iter_path, "wb") as f:
+            # Save to temporary file for review (will be cleaned up)
+            import tempfile
+            temp_fd, temp_path = tempfile.mkstemp(suffix=extension)
+            os.close(temp_fd)
+            temp_path = Path(temp_path)
+            temp_files.append(temp_path)
+            
+            with open(temp_path, "wb") as f:
                 f.write(image_data)
-            print(f"✓ Saved: {iter_path}")
+            print(f"✓ Generated image (iteration {i})")
             
             print(f"Reviewing image with Gemini 3 Pro...")
             critique, score, needs_improvement = self.review_image(
-                str(iter_path), user_prompt, i, visual_only, iterations
+                str(temp_path), user_prompt, i, visual_only, iterations
             )
             print(f"✓ Score: {score}/10 (threshold: {self.QUALITY_THRESHOLD}/10)")
             
             results["iterations"].append({
                 "iteration": i,
-                "image_path": str(iter_path),
                 "critique": critique,
                 "score": score,
                 "needs_improvement": needs_improvement,
@@ -607,7 +636,7 @@ Generate a high-quality {'visual/figure' if visual_only else 'presentation slide
             
             if not needs_improvement:
                 print(f"\n✓ Quality meets threshold ({score} >= {self.QUALITY_THRESHOLD})")
-                results["final_image"] = str(iter_path)
+                final_image_data = image_data
                 results["final_score"] = score
                 results["success"] = True
                 results["early_stop"] = True
@@ -615,7 +644,7 @@ Generate a high-quality {'visual/figure' if visual_only else 'presentation slide
             
             if i == iterations:
                 print(f"\n⚠ Maximum iterations reached")
-                results["final_image"] = str(iter_path)
+                final_image_data = image_data
                 results["final_score"] = score
                 results["success"] = True
                 break
@@ -624,19 +653,20 @@ Generate a high-quality {'visual/figure' if visual_only else 'presentation slide
             print(f"Improving prompt...")
             current_prompt = self.improve_prompt(user_prompt, critique, i + 1, visual_only)
         
-        # Copy final version to output path
-        if results["success"] and results["final_image"]:
-            final_iter_path = Path(results["final_image"])
-            if final_iter_path != output_path:
-                import shutil
-                shutil.copy(final_iter_path, output_path)
-                print(f"\n✓ Final image: {output_path}")
+        # Clean up temporary files
+        for temp_file in temp_files:
+            try:
+                if temp_file.exists():
+                    temp_file.unlink()
+            except Exception:
+                pass
         
-        # Save review log
-        log_path = output_dir / f"{base_name}_review_log.json"
-        with open(log_path, "w") as f:
-            json.dump(results, f, indent=2)
-        print(f"✓ Review log: {log_path}")
+        # Save only the final image to output path
+        if results["success"] and final_image_data:
+            with open(output_path, "wb") as f:
+                f.write(final_image_data)
+            results["final_image"] = str(output_path)
+            print(f"\n✓ Final image: {output_path}")
         
         print(f"\n{'='*60}")
         print(f"Generation Complete!")
