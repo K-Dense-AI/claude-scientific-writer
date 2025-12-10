@@ -38,7 +38,7 @@ This skill should be used when:
 
 **CRITICAL: Market research reports should include key visual content.**
 
-Every report should generate **5-6 essential visuals** at the start, with additional visuals added as needed during writing. Start with the most critical visualizations to establish the report framework.
+Every report should generate **6 essential visuals** at the start, with additional visuals added as needed during writing. Start with the most critical visualizations to establish the report framework.
 
 ### Visual Generation Tools
 
@@ -85,7 +85,7 @@ python skills/generate-image/scripts/generate_image.py \
 
 | Section | Priority Visuals | Optional Visuals |
 |---------|-----------------|------------------|
-| Executive Summary | Market growth chart, TAM/SAM/SOM | Executive infographic |
+| Executive Summary | Executive infographic (START) | - |
 | Market Size & Growth | Growth trajectory (START), TAM/SAM/SOM (START) | Regional breakdown, segment growth |
 | Competitive Landscape | Porter's Five Forces (START), Positioning matrix (START) | Market share chart, strategic groups |
 | Risk Analysis | Risk heatmap (START) | Mitigation matrix |
@@ -93,7 +93,7 @@ python skills/generate-image/scripts/generate_image.py \
 | Implementation Roadmap | Timeline/Gantt | Milestone tracker |
 | Investment Thesis | Financial projections | Scenario analysis |
 
-**Start with 5-6 priority visuals** (marked as START above), then generate additional visuals as specific sections are written and require visual support.
+**Start with 6 priority visuals** (marked as START above), then generate additional visuals as specific sections are written and require visual support.
 
 ---
 
