@@ -18,8 +18,8 @@ class ResearchLookup:
 
     # Available models
     MODELS = {
-        "pro": "perplexity/sonar-pro",  # Fast lookup, cost-effective
-        "reasoning": "perplexity/sonar-reasoning-pro",  # Deep analysis with reasoning
+        "pro": "perplexity/sonar-pro-search",  # Fast lookup with search, cost-effective
+        "reasoning": "perplexity/sonar-reasoning-pro",  # Deep analysis with reasoning and online search
     }
 
     # Keywords that indicate complex queries requiring reasoning model
