@@ -13,6 +13,7 @@ from typing import Optional
 from dotenv import load_dotenv
 
 from claude_agent_sdk import query, ClaudeAgentOptions
+from claude_agent_sdk.types import HookMatcher, StopHookInput, HookContext
 
 from .core import (
     get_api_key,
@@ -25,6 +26,35 @@ from .core import (
 )
 from .utils import find_existing_papers, detect_paper_reference, scan_paper_directory
 from .models import TokenUsage
+
+
+def create_completion_check_stop_hook(auto_continue: bool = True):
+    """
+    Create a stop hook that optionally forces continuation.
+    
+    Args:
+        auto_continue: If True, always continue (never stop on agent's own).
+                      If False, allow normal stopping behavior.
+    """
+    async def completion_check_stop_hook(
+        hook_input: StopHookInput,
+        matcher: str | None,
+        context: HookContext,
+    ) -> dict:
+        """
+        Stop hook that checks if the task is complete before allowing stop.
+        
+        When auto_continue is True, this returns continue_=True to force
+        the agent to continue working instead of stopping.
+        """
+        if auto_continue:
+            # Force continuation - the agent should not stop on its own
+            return {"continue_": True}
+        
+        # Allow the stop
+        return {"continue_": False}
+    
+    return completion_check_stop_hook
 
 
 async def main(track_token_usage: bool = False) -> Optional[TokenUsage]:
@@ -83,7 +113,11 @@ IMPORTANT - CONVERSATION CONTINUITY:
 - Each new chat session should start with a new paper unless context says otherwise
 """
     
-    # Configure agent options
+    # Check if auto-continue is enabled via environment variable
+    # Default to True to ensure tasks complete fully
+    auto_continue = os.environ.get("SCIENTIFIC_WRITER_AUTO_CONTINUE", "true").lower() in ("true", "1", "yes")
+    
+    # Configure agent options with stop hook for completion checking
     options = ClaudeAgentOptions(
         system_prompt=system_instructions,
         model="claude-sonnet-4-5",
@@ -91,6 +125,15 @@ IMPORTANT - CONVERSATION CONTINUITY:
         permission_mode="bypassPermissions",  # Execute immediately without approval prompts
         setting_sources=["project"],  # Load skills from project .claude directory
         cwd=str(cwd),  # Set working directory to user's current directory
+        max_turns=500,  # Allow many turns for long document generation
+        hooks={
+            "Stop": [
+                HookMatcher(
+                    matcher=None,  # Match all stop events
+                    hooks=[create_completion_check_stop_hook(auto_continue=auto_continue)],
+                )
+            ]
+        },
     )
     
     # Track conversation state

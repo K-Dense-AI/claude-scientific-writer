@@ -1,6 +1,7 @@
 """Async API for programmatic scientific document generation."""
 
 import asyncio
+import os
 import time
 from pathlib import Path
 from typing import Optional, List, Dict, Any, AsyncGenerator, Union, Literal
@@ -8,6 +9,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 from claude_agent_sdk import query as claude_query, ClaudeAgentOptions
+from claude_agent_sdk.types import HookMatcher, StopHookInput, HookContext
 
 from .core import (
     get_api_key,
@@ -35,6 +37,35 @@ EFFORT_LEVEL_MODELS = {
 }
 
 
+def create_completion_check_stop_hook(auto_continue: bool = True):
+    """
+    Create a stop hook that optionally forces continuation.
+    
+    Args:
+        auto_continue: If True, always continue (never stop on agent's own).
+                      If False, allow normal stopping behavior.
+    """
+    async def completion_check_stop_hook(
+        hook_input: StopHookInput,
+        matcher: str | None,
+        context: HookContext,
+    ) -> dict:
+        """
+        Stop hook that checks if the task is complete before allowing stop.
+        
+        When auto_continue is True, this returns continue_=True to force
+        the agent to continue working instead of stopping.
+        """
+        if auto_continue:
+            # Force continuation - the agent should not stop on its own
+            return {"continue_": True}
+        
+        # Allow the stop
+        return {"continue_": False}
+    
+    return completion_check_stop_hook
+
+
 async def generate_paper(
     query: str,
     output_dir: Optional[str] = None,
@@ -44,6 +75,7 @@ async def generate_paper(
     data_files: Optional[List[str]] = None,
     cwd: Optional[str] = None,
     track_token_usage: bool = False,
+    auto_continue: bool = True,
 ) -> AsyncGenerator[Dict[str, Any], None]:
     """
     Generate a scientific document asynchronously with progress updates.
@@ -65,6 +97,9 @@ async def generate_paper(
         data_files: Optional list of data file paths to include
         cwd: Optional working directory (defaults to package parent directory)
         track_token_usage: If True, track and return token usage in the final result
+        auto_continue: If True (default), the agent will not stop on its own and will
+            continue working until the task is complete. Set to False to allow
+            normal stopping behavior.
     
     Yields:
         Progress updates (dict with type="progress") during execution
@@ -156,7 +191,13 @@ IMPORTANT - CONVERSATION CONTINUITY:
                 stage="initialization",
             ).to_dict()
     
-    # Configure Claude agent options
+    # Check if auto-continue is enabled (parameter takes precedence over env var)
+    # Environment variable can override if parameter is True (default)
+    env_auto_continue = os.environ.get("SCIENTIFIC_WRITER_AUTO_CONTINUE", "").lower()
+    if env_auto_continue in ("false", "0", "no"):
+        auto_continue = False
+    
+    # Configure Claude agent options with stop hook for completion checking
     options = ClaudeAgentOptions(
         system_prompt=system_instructions,
         model=model,
@@ -164,6 +205,15 @@ IMPORTANT - CONVERSATION CONTINUITY:
         permission_mode="bypassPermissions",
         setting_sources=["project"],  # Load skills from project .claude directory
         cwd=str(work_dir),  # User's working directory
+        max_turns=500,  # Allow many turns for long document generation
+        hooks={
+            "Stop": [
+                HookMatcher(
+                    matcher=None,  # Match all stop events
+                    hooks=[create_completion_check_stop_hook(auto_continue=auto_continue)],
+                )
+            ]
+        },
     )
     
     # Track progress through message analysis
