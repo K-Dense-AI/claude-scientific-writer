@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+Always make changes to skills when necessary first in skills folder , then copy that folder to scientific-writer/.claude/skills and .claude/skills
+---

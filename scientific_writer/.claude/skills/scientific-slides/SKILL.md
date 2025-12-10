@@ -32,41 +32,217 @@ This skill should be used when:
 - Giving research talks at institutions or companies
 - Teaching or tutorial presentations on scientific topics
 
+## Slide Generation with Nano Banana Pro
+
+**This skill uses Nano Banana Pro AI to generate stunning presentation slides automatically.**
+
+There are two workflows depending on output format:
+
+### Default Workflow: PDF Slides (Recommended)
+
+Generate each slide as a complete image using Nano Banana Pro, then combine into a PDF. This produces the most visually stunning results.
+
+**How it works:**
+1. **Plan the deck**: Create a detailed plan for each slide (title, key points, visual elements)
+2. **Generate slides**: Call Nano Banana Pro for each slide to create complete slide images
+3. **Combine to PDF**: Assemble slide images into a single PDF presentation
+
+**Step 1: Plan Each Slide**
+
+Before generating, create a detailed plan for your presentation:
+
+```markdown
+# Presentation Plan: Introduction to Machine Learning
+
+## Slide 1: Title Slide
+- Title: "Machine Learning: From Theory to Practice"
+- Subtitle: "AI Conference 2025"
+- Speaker: Dr. Jane Smith, University of XYZ
+- Visual: Modern abstract neural network background
+
+## Slide 2: Introduction
+- Title: "Why Machine Learning Matters"
+- Key points: Industry adoption, breakthrough applications, future potential
+- Visual: Icons showing different ML applications (healthcare, finance, robotics)
+
+## Slide 3: Core Concepts
+- Title: "The Three Types of Learning"
+- Content: Supervised, Unsupervised, Reinforcement
+- Visual: Three-part diagram showing each type with examples
+
+... (continue for all slides)
+```
+
+**Step 2: Generate Each Slide**
+
+Use the `generate_slide_image.py` script to create each slide:
+
+```bash
+# Title slide
+python scripts/generate_slide_image.py "Title slide for presentation: 'Machine Learning: From Theory to Practice'. Subtitle: 'AI Conference 2025'. Speaker: Dr. Jane Smith. Modern, professional design with abstract neural network visualization in background. Dark blue and gold color scheme." -o slides/01_title.png
+
+# Content slide
+python scripts/generate_slide_image.py "Presentation slide titled 'Why Machine Learning Matters'. Three key points with icons: 1) Industry adoption (factory icon), 2) Breakthrough applications (lightbulb icon), 3) Future potential (rocket icon). Modern design, dark blue background, white text, gold accents." -o slides/02_intro.png
+
+# Diagram slide
+python scripts/generate_slide_image.py "Presentation slide titled 'The Three Types of Learning'. Shows three boxes side by side: Supervised Learning (with labeled data icon), Unsupervised Learning (with clustering icon), Reinforcement Learning (with robot icon). Brief description under each. Clean, professional design." -o slides/03_types.png
+```
+
+**Step 3: Combine to PDF**
+
+```bash
+# Combine all slides into a PDF presentation
+python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
+```
+
+### PPT Workflow: PowerPoint with Generated Visuals
+
+When creating PowerPoint presentations, use Nano Banana Pro to generate images and figures for each slide, then add text separately using the PPTX skill.
+
+**How it works:**
+1. **Plan the deck**: Create content plan for each slide
+2. **Generate visuals**: Use Nano Banana Pro with `--visual-only` flag to create images for slides
+3. **Build PPTX**: Use the PPTX skill (html2pptx or template-based) to create slides with generated visuals and separate text
+
+**Step 1: Generate Visuals for Each Slide**
+
+```bash
+# Generate a figure for the introduction slide
+python scripts/generate_slide_image.py "Professional illustration showing machine learning applications: healthcare diagnosis, financial analysis, autonomous vehicles, and robotics. Modern flat design, colorful icons on white background." -o figures/ml_applications.png --visual-only
+
+# Generate a diagram for the methods slide
+python scripts/generate_slide_image.py "Neural network architecture diagram showing input layer, three hidden layers, and output layer. Clean, technical style with node connections. Blue and gray color scheme." -o figures/neural_network.png --visual-only
+
+# Generate a conceptual graphic for results
+python scripts/generate_slide_image.py "Before and after comparison showing improvement: left side shows cluttered data, right side shows organized insights. Arrow connecting them. Professional business style." -o figures/results_visual.png --visual-only
+```
+
+**Step 2: Build PowerPoint with PPTX Skill**
+
+Use the PPTX skill's html2pptx workflow to create slides that include:
+- Generated images from step 1
+- Title and body text added separately
+- Professional layout and formatting
+
+See `document-skills/pptx/SKILL.md` for complete PPTX creation documentation.
+
+---
+
+## Nano Banana Pro Script Reference
+
+### generate_slide_image.py
+
+Generate presentation slides or visuals using Nano Banana Pro AI.
+
+```bash
+# Full slide (default) - generates complete slide as image
+python scripts/generate_slide_image.py "slide description" -o output.png
+
+# Visual only - generates just the image/figure for embedding in PPT
+python scripts/generate_slide_image.py "visual description" -o output.png --visual-only
+
+# With reference images attached (Nano Banana Pro will see these)
+python scripts/generate_slide_image.py "Create a slide explaining this chart" -o slide.png --attach chart.png
+python scripts/generate_slide_image.py "Combine these into a comparison slide" -o compare.png --attach before.png --attach after.png
+```
+
+**Options:**
+- `-o, --output`: Output file path (required)
+- `--attach IMAGE`: Attach image file(s) as context for generation (can use multiple times)
+- `--visual-only`: Generate just the visual/figure, not a complete slide
+- `--iterations`: Max refinement iterations (default: 2)
+- `--api-key`: OpenRouter API key (or set OPENROUTER_API_KEY env var)
+- `-v, --verbose`: Verbose output
+
+**Attaching Reference Images:**
+
+Use `--attach` when you want Nano Banana Pro to see existing images as context:
+- "Create a slide about this data" + attach the data chart
+- "Make a title slide with this logo" + attach the logo
+- "Combine these figures into one slide" + attach multiple images
+- "Explain this diagram in a slide" + attach the diagram
+
+**Environment Setup:**
+```bash
+export OPENROUTER_API_KEY='your_api_key_here'
+# Get key at: https://openrouter.ai/keys
+```
+
+### slides_to_pdf.py
+
+Combine multiple slide images into a single PDF.
+
+```bash
+# Combine PNG files
+python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
+
+# Combine specific files in order
+python scripts/slides_to_pdf.py title.png intro.png methods.png -o talk.pdf
+
+# From directory (sorted by filename)
+python scripts/slides_to_pdf.py slides/ -o presentation.pdf
+```
+
+**Options:**
+- `-o, --output`: Output PDF path (required)
+- `--dpi`: PDF resolution (default: 150)
+- `-v, --verbose`: Verbose output
+
+**Tip:** Name slides with numbers for correct ordering: `01_title.png`, `02_intro.png`, etc.
+
+---
+
+## Prompt Writing for Slide Generation
+
+### Full Slide Prompts (PDF Workflow)
+
+For complete slides, include:
+1. **Slide type**: Title slide, content slide, diagram slide, etc.
+2. **Title**: The slide title text
+3. **Content**: Key points, bullet items, or descriptions
+4. **Visual elements**: What imagery, icons, or graphics to include
+5. **Design style**: Color scheme, mood, aesthetic
+
+**Example prompts:**
+
+```
+Title slide:
+"Title slide for a medical research presentation. Title: 'Advances in Cancer Immunotherapy'. Subtitle: 'Clinical Trial Results 2024'. Professional medical theme with subtle DNA helix in background. Navy blue and white color scheme."
+
+Content slide:
+"Presentation slide titled 'Key Findings'. Three bullet points: 1) 40% improvement in response rate, 2) Reduced side effects, 3) Extended survival outcomes. Include relevant medical icons. Clean, professional design with green and white colors."
+
+Diagram slide:
+"Presentation slide showing the research methodology. Title: 'Study Design'. Flowchart showing: Patient Screening → Randomization → Treatment Groups (A, B, Control) → Follow-up → Analysis. CONSORT-style flow diagram. Professional academic style."
+```
+
+### Visual-Only Prompts (PPT Workflow)
+
+For images to embed in PowerPoint, focus on the visual element only:
+
+```
+"Flowchart showing machine learning pipeline: Data Collection → Preprocessing → Model Training → Validation → Deployment. Clean technical style, blue and gray colors."
+
+"Conceptual illustration of cloud computing with servers, data flow, and connected devices. Modern flat design, suitable for business presentation."
+
+"Scientific diagram of cell division process showing mitosis phases. Educational style with labels, colorblind-friendly colors."
+```
+
+---
+
 ## Visual Enhancement with Scientific Schematics
 
-**⚠️ MANDATORY: Every presentation MUST include at least 3-5 AI-generated figures using the scientific-schematics skill.**
+In addition to slide generation, use the **scientific-schematics** skill for technical diagrams:
 
-This is not optional. Presentations without strong visuals are boring and forgettable. Before finalizing any presentation:
-1. Generate at minimum THREE schematics or diagrams
-2. Target 1 figure per 3-4 slides minimum
-3. Key required figures: methodology flowchart, key results visualization, conceptual framework
-4. Figures should be the FOCUS of slides, not bullet points
-
-**How to generate figures:**
-- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
-- Simply describe your desired diagram in natural language
-- Nano Banana Pro will automatically generate, review, and refine the schematic
+**When to use scientific-schematics instead:**
+- Complex technical diagrams (circuit diagrams, chemical structures)
+- Publication-quality figures for papers (higher quality threshold)
+- Diagrams requiring scientific accuracy review
 
 **How to generate schematics:**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
-
-The AI will automatically:
-- Create publication-quality images with proper formatting
-- Review and refine through multiple iterations
-- Ensure accessibility (colorblind-friendly, high contrast)
-- Save outputs in the figures/ directory
-
-**When to add schematics:**
-- Research methodology workflow diagrams for slides
-- Conceptual framework illustrations
-- Experimental design visualizations
-- Data analysis pipeline diagrams
-- System architecture diagrams
-- Biological pathway or mechanism diagrams
-- Timeline and milestone visualizations
-- Any complex concept that benefits from visualization
 
 For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.
 
@@ -221,11 +397,46 @@ Different presentation contexts require different approaches. For comprehensive 
 
 ### 5. Implementation Options
 
+#### Nano Banana Pro PDF (Default - Recommended)
+
+**Best for**: Visually stunning slides, fast creation, non-technical audiences
+
+**This is the default and recommended approach.** Generate each slide as a complete image using AI.
+
+**Workflow**:
+1. Plan each slide (title, content, visual elements)
+2. Generate each slide with `generate_slide_image.py`
+3. Combine into PDF with `slides_to_pdf.py`
+
+```bash
+# Generate slides
+python scripts/generate_slide_image.py "Title: Introduction..." -o slides/01.png
+python scripts/generate_slide_image.py "Title: Methods..." -o slides/02.png
+
+# Combine to PDF
+python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
+```
+
+**Advantages**:
+- Most visually impressive results
+- Fast creation (describe and generate)
+- No design skills required
+- Consistent, professional appearance
+- Perfect for general audiences
+
+**Best for**:
+- Conference talks
+- Business presentations
+- General scientific talks
+- Pitch presentations
+
 #### PowerPoint via PPTX Skill
 
-**Best for**: Custom designs, data visualizations, template-based workflows
+**Best for**: Editable slides, custom designs, template-based workflows
 
 **Reference**: See `document-skills/pptx/SKILL.md` for complete documentation
+
+Use Nano Banana Pro with `--visual-only` to generate images, then build PPTX with text.
 
 **Key Resources**:
 - `assets/powerpoint_design_guide.md`: Complete PowerPoint design guide
@@ -233,11 +444,18 @@ Different presentation contexts require different approaches. For comprehensive 
 - PPTX skill's scripts: `rearrange.py`, `inventory.py`, `replace.py`, `thumbnail.py`
 
 **Workflow**:
-1. Design HTML slides (for programmatic) or use templates
-2. Create presentation using html2pptx or template editing
-3. Add scientific content (figures, tables, equations)
-4. Generate thumbnails for visual validation
-5. Iterate based on visual inspection
+1. Generate visuals with `generate_slide_image.py --visual-only`
+2. Design HTML slides (for programmatic) or use templates
+3. Create presentation using html2pptx or template editing
+4. Add generated images and text content
+5. Generate thumbnails for visual validation
+6. Iterate based on visual inspection
+
+**Advantages**:
+- Editable slides (can modify text later)
+- Complex animations and transitions
+- Interactive elements
+- Company template compatibility
 
 #### LaTeX Beamer
 
@@ -690,6 +908,37 @@ python ../document-skills/pptx/scripts/thumbnail.py presentation.pptx review/gri
 
 ## Tools and Scripts
 
+### Nano Banana Pro Scripts
+
+**generate_slide_image.py** - Generate slides or visuals with AI:
+```bash
+# Full slide (for PDF workflow)
+python scripts/generate_slide_image.py "Title: Introduction\nContent: Key points" -o slide.png
+
+# Visual only (for PPT workflow)
+python scripts/generate_slide_image.py "Diagram description" -o figure.png --visual-only
+
+# Options:
+# -o, --output       Output file path (required)
+# --visual-only      Generate just the visual, not complete slide
+# --iterations N     Max refinement iterations (default: 2)
+# -v, --verbose      Verbose output
+```
+
+**slides_to_pdf.py** - Combine slide images into PDF:
+```bash
+# From glob pattern
+python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
+
+# From directory (sorted by filename)
+python scripts/slides_to_pdf.py slides/ -o presentation.pdf
+
+# Options:
+# -o, --output    Output PDF path (required)
+# --dpi N         PDF resolution (default: 150)
+# -v, --verbose   Verbose output
+```
+
 ### Validation Scripts
 
 **validate_presentation.py**:
@@ -757,29 +1006,33 @@ Comprehensive guides for specific aspects:
 
 ## Quick Start Guide
 
-### For a 15-Minute Conference Talk
+### For a 15-Minute Conference Talk (PDF Workflow - Recommended)
 
 1. **Research & Plan** (45 minutes):
    - **Use research-lookup** to find 8-12 relevant papers for citations
    - Build reference list (background, comparison studies)
    - Outline content (intro → methods → 2-3 key results → conclusion)
-   - **Select 3-6 key figures** and identify visual elements for each slide
-   - **Choose modern color palette** matching your topic (see pptx skill examples)
+   - **Create detailed plan for each slide** (title, key points, visual elements)
    - Target 15-18 slides
 
-2. **Design & Create** (2-3 hours):
-   - Choose PowerPoint (pptx skill) or Beamer (use template)
-   - **Select modern, topic-appropriate color scheme** (NOT default themes)
-   - **Visual-first approach**: Add figures, images, diagrams to EVERY slide
-   - Minimal text with large fonts (24-28pt body, 36-44pt titles)
-   - **Add citations from research-lookup** to intro and discussion slides
-   - Vary layouts (full-figure, two-column, visual overlays)
-   - Emphasize results visually (6-8 slides, figure-focused)
+2. **Generate Slides with Nano Banana Pro** (1-2 hours):
+   ```bash
+   # Title slide
+   python scripts/generate_slide_image.py "Title slide: 'Your Research Title'. Conference name, your name and affiliation. Professional design with relevant background imagery." -o slides/01_title.png
+   
+   # Introduction slide
+   python scripts/generate_slide_image.py "Slide titled 'Why This Matters'. Three key points with icons. Modern design." -o slides/02_intro.png
+   
+   # Continue for each slide...
+   
+   # Combine to PDF
+   python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
+   ```
 
-3. **Validate** (30 minutes):
-   - Convert to images: `python scripts/pdf_to_images.py talk.pdf review/s`
-   - Check for text overflow, overlaps, small fonts
-   - Fix issues and regenerate
+3. **Review & Iterate** (30 minutes):
+   - Open the PDF and review each slide
+   - Regenerate any slides that need improvement
+   - Re-combine to PDF
 
 4. **Practice** (2-3 hours):
    - Practice 3-5 times with timer
@@ -788,12 +1041,25 @@ Comprehensive guides for specific aspects:
    - **Prepare for questions** (use research-lookup to anticipate)
 
 5. **Finalize** (30 minutes):
-   - Create backup slides with extra citations
+   - Generate backup/appendix slides if needed
    - Save multiple copies
    - Test on presentation computer
-   - Prepare notes if needed
 
-Total time: ~7-9 hours for quality presentation with proper literature context
+Total time: ~5-6 hours for quality AI-generated presentation
+
+### Alternative: PowerPoint Workflow
+
+If you need editable slides (e.g., for company templates):
+
+1. **Plan slides** as above
+2. **Generate visuals** with `--visual-only` flag:
+   ```bash
+   python scripts/generate_slide_image.py "diagram description" -o figures/fig1.png --visual-only
+   ```
+3. **Build PPTX** using the PPTX skill with generated images
+4. **Add text** separately using PPTX workflow
+
+See `document-skills/pptx/SKILL.md` for complete PowerPoint workflow.
 
 ## Summary: Key Principles
 

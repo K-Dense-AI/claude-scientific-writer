@@ -140,14 +140,27 @@ python scripts/generate_slide_image.py "slide description" -o output.png
 
 # Visual only - generates just the image/figure for embedding in PPT
 python scripts/generate_slide_image.py "visual description" -o output.png --visual-only
+
+# With reference images attached (Nano Banana Pro will see these)
+python scripts/generate_slide_image.py "Create a slide explaining this chart" -o slide.png --attach chart.png
+python scripts/generate_slide_image.py "Combine these into a comparison slide" -o compare.png --attach before.png --attach after.png
 ```
 
 **Options:**
 - `-o, --output`: Output file path (required)
+- `--attach IMAGE`: Attach image file(s) as context for generation (can use multiple times)
 - `--visual-only`: Generate just the visual/figure, not a complete slide
 - `--iterations`: Max refinement iterations (default: 2)
 - `--api-key`: OpenRouter API key (or set OPENROUTER_API_KEY env var)
 - `-v, --verbose`: Verbose output
+
+**Attaching Reference Images:**
+
+Use `--attach` when you want Nano Banana Pro to see existing images as context:
+- "Create a slide about this data" + attach the data chart
+- "Make a title slide with this logo" + attach the logo
+- "Combine these figures into one slide" + attach multiple images
+- "Explain this diagram in a slide" + attach the diagram
 
 **Environment Setup:**
 ```bash
