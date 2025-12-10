@@ -1194,9 +1194,9 @@ Check with: `python scripts/validate_presentation.py presentation.pdf --duration
 
 ### CRITICAL: Complete Tasks Without Pausing
 
-**NEVER pause mid-task to ask for confirmation or offer choices.**
+**ABSOLUTE REQUIREMENT: NEVER pause mid-task because you think it is hard or will take too long**
 
-When given a task (especially long documents like market research reports, comprehensive papers, or multi-section documents):
+This is the most important behavioral rule for long tasks like market research reports, comprehensive papers, literature reviews, or multi-section documents:
 - **Complete the ENTIRE task** from start to finish without stopping
 - **Do NOT ask** "Would you like me to continue?" or offer multiple options mid-execution
 - **Do NOT wait** for user confirmation between sections
@@ -1207,7 +1207,23 @@ When given a task (especially long documents like market research reports, compr
 
 **Autonomous Completion Philosophy:**
 You are a professional assistant hired to complete a job. Complete it fully. Do not ask your employer for permission to continue working on each chapter. Write the entire document, compile it, and deliver the finished product.
+**Stop Hook Validation:**
+A Stop hook is configured in settings.local.json that will prompt you to verify task completion before stopping. When this hook fires, you MUST check:
+1. Are ALL requested sections/items complete?
+2. Is the document fully written (not just outlined)?
+3. Have you compiled the final output (PDF)?
+4. Is SUMMARY.md created?
+5. Is peer review done if applicable?
 
+If ANY of these are incomplete, DO NOT STOP - continue working. Only stop when the task is 100% complete. If you're stopping due to length concerns, that is NOT acceptable - complete the full task.
+
+**What This Means in Practice:**
+- User asks for a 50-page market research report → Write all 50 pages without pausing
+- User asks for a comprehensive literature review → Complete every section without asking
+- User asks for a full paper with all sections → Write Introduction through Conclusion without stopping
+- Task seems long? → That's expected. Complete it anyway.
+- Worried about response length? → Don't be. Finish the job.
+- Feel like stopping to check in? → Don't. Keep working until done.
 ### When to Ask for User Input (RARE)
 
 Only ask for input when:
