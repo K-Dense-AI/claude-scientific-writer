@@ -492,20 +492,10 @@ drafts/
    
    **CRITICAL: This step is MANDATORY after any PDF is generated.**
    
-   **System Dependency Required for PDF-to-Image Conversion:**
+   **PDF-to-Image Conversion (No External Dependencies Required):**
    
-   The PDF review workflow uses `pdftoppm` (from poppler) to convert PDFs to images. Install it:
-   - **macOS**: `brew install poppler`
-   - **Linux (Ubuntu/Debian)**: `sudo apt-get install poppler-utils`
-   - **Linux (Fedora)**: `sudo dnf install poppler-utils`
-   - **Windows**: Download from https://github.com/osber/poppler-windows
-   
-   **If PDF-to-image conversion fails (poppler not installed):**
-   - Print: `[HH:MM:SS] PDF REVIEW: ⚠️ Cannot convert PDF to images - poppler/pdftoppm not installed`
-   - Print: `[HH:MM:SS] PDF REVIEW: Skipping visual review. Install poppler to enable: brew install poppler (macOS) or apt-get install poppler-utils (Linux)`
-   - **Skip the PDF review step entirely** and proceed with delivery
-   - Note in progress.md: "PDF visual review skipped - poppler not installed"
-   - The PDF is still valid; only the automated visual inspection is skipped
+   The PDF review workflow uses PyMuPDF (Python library) to convert PDFs to images.
+   This is included as a project dependency - no external software installation needed.
    
    After compiling a PDF, MUST automatically perform visual formatting review:
    
@@ -536,10 +526,10 @@ drafts/
    1. **FIRST**: Print: `[HH:MM:SS] PDF REVIEW: Presentation detected - using MANDATORY image-based review`
    2. **SECOND**: Print: `[HH:MM:SS] PDF REVIEW: NEVER reading PDF directly - converting to images first`
    3. **THIRD**: Create review directory if not exists: `mkdir -p review/`
-   4. **FOURTH**: Convert ALL PDF slides to images using pdftoppm:
+   4. **FOURTH**: Convert ALL PDF slides to images using Python:
       ```bash
-      pdftoppm -jpeg -r 150 presentation_file.pdf review/slide
-      # Creates: review/slide-1.jpg, review/slide-2.jpg, etc.
+      python skills/scientific-slides/scripts/pdf_to_images.py presentation_file.pdf review/slide --dpi 150
+      # Creates: review/slide-001.jpg, review/slide-002.jpg, etc.
       ```
    5. **FIFTH**: Print: `[HH:MM:SS] PDF REVIEW: Converted [N] slides to images in review/ directory`
    6. **SIXTH**: Count number of slide images created
@@ -575,10 +565,10 @@ drafts/
    
    1. **FIRST**: Print: `[HH:MM:SS] PDF REVIEW: Converting PDF to images for visual inspection`
    2. **SECOND**: Create review directory if not exists: `mkdir -p review/`
-   3. **THIRD**: Convert ALL PDF pages to images using pdftoppm:
+   3. **THIRD**: Convert ALL PDF pages to images using Python:
       ```bash
-      pdftoppm -jpeg -r 150 document.pdf review/page
-      # Creates: review/page-1.jpg, review/page-2.jpg, etc.
+      python skills/scientific-slides/scripts/pdf_to_images.py document.pdf review/page --dpi 150
+      # Creates: review/page-001.jpg, review/page-002.jpg, etc.
       ```
    4. **FOURTH**: Print: `[HH:MM:SS] PDF REVIEW: Converted [N] pages to images in review/ directory`
    5. **FIFTH**: Count number of page images created

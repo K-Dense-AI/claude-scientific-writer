@@ -394,10 +394,10 @@ When reviewing scientific presentations (PowerPoint, Beamer, slide decks):
 **NEVER attempt to read presentation PDFs directly** - this causes buffer overflow errors and doesn't show visual formatting issues.
 
 **Required Process:**
-1. Convert PDF to images using pdftoppm:
+1. Convert PDF to images using Python:
    ```bash
-   pdftoppm -jpeg -r 150 presentation.pdf review/slide
-   # Creates: review/slide-1.jpg, review/slide-2.jpg, etc.
+   python skills/scientific-slides/scripts/pdf_to_images.py presentation.pdf review/slide --dpi 150
+   # Creates: review/slide-001.jpg, review/slide-002.jpg, etc.
    ```
 2. Read and inspect EACH slide image file sequentially
 3. Document issues with specific slide numbers
@@ -524,7 +524,7 @@ Slide 18: Alignment - title not centered
 ```
 [14:30:00] PEER REVIEW: Starting review of presentation
 [14:30:05] PEER REVIEW: Presentation detected - converting to images
-[14:30:10] PDF REVIEW: Running pdftoppm on presentation.pdf
+[14:30:10] PDF REVIEW: Running pdf_to_images.py on presentation.pdf
 [14:30:15] PDF REVIEW: Converted 25 slides to images in review/ directory
 [14:30:20] PDF REVIEW: Inspecting slide 1/25 - title slide
 [14:30:25] PDF REVIEW: Inspecting slide 2/25 - introduction

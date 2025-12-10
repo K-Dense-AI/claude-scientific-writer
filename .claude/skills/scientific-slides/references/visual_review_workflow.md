@@ -18,7 +18,7 @@ Visual review is a critical quality assurance step for presentations, allowing y
 ### The ONLY Correct Workflow for Presentations
 
 1. ✅ Generate PDF from PowerPoint/Beamer source
-2. ✅ **Convert PDF to images** using pdftoppm or similar tool
+2. ✅ **Convert PDF to images** using the pdf_to_images.py script
 3. ✅ **Review the image files** systematically
 4. ✅ Document issues by slide number
 5. ✅ Fix issues in source files
@@ -67,53 +67,50 @@ Visual review is a critical quality assurance step for presentations, allowing y
 
 ## Conversion: PDF to Images
 
-### Method 1: Using pdftoppm (Recommended)
+### Method 1: Using pdf_to_images.py Script (Recommended)
+
+**No External Dependencies Required**:
+The script uses PyMuPDF, a self-contained Python library - no poppler or other system software needed.
 
 **Installation**:
 ```bash
-# Ubuntu/Debian
-sudo apt-get install poppler-utils
-
-# macOS
-brew install poppler
-
-# Verify installation
-pdftoppm -v
+# PyMuPDF is included as a project dependency
+pip install pymupdf
 ```
 
 **Basic Conversion**:
 ```bash
 # Convert all slides to JPEG images
-pdftoppm -jpeg -r 150 presentation.pdf slide
+python skills/scientific-slides/scripts/pdf_to_images.py presentation.pdf slide --dpi 150
 
-# Creates: slide-1.jpg, slide-2.jpg, slide-3.jpg, ...
+# Creates: slide-001.jpg, slide-002.jpg, slide-003.jpg, ...
 ```
 
 **High-Resolution Conversion**:
 ```bash
 # Higher quality for detailed inspection (300 DPI)
-pdftoppm -jpeg -r 300 presentation.pdf slide
+python skills/scientific-slides/scripts/pdf_to_images.py presentation.pdf slide --dpi 300
 
 # PNG format (lossless, larger files)
-pdftoppm -png -r 150 presentation.pdf slide
+python skills/scientific-slides/scripts/pdf_to_images.py presentation.pdf slide --dpi 150 --format png
 ```
 
 **Convert Specific Slides**:
 ```bash
 # Slides 5-10 only
-pdftoppm -jpeg -r 150 -f 5 -l 10 presentation.pdf slide
+python skills/scientific-slides/scripts/pdf_to_images.py presentation.pdf slide --dpi 150 --first 5 --last 10
 
 # Single slide
-pdftoppm -jpeg -r 150 -f 3 -l 3 presentation.pdf slide
+python skills/scientific-slides/scripts/pdf_to_images.py presentation.pdf slide --dpi 150 --first 3 --last 3
 ```
 
 **Output Options**:
 ```bash
 # Different output directory
-pdftoppm -jpeg -r 150 presentation.pdf review/slide
+python skills/scientific-slides/scripts/pdf_to_images.py presentation.pdf review/slide --dpi 150
 
 # Custom naming
-pdftoppm -jpeg -r 150 presentation.pdf output/presentation
+python skills/scientific-slides/scripts/pdf_to_images.py presentation.pdf output/presentation --dpi 150
 ```
 
 ### Method 2: Using PowerPoint Thumbnail Script
@@ -160,24 +157,26 @@ convert -density 150 presentation.pdf slide.png
 ### Method 4: Using Python (Programmatic)
 
 ```python
-from pdf2image import convert_from_path
+import fitz  # PyMuPDF
 
-# Convert PDF to images
-images = convert_from_path(
-    'presentation.pdf',
-    dpi=200,
-    fmt='jpeg'
-)
+# Open PDF
+doc = fitz.open('presentation.pdf')
 
-# Save individual slides
-for i, image in enumerate(images, start=1):
-    image.save(f'slide-{i:03d}.jpg', 'JPEG')
+# Convert each page to image
+zoom = 200 / 72  # 200 DPI (72 is base DPI)
+matrix = fitz.Matrix(zoom, zoom)
+
+for i, page in enumerate(doc, start=1):
+    pixmap = page.get_pixmap(matrix=matrix)
+    pixmap.save(f'slide-{i:03d}.jpg', output='jpeg')
+
+doc.close()
 ```
 
-**Install pdf2image**:
+**Install PyMuPDF**:
 ```bash
-pip install pdf2image
-# Also requires poppler
+pip install pymupdf
+# No external dependencies needed!
 ```
 
 ## Systematic Visual Inspection
@@ -712,9 +711,9 @@ for slide_num in range(1, 26):
 ### Recommended Software
 
 **PDF to Image Conversion**:
-- **pdftoppm** (poppler-utils): Fast, command-line
-- **ImageMagick**: Flexible, many options
-- **pdf2image** (Python): Programmatic control
+- **PyMuPDF** (Python): Fast, no external dependencies (recommended)
+- **pdf_to_images.py script**: Wrapper for easy CLI usage
+- **ImageMagick**: Flexible, many options (optional)
 
 **Image Viewing**:
 - **IrfanView** (Windows): Fast, many formats

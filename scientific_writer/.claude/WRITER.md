@@ -567,10 +567,10 @@ drafts/
    1. **FIRST**: Print: `[HH:MM:SS] PDF REVIEW: Presentation detected - using MANDATORY image-based review`
    2. **SECOND**: Print: `[HH:MM:SS] PDF REVIEW: NEVER reading PDF directly - converting to images first`
    3. **THIRD**: Create review directory if not exists: `mkdir -p review/`
-   4. **FOURTH**: Convert ALL PDF slides to images using pdftoppm:
+   4. **FOURTH**: Convert ALL PDF slides to images using Python:
       ```bash
-      pdftoppm -jpeg -r 150 presentation_file.pdf review/slide
-      # Creates: review/slide-1.jpg, review/slide-2.jpg, etc.
+      python skills/scientific-slides/scripts/pdf_to_images.py presentation_file.pdf review/slide --dpi 150
+      # Creates: review/slide-001.jpg, review/slide-002.jpg, etc.
       ```
    5. **FIFTH**: Print: `[HH:MM:SS] PDF REVIEW: Converted [N] slides to images in review/ directory`
    6. **SIXTH**: Count number of slide images created

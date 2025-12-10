@@ -4,21 +4,22 @@ PDF to Images Converter for Presentations
 
 Converts presentation PDFs to images for visual inspection and review.
 Supports multiple output formats and resolutions.
+
+Uses PyMuPDF (fitz) as the primary conversion method - no external
+dependencies required (no poppler, ghostscript, or ImageMagick needed).
 """
 
 import sys
-import os
 import argparse
-import subprocess
 from pathlib import Path
 from typing import Optional, List
 
-# Try to import pdf2image
+# Try to import pymupdf (preferred - no external dependencies)
 try:
-    from pdf2image import convert_from_path
-    HAS_PDF2IMAGE = True
+    import fitz  # PyMuPDF
+    HAS_PYMUPDF = True
 except ImportError:
-    HAS_PDF2IMAGE = False
+    HAS_PYMUPDF = False
 
 
 class PDFToImagesConverter:
@@ -45,7 +46,7 @@ class PDFToImagesConverter:
             raise ValueError(f"Unsupported format: {format}. Use jpg or png.")
     
     def convert(self) -> List[Path]:
-        """Convert PDF to images using available method."""
+        """Convert PDF to images using PyMuPDF."""
         if not self.pdf_path.exists():
             raise FileNotFoundError(f"PDF not found: {self.pdf_path}")
         
@@ -54,162 +55,54 @@ class PDFToImagesConverter:
         print(f"DPI: {self.dpi}")
         print(f"Format: {self.format}")
         
-        # Try methods in order of preference
-        if HAS_PDF2IMAGE:
-            return self._convert_with_pdf2image()
-        elif self._has_pdftoppm():
-            return self._convert_with_pdftoppm()
-        elif self._has_imagemagick():
-            return self._convert_with_imagemagick()
+        if HAS_PYMUPDF:
+            return self._convert_with_pymupdf()
         else:
             raise RuntimeError(
-                "No conversion tool found. Install one of:\n"
-                "  - pdf2image: pip install pdf2image\n"
-                "  - poppler-utils (pdftoppm): apt/brew install poppler-utils\n"
-                "  - ImageMagick: apt/brew install imagemagick"
+                "PyMuPDF not installed. Install it with:\n"
+                "  pip install pymupdf\n\n"
+                "PyMuPDF is a self-contained library - no external dependencies needed."
             )
     
-    def _convert_with_pdf2image(self) -> List[Path]:
-        """Convert using pdf2image library."""
-        print("Using pdf2image library...")
+    def _convert_with_pymupdf(self) -> List[Path]:
+        """Convert using PyMuPDF library (no external dependencies)."""
+        print("Using PyMuPDF (no external dependencies required)...")
         
-        images = convert_from_path(
-            self.pdf_path,
-            dpi=self.dpi,
-            fmt=self.format,
-            first_page=self.first_page,
-            last_page=self.last_page
-        )
+        # Open the PDF
+        doc = fitz.open(self.pdf_path)
+        
+        # Determine page range
+        start_page = (self.first_page - 1) if self.first_page else 0
+        end_page = self.last_page if self.last_page else doc.page_count
+        
+        # Calculate zoom factor from DPI (72 DPI is the base)
+        zoom = self.dpi / 72
+        matrix = fitz.Matrix(zoom, zoom)
         
         output_files = []
         output_dir = Path(self.output_prefix).parent
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        for i, image in enumerate(images, start=1):
-            output_path = Path(f"{self.output_prefix}-{i:03d}.{self.format}")
-            image.save(output_path, self.format.upper())
+        for page_num in range(start_page, end_page):
+            page = doc[page_num]
+            
+            # Render page to pixmap
+            pixmap = page.get_pixmap(matrix=matrix)
+            
+            # Determine output path
+            output_path = Path(f"{self.output_prefix}-{page_num + 1:03d}.{self.format}")
+            
+            # Save the image
+            if self.format in ['jpg', 'jpeg']:
+                pixmap.save(str(output_path), output="jpeg")
+            else:
+                pixmap.save(str(output_path), output="png")
+            
             output_files.append(output_path)
             print(f"  Created: {output_path.name}")
         
+        doc.close()
         return output_files
-    
-    def _convert_with_pdftoppm(self) -> List[Path]:
-        """Convert using pdftoppm command-line tool."""
-        print("Using pdftoppm...")
-        
-        # Build command
-        cmd = [
-            'pdftoppm',
-            '-r', str(self.dpi)
-        ]
-        
-        # Add format flag
-        if self.format in ['jpg', 'jpeg']:
-            cmd.append('-jpeg')
-        else:
-            cmd.append('-png')
-        
-        # Add page range if specified
-        if self.first_page:
-            cmd.extend(['-f', str(self.first_page)])
-        if self.last_page:
-            cmd.extend(['-l', str(self.last_page)])
-        
-        # Add input and output
-        cmd.extend([str(self.pdf_path), self.output_prefix])
-        
-        # Run command
-        try:
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            
-            # Find generated files
-            output_dir = Path(self.output_prefix).parent
-            pattern = f"{Path(self.output_prefix).name}-*.{self.format}"
-            output_files = sorted(output_dir.glob(pattern))
-            
-            for f in output_files:
-                print(f"  Created: {f.name}")
-            
-            return output_files
-            
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"pdftoppm failed: {e.stderr}")
-    
-    def _convert_with_imagemagick(self) -> List[Path]:
-        """Convert using ImageMagick convert command."""
-        print("Using ImageMagick...")
-        
-        # Build command
-        cmd = [
-            'convert',
-            '-density', str(self.dpi)
-        ]
-        
-        # Add page range if specified
-        if self.first_page and self.last_page:
-            page_range = f"[{self.first_page-1}-{self.last_page-1}]"
-            cmd.append(str(self.pdf_path) + page_range)
-        elif self.first_page:
-            cmd.append(str(self.pdf_path) + f"[{self.first_page-1}-]")
-        elif self.last_page:
-            cmd.append(str(self.pdf_path) + f"[0-{self.last_page-1}]")
-        else:
-            cmd.append(str(self.pdf_path))
-        
-        # Output path
-        output_path = f"{self.output_prefix}-%03d.{self.format}"
-        cmd.append(output_path)
-        
-        # Run command
-        try:
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            
-            # Find generated files
-            output_dir = Path(self.output_prefix).parent
-            pattern = f"{Path(self.output_prefix).name}-*.{self.format}"
-            output_files = sorted(output_dir.glob(pattern))
-            
-            for f in output_files:
-                print(f"  Created: {f.name}")
-            
-            return output_files
-            
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"ImageMagick failed: {e.stderr}")
-    
-    def _has_pdftoppm(self) -> bool:
-        """Check if pdftoppm is available."""
-        try:
-            subprocess.run(
-                ['pdftoppm', '-v'],
-                capture_output=True,
-                check=True
-            )
-            return True
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            return False
-    
-    def _has_imagemagick(self) -> bool:
-        """Check if ImageMagick is available."""
-        try:
-            subprocess.run(
-                ['convert', '-version'],
-                capture_output=True,
-                check=True
-            )
-            return True
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            return False
 
 
 def main():
@@ -236,10 +129,8 @@ Resolution:
   - 300 DPI: Print quality (larger files)
 
 Requirements:
-  Install one of these tools:
-  - pdf2image: pip install pdf2image (recommended)
-  - poppler-utils: apt/brew install poppler-utils
-  - ImageMagick: apt/brew install imagemagick
+  Install PyMuPDF (no external dependencies needed):
+    pip install pymupdf
         """
     )
     
@@ -328,4 +219,3 @@ Requirements:
 
 if __name__ == '__main__':
     main()
-
