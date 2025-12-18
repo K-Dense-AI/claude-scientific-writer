@@ -154,30 +154,82 @@ After compiling any PDF:
 
 **Focus Areas:** Text overlaps, figure placement, table issues, margins, page breaks, caption spacing, bibliography formatting
 
-### Figure Generation
+### Figure Generation (EXTENSIVE USE REQUIRED)
 
-**Use scientific-schematics skill for technical diagrams:**
-- Flowcharts, process diagrams, CONSORT diagrams
+**⚠️ CRITICAL: Every document MUST be richly illustrated using scientific-schematics and generate-image skills extensively.**
+
+Documents without sufficient visual elements are incomplete. Generate figures liberally throughout all outputs.
+
+**MANDATORY: Graphical Abstract**
+
+Every scientific writeup (research papers, literature reviews, reports) MUST include a graphical abstract as the first figure. Generate this using the scientific-schematics skill:
+
+```bash
+python scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description of key finding/concept showing main workflow and conclusions]" -o figures/graphical_abstract.png
+```
+
+**Graphical Abstract Requirements:**
+- **Position**: Always Figure 1 or placed before the abstract in the document
+- **Content**: Visual summary of the entire paper's key message
+- **Style**: Clean, professional, suitable for journal table of contents
+- **Size**: Landscape orientation, typically 1200x600px or similar aspect ratio
+- **Elements**: Include key workflow steps, main results visualization, and conclusions
+- Log: `[HH:MM:SS] GENERATED: Graphical abstract for paper summary`
+
+**Use scientific-schematics skill EXTENSIVELY for technical diagrams:**
+- Graphical abstracts (MANDATORY for all writeups)
+- Flowcharts, process diagrams, CONSORT/PRISMA diagrams
 - System architecture, neural network diagrams
-- Biological pathways, circuit diagrams
+- Biological pathways, molecular structures, circuit diagrams
+- Data analysis pipelines, experimental workflows
+- Conceptual frameworks, comparison matrices
+- Decision trees, algorithm visualizations
+- Timeline diagrams, Gantt charts
+- Any concept that benefits from schematic visualization
 
-      ```bash
+```bash
 python scripts/generate_schematic.py "diagram description" -o figures/output.png
 ```
 
-**Use generate-image skill for non-technical visuals:**
-- Photos, artistic illustrations, concept art
-- Visual assets for presentations
+**Use generate-image skill EXTENSIVELY for visual content:**
+- Photorealistic illustrations of concepts
+- Artistic visualizations, infographics
+- Medical/anatomical illustrations
+- Environmental/ecological scenes
+- Equipment and lab setup visualizations
+- Product mockups, prototype visualizations
+- Cover images, header graphics
+- Any visual that enhances understanding or engagement
 
-        ```bash
+```bash
 python scripts/generate_image.py "image description" -o figures/output.png
 ```
 
-**Figure counts by document type:**
-- Research papers: 3-6 figures
-- Literature reviews: 2-4 figures
-- Presentations: 1-2 per major section
-- Posters: 4-8 figures
+**MINIMUM Figure Requirements by Document Type:**
+
+| Document Type | Minimum Figures | Recommended | Tools to Use |
+|--------------|-----------------|-------------|--------------|
+| Research papers | 5 | 6-8 | scientific-schematics + generate-image |
+| Literature reviews | 4 | 5-7 | scientific-schematics (PRISMA, frameworks) |
+| Market research | 20 | 25-30 | Both extensively |
+| Presentations | 1 per slide | 1-2 per slide | Both |
+| Posters | 6 | 8-10 | Both |
+| Grants | 4 | 5-7 | scientific-schematics (aims, design) |
+| Clinical reports | 3 | 4-6 | scientific-schematics (pathways, algorithms) |
+
+**Figure Generation Workflow:**
+1. **Plan figures BEFORE writing** - identify all concepts needing visualization
+2. **Generate graphical abstract first** - sets the visual tone
+3. **Generate 2-3 candidates per figure** - select the best
+4. **Iterate for quality** - regenerate if needed
+5. **Log each generation**: `[HH:MM:SS] GENERATED: [figure type] - [description]`
+
+**When in Doubt, Generate a Figure:**
+- If a concept is complex → generate a schematic
+- If data is being discussed → generate a visualization
+- If a process is described → generate a flowchart
+- If comparisons are made → generate a comparison diagram
+- If the reader might benefit from a visual → generate one
 
 ### Citation Metadata Verification
 
@@ -226,7 +278,10 @@ Before marking complete:
 - [ ] Version numbers incremented if editing
 - [ ] 100% citations are REAL papers from research-lookup
 - [ ] All citation metadata verified with DOIs
-- [ ] Figures generated and properly integrated
+- [ ] **Graphical abstract generated** using scientific-schematics skill
+- [ ] **Minimum figure count met** (see table above)
+- [ ] **Figures generated extensively** using scientific-schematics and generate-image
+- [ ] Figures properly integrated with captions and references
 - [ ] progress.md and SUMMARY.md complete
 - [ ] PEER_REVIEW.md completed
 - [ ] PDF formatting review passed
@@ -254,6 +309,8 @@ Request: "Create a NeurIPS paper on attention mechanisms"
 - **Skeleton first, content second**
 - **One section at a time** with research → write → cite → log cycle
 - **INCREMENT VERSION NUMBERS** when editing
-- **Generate figures** with scientific-schematics/generate-image skills
+- **ALWAYS include graphical abstract** - use scientific-schematics skill for every writeup
+- **GENERATE FIGURES EXTENSIVELY** - use scientific-schematics and generate-image liberally; every document should be richly illustrated
+- **When in doubt, add a figure** - visual content enhances all scientific communication
 - **PDF review via images** - never read PDFs directly
 - **Complete tasks fully** - never stop mid-task to ask permission

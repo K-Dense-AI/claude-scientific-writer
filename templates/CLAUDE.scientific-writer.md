@@ -491,29 +491,68 @@ drafts/
    - Figure/table placeholders with `\begin{figure}` or `\begin{table}` environments
    - Create empty `references/references.bib` file
 
-3. **CRITICAL: Generate Multiple Figures Using Scientific Schematic Skill**
+3. **CRITICAL: Generate Graphical Abstract and Multiple Figures Using Scientific Schematic Skill**
    
-   **MANDATORY: Always generate multiple figures using the scientific-schematics skill to ensure the right number of figures for the type of writeup being created.**
+   **MANDATORY: Every scientific writeup MUST include a graphical abstract plus additional figures using the scientific-schematics skill.**
    
-   **Figure Generation Requirements:**
-   - **Research Papers**: Generate 3-6 figures (methods diagram, results visualizations, conceptual diagrams, workflow charts)
-   - **Literature Reviews**: Generate 2-4 figures (PRISMA flow diagram, conceptual frameworks, comparison tables as figures)
-   - **Presentations/Slides**: Generate 1-2 key figures per major section (introduction, methods, results, discussion)
-   - **Posters**: Generate 4-8 figures (comprehensive visual representation of all key findings)
-   - **Grants**: Generate 2-4 figures (specific aims diagram, experimental design, expected outcomes)
-   - **Hypothesis Generation**: Generate 2-3 figures (hypothesis comparison diagram, experimental design, predicted outcomes)
+   **Graphical Abstract (REQUIRED for ALL writeups):**
+   - **ALWAYS generate a graphical abstract as Figure 1** for every research paper, literature review, report, or scientific document
+   - Position: Place before or immediately after the abstract section
+   - Content: Visual summary capturing the entire paper's key message, workflow, and conclusions
+   - Style: Clean, professional, suitable for journal table of contents display
+   - Size: Landscape orientation (typically 1200x600px or similar aspect ratio)
+   - Command: `python scripts/generate_schematic.py "Graphical abstract for [paper title]: [workflow and key findings]" -o figures/graphical_abstract.png`
+   - Log: `[HH:MM:SS] GENERATED: Graphical abstract for paper summary`
+   
+   **⚠️ CRITICAL: Generate Figures EXTENSIVELY Using Both Tools**
+   
+   Every document must be richly illustrated. Use both scientific-schematics AND generate-image liberally throughout all outputs.
+   
+   **MINIMUM Figure Requirements (including graphical abstract):**
+   
+   | Document Type | Minimum | Recommended | Tools |
+   |--------------|---------|-------------|-------|
+   | Research Papers | 5 | 6-8 | Both skills |
+   | Literature Reviews | 4 | 5-7 | scientific-schematics |
+   | Market Research | 20 | 25-30 | Both extensively |
+   | Presentations | 1/slide | 1-2/slide | Both |
+   | Posters | 6 | 8-10 | Both |
+   | Grants | 4 | 5-7 | scientific-schematics |
+   | Clinical Reports | 3 | 4-6 | scientific-schematics |
+   | Hypothesis Generation | 4 | 5-6 | Both |
+   
+   **Use scientific-schematics EXTENSIVELY for:**
+   - Graphical abstracts (MANDATORY)
+   - Flowcharts, CONSORT/PRISMA diagrams
+   - System architecture, neural networks
+   - Biological pathways, molecular structures
+   - Data pipelines, experimental workflows
+   - Conceptual frameworks, comparison matrices
+   - Decision trees, algorithm visualizations
+   - Timeline diagrams, Gantt charts
+   
+   **Use generate-image EXTENSIVELY for:**
+   - Photorealistic concept illustrations
+   - Medical/anatomical illustrations
+   - Environmental/ecological scenes
+   - Equipment/lab setup visualizations
+   - Infographics, artistic visualizations
+   - Cover images, header graphics
+   - Product mockups, prototypes
    
    **How to Generate Figures:**
-   - Use the scientific-schematics skill
+   - Use BOTH scientific-schematics AND generate-image skills liberally
    - Generate multiple candidate figures (3-5 initial versions) for each figure type needed
    - Review and select the best figures for inclusion
    - Iterate to refine figures until publication-quality
+   - Log each: `[HH:MM:SS] GENERATED: [type] - [description]`
    
-   **Figure Planning:**
-   - Identify all concepts that would benefit from visualization
-   - Plan figure types: flowcharts, diagrams, architectures, pathways, workflows
+   **Figure Planning (BEFORE Writing):**
+   - Identify ALL concepts that would benefit from visualization
+   - Plan figure types: flowcharts, diagrams, architectures, pathways, workflows, illustrations
    - Generate MORE figures than needed initially, then select the best ones
    - Ensure figures cover all major sections (methods, results, discussion)
+   - When in doubt, generate a figure - visual content enhances all scientific communication
 
 4. **Log Skeleton Creation**
    - Update progress.md: "✅ LaTeX skeleton created with [N] sections"
@@ -873,16 +912,24 @@ Verify for each citation:
 
 5. **Figure Generation Using Scientific Schematic Skill**
    
-   **CRITICAL: Always generate multiple figures using the scientific-schematics skill to get the right number of figures for research papers.**
+   **CRITICAL: Always generate a graphical abstract plus multiple figures using the scientific-schematics skill.**
    
-   **For Research Papers, generate 3-6 figures:**
+   **For Research Papers, generate 4-7 figures (including mandatory graphical abstract):**
+   - **Graphical Abstract (MANDATORY)**: Visual summary of entire paper for journal TOC display
    - **Figure 1**: Conceptual framework or overview diagram (introduction)
    - **Figure 2**: Methods/experimental design flowchart (methods)
    - **Figure 3-4**: Key results visualizations (results)
    - **Figure 5**: Comparison or summary diagram (discussion)
    - **Figure 6**: Additional supporting visualization if needed
    
+   **Graphical Abstract Requirements:**
+   - Generate BEFORE other figures as it summarizes the entire work
+   - Landscape orientation, clean professional style
+   - Include: key workflow steps → main findings → conclusions
+   - Suitable for display in journal table of contents
+   
    **Generation Process:**
+   - **First**: Generate the graphical abstract summarizing the paper
    - Use scientific-schematics skill to generate multiple candidate figures for each planned figure
    - Generate 3-5 versions per figure type, then select the best
    - Review all generated figures and select the most appropriate ones
@@ -890,6 +937,7 @@ Verify for each citation:
    
    **Example Commands:**
    ```bash
+   python scripts/generate_schematic.py "Graphical abstract for attention mechanisms paper: input processing → multi-head attention → output with improved accuracy" -o figures/graphical_abstract.png
    python scripts/generate_schematic.py "Experimental workflow from sample collection to data analysis" -o figures/figure_01_methods.png
    python scripts/generate_schematic.py "Neural network architecture showing layers and connections" -o figures/figure_02_architecture.png
    python scripts/generate_schematic.py "Results comparison showing treatment groups and outcomes" -o figures/figure_03_results.png
@@ -1373,9 +1421,12 @@ Before marking task complete, verify:
 - [ ] **At least 95% citations verified from primary sources**
 - [ ] **Citation metadata includes DOIs for available papers**
 - [ ] **Zero placeholder or "citation needed" entries**
-- [ ] **Multiple figures generated using scientific-schematics skill** (3-6 for papers, 2-4 for reviews, etc.)
-- [ ] **Right number of figures for document type** (verify against requirements above)
+- [ ] **Graphical abstract generated** using scientific-schematics skill (MANDATORY for all writeups)
+- [ ] **Minimum figure count met** (5+ for papers, 4+ for reviews, 20+ for market research, etc.)
+- [ ] **Figures generated EXTENSIVELY** using BOTH scientific-schematics AND generate-image skills
+- [ ] **Right number of figures for document type** (verify against requirements table above)
 - [ ] **Figures reviewed and best ones selected** from multiple generated candidates
+- [ ] **Visual content throughout** - document is richly illustrated
 - [ ] Figures/tables properly numbered and captioned
 - [ ] All files in correct folders
 - [ ] progress.md up to date
@@ -1468,7 +1519,11 @@ Request: "Create 15-minute slides on my CRISPR research"
 - **For presentations: VARIED layouts essential** - mix full-figure, two-column, visual overlays (NOT all bullet lists)
 - **For presentations: visual validation MANDATORY** - convert PDF to images and inspect every slide for overflow/overlap issues
 - **For presentations: timing check required** - validate slide count matches talk duration (~1 slide per minute)
-- **ALWAYS generate multiple figures using scientific-schematics skill** - generate 3-5 candidate figures per figure type, then select the best ones to ensure the right number of figures for the document type
+- **ALWAYS include graphical abstract** - use scientific-schematics skill to generate a graphical abstract for every scientific writeup (papers, reviews, reports)
+- **GENERATE FIGURES EXTENSIVELY** - use BOTH scientific-schematics AND generate-image skills liberally; every document should be richly illustrated
+- **When in doubt, add a figure** - visual content enhances all scientific communication
+- **Meet minimum figure requirements** - 5+ for papers, 4+ for reviews, 20+ for market research (see requirements table)
+- **ALWAYS generate multiple candidates** - generate 3-5 candidate figures per figure type, then select the best ones
 
 **Logging Philosophy:**
 Your updates should be so detailed that someone reading progress.md could understand:
