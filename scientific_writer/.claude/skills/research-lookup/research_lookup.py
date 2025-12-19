@@ -18,8 +18,8 @@ class ResearchLookup:
 
     # Available models
     MODELS = {
-        "pro": "perplexity/sonar-pro-search",  # Fast lookup with search, cost-effective
-        "reasoning": "perplexity/sonar-reasoning-pro",  # Deep analysis with reasoning and online search
+        "pro": "perplexity/sonar-pro",  # Fast lookup, cost-effective
+        "reasoning": "perplexity/sonar-reasoning-pro",  # Deep analysis with reasoning
     }
 
     # Keywords that indicate complex queries requiring reasoning model
@@ -316,6 +316,7 @@ Remember: This is for academic research purposes. Prioritize accuracy, completen
 def main():
     """Command-line interface for testing the research lookup tool."""
     import argparse
+    import sys
 
     parser = argparse.ArgumentParser(description="Research Information Lookup Tool")
     parser.add_argument("query", nargs="?", help="Research query to look up")
@@ -323,82 +324,113 @@ def main():
     parser.add_argument("--batch", nargs="+", help="Run multiple queries")
     parser.add_argument("--force-model", choices=["pro", "reasoning"], 
                         help="Force specific model: 'pro' for fast lookup, 'reasoning' for deep analysis")
+    parser.add_argument("-o", "--output", help="Write output to file instead of stdout")
+    parser.add_argument("--json", action="store_true", help="Output results as JSON")
 
     args = parser.parse_args()
+    
+    # Set up output destination
+    output_file = None
+    if args.output:
+        output_file = open(args.output, 'w', encoding='utf-8')
+    
+    def write_output(text):
+        """Write to file or stdout."""
+        if output_file:
+            output_file.write(text + '\n')
+        else:
+            print(text)
 
     # Check for API key
     if not os.getenv("OPENROUTER_API_KEY"):
-        print("Error: OPENROUTER_API_KEY environment variable not set")
-        print("Please set it in your .env file or export it:")
-        print("  export OPENROUTER_API_KEY='your_openrouter_api_key'")
+        print("Error: OPENROUTER_API_KEY environment variable not set", file=sys.stderr)
+        print("Please set it in your .env file or export it:", file=sys.stderr)
+        print("  export OPENROUTER_API_KEY='your_openrouter_api_key'", file=sys.stderr)
+        if output_file:
+            output_file.close()
         return 1
 
     try:
         research = ResearchLookup(force_model=args.force_model)
 
         if args.model_info:
-            print("Available models from OpenRouter:")
+            write_output("Available models from OpenRouter:")
             models = research.get_model_info()
             if "data" in models:
                 for model in models["data"]:
                     if "perplexity" in model["id"].lower():
-                        print(f"  - {model['id']}: {model.get('name', 'N/A')}")
+                        write_output(f"  - {model['id']}: {model.get('name', 'N/A')}")
+            if output_file:
+                output_file.close()
             return 0
 
         if not args.query and not args.batch:
-            print("Error: No query provided. Use --model-info to see available models.")
+            print("Error: No query provided. Use --model-info to see available models.", file=sys.stderr)
+            if output_file:
+                output_file.close()
             return 1
 
         if args.batch:
-            print(f"Running batch research for {len(args.batch)} queries...")
+            print(f"Running batch research for {len(args.batch)} queries...", file=sys.stderr)
             results = research.batch_lookup(args.batch)
         else:
-            print(f"Researching: {args.query}")
+            print(f"Researching: {args.query}", file=sys.stderr)
             results = [research.lookup(args.query)]
 
-        # Display results
+        # Output as JSON if requested
+        if args.json:
+            write_output(json.dumps(results, indent=2, ensure_ascii=False))
+            if output_file:
+                output_file.close()
+            return 0
+
+        # Display results in human-readable format
         for i, result in enumerate(results):
             if result["success"]:
-                print(f"\n{'='*80}")
-                print(f"Query {i+1}: {result['query']}")
-                print(f"Timestamp: {result['timestamp']}")
-                print(f"Model: {result['model']}")
-                print(f"{'='*80}")
-                print(result["response"])
+                write_output(f"\n{'='*80}")
+                write_output(f"Query {i+1}: {result['query']}")
+                write_output(f"Timestamp: {result['timestamp']}")
+                write_output(f"Model: {result['model']}")
+                write_output(f"{'='*80}")
+                write_output(result["response"])
 
                 # Display API-provided sources first (most reliable)
                 sources = result.get("sources", [])
                 if sources:
-                    print(f"\n📚 Sources ({len(sources)}):")
+                    write_output(f"\n📚 Sources ({len(sources)}):")
                     for j, source in enumerate(sources):
                         title = source.get("title", "Untitled")
                         url = source.get("url", "")
                         date = source.get("date", "")
                         date_str = f" ({date})" if date else ""
-                        print(f"  [{j+1}] {title}{date_str}")
+                        write_output(f"  [{j+1}] {title}{date_str}")
                         if url:
-                            print(f"      {url}")
+                            write_output(f"      {url}")
 
                 # Display additional text-extracted citations
                 citations = result.get("citations", [])
                 text_citations = [c for c in citations if c.get("type") in ("doi", "url")]
                 if text_citations:
-                    print(f"\n🔗 Additional References ({len(text_citations)}):")
+                    write_output(f"\n🔗 Additional References ({len(text_citations)}):")
                     for j, citation in enumerate(text_citations):
                         if citation.get("type") == "doi":
-                            print(f"  [{j+1}] DOI: {citation.get('doi', '')} - {citation.get('url', '')}")
+                            write_output(f"  [{j+1}] DOI: {citation.get('doi', '')} - {citation.get('url', '')}")
                         elif citation.get("type") == "url":
-                            print(f"  [{j+1}] {citation.get('url', '')}")
+                            write_output(f"  [{j+1}] {citation.get('url', '')}")
 
                 if result.get("usage"):
-                    print(f"\nUsage: {result['usage']}")
+                    write_output(f"\nUsage: {result['usage']}")
             else:
-                print(f"\nError in query {i+1}: {result['error']}")
+                write_output(f"\nError in query {i+1}: {result['error']}")
 
+        if output_file:
+            output_file.close()
         return 0
 
     except Exception as e:
-        print(f"Error: {str(e)}")
+        print(f"Error: {str(e)}", file=sys.stderr)
+        if output_file:
+            output_file.close()
         return 1
 
 

@@ -223,6 +223,15 @@ python research_lookup.py "your query" --force-model reasoning
 
 # Automatic (no flag)
 python research_lookup.py "your query"
+
+# Save output to a file
+python research_lookup.py "your query" -o results.txt
+
+# Output as JSON (useful for programmatic access)
+python research_lookup.py "your query" --json
+
+# Combine: JSON output saved to file
+python research_lookup.py "your query" --json -o results.json
 ```
 
 ## Technical Integration
