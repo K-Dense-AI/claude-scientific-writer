@@ -143,7 +143,7 @@ For detailed guidance on IMRAD structure, refer to `references/imrad_structure.m
 
 ### 2. Section-Specific Writing Guidance
 
-**Abstract Composition**: Craft concise, standalone summaries (100-250 words) that capture the paper's purpose, methods, results, and conclusions. Support both structured abstracts (with labeled sections) and unstructured single-paragraph formats.
+**Abstract Composition**: Craft concise, standalone summaries (150-300 words) written as **flowing paragraphs**—never with labeled sections like "Background:", "Methods:", "Results:", "Conclusions:". The abstract should read as cohesive prose covering: (1) context and problem, (2) what was done, (3) key findings with specific numbers, and (4) significance and implications. Only use structured abstracts with labels if the journal explicitly requires them in their author guidelines.
 
 **Introduction Development**: Build compelling introductions that:
 - Establish the research problem's importance
@@ -348,6 +348,11 @@ Lists may appear in scientific papers only in specific contexts:
 - **Supplementary Materials**: Extended protocols, equipment lists, detailed parameters
 - **Never in**: Abstract, Introduction, Results, Discussion, Conclusions
 
+**Abstract Format Rule:**
+- ❌ **NEVER** use labeled sections (Background:, Methods:, Results:, Conclusions:)
+- ✅ **ALWAYS** write as flowing paragraph(s) with natural transitions
+- Exception: Only use structured format if journal explicitly requires it in author guidelines
+
 **Integration with Research Lookup:**
 
 The research-lookup skill is essential for Stage 1 (creating outlines):
@@ -498,7 +503,7 @@ Adapt language, terminology, and conventions to match the specific scientific di
 4. Draft Results (describing figures/tables objectively)
 5. Compose Discussion (interpreting findings)
 6. Write Introduction (setting up the research question)
-7. Craft Abstract (synthesizing the complete story)
+7. Craft Abstract (synthesizing the complete story as **flowing paragraph(s)**, not labeled sections)
 8. Create Title (concise and descriptive)
 
 **Remember**: Bullet points are for planning only—the final manuscript must be in complete paragraphs.
@@ -526,6 +531,26 @@ This skill works effectively with:
 - **Statistical analysis**: For determining appropriate statistical presentations
 - **Literature review skills**: For contextualizing research
 - **Figure creation tools**: For developing publication-quality visualizations
+- **Venue-templates skill**: For venue-specific writing styles and formatting
+
+### Venue-Specific Writing Styles
+
+**Before writing for a specific venue, consult the venue-templates skill for writing style guides:**
+
+Different venues have dramatically different writing expectations:
+- **Nature/Science**: Accessible, story-driven, broad significance
+- **Cell Press**: Mechanistic depth, graphical abstracts, Highlights
+- **Medical journals (NEJM, Lancet)**: Structured abstracts, evidence language
+- **ML conferences (NeurIPS, ICML)**: Contribution bullets, ablation studies
+- **CS conferences (CHI, ACL)**: Field-specific conventions
+
+The venue-templates skill provides:
+- `venue_writing_styles.md`: Master style comparison
+- Venue-specific guides: `nature_science_style.md`, `cell_press_style.md`, `medical_journal_styles.md`, `ml_conference_style.md`, `cs_conference_style.md`
+- `reviewer_expectations.md`: What reviewers look for at each venue
+- Writing examples in `assets/examples/`
+
+**Workflow**: First use this skill for general scientific writing principles (IMRAD, clarity, citations), then consult venue-templates for venue-specific style adaptation.
 
 ## References
 
@@ -536,5 +561,7 @@ This skill includes comprehensive reference files covering specific aspects of s
 - `references/figures_tables.md`: Best practices for creating effective data visualizations
 - `references/reporting_guidelines.md`: Study-specific reporting standards and checklists
 - `references/writing_principles.md`: Core principles of effective scientific communication
+
+**For venue-specific writing styles** (tone, voice, abstract format, reviewer expectations), see the **venue-templates** skill which provides comprehensive style guides for Nature/Science, Cell Press, medical journals, ML conferences, and CS conferences.
 
 Load these references as needed when working on specific aspects of scientific writing.

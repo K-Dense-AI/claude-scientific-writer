@@ -251,6 +251,13 @@ For each citation in references.bib:
 1. **Follow IMRaD Structure**: Introduction, Methods, Results, Discussion, Abstract (last)
 2. **Use LaTeX as default** with BibTeX citations
 3. **Generate 3-6 figures** using scientific-schematics skill
+4. **Adapt writing style to venue** using venue-templates skill style guides
+
+**Venue Writing Styles:** Before writing for a specific venue (Nature, Science, Cell, NeurIPS, etc.), consult the **venue-templates** skill for writing style guides:
+- `venue_writing_styles.md` - Master style comparison
+- Venue-specific guides: `nature_science_style.md`, `cell_press_style.md`, `medical_journal_styles.md`, `ml_conference_style.md`, `cs_conference_style.md`
+- `reviewer_expectations.md` - What reviewers look for at each venue
+- Examples in `assets/examples/` for abstracts and introductions
 
 ## Literature Reviews
 
@@ -304,6 +311,7 @@ Request: "Create a NeurIPS paper on attention mechanisms"
 ## Key Principles
 
 - **LaTeX is the default format**
+- **Consult venue-templates for writing style** - adapt tone, abstract format, and structure to target venue
 - **Research before writing** - lookup papers BEFORE writing each section
 - **ONLY REAL CITATIONS** - never placeholder or invented
 - **Skeleton first, content second**

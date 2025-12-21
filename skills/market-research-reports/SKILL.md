@@ -751,6 +751,9 @@ This skill works synergistically with:
 
 - **research-lookup**: Essential for gathering market data, statistics, and competitive intelligence
 - **scientific-schematics**: Generate all diagrams, charts, and visualizations
+- **venue-templates**: For academic publication writing style guidance when research is published
+
+**Publication Writing Styles:** When market research findings are published in academic venues, consult the **venue-templates** skill for writing style guides covering Nature/Science, Cell Press, medical journals, and ML/CS conferences.
 - **generate-image**: Create infographics and conceptual illustrations
 - **peer-review**: Evaluate report quality and completeness
 - **citation-management**: Manage BibTeX references
