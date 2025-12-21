@@ -6,6 +6,125 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.10.0] - 2025-12-21
+
+### 📝 Comprehensive Venue Writing Style Guides
+
+Major enhancement to writing skills with comprehensive venue-specific style guides for crafting publication-ready manuscripts.
+
+### ✨ Added
+
+#### Venue Writing Style System
+
+- **Master Style Guide** (`venue_writing_styles.md`) - Complete overview of how writing style varies across publication venues
+  - Style spectrum from accessible (Nature/Science) to technical (specialized journals)
+  - Quick reference table for tone, voice, and abstract style by venue type
+  - Guidance on adapting between venue types
+
+- **Nature/Science Style Guide** (`nature_science_style.md`) - 400+ line comprehensive guide
+  - Audience and tone guidelines for broad-impact journals
+  - Flowing paragraph abstract format with examples
+  - Introduction, Results, Discussion structure guidance
+  - Figure design principles and citation style
+  - Common rejection reasons and pre-submission checklist
+
+- **Cell Press Style Guide** (`cell_press_style.md`) - Cell family journal conventions
+  - Summary (abstract), Highlights, eTOC blurb, and In Brief formats
+  - Graphical abstract requirements and design guidelines
+  - STAR Methods and Key Resources Table formatting
+  - Declarative subheading style
+
+- **Medical Journal Style Guide** (`medical_journal_styles.md`) - NEJM, Lancet, JAMA, BMJ
+  - Structured abstract format (the one venue requiring labeled sections)
+  - Evidence language conventions by study design
+  - Reporting guidelines compliance (CONSORT, STROBE, PRISMA)
+  - Journal-specific requirements and word limits
+
+- **ML Conference Style Guide** (`ml_conference_style.md`) - NeurIPS, ICML, ICLR, CVPR
+  - Contribution bullet list format (critical for ML papers)
+  - Ablation study expectations
+  - Reproducibility requirements
+  - Limitations section guidance
+
+- **CS Conference Style Guide** (`cs_conference_style.md`) - ACL, CHI, SIGKDD
+  - NLP conference requirements (human evaluation, error analysis)
+  - HCI paper structure (user-centered, design implications)
+  - Data mining emphasis (scalability, industry applications)
+
+- **Reviewer Expectations Guide** (`reviewer_expectations.md`) - What reviewers look for by venue
+  - Evaluation criteria and priority weights
+  - Common rejection reasons by venue type
+  - Sample reviewer concerns and effective responses
+  - Rebuttal strategies and templates
+
+#### Abstract Formatting Standard
+
+- **Flowing Paragraph Default** - Abstracts now default to flowing paragraph style
+  - Updated `scientific-writing/SKILL.md` with explicit abstract formatting rules
+  - Updated `imrad_structure.md` with correct vs. incorrect examples
+  - Only use structured abstracts when explicitly required by journal (e.g., medical journals)
+
+#### Concrete Examples
+
+- **Nature Abstract Examples** (`nature_abstract_examples.md`) - 5 complete examples across disciplines
+  - Molecular biology, neuroscience, climate science, physics, ecology
+  - Analysis of what makes each example effective
+
+- **NeurIPS Introduction Example** (`neurips_introduction_example.md`) - Full ML paper introduction
+  - Paragraph-by-paragraph breakdown
+  - Contribution bullet templates
+  - Common mistakes to avoid
+
+- **Cell Summary Examples** (`cell_summary_example.md`) - Complete Cell Press elements
+  - Summary, Highlights, eTOC blurb, In Brief
+  - Character counting for highlights (≤85 chars)
+  - Graphical abstract descriptions
+
+- **Medical Structured Abstract Examples** (`medical_structured_abstract.md`)
+  - NEJM, Lancet, JAMA, BMJ examples
+  - Journal-specific formatting differences
+
+### 🔧 Improvements
+
+- **Cross-Skill Integration** - All relevant skills now reference venue style guides
+  - Updated `scientific-writing/SKILL.md`
+  - Updated `literature-review/SKILL.md`
+  - Updated `clinical-decision-support/SKILL.md`
+  - Updated `peer-review/SKILL.md`
+  - Updated `treatment-plans/SKILL.md`
+  - Updated `hypothesis-generation/SKILL.md`
+  - Updated `research-grants/SKILL.md`
+  - Updated `market-research-reports/SKILL.md`
+  - Updated `venue-templates/SKILL.md`
+
+- **Synchronized Skills** - Both skill directories updated
+  - `skills/` directory (project root)
+  - `scientific_writer/.claude/skills/` directory (package)
+
+### 📝 Files Added
+
+- `skills/venue-templates/references/venue_writing_styles.md`
+- `skills/venue-templates/references/nature_science_style.md`
+- `skills/venue-templates/references/cell_press_style.md`
+- `skills/venue-templates/references/medical_journal_styles.md`
+- `skills/venue-templates/references/ml_conference_style.md`
+- `skills/venue-templates/references/cs_conference_style.md`
+- `skills/venue-templates/references/reviewer_expectations.md`
+- `skills/venue-templates/assets/examples/nature_abstract_examples.md`
+- `skills/venue-templates/assets/examples/neurips_introduction_example.md`
+- `skills/venue-templates/assets/examples/cell_summary_example.md`
+- `skills/venue-templates/assets/examples/medical_structured_abstract.md`
+
+### 💡 Key Benefits
+
+- **Publication-Ready Papers** - Papers now match the style of target venues
+- **Correct Abstract Format** - Flowing paragraphs by default, structured only when required
+- **Reviewer Alignment** - Understand what reviewers expect at each venue
+- **Cross-Venue Adaptation** - Guidance on converting between venue types
+- **Concrete Examples** - Real examples to follow, not just rules
+
+---
+
 ## [2.9.5] - 2025-12-10
 
 ### 🎨 Scientific Slides Skill Enhancements
