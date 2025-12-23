@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `SKILL_REMOVAL_PLAN.md` - Detailed plan for removing 5 clinical/business-focused skills:
+  - Skills targeted: `research-grants`, `clinical-decision-support`, `clinical-reports`, `market-research-reports`, `treatment-plans`
+  - Inventory of 15 directories to delete across 3 locations
+  - 9 files requiring cross-reference updates
+  - 6-phase execution plan with verification steps
 - uv package manager setup with `uv sync` for environment management
 - `reportlab>=4.0` dependency for PDF generation in oligon_reports module
 - `INTEGRATION_ANALYSIS.md` - Comprehensive cross-reference analysis of template-project design vs scientific-writer skill system
