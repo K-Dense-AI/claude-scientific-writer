@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New README.md with warning callout indicating fork is not ready for end-user use
 - Documentation pointing users to upstream repository for production use
 
+### Removed
+
+- `.claude-plugin/` directory - not needed for non-distributed fork (only required for Claude Code marketplace distribution)
+
 ## [0.1.0] - 2024-12-23
 
 ### Added
