@@ -27,6 +27,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `basic_report.py` - Basic report example
     - `pareto_reports.py` - Pareto analysis reports
 
+### Changed
+
+- Reorganized `docs/` folder to separate documentation by origin:
+  - `docs/original/` - Documentation from upstream scientific-writer project
+    - Core docs: API.md, DEVELOPMENT.md, FEATURES.md, SKILLS.md, etc.
+    - `archived/` - Original files with .original suffix
+    - `examples/` - Scientific writing examples (grants, posters, slides, etc.)
+  - `docs/template-project/` - Documentation from Oligon template_project
+    - `brand/` - Brand standards and visual identity specs
+
 ### Removed
 
 - Cursor IDE configuration files (`.cursor/`, `.cursorignore`)
