@@ -11,10 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New README.md with warning callout indicating fork is not ready for end-user use
 - Documentation pointing users to upstream repository for production use
+- Synthesized assets from Oligon template_project repository:
+  - `src/oligon_reports/` - Python package for branded PDF report generation
+    - `brand_colors.py` - Oligon color palette and typography constants
+    - `components.py` - Reusable visual components (MetricCard, CalloutBox, Timeline, etc.)
+    - `report_generator.py` - Main PDF generation orchestrator
+  - `docs/brand/` - Brand standards documentation
+    - `BRAND_COLORS_v4.md` - Comprehensive visual identity specification
+    - `DOCUMENT_TEMPLATING_SYSTEM.md` - Document templating system design
+    - `ROADMAP.md` - Development roadmap
+  - `references/` - Templates and guides
+    - `Oligon_Template.pot` - PowerPoint master template
+    - `pdf_python_guide.md` - PDF generation reference
+  - `examples/` - Working report examples
+    - `basic_report.py` - Basic report example
+    - `pareto_reports.py` - Pareto analysis reports
 
 ### Removed
 
-- `.claude-plugin/` directory - not needed for non-distributed fork (only required for Claude Code marketplace distribution)
+- Cursor IDE configuration files (`.cursor/`, `.cursorignore`)
 
 ## [0.1.0] - 2024-12-23
 
