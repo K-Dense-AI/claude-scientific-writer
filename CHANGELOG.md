@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- uv package manager setup with `uv sync` for environment management
+- `reportlab>=4.0` dependency for PDF generation in oligon_reports module
 - `INTEGRATION_ANALYSIS.md` - Comprehensive cross-reference analysis of template-project design vs scientific-writer skill system
   - Document type mapping (12 template types to existing skills)
   - Architectural comparison of both approaches

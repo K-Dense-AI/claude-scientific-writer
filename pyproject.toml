@@ -10,6 +10,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "requests>=2.31.0",
     "pymupdf>=1.24.0",
+    "reportlab>=4.0",
 ]
 
 # System Dependencies (must be installed separately):
