@@ -51,6 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **Skill directories removed (Phase 1):** 15 directories containing clinical/business-focused skills
+  - `.claude/skills/`: research-grants, clinical-decision-support, clinical-reports, market-research-reports, treatment-plans
+  - `skills/`: duplicate copies of the above 5 skills
+  - `scientific_writer/.claude/skills/`: nested duplicate copies of the above 5 skills
 - Cursor IDE configuration files (`.cursor/`, `.cursorignore`)
 
 ## [0.1.0] - 2024-12-23
