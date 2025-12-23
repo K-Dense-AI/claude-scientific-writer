@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `INTEGRATION_ANALYSIS.md` - Comprehensive cross-reference analysis of template-project design vs scientific-writer skill system
+  - Document type mapping (12 template types to existing skills)
+  - Architectural comparison of both approaches
+  - Merged architecture strategy with 5-phase implementation plan
+  - Target file organization structure
 - New README.md with warning callout indicating fork is not ready for end-user use
 - Documentation pointing users to upstream repository for production use
 - Synthesized assets from Oligon template_project repository:
