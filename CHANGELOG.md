@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `scientific_writer/README.md`: Documentation for the Python package
+  - Explains CLI and API usage for programmatic paper generation
+  - Added corresponding section in `CLAUDE.md` for quick reference
 - Skills consolidation: `skills/` is now the single canonical location
   - Removed duplicate `.claude/skills/` (was 17 skill directories)
   - Removed duplicate `scientific_writer/.claude/skills/` (was installable package copy)
