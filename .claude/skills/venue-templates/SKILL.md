@@ -335,11 +335,6 @@ This skill works seamlessly with other scientific skills:
 - Use this skill to verify formatting compliance
 - Ensure adherence to reporting guidelines (CONSORT, STROBE, etc.)
 
-### Research Grants
-- Cross-reference with **research-grants** skill for content strategy
-- Use this skill for agency-specific templates and formatting
-- Combine for comprehensive grant proposal preparation
-
 ### LaTeX Posters
 - This skill provides venue-agnostic poster templates
 - Use for conference-specific poster requirements

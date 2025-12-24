@@ -41,6 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Cross-skill references updated (Phase 2):** Removed references to deleted skills
+  - `venue-templates/SKILL.md`: Removed "Research Grants" subsection referencing `research-grants` skill
+  - `hypothesis-generation/assets/FORMATTING_GUIDE.md`: Removed `treatment-plans` skill reference
+  - Updates applied to both `.claude/skills/` and `skills/` directories
 - Reorganized `docs/` folder to separate documentation by origin:
   - `docs/original/` - Documentation from upstream scientific-writer project
     - Core docs: API.md, DEVELOPMENT.md, FEATURES.md, SKILLS.md, etc.

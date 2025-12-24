@@ -668,5 +668,4 @@ Detailed literature review here.
 - See `SKILL.md` for workflow and methodology guidance
 - See `references/hypothesis_quality_criteria.md` for evaluation framework
 - See `references/experimental_design_patterns.md` for design guidance
-- See treatment-plans skill for additional LaTeX styling examples
 
