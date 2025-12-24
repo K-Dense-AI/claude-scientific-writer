@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `skills/scientific-schematics/IMPLEMENTATION_PLAN_GEMINI_MODELS.md`: Implementation plan for model configuration update
+  - Switch default review model from Gemini 3 Pro to Gemini 3 Flash Preview (faster, cheaper)
+  - Add `--review-model` CLI flag to allow Pro override for critical work
+  - Strengthen review prompts with step-by-step reasoning for Flash optimization
+  - Keep Nano Banana Pro for image generation (specialized model, no change)
+  - 4-phase implementation plan with file-by-file changes documented
 - `skills/plotting-libraries/`: New skill for Python plotting libraries (matplotlib & seaborn)
   - Main `SKILL.md` with decision framework for choosing between libraries
   - `references/matplotlib.md` - comprehensive matplotlib reference
