@@ -333,12 +333,174 @@ Full execution details preserved in:
 
 ---
 
+## 11. Future: Visual Design Skill Architecture (Option D)
+
+**Status:** Planned | **Priority:** Phase 2-3 Integration
+
+### Context
+
+A `visual-design-SKILL.md` was created in `docs/template-project/brand/` as a design philosophy layer for scientific visual outputs. Currently, cross-references link it to implementation skills (Option B - quick win).
+
+A more robust architecture (Option D) would refactor this into a proper parent-child inheritance model where `visual-design` becomes the shared foundation for all visual output skills.
+
+### Current State (Option B)
+
+```
+docs/template-project/brand/
+└── visual-design-SKILL.md          ← Design philosophy (standalone)
+        │
+        └── Cross-references to:
+            ├── scientific-visualization (matplotlib/seaborn)
+            ├── scientific-schematics (AI diagrams)
+            ├── scientific-slides (presentations)
+            ├── latex-posters / pptx-posters
+            └── generate-image (AI images)
+```
+
+**Limitation:** Each implementation skill contains its own inline design guidance, leading to redundancy and potential inconsistency.
+
+### Target State (Option D)
+
+```
+.claude/skills/
+├── visual-design/SKILL.md          ← NEW: Promoted to active skill
+│   │                                  (abstract design philosophy layer)
+│   ├── Design Thinking Framework
+│   ├── Typography Principles (abstract)
+│   ├── Color Philosophy (abstract)
+│   ├── Composition Principles (abstract)
+│   ├── Anti-Pattern Guidance
+│   └── Quality Standards (abstract)
+│
+├── scientific-schematics/SKILL.md
+│   ├── extends: visual-design      ← Inherits philosophy
+│   └── Implementation: Nano Banana Pro, quality thresholds
+│
+├── scientific-slides/SKILL.md
+│   ├── extends: visual-design      ← Inherits philosophy
+│   └── Implementation: PPTX/Beamer specifics
+│
+├── latex-posters/SKILL.md
+│   ├── extends: visual-design      ← Inherits philosophy
+│   └── Implementation: LaTeX poster packages
+│
+├── pptx-posters/SKILL.md
+│   ├── extends: visual-design      ← Inherits philosophy
+│   └── Implementation: PowerPoint poster layout
+│
+└── generate-image/SKILL.md
+    ├── extends: visual-design      ← Inherits philosophy
+    └── Implementation: FLUX/Gemini API calls
+```
+
+### Benefits of Option D
+
+| Aspect | Current (Option B) | Target (Option D) |
+|--------|-------------------|-------------------|
+| **Redundancy** | Each skill repeats design guidance | DRY - philosophy in one place |
+| **Consistency** | May drift over time | Single source of truth |
+| **Maintenance** | Update N skills for philosophy changes | Update 1 skill |
+| **Skill length** | Longer (embedded philosophy) | Shorter (reference parent) |
+| **Onboarding** | Read multiple skills | Read parent, then implementation |
+
+### Implementation Phases
+
+#### Phase D.1: Promote visual-design to Active Skill
+
+```bash
+# Move from docs to active skills
+mkdir -p .claude/skills/visual-design/
+cp docs/template-project/brand/visual-design-SKILL.md .claude/skills/visual-design/SKILL.md
+```
+
+- [ ] Adapt YAML frontmatter for active skill format
+- [ ] Remove output-specific implementation details (keep abstract)
+- [ ] Add `allowed-tools` if needed
+
+#### Phase D.2: Add Inheritance Headers to Child Skills
+
+Each visual output skill gets an `extends:` reference:
+
+```markdown
+---
+name: scientific-schematics
+extends: visual-design
+description: ...
+---
+
+# Scientific Schematics
+
+> **Design Foundation**: This skill implements principles from `visual-design`.
+> See that skill for typography, color, composition, and quality standards.
+
+## Implementation Details
+[Skill-specific content only]
+```
+
+#### Phase D.3: Remove Redundant Content from Child Skills
+
+For each child skill, remove sections now covered by parent:
+- [ ] `scientific-schematics`: Remove inline design philosophy (if any)
+- [ ] `scientific-slides`: Remove "Design Philosophy" section (~50 lines)
+- [ ] `latex-posters`: Remove typography/color guidance (defer to parent)
+- [ ] `pptx-posters`: Remove typography/color guidance (defer to parent)
+- [ ] `generate-image`: Remove aesthetic guidance (if any)
+
+#### Phase D.4: Integrate with scientific-visualization
+
+When `scientific-visualization-SKILL.md` is promoted from `docs/template-project/` to `.claude/skills/`:
+
+- [ ] Add `extends: visual-design` header
+- [ ] Remove ~200 lines of redundant philosophy content
+- [ ] Keep implementation-specific sections (matplotlib code, journal specs)
+
+### Files Affected
+
+| File | Change |
+|------|--------|
+| `.claude/skills/visual-design/SKILL.md` | NEW (promoted from docs) |
+| `.claude/skills/scientific-schematics/SKILL.md` | Add extends header, minor cleanup |
+| `.claude/skills/scientific-slides/SKILL.md` | Add extends header, remove ~50 lines |
+| `.claude/skills/latex-posters/SKILL.md` | Add extends header, minor cleanup |
+| `.claude/skills/pptx-posters/SKILL.md` | Add extends header, minor cleanup |
+| `.claude/skills/generate-image/SKILL.md` | Add extends header, minor cleanup |
+| `docs/template-project/scientific-visualization-SKILL.md` | Eventually promote + extend |
+
+### Estimated Effort
+
+| Phase | Effort | Dependencies |
+|-------|--------|--------------|
+| D.1: Promote visual-design | 30 min | None |
+| D.2: Add inheritance headers | 1 hour | D.1 |
+| D.3: Remove redundant content | 2-3 hours | D.2, careful review |
+| D.4: Integrate scientific-visualization | 1 hour | Phase 1-3 of main roadmap |
+
+**Total:** ~5 hours of focused work
+
+### When to Execute
+
+Execute Option D during **Phase 2-3** of the main integration roadmap, specifically when:
+1. Touching visual output skills for other reasons (reduces marginal effort)
+2. Adding new visual output skills (establish pattern from start)
+3. Inconsistencies emerge between skill design guidance
+
+### Success Criteria
+
+1. `visual-design` is an active skill in `.claude/skills/`
+2. All 5 visual output skills reference it via `extends:`
+3. No redundant design philosophy in child skills
+4. Total line count across visual skills reduced by ~300 lines
+5. Design philosophy updates propagate from single source
+
+---
+
 ## References
 
 - **Template-Project Design**: `docs/template-project/brand/DOCUMENT_TEMPLATING_SYSTEM.md`
 - **Scientific-Writer Skills**: `.claude/skills/*/SKILL.md`
 - **Oligon Reports Package**: `src/oligon_reports/`
 - **Brand Standards**: `docs/template-project/brand/BRAND_COLORS_v4.md`
+- **Visual Design Philosophy**: `docs/template-project/brand/visual-design-SKILL.md`
 
 ---
 

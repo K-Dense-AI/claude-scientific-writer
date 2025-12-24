@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `docs/template-project/brand/visual-design-SKILL.md`: Design philosophy skill for scientific visuals
+  - Adapted from frontend-design-SKILL.md for scientific outputs (figures, infographics, reports, presentations, posters)
+  - Design thinking framework, typography principles, color philosophy, composition guidelines
+  - Anti-pattern guidance ("avoiding default syndrome")
+  - Cross-references to implementation skills (scientific-schematics, scientific-slides, etc.)
+  - Quality checklist for visual outputs
+- `docs/template-project/scientific-visualization-SKILL.md`: Comprehensive matplotlib/seaborn implementation guide
+  - Publication-quality figure creation with code examples
+  - Journal-specific specifications (Nature, Science, Cell, etc.)
+  - Colorblind-safe palettes and accessibility guidance
+  - Multi-panel figure layouts and export settings
+  - Cross-reference to visual-design for design philosophy
+- `INTEGRATION_ANALYSIS.md` Section 11: Future visual design skill architecture (Option D)
+  - Documents parent-child refactoring plan for visual output skills
+  - Phase D.1-D.4 implementation steps with effort estimates
+  - Files affected, success criteria, and execution triggers
 - `CLAUDE.md`: Root project documentation for the fork
   - Project overview and fork identity (not production-ready notice)
   - Quick reference (uv commands, key files, 17 active skills)
@@ -76,6 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `docs/template-project/brand/frontend-design-SKILL.md`: Web UI design template no longer needed after extracting concepts into visual-design-SKILL.md
 - `SKILL_REMOVAL_PLAN.md`: Deleted after completion (content preserved in CHANGELOG.md and INTEGRATION_ANALYSIS.md)
 - **Skill directories removed (Phase 1):** 15 directories containing clinical/business-focused skills
   - `.claude/skills/`: research-grants, clinical-decision-support, clinical-reports, market-research-reports, treatment-plans
