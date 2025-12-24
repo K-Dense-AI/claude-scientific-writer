@@ -3,7 +3,6 @@
     "allow": [
       "Bash(mv:*)",
       "Bash(ls:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: archive original documentation for fork customization\n\nArchive end-user oriented files to docs/*.original.* to prepare\nfor customization. Original files preserved for reference.\n\nArchived:\n- CLAUDE.md → docs/CLAUDE.original.md\n- README.md → docs/README.original.md\n- CHANGELOG.md → docs/CHANGELOG.original.md\n- TESTING_INSTRUCTIONS.md → docs/TESTING_INSTRUCTIONS.original.md\n- example_api_usage.py → docs/example_api_usage.original.py\n- test-marketplace-example.json → docs/test-marketplace-example.original.json\n\nCreated new CHANGELOG.md to track fork development.\n\nFork baseline: upstream v2.10.0\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git push)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
@@ -13,7 +12,6 @@
       "Bash(uv run python:*)",
       "Bash(find:*)",
       "Bash(echo:*)",
-      "Bash(git -C /Users/jeffkiefer/Documents/projects/claude-scientific-writer_fork status --short)",
       "mcp__plugin_claude-mem_mem-search__search",
       "mcp__plugin_claude-mem_mem-search__get_observations"
     ]

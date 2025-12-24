@@ -2,7 +2,7 @@
 
 > Claude Scientific Writer Fork - Development Documentation
 > Forked from: [K-Dense-AI/claude-scientific-writer](https://github.com/K-Dense-AI/claude-scientific-writer) v2.10.0
-> Last Updated: 2025-12-23
+> Last Updated: 2025-12-24
 
 ## Project Overview
 
@@ -44,9 +44,10 @@ uv run ty                  # Type check
 
 | File | Purpose |
 |------|---------|
+| `skills/` | ⭐ Canonical skill definitions (edit skills here) |
+| `.claude/WRITER.md` | Agent instructions for scientific writing |
 | `CHANGELOG.md` | Fork customization history |
 | `INTEGRATION_ANALYSIS.md` | Template-project merge roadmap |
-| `.claude/WRITER.md` | Agent instructions for scientific writing |
 | `docs/original/` | Archived upstream documentation |
 
 ### Active Skills (17)
@@ -67,8 +68,25 @@ uv run ty                  # Type check
 
 ```
 claude-scientific-writer_fork/
+├── skills/                  # ⭐ CANONICAL skill definitions (17 skills)
+│   ├── citation-management/
+│   ├── document-skills/
+│   ├── generate-image/
+│   ├── hypothesis-generation/
+│   ├── latex-posters/
+│   ├── literature-review/
+│   ├── markitdown/
+│   ├── paper-2-web/
+│   ├── peer-review/
+│   ├── pptx-posters/
+│   ├── research-lookup/
+│   ├── scholar-evaluation/
+│   ├── scientific-critical-thinking/
+│   ├── scientific-schematics/
+│   ├── scientific-slides/
+│   ├── scientific-writing/
+│   └── venue-templates/
 ├── .claude/
-│   ├── skills/              # Primary skill definitions (17 skills)
 │   ├── WRITER.md            # Agent system instructions
 │   └── settings.local.json  # Local Claude Code settings
 ├── src/
@@ -78,11 +96,8 @@ claude-scientific-writer_fork/
 │       └── report_generator.py  # PDF orchestrator
 ├── docs/
 │   ├── original/            # Archived upstream documentation
-│   │   └── archived/        # Original .md files with .original suffix
 │   └── template-project/
 │       └── brand/           # Oligon brand standards
-├── skills/                  # Duplicate skill copies (legacy)
-├── scientific_writer/       # Nested package with skill duplicates (legacy)
 ├── scripts/                 # Utility scripts (pdf_to_images, etc.)
 ├── templates/               # Document templates
 ├── commands/                # Slash command definitions
@@ -93,14 +108,28 @@ claude-scientific-writer_fork/
 └── pyproject.toml           # uv/Python project config
 ```
 
-### Known Architectural Issues
+## ⚠️ Skills Development - IMPORTANT
 
-**Skill Duplication**: Skills exist in three locations (legacy from upstream):
-1. `.claude/skills/` - Primary (use this)
-2. `skills/` - Duplicate (legacy)
-3. `scientific_writer/.claude/skills/` - Nested duplicate (legacy)
+**The `skills/` folder at project root is the ONLY canonical location for skill definitions.**
 
-When modifying skills, update `.claude/skills/` as the source of truth.
+### Ground Truth
+
+| Location | Status | Action |
+|----------|--------|--------|
+| `skills/` | ✅ **Canonical** | Edit skills here |
+| `.claude/skills/` | ❌ Removed | Was duplicate from upstream |
+| `scientific_writer/.claude/skills/` | ❌ Removed | Was installable package copy |
+
+### Why This Matters
+
+The original upstream repo was designed as an installable Claude Code plugin with skills in three locations. Since we're using this as a working project (not installing it), we consolidated to a single source of truth.
+
+### Skill Development Workflow
+
+1. **All skill edits happen in `skills/`**
+2. Each skill has a `SKILL.md` defining its capabilities
+3. Skills may include `scripts/`, `references/`, `assets/` subdirectories
+4. Cross-reference related skills (e.g., scientific-writing → venue-templates)
 
 ---
 

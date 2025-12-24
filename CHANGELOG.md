@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Skills consolidation: `skills/` is now the single canonical location
+  - Removed duplicate `.claude/skills/` (was 17 skill directories)
+  - Removed duplicate `scientific_writer/.claude/skills/` (was installable package copy)
+  - Updated `CLAUDE.md` with clear skills development guidance
+  - Cleaned up `.claude/settings.local.json` (removed verbose git commit permission)
 - `docs/template-project/brand/visual-design-SKILL.md`: Design philosophy skill for scientific visuals
   - Adapted from frontend-design-SKILL.md for scientific outputs (figures, infographics, reports, presentations, posters)
   - Design thinking framework, typography principles, color philosophy, composition guidelines
