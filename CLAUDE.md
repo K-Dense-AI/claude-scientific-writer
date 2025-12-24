@@ -98,6 +98,7 @@ claude-scientific-writer_fork/
 │   ├── original/            # Archived upstream documentation
 │   └── template-project/
 │       └── brand/           # Oligon brand standards
+├── scientific_writer/       # Python package (CLI/API - see README inside)
 ├── scripts/                 # Utility scripts (pdf_to_images, etc.)
 ├── templates/               # Document templates
 ├── commands/                # Slash command definitions
@@ -130,6 +131,18 @@ The original upstream repo was designed as an installable Claude Code plugin wit
 2. Each skill has a `SKILL.md` defining its capabilities
 3. Skills may include `scripts/`, `references/`, `assets/` subdirectories
 4. Cross-reference related skills (e.g., scientific-writing → venue-templates)
+
+---
+
+## Python Package (`scientific_writer/`)
+
+A standalone Python package for programmatic paper generation **outside of Claude Code**. Not needed when working directly in Claude Code.
+
+- **CLI**: `uv run scientific-writer` - Interactive terminal interface
+- **API**: `from scientific_writer import generate_paper` - For automation
+- **Docs**: See `scientific_writer/README.md` for usage details
+
+Uses `claude-agent-sdk` to call Claude with WRITER.md instructions.
 
 ---
 
