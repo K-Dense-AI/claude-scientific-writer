@@ -25,7 +25,7 @@ This skill applies to:
 
 | Output | Tools | Typical Use |
 |--------|-------|-------------|
-| **Figures** | matplotlib, seaborn, plotly, SVG | Journal papers, reports |
+| **Figures** | matplotlib, seaborn, plotly, SVG | Journal papers, reports (see [plotting-libraries](../plotting-libraries/SKILL.md)) |
 | **Infographics** | SVG, Illustrator-ready output | Summaries, educational content |
 | **Report illustrations** | ReportLab, PDF components | Internal reports, branded documents |
 | **Presentations** | PPTX (python-pptx), Beamer/LaTeX | Talks, seminars, conferences |

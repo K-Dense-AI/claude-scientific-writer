@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `skills/plotting-libraries/`: New skill for Python plotting libraries (matplotlib & seaborn)
+  - Main `SKILL.md` with decision framework for choosing between libraries
+  - `references/matplotlib.md` - comprehensive matplotlib reference
+  - `references/seaborn.md` - comprehensive seaborn statistical visualization reference
+  - Cross-references to `scientific-visualization` (publication specs) and `visual-design` (aesthetics)
+- `skills/visual-design/`: Moved from `docs/template-project/brand/` to canonical skills location
+- `skills/scientific-visualization/`: Moved from `docs/template-project/` to canonical skills location
+- Cross-references between visualization skills:
+  - `scientific-visualization` → links to `visual-design` and `plotting-libraries`
+  - `visual-design` → links to `plotting-libraries` for implementation
 - `scientific_writer/README.md`: Documentation for the Python package
   - Explains CLI and API usage for programmatic paper generation
   - Added corresponding section in `CLAUDE.md` for quick reference

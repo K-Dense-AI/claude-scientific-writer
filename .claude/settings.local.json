@@ -13,7 +13,8 @@
       "Bash(find:*)",
       "Bash(echo:*)",
       "mcp__plugin_claude-mem_mem-search__search",
-      "mcp__plugin_claude-mem_mem-search__get_observations"
+      "mcp__plugin_claude-mem_mem-search__get_observations",
+      "Skill(taches-cc-resources:create-agent-skills)"
     ]
   }
 }

@@ -11,8 +11,9 @@ Scientific visualization transforms data into clear, accurate figures for public
 
 ## Design Foundation
 
-> **For design philosophy and aesthetic principles**, see `visual-design-SKILL.md`.
-> This skill focuses on **implementation** - the code, specifications, and technical details.
+> **For design philosophy and aesthetic principles**, see [visual-design](../visual-design/SKILL.md).
+> **For matplotlib/seaborn library reference**, see [plotting-libraries](../plotting-libraries/SKILL.md).
+> This skill focuses on **implementation** - the code, specifications, and technical details for publication figures.
 
 ## When to Use This Skill
 
