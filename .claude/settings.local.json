@@ -13,7 +13,9 @@
       "Bash(uv run python:*)",
       "Bash(find:*)",
       "Bash(echo:*)",
-      "Bash(git -C /Users/jeffkiefer/Documents/projects/claude-scientific-writer_fork status --short)"
+      "Bash(git -C /Users/jeffkiefer/Documents/projects/claude-scientific-writer_fork status --short)",
+      "mcp__plugin_claude-mem_mem-search__search",
+      "mcp__plugin_claude-mem_mem-search__get_observations"
     ]
   }
 }

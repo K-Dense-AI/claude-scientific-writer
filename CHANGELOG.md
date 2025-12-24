@@ -7,17 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- `INTEGRATION_ANALYSIS.md`: Added Section 10 documenting completed skill removal procedure with phases, rationale, and resulting skill count
-- `.claude/settings.local.json`: Removed stale bash permission rules from skill removal process
-
-### Removed
-
-- `SKILL_REMOVAL_PLAN.md`: Deleted after completion (content preserved in CHANGELOG.md and INTEGRATION_ANALYSIS.md)
-
 ### Added
 
+- `CLAUDE.md`: Root project documentation for the fork
+  - Project overview and fork identity (not production-ready notice)
+  - Quick reference (uv commands, key files, 17 active skills)
+  - Project structure with known architectural issues (skill duplication)
+  - Human-in-the-loop development workflow preferences
+  - Implementation document guidelines for substantial changes
+  - Integration roadmap reference and upstream links
 - `SKILL_REMOVAL_PLAN.md` - Detailed plan for removing 5 clinical/business-focused skills:
   - Skills targeted: `research-grants`, `clinical-decision-support`, `clinical-reports`, `market-research-reports`, `treatment-plans`
   - Inventory of 15 directories to delete across 3 locations
@@ -50,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `INTEGRATION_ANALYSIS.md`: Added Section 10 documenting completed skill removal procedure with phases, rationale, and resulting skill count
+- `.claude/settings.local.json`: Removed stale bash permission rules from skill removal process
 - **Additional cleanup (Phase 4 verification):** Removed skill references from files not covered in original plan
   - `commands/scientific-writer-init.md`: Updated skill count (17 skills), removed clinical/grant examples, added hypothesis-generation
   - `templates/CLAUDE.scientific-writer.md`: Removed market-research-reports section (~55 lines), clinical-decision-support section (~190 lines), updated figure requirements table and checklists
@@ -76,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `SKILL_REMOVAL_PLAN.md`: Deleted after completion (content preserved in CHANGELOG.md and INTEGRATION_ANALYSIS.md)
 - **Skill directories removed (Phase 1):** 15 directories containing clinical/business-focused skills
   - `.claude/skills/`: research-grants, clinical-decision-support, clinical-reports, market-research-reports, treatment-plans
   - `skills/`: duplicate copies of the above 5 skills
