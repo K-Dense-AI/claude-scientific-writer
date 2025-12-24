@@ -1,5 +1,14 @@
 # Available Skills
 
+> **Note (Fork Customization):** This is archived upstream documentation. The following skills have been **removed** in this fork to focus on core scientific research capabilities:
+> - `research-grants` (Section 5)
+> - `clinical-reports` (Section 6)
+> - `clinical-decision-support` (Section 7)
+> - `market-research-reports` (Section 11)
+> - `treatment-plans` (referenced in clinical skills)
+>
+> The sections below are preserved for historical reference only.
+
 **Scientific Writer is a deep research and writing tool** that combines AI-driven deep research with well-formatted written outputs. The skills below power this capability—from conducting literature searches and verifying citations to generating publication-ready documents in various formats.
 
 This document provides an overview of all skills available in the Scientific Writer CLI.

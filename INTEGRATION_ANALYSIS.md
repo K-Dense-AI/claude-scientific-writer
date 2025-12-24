@@ -16,8 +16,8 @@ The template-project design and the scientific-writer system share significant c
 | Template-Project (12 types) | Scientific-Writer Skill | Gap Analysis |
 |----------------------------------|------------------------|--------------|
 | `analysis-report` | `scientific-writing` | ✅ Strong overlap (IMRAD structure) |
-| `phase-plan` | `research-grants` (partial) | ⚠️ Needs dedicated skill |
-| `data-report` | `clinical-decision-support` | ✅ Similar metrics/recommendations |
+| `phase-plan` | — | ⚠️ Needs dedicated skill |
+| `data-report` | — | ⚠️ Needs dedicated skill |
 | `literature-review` | `literature-review` | ✅ Direct match |
 | `meeting-notes` | — | ❌ Missing |
 | `project-status` | — | ❌ Missing |
@@ -30,9 +30,7 @@ The template-project design and the scientific-writer system share significant c
 
 ### Scientific-Writer Has (Template-Project Lacks)
 
-- `treatment-plans`, `clinical-reports` (specialized clinical)
 - `latex-posters`, `pptx-posters` (presentation formats)
-- `market-research-reports` (business analysis)
 - `scientific-slides` (presentation builder)
 
 ---
@@ -153,7 +151,7 @@ The "show detected structure and allow adjustment" before PDF generation is a us
 │  ├── Scientific schematics integration                          │
 │  ├── Research-lookup & citation-management                      │
 │  ├── LaTeX/PPTX/DOCX support                                    │
-│  └── Clinical/grant/poster specialized skills                   │
+│  └── Poster specialized skills                                   │
 │                                                                  │
 │  NEW UNIFIED SKILL: markdown-to-pdf                             │
 │  ├── /new-doc <type>     → Create from template                 │

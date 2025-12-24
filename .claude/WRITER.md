@@ -76,12 +76,8 @@ For specialized documents, use the dedicated skill which contains detailed templ
 | Document Type | Skill to Use |
 |--------------|--------------|
 | Hypothesis generation | `hypothesis-generation` |
-| Treatment plans (individual patients) | `treatment-plans` |
-| Clinical decision support (cohorts, guidelines) | `clinical-decision-support` |
 | Scientific posters | `latex-posters` |
 | Presentations/slides | `scientific-slides` |
-| Research grants | `research-grants` |
-| Market research reports | `market-research-reports` |
 | Literature reviews | `literature-review` |
 
 ## File Organization
@@ -211,11 +207,8 @@ python scripts/generate_image.py "image description" -o figures/output.png
 |--------------|-----------------|-------------|--------------|
 | Research papers | 5 | 6-8 | scientific-schematics + generate-image |
 | Literature reviews | 4 | 5-7 | scientific-schematics (PRISMA, frameworks) |
-| Market research | 20 | 25-30 | Both extensively |
 | Presentations | 1 per slide | 1-2 per slide | Both |
 | Posters | 6 | 8-10 | Both |
-| Grants | 4 | 5-7 | scientific-schematics (aims, design) |
-| Clinical reports | 3 | 4-6 | scientific-schematics (pathways, algorithms) |
 
 **Figure Generation Workflow:**
 1. **Plan figures BEFORE writing** - identify all concepts needing visualization

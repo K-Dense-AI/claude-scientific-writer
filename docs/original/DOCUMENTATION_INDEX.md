@@ -1,5 +1,10 @@
 # Complete Documentation Index
 
+> **Note (Fork Customization):** This is archived upstream documentation. The following skills have been **removed** in this fork:
+> - `research-grants`, `clinical-reports`, `clinical-decision-support`, `market-research-reports`, `treatment-plans`
+>
+> References to these skills below are preserved for historical context only.
+
 **Scientific Writer v2.7.0** - Comprehensive documentation navigation guide.
 
 ---

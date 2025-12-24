@@ -1,5 +1,10 @@
 # Scientific Writer Documentation
 
+> **Note (Fork Customization):** This is archived upstream documentation. The following skills have been **removed** in this fork:
+> - `research-grants`, `clinical-reports`, `clinical-decision-support`, `market-research-reports`, `treatment-plans`
+>
+> References to these skills below are preserved for historical context only.
+
 Welcome to the Scientific Writer documentation! **Scientific Writer is a deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs of various forms—from scientific papers and grant proposals to clinical reports and conference presentations.
 
 This guide will help you navigate the available resources.

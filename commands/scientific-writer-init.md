@@ -84,31 +84,29 @@ After writing the file, provide a brief summary:
 📋 What's Included:
 - A deep research and writing tool that combines AI-driven research with well-formatted written outputs
 - Complete scientific writing workflow with real-time literature search and verified citations
-- 19+ specialized skills for academic writing:
+- 17 specialized skills for academic writing:
   • research-lookup: Real-time literature search
   • peer-review: Systematic manuscript evaluation
   • citation-management: BibTeX and reference handling
-  • clinical-reports: Medical documentation standards
-  • research-grants: NSF, NIH, DOE proposal support
   • scientific-slides: Research presentations
   • latex-posters: Conference poster generation
-  • And 12 more specialized skills...
+  • hypothesis-generation: Competing hypotheses documents
+  • And 11 more specialized skills...
 
 📝 Document Types Supported:
 - Scientific papers (Nature, Science, NeurIPS, IEEE, etc.)
-- Clinical reports (case reports, trial documentation)
-- Grant proposals (NSF, NIH, DOE, DARPA)
 - Research posters and presentations
 - Literature reviews and systematic reviews
+- Hypothesis generation documents
 
 🚀 Getting Started:
 1. Your CLAUDE.md file is now configured at: {path to CLAUDE.md}
 2. All skills are automatically available in this project
 3. Start with prompts like:
    - "Create a Nature paper on [topic]"
-   - "Generate an NSF grant proposal for [research]"
    - "Review this manuscript using peer-review standards"
    - "Create conference slides on [topic]"
+   - "Generate competing hypotheses for [phenomenon]"
 
 💡 Tips:
 - The research-lookup skill automatically finds real papers and citations

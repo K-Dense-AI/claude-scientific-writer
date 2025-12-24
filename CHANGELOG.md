@@ -41,6 +41,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Additional cleanup (Phase 4 verification):** Removed skill references from files not covered in original plan
+  - `commands/scientific-writer-init.md`: Updated skill count (17 skills), removed clinical/grant examples, added hypothesis-generation
+  - `templates/CLAUDE.scientific-writer.md`: Removed market-research-reports section (~55 lines), clinical-decision-support section (~190 lines), updated figure requirements table and checklists
+  - `scientific_writer/.claude/skills/venue-templates/SKILL.md`: Refactored "Research Grants" section to standalone grant template guidance
+  - `scientific_writer/.claude/skills/hypothesis-generation/assets/FORMATTING_GUIDE.md`: Removed treatment-plans reference
+- **Main documentation updated (Phase 3):** Removed skill references from active documentation
+  - `.claude/WRITER.md` and `scientific_writer/.claude/WRITER.md`: Removed 4 rows from "Special Document Types" table and 3 rows from "MINIMUM Figure Requirements" table
+  - `INTEGRATION_ANALYSIS.md`: Updated Section 1 (removed skill mappings) and Section 5 (changed "Clinical/grant/poster specialized skills" to "Poster specialized skills")
+  - `docs/original/SKILLS.md`: Added fork customization note listing removed skills
+  - `docs/original/README.md`: Added fork customization note
+  - `docs/original/DOCUMENTATION_INDEX.md`: Added fork customization note
+  - `docs/original/DEVELOPMENT.md`: Added fork customization note
 - **Cross-skill references updated (Phase 2):** Removed references to deleted skills
   - `venue-templates/SKILL.md`: Removed "Research Grants" subsection referencing `research-grants` skill
   - `hypothesis-generation/assets/FORMATTING_GUIDE.md`: Removed `treatment-plans` skill reference

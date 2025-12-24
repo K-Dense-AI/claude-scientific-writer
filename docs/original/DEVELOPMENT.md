@@ -1,5 +1,10 @@
 # Development and Architecture
 
+> **Note (Fork Customization):** This is archived upstream documentation. The following skills have been **removed** in this fork:
+> - `research-grants`, `clinical-reports`, `clinical-decision-support`, `market-research-reports`, `treatment-plans`
+>
+> References to these skills below are preserved for historical context only.
+
 This document is for contributors and maintainers. It summarizes the package architecture, design decisions, and development workflow for Scientific Writer v2.7.0.
 
 ## Architecture Overview
