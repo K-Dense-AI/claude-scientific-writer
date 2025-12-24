@@ -277,6 +277,62 @@ claude-scientific-writer_fork/
 
 ---
 
+## 10. Completed: Clinical/Business Skill Removal
+
+Prior to implementing the merged architecture, a scope reduction was performed to remove clinical and business-focused skills that are not aligned with the core scientific research writing focus of this fork.
+
+### Skills Removed
+
+| Skill | Rationale |
+|-------|-----------|
+| `research-grants` | Grant writing outside core scope |
+| `clinical-decision-support` | Clinical healthcare focus |
+| `clinical-reports` | Clinical healthcare focus |
+| `market-research-reports` | Business/market analysis focus |
+| `treatment-plans` | Clinical healthcare focus |
+
+### Execution Phases
+
+**Phase 1: Directory Removal**
+- Deleted 15 skill directories across 3 locations:
+  - `.claude/skills/` (5 skills)
+  - `skills/` (5 duplicate copies)
+  - `scientific_writer/.claude/skills/` (5 nested duplicates)
+
+**Phase 2: Cross-Skill Reference Updates**
+- `venue-templates/SKILL.md`: Removed "Research Grants" subsection referencing `research-grants` skill
+- `hypothesis-generation/assets/FORMATTING_GUIDE.md`: Removed `treatment-plans` skill reference
+- Applied to both `.claude/skills/` and `skills/` directories
+
+**Phase 3: Main Documentation Updates**
+- `.claude/WRITER.md` and `scientific_writer/.claude/WRITER.md`: Removed 4 rows from "Special Document Types" table and 3 rows from "MINIMUM Figure Requirements" table
+- `INTEGRATION_ANALYSIS.md`: Updated Section 1 (removed skill mappings) and Section 5 (simplified architecture diagram)
+- `docs/original/*.md`: Added fork customization notices to archived documentation
+
+**Phase 4: Verification Cleanup**
+- `commands/scientific-writer-init.md`: Updated skill count from 22 to 17, removed clinical/grant examples
+- `templates/CLAUDE.scientific-writer.md`: Removed ~245 lines of clinical-decision-support and market-research-reports content
+- `venue-templates/SKILL.md`: Refactored to standalone grant template guidance (no cross-skill dependency)
+
+### Resulting Skill Count
+
+The fork now contains **17 active skills** focused on core scientific writing capabilities:
+- Literature review and scientific writing
+- LaTeX and PPTX poster generation
+- Scientific slides and presentations
+- Citation management and research lookup
+- Scientific schematics and image generation
+- Hypothesis generation and peer review
+- Paper-to-web conversion tools
+
+### Documentation Reference
+
+Full execution details preserved in:
+- `SKILL_REMOVAL_PLAN.md` (now deleted, content archived in CHANGELOG.md)
+- `CHANGELOG.md` ([Unreleased] section)
+
+---
+
 ## References
 
 - **Template-Project Design**: `docs/template-project/brand/DOCUMENT_TEMPLATING_SYSTEM.md`

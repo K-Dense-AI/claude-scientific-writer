@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `INTEGRATION_ANALYSIS.md`: Added Section 10 documenting completed skill removal procedure with phases, rationale, and resulting skill count
+- `.claude/settings.local.json`: Removed stale bash permission rules from skill removal process
+
+### Removed
+
+- `SKILL_REMOVAL_PLAN.md`: Deleted after completion (content preserved in CHANGELOG.md and INTEGRATION_ANALYSIS.md)
+
 ### Added
 
 - `SKILL_REMOVAL_PLAN.md` - Detailed plan for removing 5 clinical/business-focused skills:
