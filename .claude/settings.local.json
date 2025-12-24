@@ -8,7 +8,15 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git rm:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(cat:*)",
+      "Bash(uv run python:*)",
+      "Bash(find:*)",
+      "Bash(for skill in research-grants clinical-decision-support clinical-reports market-research-reports treatment-plans)",
+      "Bash(do echo \"=== $skill ===\")",
+      "Bash(done)",
+      "Bash(do)",
+      "Bash(echo:*)"
     ]
   }
 }
