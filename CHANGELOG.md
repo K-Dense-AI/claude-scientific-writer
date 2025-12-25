@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `skills/scientific-writing/`: **Refactored for token efficiency** (health score: 52% → 93%, tokens: ~8428 → ~3139)
+  - **SKILL.md**:
+    - Added frontmatter: `version: 1.0.0`, improved description with trigger verb ("Guides...")
+    - Fixed `allowed-tools` format (array → space-separated)
+    - Extracted Field-Specific Language section to `references/field_terminology.md` (90 → 12 lines)
+    - Extracted Writing Process section to `references/writing_process.md` (108 → 18 lines)
+    - Reduced Visual Enhancement section (90 → 25 lines, delegates to scientific-schematics/generate-image)
+    - Reduced Section-Specific Writing Guidance (60 → 15 lines, references imrad_structure.md)
+    - Reduced Figures and Tables section (47 → 11 lines, references figures_tables.md)
+    - Reduced Writing Principles section (28 → 3 lines, references writing_principles.md)
+    - Reduced Workflow section (38 → 8 lines)
+    - Reduced Pre-Submission Tests section (28 → 7 lines)
+    - Fixed 10 broken cross-skill references (scripts → skill invocations, venue-templates paths)
+  - **New reference files**:
+    - `references/field_terminology.md`: Discipline-specific terminology guides (Biomedical, Molecular Biology, Chemistry, Ecology, Physics, Neuroscience, Social Sciences)
+    - `references/writing_process.md`: Two-stage writing process with examples (outline → prose conversion)
 - `skills/scientific-writing/`: Major best practices update aligned with modern scientific writing guidelines
   - **SKILL.md**:
     - Added **Core Philosophy** section (reader-centricity, parsimony, logical flow as narrative)

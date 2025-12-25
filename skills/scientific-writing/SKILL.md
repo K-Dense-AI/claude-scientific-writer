@@ -1,7 +1,8 @@
 ---
 name: scientific-writing
-description: "Core skill for the deep research and writing tool. Write scientific manuscripts in full paragraphs (never bullet points). Use two-stage process: (1) create section outlines with key points using research-lookup, (2) convert to flowing prose. IMRAD structure, citations (APA/AMA/Vancouver), figures/tables, reporting guidelines (CONSORT/STROBE/PRISMA), for research papers and journal submissions."
-allowed-tools: [Read, Write, Edit, Bash]
+version: 1.0.0
+description: "Guides scientific manuscript writing using IMRAD structure, citations (APA/AMA/Vancouver), and reporting guidelines (CONSORT/STROBE/PRISMA). Use when writing research papers, journal submissions, abstracts, or scientific documents requiring structured prose with proper citations."
+allowed-tools: Read, Write, Edit, Bash
 ---
 
 # Scientific Writing
@@ -48,95 +49,30 @@ This skill should be used when:
 
 ## Visual Enhancement with Scientific Schematics
 
-**⚠️ MANDATORY: Every scientific paper MUST include a graphical abstract plus 1-2 additional AI-generated figures using the scientific-schematics skill.**
+**Every scientific paper should include visual elements.** Use the `scientific-schematics` and `generate-image` skills to create figures.
 
-This is not optional. Scientific papers without visual elements are incomplete. Before finalizing any document:
-1. **ALWAYS generate a graphical abstract** as the first visual element
-2. Generate at minimum ONE additional schematic or diagram using scientific-schematics
-3. Prefer 3-4 total figures for comprehensive papers (graphical abstract + methods flowchart + results visualization + conceptual diagram)
-
-### Graphical Abstract (REQUIRED)
-
-**Every scientific writeup MUST include a graphical abstract.** This is a visual summary of your paper that:
-- Appears before or immediately after the text abstract
-- Captures the entire paper's key message in one image
-- Is suitable for journal table of contents display
-- Uses landscape orientation (typically 1200x600px)
-
-**Generate the graphical abstract FIRST:**
-```bash
-python scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description showing workflow from input → methods → key findings → conclusions]" -o figures/graphical_abstract.png
-```
-
-**Graphical Abstract Requirements:**
-- **Content**: Visual summary showing workflow, key methods, main findings, and conclusions
-- **Style**: Clean, professional, suitable for journal TOC
-- **Elements**: Include 3-5 key steps/concepts with connecting arrows or flow
-- **Text**: Minimal labels, large readable fonts
-- Log: `[HH:MM:SS] GENERATED: Graphical abstract for paper summary`
-
-### Additional Figures (GENERATE EXTENSIVELY)
-
-**⚠️ CRITICAL: Use BOTH scientific-schematics AND generate-image EXTENSIVELY throughout all documents.**
-
-Every document should be richly illustrated. Generate figures liberally - when in doubt, add a visual.
-
-**MINIMUM Figure Requirements:**
+### Minimum Figure Requirements
 
 | Document Type | Minimum | Recommended |
 |--------------|---------|-------------|
 | Research Papers | 5 | 6-8 |
 | Literature Reviews | 4 | 5-7 |
-| Market Research | 20 | 25-30 |
-| Presentations | 1/slide | 1-2/slide |
 | Posters | 6 | 8-10 |
-| Grants | 4 | 5-7 |
-| Clinical Reports | 3 | 4-6 |
 
-**Use scientific-schematics EXTENSIVELY for technical diagrams:**
-```bash
-python scripts/generate_schematic.py "your diagram description" -o figures/output.png
-```
+### Figure Types by Skill
 
-- Study design and methodology flowcharts (CONSORT, PRISMA, STROBE)
-- Conceptual framework diagrams
-- Experimental workflow illustrations
-- Data analysis pipeline diagrams
-- Biological pathway or mechanism diagrams
-- System architecture visualizations
-- Neural network architectures
-- Decision trees, algorithm flowcharts
-- Comparison matrices, timeline diagrams
-- Any technical concept that benefits from schematic visualization
+**Use `scientific-schematics` for**:
+- Graphical abstracts (required for every paper)
+- Study design flowcharts (CONSORT, PRISMA, STROBE)
+- Conceptual frameworks and methodology diagrams
+- Biological pathways, system architectures
 
-**Use generate-image EXTENSIVELY for visual content:**
-```bash
-python scripts/generate_image.py "your image description" -o figures/output.png
-```
+**Use `generate-image` for**:
+- Photorealistic illustrations
+- Medical/anatomical visualizations
+- Cover images and infographics
 
-- Photorealistic illustrations of concepts
-- Medical/anatomical illustrations
-- Environmental/ecological scenes
-- Equipment and lab setup visualizations
-- Artistic visualizations, infographics
-- Cover images, header graphics
-- Product mockups, prototype visualizations
-- Any visual that enhances understanding or engagement
-
-The AI will automatically:
-- Create publication-quality images with proper formatting
-- Review and refine through multiple iterations
-- Ensure accessibility (colorblind-friendly, high contrast)
-- Save outputs in the figures/ directory
-
-**When in Doubt, Generate a Figure:**
-- Complex concept → generate a schematic
-- Data discussion → generate a visualization
-- Process description → generate a flowchart
-- Comparison → generate a comparison diagram
-- Reader benefit → generate a visual
-
-For detailed guidance, refer to the scientific-schematics and generate-image skill documentation.
+For detailed figure creation instructions, consult the respective skill documentation.
 
 ---
 
@@ -161,62 +97,19 @@ For detailed guidance on IMRAD structure, refer to `references/imrad_structure.m
 
 ### 2. Section-Specific Writing Guidance
 
-**Abstract Composition**: Craft concise, standalone summaries (150-300 words) written as **flowing paragraphs**—never with labeled sections like "Background:", "Methods:", "Results:", "Conclusions:". The abstract should read as cohesive prose covering: (1) context and problem, (2) what was done, (3) key findings with specific numbers, and (4) significance and implications. Only use structured abstracts with labels if the journal explicitly requires them in their author guidelines.
+For detailed IMRAD section guidance, refer to `references/imrad_structure.md`.
 
-**Executive Summary vs. Abstract**: These serve different purposes:
+**Abstract**: 150-300 words as flowing paragraphs (never labeled sections unless journal requires). Cover: context, methods, key findings with numbers, significance.
 
-| Aspect | Abstract | Executive Summary |
-|--------|----------|-------------------|
-| **Purpose** | Neutral miniature of the full paper | Persuasive decision-document for stakeholders |
-| **Structure** | Background → Methods → Results → Conclusion | **Lead with conclusion and recommendations** |
-| **Audience** | Academic indexing, literature search | Busy decision-makers, grant reviewers |
-| **Tone** | Objective, scholarly | Actionable, impact-focused |
-| **Length** | 150-300 words | 1-2 pages (grants, reports) |
+**Executive Summary vs. Abstract**: Abstracts are neutral paper summaries for academic indexing. Executive summaries lead with conclusions/recommendations for decision-makers.
 
-**Executive Summary Guidelines:**
-- Lead with the "so what?"—answer the key question first
-- State recommendations explicitly and early
-- Quantify impact (cost savings, lives improved, efficiency gains)
-- Use bullet points sparingly for key takeaways
-- Assume the reader may not read the full document
+**Introduction (Funnel Approach)**: Broad context → Specific problem → Knowledge gap → Your study objectives.
 
-**Introduction Development (The Funnel Approach)**: Build compelling introductions by progressively narrowing scope:
+**Methods**: Ensure reproducibility—participant descriptions, procedures, statistics, equipment, ethics.
 
-```
-BROAD   →  Field context: Why does this area matter? (1-2 paragraphs)
-        ↓
-NARROW  →  Specific problem: What has been studied? What's known? (2-3 paragraphs)
-        ↓
-GAP     →  Knowledge gap: What remains unknown? Why is this problematic?
-        ↓
-SPECIFIC→  Your study: What question do you address? How?
-```
+**Results**: Logical flow, integrate figures/tables, statistics with effect sizes, no interpretation.
 
-**Key elements:**
-- Start broad enough to engage non-specialists, but not so broad it's generic
-- Cite recent literature (last 5-10 years for active fields)
-- The gap statement is crucial—make it explicit ("However, X remains unclear...")
-- End with clear objectives/hypotheses ("Here, we investigate..." or "We hypothesized that...")
-
-**Methods Documentation**: Ensure reproducibility through:
-- Detailed participant/sample descriptions
-- Clear procedural documentation
-- Statistical methods with justification
-- Equipment and materials specifications
-- Ethical approval and consent statements
-
-**Results Presentation**: Present findings with:
-- Logical flow from primary to secondary outcomes
-- Integration with figures and tables
-- Statistical significance with effect sizes
-- Objective reporting without interpretation
-
-**Discussion Construction**: Synthesize findings by:
-- Relating results to research questions
-- Comparing with existing literature
-- Acknowledging limitations honestly
-- Proposing mechanistic explanations
-- Suggesting practical implications and future research
+**Discussion**: Relate to questions, compare literature, acknowledge limitations, implications.
 
 ### 3. Citation and Reference Management
 
@@ -240,48 +133,13 @@ Apply citation styles correctly across disciplines. For comprehensive style guid
 
 Create effective data visualizations that enhance comprehension. For detailed best practices, refer to `references/figures_tables.md`.
 
-**Core Principle: Message Trumps Beauty**
+**Core Principle**: Every figure must have a clear one-sentence message. If it doesn't support a specific conclusion, delete it.
 
-Every figure must have a clear purpose. If it does not support a specific conclusion, delete it. Ask: "What is this figure's one-sentence message?" If you cannot answer, the figure needs revision or removal.
-
-**When to Use Tables vs. Figures:**
-- **Tables**: Precise numerical data, complex datasets, multiple variables requiring exact values
-- **Figures**: Trends, patterns, relationships, comparisons best understood visually
-
-**Design Principles:**
-- Make each table/figure self-explanatory with complete captions
-- Use consistent formatting and terminology across all display items
-- Label all axes, columns, and rows with units
-- Include sample sizes (n) and statistical annotations
-- Follow the "one table/figure per 1000 words" guideline
-- Avoid duplicating information between text, tables, and figures
-- **Maximize data-ink ratio**: Remove chartjunk (3D effects, excessive gridlines, decorative elements)
-- **Always use vector formats** (PDF, SVG) for plots—raster images pixelate when zoomed
-
-**Color Strategy:**
-- **NEVER use red/green combinations** (inaccessible to ~8% of men with color blindness)
-- Use accessible palettes: **Viridis**, **Magma**, or ColorBrewer schemes
-- **Sequential palettes** (light→dark) for ordered/continuous data
-- **Qualitative palettes** (distinct hues) for categorical data
-- **Consistency**: If "Group A" is blue in Figure 1, it must be blue in all figures
-- Use color to represent data, not for decoration
-
-**Chart Selection Guide:**
-
-| Data Type | Recommended | Avoid |
-|-----------|-------------|-------|
-| Comparison across categories | Bar charts (start axis at zero) | Pie charts (hard to compare areas) |
-| Trends over time | Line charts | Bar charts (unless discrete time points) |
-| Distributions | Box plots, histograms, violin plots | Summary statistics alone (hide data density) |
-| Correlations | Scatter plots | Tables of correlation coefficients only |
-| Complex patterns | Heatmaps | 3D charts (distort perception) |
-
-**Common Figure Types:**
-- Bar graphs: Comparing discrete categories
-- Line graphs: Showing trends over time
-- Scatterplots: Displaying correlations
-- Box plots: Showing distributions and outliers
-- Heatmaps: Visualizing matrices and patterns
+**Quick Reference:**
+- **Tables**: Precise numerical data, exact values needed
+- **Figures**: Trends, patterns, relationships, visual comparisons
+- **Colors**: Never red/green; use Viridis, Magma, or ColorBrewer
+- **Format**: Always vector (PDF, SVG) for scalability
 
 ### 5. Reporting Guidelines by Study Type
 
@@ -305,137 +163,26 @@ Each guideline provides checklists ensuring all critical methodological elements
 
 Apply fundamental scientific writing principles. For detailed guidance, refer to `references/writing_principles.md`.
 
-**Clarity**:
-- Use precise, unambiguous language
-- Define technical terms and abbreviations at first use
-- Maintain logical flow within and between paragraphs
-- Use active voice when appropriate for clarity
-
-**Conciseness**:
-- Eliminate redundant words and phrases
-- Favor shorter sentences (15-20 words average)
-- Remove unnecessary qualifiers
-- Respect word limits strictly
-
-**Accuracy**:
-- Report exact values with appropriate precision
-- Use consistent terminology throughout
-- Distinguish between observations and interpretations
-- Acknowledge uncertainty appropriately
-
-**Objectivity**:
-- Present results without bias
-- Avoid overstating findings or implications
-- Acknowledge conflicting evidence
-- Maintain professional, neutral tone
+**Four pillars**: Clarity (precise language, defined terms), Conciseness (eliminate redundancy, 15-20 word sentences), Accuracy (exact values, consistent terminology), Objectivity (unbiased, acknowledge limitations).
 
 ### 7. Writing Process: From Outline to Full Paragraphs
 
 **CRITICAL: Always write in full paragraphs, never submit bullet points in scientific papers.**
 
-Scientific papers must be written in complete, flowing prose. Use this two-stage approach for effective writing:
+Use the two-stage writing process:
 
-**Stage 1: Create Section Outlines with Key Points**
+**Stage 1: Create Section Outlines**
+- Use research-lookup to gather relevant literature
+- Create structured outlines with bullet points marking main arguments, key studies, data points
+- These bullets are scaffolding, NOT the final manuscript
 
-When starting a new section:
-1. Use the research-lookup skill to gather relevant literature and data
-2. Create a structured outline with bullet points marking:
-   - Main arguments or findings to present
-   - Key studies to cite
-   - Data points and statistics to include
-   - Logical flow and organization
-3. These bullet points serve as scaffolding—they are NOT the final manuscript
+**Stage 2: Convert to Full Paragraphs**
+- Transform bullet points into complete sentences
+- Add transitions between ideas (however, moreover, subsequently)
+- Integrate citations naturally within sentences
+- Ensure logical flow from sentence to sentence
 
-**Example outline (Introduction section):**
-```
-- Background: AI in drug discovery gaining traction
-  * Cite recent reviews (Smith 2023, Jones 2024)
-  * Traditional methods are slow and expensive
-- Gap: Limited application to rare diseases
-  * Only 2 prior studies (Lee 2022, Chen 2023)
-  * Small datasets remain a challenge
-- Our approach: Transfer learning from common diseases
-  * Novel architecture combining X and Y
-- Study objectives: Validate on 3 rare disease datasets
-```
-
-**Stage 2: Convert Key Points to Full Paragraphs**
-
-Once the outline is complete, expand each bullet point into proper prose:
-
-1. **Transform bullet points into complete sentences** with subjects, verbs, and objects
-2. **Add transitions** between sentences and ideas (however, moreover, in contrast, subsequently)
-3. **Integrate citations naturally** within sentences, not as lists
-4. **Expand with context and explanation** that bullet points omit
-5. **Ensure logical flow** from one sentence to the next within each paragraph
-6. **Vary sentence structure** to maintain reader engagement
-
-**Example conversion to prose:**
-
-```
-Artificial intelligence approaches have gained significant traction in drug discovery 
-pipelines over the past decade (Smith, 2023; Jones, 2024). While these computational 
-methods show promise for accelerating the identification of therapeutic candidates, 
-traditional experimental approaches remain slow and resource-intensive, often requiring 
-years of laboratory work and substantial financial investment. However, the application 
-of AI to rare diseases has been limited, with only two prior studies demonstrating 
-proof-of-concept results (Lee, 2022; Chen, 2023). The primary obstacle has been the 
-scarcity of training data for conditions affecting small patient populations. 
-
-To address this challenge, we developed a transfer learning approach that leverages 
-knowledge from well-characterized common diseases to predict therapeutic targets for 
-rare conditions. Our novel neural architecture combines convolutional layers for 
-molecular feature extraction with attention mechanisms for protein-ligand interaction 
-modeling. The objective of this study was to validate our approach across three 
-independent rare disease datasets, assessing both predictive accuracy and biological 
-interpretability of the results.
-```
-
-**Key Differences Between Outlines and Final Text:**
-
-| Outline (Planning Stage) | Final Manuscript |
-|--------------------------|------------------|
-| Bullet points and fragments | Complete sentences and paragraphs |
-| Telegraphic notes | Full explanations with context |
-| List of citations | Citations integrated into prose |
-| Abbreviated ideas | Developed arguments with transitions |
-| For your eyes only | For publication and peer review |
-
-**Common Mistakes to Avoid:**
-
-- ❌ **Never** leave bullet points in the final manuscript
-- ❌ **Never** submit lists where paragraphs should be
-- ❌ **Don't** use numbered or bulleted lists in Results or Discussion sections (except for specific cases like study hypotheses or inclusion criteria)
-- ❌ **Don't** write sentence fragments or incomplete thoughts
-- ✅ **Do** use occasional lists only in Methods (e.g., inclusion/exclusion criteria, materials lists)
-- ✅ **Do** ensure every section flows as connected prose
-- ✅ **Do** read paragraphs aloud to check for natural flow
-
-**When Lists ARE Acceptable (Limited Cases):**
-
-Lists may appear in scientific papers only in specific contexts:
-- **Methods**: Inclusion/exclusion criteria, materials and reagents, participant characteristics
-- **Supplementary Materials**: Extended protocols, equipment lists, detailed parameters
-- **Never in**: Abstract, Introduction, Results, Discussion, Conclusions
-
-**Abstract Format Rule:**
-- ❌ **NEVER** use labeled sections (Background:, Methods:, Results:, Conclusions:)
-- ✅ **ALWAYS** write as flowing paragraph(s) with natural transitions
-- Exception: Only use structured format if journal explicitly requires it in author guidelines
-
-**Integration with Research Lookup:**
-
-The research-lookup skill is essential for Stage 1 (creating outlines):
-1. Search for relevant papers using research-lookup
-2. Extract key findings, methods, and data
-3. Organize findings as bullet points in your outline
-4. Then convert the outline to full paragraphs in Stage 2
-
-This two-stage process ensures you:
-- Gather and organize information systematically
-- Create logical structure before writing
-- Produce polished, publication-ready prose
-- Maintain focus on the narrative flow
+For detailed examples, the outline-to-prose conversion guide, common mistakes, and when lists are acceptable, see `references/writing_process.md`.
 
 ### 8. Journal-Specific Formatting
 
@@ -449,222 +196,49 @@ Adapt manuscripts to journal requirements:
 
 ### 9. Field-Specific Language and Terminology
 
-Adapt language, terminology, and conventions to match the specific scientific discipline. Each field has established vocabulary, preferred phrasings, and domain-specific conventions that signal expertise and ensure clarity for the target audience.
+Adapt language, terminology, and conventions to match the target scientific discipline. Each field has established vocabulary, preferred phrasings, and domain-specific conventions.
 
-**Identify Field-Specific Linguistic Conventions:**
-- Review terminology used in recent high-impact papers in the target journal
-- Note field-specific abbreviations, units, and notation systems
-- Identify preferred terms (e.g., "participants" vs. "subjects," "compound" vs. "drug," "specimens" vs. "samples")
-- Observe how methods, organisms, or techniques are typically described
+**Key principles**:
+- Match audience expertise level (specialized vs. broad-impact journals)
+- Define technical terms strategically (at first use, appropriate for audience)
+- Maintain terminology consistency throughout the manuscript
+- Avoid field-mixing errors (don't import terms incorrectly from adjacent fields)
 
-**Biomedical and Clinical Sciences:**
-- Use precise anatomical and clinical terminology (e.g., "myocardial infarction" not "heart attack" in formal writing)
-- Follow standardized disease nomenclature (ICD, DSM, SNOMED-CT)
-- Specify drug names using generic names first, brand names in parentheses if needed
-- Use "patients" for clinical studies, "participants" for community-based research
-- Follow Human Genome Variation Society (HGVS) nomenclature for genetic variants
-- Report lab values with standard units (SI units in most international journals)
-
-**Molecular Biology and Genetics:**
-- Use italics for gene symbols (e.g., *TP53*), regular font for proteins (e.g., p53)
-- Follow species-specific gene nomenclature (uppercase for human: *BRCA1*; sentence case for mouse: *Brca1*)
-- Specify organism names in full at first mention, then use accepted abbreviations (e.g., *Escherichia coli*, then *E. coli*)
-- Use standard genetic notation (e.g., +/+, +/-, -/- for genotypes)
-- Employ established terminology for molecular techniques (e.g., "quantitative PCR" or "qPCR," not "real-time PCR")
-
-**Chemistry and Pharmaceutical Sciences:**
-- Follow IUPAC nomenclature for chemical compounds
-- Use systematic names for novel compounds, common names for well-known substances
-- Specify chemical structures using standard notation (e.g., SMILES, InChI for databases)
-- Report concentrations with appropriate units (mM, μM, nM, or % w/v, v/v)
-- Describe synthesis routes using accepted reaction nomenclature
-- Use terms like "bioavailability," "pharmacokinetics," "IC50" consistently with field definitions
-
-**Ecology and Environmental Sciences:**
-- Use binomial nomenclature for species (italicized: *Homo sapiens*)
-- Specify taxonomic authorities at first species mention when relevant
-- Employ standardized habitat and ecosystem classifications
-- Use consistent terminology for ecological metrics (e.g., "species richness," "Shannon diversity index")
-- Describe sampling methods with field-standard terms (e.g., "transect," "quadrat," "mark-recapture")
-
-**Physics and Engineering:**
-- Follow SI units consistently unless field conventions dictate otherwise
-- Use standard notation for physical quantities (scalars vs. vectors, tensors)
-- Employ established terminology for phenomena (e.g., "quantum entanglement," "laminar flow")
-- Specify equipment with model numbers and manufacturers when relevant
-- Use mathematical notation consistent with field standards (e.g., ℏ for reduced Planck constant)
-
-**Neuroscience:**
-- Use standardized brain region nomenclature (e.g., refer to atlases like Allen Brain Atlas)
-- Specify coordinates for brain regions using established stereotaxic systems
-- Follow conventions for neural terminology (e.g., "action potential" not "spike" in formal writing)
-- Use "neural activity," "neuronal firing," "brain activation" appropriately based on measurement method
-- Describe recording techniques with proper specificity (e.g., "whole-cell patch clamp," "extracellular recording")
-
-**Social and Behavioral Sciences:**
-- Use person-first language when appropriate (e.g., "people with schizophrenia" not "schizophrenics")
-- Employ standardized psychological constructs and validated assessment names
-- Follow APA guidelines for reducing bias in language
-- Specify theoretical frameworks using established terminology
-- Use "participants" rather than "subjects" for human research
-
-**General Principles:**
-
-**Match Audience Expertise:**
-- For specialized journals: Use field-specific terminology freely, define only highly specialized or novel terms
-- For broad-impact journals (e.g., *Nature*, *Science*): Define more technical terms, provide context for specialized concepts
-- For interdisciplinary audiences: Balance precision with accessibility, define terms at first use
-
-**Define Technical Terms Strategically:**
-- Define abbreviations at first use: "messenger RNA (mRNA)"
-- Provide brief explanations for specialized techniques when writing for broader audiences
-- Avoid over-defining terms well-known to the target audience (signals unfamiliarity with field)
-- Create a glossary if numerous specialized terms are unavoidable
-
-**Maintain Consistency:**
-- Use the same term for the same concept throughout (don't alternate between "medication," "drug," and "pharmaceutical")
-- Follow a consistent system for abbreviations (decide on "PCR" or "polymerase chain reaction" after first definition)
-- Apply the same nomenclature system throughout (especially for genes, species, chemicals)
-
-**Avoid Field Mixing Errors:**
-- Don't use clinical terminology for basic science (e.g., don't call mice "patients")
-- Avoid colloquialisms or overly general terms in place of precise field terminology
-- Don't import terminology from adjacent fields without ensuring proper usage
-
-**Verify Terminology Usage:**
-- Consult field-specific style guides and nomenclature resources
-- Check how terms are used in recent papers from the target journal
-- Use domain-specific databases and ontologies (e.g., Gene Ontology, MeSH terms)
-- When uncertain, cite a key reference that establishes terminology
+For detailed discipline-specific guides covering Biomedical, Molecular Biology, Chemistry, Ecology, Physics, Neuroscience, and Social Sciences, see `references/field_terminology.md`.
 
 ### 10. Common Pitfalls to Avoid
 
-**Top Rejection Reasons:**
-1. Inappropriate, incomplete, or insufficiently described statistics
-2. Over-interpretation of results or unsupported conclusions
-3. Poorly described methods affecting reproducibility
-4. Small, biased, or inappropriate samples
-5. Poor writing quality or difficult-to-follow text
-6. Inadequate literature review or context
-7. Figures and tables that are unclear or poorly designed
-8. Failure to follow reporting guidelines
+**Top rejection reasons**: Poor statistics, over-interpretation, irreproducible methods, inadequate samples, poor writing, weak literature review, unclear figures, missing reporting guidelines.
 
-**Writing Quality Issues:**
-- Mixing tenses inappropriately (use past tense for methods/results, present for established facts)
-- Excessive jargon or undefined acronyms
-- Paragraph breaks that disrupt logical flow
-- Missing transitions between sections
-- Inconsistent notation or terminology
+**Writing issues**: Tense mixing (past for methods/results, present for facts), undefined jargon, disrupted flow, missing transitions.
 
 ## Workflow for Manuscript Development
 
-**Stage 1: Planning**
-1. Identify target journal and review author guidelines
-2. Determine applicable reporting guideline (CONSORT, STROBE, etc.)
-3. Outline manuscript structure (usually IMRAD)
-4. Plan figures and tables as the backbone of the paper
+**Stage 1: Planning** — Identify journal, determine reporting guideline, outline IMRAD structure, plan figures/tables.
 
-**Stage 2: Drafting** (Use two-stage writing process for each section)
-1. Start with figures and tables (the core data story)
-2. For each section below, follow the two-stage process:
-   - **First**: Create outline with bullet points using research-lookup
-   - **Second**: Convert bullet points to full paragraphs with flowing prose
-3. Write Methods (often easiest to draft first)
-4. Draft Results (describing figures/tables objectively)
-5. Compose Discussion (interpreting findings)
-6. Write Introduction (setting up the research question)
-7. Craft Abstract (synthesizing the complete story as **flowing paragraph(s)**, not labeled sections)
-8. Create Title (concise and descriptive)
+**Stage 2: Drafting** — Start with figures/tables, then write sections using two-stage process (outline → prose). Order: Methods → Results → Discussion → Introduction → Abstract → Title.
 
-**Remember**: Bullet points are for planning only—the final manuscript must be in complete paragraphs.
+**Stage 3: Revision** — Check flow, consistency, figure clarity, guideline adherence, citations, word counts, proofread.
 
-**Stage 3: Revision**
-1. Check logical flow and "red thread" throughout
-2. Verify consistency in terminology and notation
-3. Ensure figures/tables are self-explanatory
-4. Confirm adherence to reporting guidelines
-5. Verify all citations are accurate and properly formatted
-6. Check word counts for each section
-7. Proofread for grammar, spelling, and clarity
-
-**Stage 4: Final Preparation**
-1. Format according to journal requirements
-2. Prepare supplementary materials
-3. Write cover letter highlighting significance
-4. Complete submission checklists
-5. Gather all required statements and forms
+**Stage 4: Final Preparation** — Format for journal, prepare supplementary materials, write cover letter, complete checklists.
 
 ### Pre-Submission Diagnostic Tests
 
-Before finalizing any manuscript, run these three diagnostic tests:
+Run three tests before submission:
+1. **Elevator Pitch**: Can someone grasp the main finding from Title + Abstract alone?
+2. **Independence**: Do figures/captions tell the complete story without main text?
+3. **So What?**: Does Discussion explicitly state why findings matter?
 
-#### The "Elevator Pitch" Test
-**Question:** Can the reader understand the main finding just by reading the Title and Abstract?
-
-- Read only your title and abstract
-- Ask: What is the key message? What was found?
-- If unclear, revise until a non-specialist can grasp the core contribution
-
-#### The Independence Test
-**Question:** Do the figures and captions tell the whole story without the main text?
-
-- Print/view only your figures, tables, and their captions
-- Ask: Can someone understand the study's design, findings, and conclusions?
-- If not, enhance captions with methods, sample sizes, and statistical interpretations
-
-#### The "So What?" Test
-**Question:** Does the Discussion explicitly state why these findings matter?
-
-- Read only your Discussion section
-- Ask: Is the significance to the field or stakeholders clearly articulated?
-- If the reader must infer importance, add explicit statements of impact
-
-**Additional Quick Checks:**
-- [ ] All acronyms defined at first use
-- [ ] Citations consistent in format
-- [ ] Figures legible at final print size (fonts ≥8pt)
-- [ ] Sans-serif fonts for figures, serif often preferred for body text
+**Quick checks**: Acronyms defined, citations consistent, figures legible (fonts ≥8pt).
 
 ---
 
-## Integration with Other Scientific Skills
+## Integration with Other Skills
 
-This skill works effectively with:
-- **Data analysis skills**: For generating results to report
-- **Statistical analysis**: For determining appropriate statistical presentations
-- **Literature review skills**: For contextualizing research
-- **Figure creation tools**: For developing publication-quality visualizations
-- **Venue-templates skill**: For venue-specific writing styles and formatting
+**Related skills**: research-lookup (literature), scientific-schematics/generate-image (figures), venue-templates (journal-specific styles).
 
-### Venue-Specific Writing Styles
-
-**Before writing for a specific venue, consult the venue-templates skill for writing style guides:**
-
-Different venues have dramatically different writing expectations:
-- **Nature/Science**: Accessible, story-driven, broad significance
-- **Cell Press**: Mechanistic depth, graphical abstracts, Highlights
-- **Medical journals (NEJM, Lancet)**: Structured abstracts, evidence language
-- **ML conferences (NeurIPS, ICML)**: Contribution bullets, ablation studies
-- **CS conferences (CHI, ACL)**: Field-specific conventions
-
-The venue-templates skill provides:
-- `venue_writing_styles.md`: Master style comparison
-- Venue-specific guides: `nature_science_style.md`, `cell_press_style.md`, `medical_journal_styles.md`, `ml_conference_style.md`, `cs_conference_style.md`
-- `reviewer_expectations.md`: What reviewers look for at each venue
-- Writing examples in `assets/examples/`
-
-**Workflow**: First use this skill for general scientific writing principles (IMRAD, clarity, citations), then consult venue-templates for venue-specific style adaptation.
+**Workflow**: Use this skill for general principles (IMRAD, citations, clarity), then consult `venue-templates` for venue-specific style adaptation (Nature/Science, Cell Press, medical journals, ML/CS conferences).
 
 ## References
 
-This skill includes comprehensive reference files covering specific aspects of scientific writing:
-
-- `references/imrad_structure.md`: Detailed guide to IMRAD format and section-specific content
-- `references/citation_styles.md`: Complete citation style guides (APA, AMA, Vancouver, Chicago, IEEE)
-- `references/figures_tables.md`: Best practices for creating effective data visualizations
-- `references/reporting_guidelines.md`: Study-specific reporting standards and checklists
-- `references/writing_principles.md`: Core principles of effective scientific communication
-
-**For venue-specific writing styles** (tone, voice, abstract format, reviewer expectations), see the **venue-templates** skill which provides comprehensive style guides for Nature/Science, Cell Press, medical journals, ML conferences, and CS conferences.
-
-Load these references as needed when working on specific aspects of scientific writing.
+Load as needed: `references/imrad_structure.md`, `references/citation_styles.md`, `references/figures_tables.md`, `references/reporting_guidelines.md`, `references/writing_principles.md`, `references/field_terminology.md`, `references/writing_process.md`.
