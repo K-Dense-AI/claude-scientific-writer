@@ -2,7 +2,7 @@
 
 > Claude Scientific Writer Fork - Development Documentation
 > Forked from: [K-Dense-AI/claude-scientific-writer](https://github.com/K-Dense-AI/claude-scientific-writer) v2.10.0
-> Last Updated: 2025-12-24
+> Last Updated: 2025-12-25
 
 ## Project Overview
 
@@ -10,7 +10,7 @@ This is a **customized fork** of the Claude Scientific Writer plugin, adapted fo
 
 ### What This Fork Is
 
-- A scientific research writing assistant with 17 specialized skills
+- A scientific research writing assistant with 19 specialized skills
 - Integrated with Oligon brand standards for document generation
 - Focused on academic papers, literature reviews, posters, and presentations
 - Uses LaTeX with BibTeX as the default output format
@@ -23,6 +23,9 @@ Clinical and business-focused skills removed to streamline scientific focus:
 
 ### What Was Added
 
+- `skills/plotting-libraries/` - Python plotting library reference (matplotlib, seaborn)
+- `skills/scientific-visualization/` - Publication-quality figure creation
+- `skills/visual-design/` - Design philosophy for scientific visuals
 - `src/oligon_reports/` - Python package for branded PDF generation (ReportLab)
 - `docs/template-project/brand/` - Oligon brand standards and visual identity
 - `INTEGRATION_ANALYSIS.md` - Roadmap for template-project merge
@@ -50,16 +53,16 @@ uv run ty                  # Type check
 | `INTEGRATION_ANALYSIS.md` | Template-project merge roadmap |
 | `docs/original/` | Archived upstream documentation |
 
-### Active Skills (17)
+### Active Skills (19)
 
 | Category | Skills |
 |----------|--------|
 | **Writing** | `scientific-writing`, `literature-review`, `hypothesis-generation` |
 | **Presentations** | `scientific-slides`, `latex-posters`, `pptx-posters` |
-| **Research** | `research-lookup`, `citation-management`, `peer-review` |
-| **Visuals** | `scientific-schematics`, `generate-image` |
-| **Documents** | `document-skills`, `markitdown`, `venue-templates` |
-| **Analysis** | `scientific-critical-thinking`, `scholar-evaluation` |
+| **Research** | `research-lookup`, `citation-management`, `peer-review`, `scholar-evaluation` |
+| **Visuals** | `scientific-schematics`, `generate-image`, `plotting-libraries`, `scientific-visualization`, `visual-design` |
+| **Documents** | `markitdown`, `venue-templates` |
+| **Analysis** | `scientific-critical-thinking` |
 | **Conversion** | `paper-2-web` |
 
 ---
@@ -68,9 +71,8 @@ uv run ty                  # Type check
 
 ```
 claude-scientific-writer_fork/
-├── skills/                  # ⭐ CANONICAL skill definitions (17 skills)
+├── skills/                  # ⭐ CANONICAL skill definitions (19 skills)
 │   ├── citation-management/
-│   ├── document-skills/
 │   ├── generate-image/
 │   ├── hypothesis-generation/
 │   ├── latex-posters/
@@ -78,14 +80,17 @@ claude-scientific-writer_fork/
 │   ├── markitdown/
 │   ├── paper-2-web/
 │   ├── peer-review/
+│   ├── plotting-libraries/
 │   ├── pptx-posters/
 │   ├── research-lookup/
 │   ├── scholar-evaluation/
 │   ├── scientific-critical-thinking/
 │   ├── scientific-schematics/
 │   ├── scientific-slides/
+│   ├── scientific-visualization/
 │   ├── scientific-writing/
-│   └── venue-templates/
+│   ├── venue-templates/
+│   └── visual-design/
 ├── .claude/
 │   ├── WRITER.md            # Agent system instructions
 │   └── settings.local.json  # Local Claude Code settings

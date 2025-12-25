@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `README.md`: Complete rewrite with comprehensive project documentation
+  - Clear fork identity and purpose (customized skill repository, not a plugin)
+  - Key customizations table (skills removed, brand integration, visualization skills added)
+  - Updated skill inventory (19 skills organized by category)
+  - Project structure overview
+  - Getting started guide with prerequisites and installation
+  - Development workflow documentation
+- `CLAUDE.md`: Updated to reflect current project state
+  - Skill count updated from 17 to 19
+  - Added new visualization skills to "What Was Added" section (`plotting-libraries`, `scientific-visualization`, `visual-design`)
+  - Updated Active Skills table with correct categorization
+  - Updated project structure with all 19 skill directories
+  - Last Updated date set to 2025-12-25
+- `.claude/settings.local.json`: Added `readme-skill` to auto-approved skills
+
 ### Added
 
 - `skills/venue-templates/REVIEW_AND_IMPROVEMENTS.md`: Comprehensive skill review and improvement plan
