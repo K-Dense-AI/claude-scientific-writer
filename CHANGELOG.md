@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `skills/venue-templates/REVIEW_AND_IMPROVEMENTS.md`: Comprehensive skill review and improvement plan
+  - Current state assessment with gap analysis (75+ venues documented, ~6 templates exist)
+  - Priority-ranked improvement proposals (template expansion, script enhancement, documentation)
+  - Implementation roadmap with 3 phases and effort estimates
+  - Template acquisition strategy with official source URLs
+  - Quality metrics (current vs. target coverage)
+  - Integration enhancement opportunities with related skills
 - `skills/scientific-schematics/IMPLEMENTATION_PLAN_GEMINI_MODELS.md`: Implementation plan for model configuration update
   - Switch default review model from Gemini 3 Pro to Gemini 3 Flash Preview (faster, cheaper)
   - Add `--review-model` CLI flag to allow Pro override for critical work
