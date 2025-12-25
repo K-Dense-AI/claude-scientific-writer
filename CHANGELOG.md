@@ -15,7 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implementation roadmap with 3 phases and effort estimates
   - Template acquisition strategy with official source URLs
   - Quality metrics (current vs. target coverage)
-  - Integration enhancement opportunities with related skills
+  - **Section 8: Integration Points Analysis** (new)
+    - Current integration map: 5 outbound + 5 inbound skill references documented
+    - 11 skills identified WITHOUT venue-templates integration (gaps)
+    - Proposed new integrations for scientific-slides, pptx-posters, scientific-schematics, paper-2-web, plotting-libraries, generate-image, visual-design
+    - Proposed additions: presentations_formatting.md, figure_requirements_by_venue.md
+    - Implementation checklist with 3 phases (A: update other skills, B: expand venue-templates, C: consolidation)
+    - Integration architecture diagram showing skill relationships
 - `skills/scientific-schematics/IMPLEMENTATION_PLAN_GEMINI_MODELS.md`: Implementation plan for model configuration update
   - Switch default review model from Gemini 3 Pro to Gemini 3 Flash Preview (faster, cheaper)
   - Add `--review-model` CLI flag to allow Pro override for critical work

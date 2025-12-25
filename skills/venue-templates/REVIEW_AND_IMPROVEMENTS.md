@@ -339,15 +339,345 @@ The skill should support these common workflows:
 
 ---
 
-## 8. Change Log
+## 8. Integration Points Analysis
+
+This section documents all current and proposed integration points between venue-templates and other skills in the repository.
+
+### 8.1 Current Integration Map
+
+#### Outbound References (FROM venue-templates TO other skills)
+
+| Target Skill | Integration Type | Location in SKILL.md | Purpose |
+|--------------|------------------|---------------------|---------|
+| **scientific-schematics** | Visual enhancement | Lines 26-57 | Generate figures meeting venue specs |
+| **scientific-writing** | Content guidance | Lines 323-326 | IMRaD structure, clarity principles |
+| **literature-review** | Citation synthesis | Lines 328-330 | Apply venue citation styles |
+| **peer-review** | Quality evaluation | Lines 332-336 | Verify formatting compliance |
+| **latex-posters** | Poster templates | Lines 338-341 | Conference poster requirements |
+
+#### Inbound References (FROM other skills TO venue-templates)
+
+| Source Skill | Reference Type | What They Use | Notes |
+|--------------|---------------|---------------|-------|
+| **peer-review** | `reviewer_expectations.md` | Calibrate review standards by venue | Line 24 of peer-review SKILL.md |
+| **hypothesis-generation** | Writing style guides | Publication style adaptation | Line 290 of hypothesis-generation SKILL.md |
+| **scientific-writing** | Venue-specific styles | Tone, voice, abstract format | Lines 534-565 of scientific-writing SKILL.md |
+| **citation-management** | Citation requirements | BibTeX styles by venue | Lines 991-993 of citation-management SKILL.md |
+| **literature-review** | Publication style guides | Writing for specific venues | Lines 515-519 of literature-review SKILL.md |
+
+### 8.2 Skills WITHOUT venue-templates Integration (Gaps)
+
+The following skills could benefit from venue-templates integration but currently have none:
+
+| Skill | Missing Integration | Potential Value |
+|-------|---------------------|-----------------|
+| **scientific-slides** | Conference presentation formats | Talk duration by venue, slide count norms |
+| **pptx-posters** | Poster size requirements | Conference-specific poster specs |
+| **paper-2-web** | Publication venue context | Adapt transformations to venue expectations |
+| **scientific-schematics** | Figure requirements by venue | Resolution, format, color space specs |
+| **scientific-visualization** | Journal figure specs | Already has inline specs - could centralize |
+| **generate-image** | Publication figure requirements | Output quality matching venue needs |
+| **scholar-evaluation** | Reviewer expectations | Venue-specific evaluation criteria |
+| **research-lookup** | Venue context for searches | Target venue when finding literature |
+| **markitdown** | Formatting preservation | Venue-aware document conversion |
+| **plotting-libraries** | Export specifications | Journal-ready figure export settings |
+| **visual-design** | Venue aesthetic expectations | Brand consistency by publisher |
+
+### 8.3 Proposed New Integrations
+
+#### Priority 1: High-Value Additions to Other Skills
+
+**1. scientific-slides → venue-templates**
+
+Add to `scientific-slides/SKILL.md`:
+```markdown
+## Venue-Specific Presentation Guidelines
+
+For conference presentations, consult the **venue-templates** skill for:
+- Standard talk durations by venue (NeurIPS: 5-20 min, CHI: 10-20 min)
+- Expected slide counts and pacing
+- Venue-specific presentation norms (demo expectations, Q&A format)
+- Writing style guides for adapting paper content to oral presentations
+
+Reference: `venue-templates/references/conferences_formatting.md`
+```
+
+**2. pptx-posters → venue-templates**
+
+Add to `pptx-posters/SKILL.md`:
+```markdown
+## Conference Poster Specifications
+
+Before creating a poster, consult **venue-templates** for:
+- Required poster dimensions by conference
+- Size specifications (A0, A1, 36×48", etc.)
+- Conference-specific design guidelines
+- QR code and supplementary material conventions
+
+Reference: `venue-templates/references/posters_guidelines.md`
+```
+
+**3. scientific-schematics → venue-templates**
+
+Add to `scientific-schematics/SKILL.md`:
+```markdown
+## Venue-Specific Figure Requirements
+
+When generating figures for publication, consult **venue-templates** for:
+- Resolution requirements by venue (Nature: 300+ dpi, IEEE: 300+ dpi)
+- Accepted formats per venue (TIFF, EPS, PDF)
+- Color space requirements (RGB vs CMYK)
+- Figure size limits and caption requirements
+
+Reference: `venue-templates/references/journals_formatting.md`
+```
+
+**4. paper-2-web → venue-templates**
+
+Add to `paper-2-web/SKILL.md`:
+```markdown
+## Venue-Aware Transformations
+
+When converting papers, consider target venue context from **venue-templates**:
+- Adapt transformation style to match venue conventions
+- Use venue writing style guides for content adaptation
+- Include venue-appropriate metadata in generated outputs
+
+Reference: `venue-templates/references/venue_writing_styles.md`
+```
+
+#### Priority 2: Medium-Value Additions
+
+**5. scientific-visualization → venue-templates (Consolidation)**
+
+The scientific-visualization skill currently contains inline journal specifications. Consider:
+- Moving detailed specs to venue-templates
+- Cross-referencing for single source of truth
+- Keeping quick-reference inline, detailed specs in venue-templates
+
+**6. plotting-libraries → venue-templates**
+
+Add to `plotting-libraries/SKILL.md`:
+```markdown
+## Publication-Ready Export
+
+For journal submissions, consult **venue-templates** for export specifications:
+- DPI and resolution requirements by venue
+- Accepted file formats per journal
+- Color mode requirements (RGB/CMYK/Grayscale)
+
+See: `venue-templates/references/journals_formatting.md` → Figure Requirements section
+```
+
+**7. generate-image → venue-templates**
+
+Add to `generate-image/SKILL.md`:
+```markdown
+## Publication Figure Standards
+
+When generating images for manuscripts, use **venue-templates** for:
+- Output resolution matching venue requirements
+- Color palette recommendations (colorblind-safe per venue)
+- Format specifications for submission
+
+Reference: `venue-templates/references/journals_formatting.md`
+```
+
+#### Priority 3: Lower-Value Additions
+
+**8. scholar-evaluation → venue-templates**
+
+```markdown
+## Venue-Calibrated Evaluation
+
+For scholar evaluation, consult **venue-templates/references/reviewer_expectations.md** to:
+- Understand venue-specific evaluation criteria
+- Calibrate quality assessments to venue standards
+- Recognize venue-appropriate methodologies
+```
+
+**9. research-lookup → venue-templates**
+
+```markdown
+## Venue-Targeted Literature Search
+
+When searching for publication venues, use **venue-templates** to:
+- Understand writing style expectations of target venues
+- Identify appropriate journals for specific research types
+- Find venue-specific citation style requirements
+```
+
+### 8.4 Proposed Additions TO venue-templates
+
+#### 8.4A: Add Presentation/Slides Section
+
+Add to `venue-templates/SKILL.md`:
+```markdown
+### 5. Presentation Formats
+
+Presentation specifications for major conferences:
+
+**Talk Durations**:
+| Venue | Contributed Talk | Spotlight | Invited |
+|-------|-----------------|-----------|---------|
+| NeurIPS | 5 min | 5 min | 20-45 min |
+| ICML | 5 min | 5 min | 30-60 min |
+| CHI | 10-20 min | - | 30-60 min |
+| CVPR | 5 min | - | 20-30 min |
+
+**Slide Recommendations**:
+- 1 slide per minute is typical
+- Include slide numbers for Q&A references
+- Use venue-appropriate color schemes
+```
+
+Add reference file: `references/presentations_formatting.md`
+
+#### 8.4B: Enhance Figure Requirements Documentation
+
+Expand `references/journals_formatting.md` or create `references/figure_requirements_by_venue.md`:
+```markdown
+# Figure Requirements by Venue
+
+## High-Impact Journals
+
+### Nature
+- Resolution: 300+ dpi (1200 dpi for line art)
+- Formats: TIFF, EPS, PDF preferred
+- Color: RGB or CMYK
+- Width: Single column (89 mm), double column (183 mm), full page (183 mm)
+- Max file size: 10 MB per figure
+
+### Science
+- Resolution: 300+ dpi
+- Formats: TIFF, PDF
+- Color: RGB
+- Width: 1-column (5.5 cm), 2-column (12 cm), full-width (18 cm)
+
+### Cell Press
+- Resolution: 300 dpi minimum, 600+ dpi preferred
+- Formats: PDF, EPS, TIFF
+- Color: RGB
+- Width: Single (85 mm), 1.5-column (114 mm), 2-column (174 mm)
+- Graphical abstract: 1200×600 pixels, 300 dpi
+
+## ML Conferences
+
+### NeurIPS/ICML/ICLR
+- Resolution: 300+ dpi recommended
+- Formats: PDF, PNG
+- Color: RGB, colorblind-safe palettes recommended
+- Width: Column width in template
+- Note: Figures included in page count
+```
+
+#### 8.4C: Add Cross-Reference Section to SKILL.md
+
+Add to venue-templates SKILL.md (Integration section):
+```markdown
+## Related Skills
+
+| Skill | Use For | Reference in venue-templates |
+|-------|---------|------------------------------|
+| **scientific-writing** | Content creation | Use with writing style guides |
+| **citation-management** | Bibliography formatting | Citation styles by venue |
+| **scientific-schematics** | Figure generation | Figure requirements section |
+| **scientific-visualization** | Data plots | Journal figure specs |
+| **latex-posters** | Poster creation | Poster size specifications |
+| **pptx-posters** | PowerPoint posters | Poster guidelines |
+| **scientific-slides** | Presentations | Presentation formats (proposed) |
+| **peer-review** | Manuscript evaluation | reviewer_expectations.md |
+| **literature-review** | Citation synthesis | Citation style requirements |
+| **hypothesis-generation** | Research design | Writing style adaptation |
+| **paper-2-web** | Paper transformation | Venue-aware adaptation |
+```
+
+### 8.5 Integration Implementation Checklist
+
+#### Phase A: Update Other Skills (Add TO venue-templates references)
+
+| Skill | Action | Effort | Files to Modify |
+|-------|--------|--------|-----------------|
+| scientific-slides | Add venue-templates reference | Low | SKILL.md |
+| pptx-posters | Add poster specs reference | Low | SKILL.md |
+| scientific-schematics | Add figure requirements reference | Low | SKILL.md |
+| paper-2-web | Add venue context reference | Low | SKILL.md |
+| plotting-libraries | Add export specs reference | Low | SKILL.md |
+| generate-image | Add publication standards reference | Low | SKILL.md |
+| visual-design | Add venue aesthetic reference | Low | SKILL.md |
+
+#### Phase B: Expand venue-templates Content
+
+| Content | Action | Effort | New Files |
+|---------|--------|--------|-----------|
+| Presentation formats | Add section + reference doc | Medium | `references/presentations_formatting.md` |
+| Figure requirements | Expand existing or new file | Medium | `references/figure_requirements_by_venue.md` |
+| Cross-reference table | Add to SKILL.md | Low | None |
+
+#### Phase C: Consolidation Opportunities
+
+| Opportunity | Current State | Proposed |
+|-------------|---------------|----------|
+| Journal figure specs | Duplicated in scientific-visualization + venue-templates | Single source in venue-templates, cross-ref from others |
+| Poster sizes | In both latex-posters and venue-templates | Canonical in venue-templates, reference from poster skills |
+| Citation styles | In both citation-management and venue-templates | Venue-templates for requirements, citation-management for implementation |
+
+### 8.6 Integration Architecture Diagram
+
+```
+                           ┌─────────────────────┐
+                           │   venue-templates   │
+                           │                     │
+                           │  • Templates        │
+                           │  • Requirements     │
+                           │  • Style guides     │
+                           │  • Validation       │
+                           └──────────┬──────────┘
+                                      │
+              ┌───────────────────────┼───────────────────────┐
+              │                       │                       │
+              ▼                       ▼                       ▼
+    ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+    │  Content Skills │     │  Visual Skills  │     │ Format Skills   │
+    ├─────────────────┤     ├─────────────────┤     ├─────────────────┤
+    │ scientific-     │     │ scientific-     │     │ latex-posters   │
+    │   writing       │     │   schematics    │     │ pptx-posters    │
+    │ literature-     │     │ scientific-     │     │ scientific-     │
+    │   review        │     │   visualization │     │   slides        │
+    │ hypothesis-     │     │ plotting-       │     │ paper-2-web     │
+    │   generation    │     │   libraries     │     │ markitdown      │
+    │ peer-review     │     │ generate-image  │     │                 │
+    │ citation-       │     │ visual-design   │     │                 │
+    │   management    │     │                 │     │                 │
+    └─────────────────┘     └─────────────────┘     └─────────────────┘
+
+LEGEND:
+  ──────► Current integration (documented cross-reference)
+  - - - ► Proposed integration (to be added)
+
+Current Inbound:  scientific-writing, literature-review, peer-review,
+                  citation-management, hypothesis-generation
+
+Current Outbound: scientific-schematics, scientific-writing,
+                  literature-review, peer-review, latex-posters
+
+Proposed New:     scientific-slides, pptx-posters, paper-2-web,
+                  scientific-visualization, plotting-libraries,
+                  generate-image, visual-design, scholar-evaluation
+```
+
+---
+
+## 9. Change Log
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2025-12-25 | Added Section 8: Integration Points Analysis with current/proposed integrations | Claude |
 | 2025-12-25 | Initial review document created | Claude |
 
 ---
 
-## 9. References
+## 10. References
 
 - SKILL.md (current skill documentation)
 - references/ (11 style and formatting guides)
