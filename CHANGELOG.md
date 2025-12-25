@@ -48,6 +48,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `skills/scientific-writing/IMPLEMENTATION_PLAN.md`: Audit-driven improvement plan for scientific-writing skill
+  - Comprehensive skill audit using skill-reviewer (health score: 52%)
+  - 4-phase implementation strategy targeting 85%+ health score
+  - Phase 1: Frontmatter fixes (version, description triggers, allowed-tools format)
+  - Phase 2: Fix 10 broken cross-skill references (scripts, venue-templates)
+  - Phase 3: Token reduction (~8,428 → ~2,400 tokens) via content extraction
+  - New reference files planned: `field_terminology.md`, `writing_process.md`
+  - Step-by-step instructions with before/after code snippets
+  - Validation commands and rollback plan included
 - `skills/venue-templates/REVIEW_AND_IMPROVEMENTS.md`: Comprehensive skill review and improvement plan
   - Current state assessment with gap analysis (75+ venues documented, ~6 templates exist)
   - Priority-ranked improvement proposals (template expansion, script enhancement, documentation)
