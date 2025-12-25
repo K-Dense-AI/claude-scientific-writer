@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `skills/scientific-writing/`: Major best practices update aligned with modern scientific writing guidelines
+  - **SKILL.md**:
+    - Added **Core Philosophy** section (reader-centricity, parsimony, logical flow as narrative)
+    - Added **Executive Summary vs Abstract** comparison table and guidelines
+    - Enhanced **Introduction Development** with visual Funnel Approach diagram (BROAD→NARROW→GAP→SPECIFIC)
+    - Added **Message Trumps Beauty** principle to Figures & Tables section
+    - Added **Color Strategy** guidelines (accessibility, sequential vs qualitative palettes, avoid red/green)
+    - Added **Chart Selection Guide** table with recommended vs avoid columns
+    - Added **Pre-Submission Diagnostic Tests** (Elevator Pitch, Independence, "So What?" tests)
+  - **references/writing_principles.md**:
+    - Added **C-C-C Framework** (Context-Content-Conclusion) for paragraph structure with example
+  - **references/figures_tables.md**:
+    - Added **Message Trumps Beauty** as Principle 0 (the cardinal rule) with three diagnostic questions
+    - Enhanced **Clarity and Simplicity** section with explicit chartjunk elimination list and data-ink ratio guidance
 - `skills/visual-design/`: Skill audit and improvements (76% → 90% health score)
   - Added frontmatter: `version: 1.0.0`, `allowed-tools: Read, Glob, Write`
   - Improved description with explicit trigger conditions ("Use when...")

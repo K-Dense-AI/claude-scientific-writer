@@ -14,6 +14,24 @@ Scientific writing is a process for communicating research with precision and cl
 
 **Critical Principle: Always write in full paragraphs with flowing prose. Never submit bullet points in the final manuscript.** Use a two-stage process: first create section outlines with key points using research-lookup, then convert those outlines into complete paragraphs.
 
+## Core Philosophy
+
+Scientific writing is not just recording what was done—it is an **argument designed to persuade** the reader of your findings' validity and significance. Three principles should guide every piece of scientific writing:
+
+### Reader-Centricity
+
+Do not write for yourself; write for the reader. Assume readers are intelligent but lack your specific context. The goal is to transfer information with minimal cognitive load. Every sentence should serve the reader's understanding, not demonstrate the author's expertise.
+
+### The Rule of Parsimony
+
+Less is more. Include only what is necessary to support the conclusion. If a detail (like the weather on the day of the experiment) does not impact the result, remove it. Each paragraph, sentence, and word must earn its place in the manuscript.
+
+### Logical Flow as Narrative
+
+Determine the narrative arc before writing. Experiments may be performed out of order, but the report must present them in a linear logic that builds a coherent argument. The reader should never wonder "why am I reading this?"—every section should connect to the central thesis.
+
+---
+
 ## When to Use This Skill
 
 This skill should be used when:
@@ -145,12 +163,40 @@ For detailed guidance on IMRAD structure, refer to `references/imrad_structure.m
 
 **Abstract Composition**: Craft concise, standalone summaries (150-300 words) written as **flowing paragraphs**—never with labeled sections like "Background:", "Methods:", "Results:", "Conclusions:". The abstract should read as cohesive prose covering: (1) context and problem, (2) what was done, (3) key findings with specific numbers, and (4) significance and implications. Only use structured abstracts with labels if the journal explicitly requires them in their author guidelines.
 
-**Introduction Development**: Build compelling introductions that:
-- Establish the research problem's importance
-- Review relevant literature systematically
-- Identify knowledge gaps or controversies
-- State clear research questions or hypotheses
-- Explain the study's novelty and significance
+**Executive Summary vs. Abstract**: These serve different purposes:
+
+| Aspect | Abstract | Executive Summary |
+|--------|----------|-------------------|
+| **Purpose** | Neutral miniature of the full paper | Persuasive decision-document for stakeholders |
+| **Structure** | Background → Methods → Results → Conclusion | **Lead with conclusion and recommendations** |
+| **Audience** | Academic indexing, literature search | Busy decision-makers, grant reviewers |
+| **Tone** | Objective, scholarly | Actionable, impact-focused |
+| **Length** | 150-300 words | 1-2 pages (grants, reports) |
+
+**Executive Summary Guidelines:**
+- Lead with the "so what?"—answer the key question first
+- State recommendations explicitly and early
+- Quantify impact (cost savings, lives improved, efficiency gains)
+- Use bullet points sparingly for key takeaways
+- Assume the reader may not read the full document
+
+**Introduction Development (The Funnel Approach)**: Build compelling introductions by progressively narrowing scope:
+
+```
+BROAD   →  Field context: Why does this area matter? (1-2 paragraphs)
+        ↓
+NARROW  →  Specific problem: What has been studied? What's known? (2-3 paragraphs)
+        ↓
+GAP     →  Knowledge gap: What remains unknown? Why is this problematic?
+        ↓
+SPECIFIC→  Your study: What question do you address? How?
+```
+
+**Key elements:**
+- Start broad enough to engage non-specialists, but not so broad it's generic
+- Cite recent literature (last 5-10 years for active fields)
+- The gap statement is crucial—make it explicit ("However, X remains unclear...")
+- End with clear objectives/hypotheses ("Here, we investigate..." or "We hypothesized that...")
 
 **Methods Documentation**: Ensure reproducibility through:
 - Detailed participant/sample descriptions
@@ -194,6 +240,10 @@ Apply citation styles correctly across disciplines. For comprehensive style guid
 
 Create effective data visualizations that enhance comprehension. For detailed best practices, refer to `references/figures_tables.md`.
 
+**Core Principle: Message Trumps Beauty**
+
+Every figure must have a clear purpose. If it does not support a specific conclusion, delete it. Ask: "What is this figure's one-sentence message?" If you cannot answer, the figure needs revision or removal.
+
 **When to Use Tables vs. Figures:**
 - **Tables**: Precise numerical data, complex datasets, multiple variables requiring exact values
 - **Figures**: Trends, patterns, relationships, comparisons best understood visually
@@ -205,6 +255,26 @@ Create effective data visualizations that enhance comprehension. For detailed be
 - Include sample sizes (n) and statistical annotations
 - Follow the "one table/figure per 1000 words" guideline
 - Avoid duplicating information between text, tables, and figures
+- **Maximize data-ink ratio**: Remove chartjunk (3D effects, excessive gridlines, decorative elements)
+- **Always use vector formats** (PDF, SVG) for plots—raster images pixelate when zoomed
+
+**Color Strategy:**
+- **NEVER use red/green combinations** (inaccessible to ~8% of men with color blindness)
+- Use accessible palettes: **Viridis**, **Magma**, or ColorBrewer schemes
+- **Sequential palettes** (light→dark) for ordered/continuous data
+- **Qualitative palettes** (distinct hues) for categorical data
+- **Consistency**: If "Group A" is blue in Figure 1, it must be blue in all figures
+- Use color to represent data, not for decoration
+
+**Chart Selection Guide:**
+
+| Data Type | Recommended | Avoid |
+|-----------|-------------|-------|
+| Comparison across categories | Bar charts (start axis at zero) | Pie charts (hard to compare areas) |
+| Trends over time | Line charts | Bar charts (unless discrete time points) |
+| Distributions | Box plots, histograms, violin plots | Summary statistics alone (hide data density) |
+| Correlations | Scatter plots | Tables of correlation coefficients only |
+| Complex patterns | Heatmaps | 3D charts (distort perception) |
 
 **Common Figure Types:**
 - Bar graphs: Comparing discrete categories
@@ -523,6 +593,39 @@ Adapt language, terminology, and conventions to match the specific scientific di
 3. Write cover letter highlighting significance
 4. Complete submission checklists
 5. Gather all required statements and forms
+
+### Pre-Submission Diagnostic Tests
+
+Before finalizing any manuscript, run these three diagnostic tests:
+
+#### The "Elevator Pitch" Test
+**Question:** Can the reader understand the main finding just by reading the Title and Abstract?
+
+- Read only your title and abstract
+- Ask: What is the key message? What was found?
+- If unclear, revise until a non-specialist can grasp the core contribution
+
+#### The Independence Test
+**Question:** Do the figures and captions tell the whole story without the main text?
+
+- Print/view only your figures, tables, and their captions
+- Ask: Can someone understand the study's design, findings, and conclusions?
+- If not, enhance captions with methods, sample sizes, and statistical interpretations
+
+#### The "So What?" Test
+**Question:** Does the Discussion explicitly state why these findings matter?
+
+- Read only your Discussion section
+- Ask: Is the significance to the field or stakeholders clearly articulated?
+- If the reader must infer importance, add explicit statements of impact
+
+**Additional Quick Checks:**
+- [ ] All acronyms defined at first use
+- [ ] Citations consistent in format
+- [ ] Figures legible at final print size (fonts ≥8pt)
+- [ ] Sans-serif fonts for figures, serif often preferred for body text
+
+---
 
 ## Integration with Other Scientific Skills
 

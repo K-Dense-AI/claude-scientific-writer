@@ -51,6 +51,28 @@ A recent Nature Cell Biology checklist (2025) emphasizes that creating clear and
 
 ## Core Design Principles
 
+### 0. Message Trumps Beauty (The Cardinal Rule)
+
+**Every figure must have a clear purpose.** Before creating any visualization, ask: "What is this figure's one-sentence message?" If you cannot answer clearly, the figure either needs revision or should not exist.
+
+**The three questions every figure must answer:**
+1. **What claim does this figure support?** (The message)
+2. **Can this message be conveyed more simply?** (Parsimony check)
+3. **Does every visual element serve the message?** (Chartjunk audit)
+
+**Practical application:**
+- If a figure merely shows "here is some data," it fails the test
+- Each figure should make one—and only one—clear point
+- Beauty is secondary; clarity of communication is primary
+- Decorative elements that don't support comprehension should be removed
+
+**Example of purpose-driven figure design:**
+```
+Weak purpose: "Figure 1 shows gene expression data across conditions."
+Strong purpose: "Figure 1 demonstrates that drug treatment increases BRCA1 expression
+3-fold compared to vehicle control, suggesting pathway activation."
+```
+
 ### 1. Self-Explanatory Display Items
 
 **Each figure or table must stand alone without requiring the main text.**
@@ -116,7 +138,17 @@ differences in age, BMI, or blood pressure (all p > 0.15)."
 
 **Quality over quantity:** A few well-designed, information-rich displays are better than many redundant or poorly designed ones.
 
-### 5. Clarity and Simplicity
+### 5. Clarity and Simplicity (The Data-Ink Ratio)
+
+**Maximize the data-ink ratio** (Tufte principle): Every drop of ink should represent data. Ask: "If I remove this element, do I lose information?" If no, remove it.
+
+**Chartjunk to eliminate:**
+- 3D effects (distort perception, add no information)
+- Background colors and gradients
+- Excessive gridlines (use minimal reference lines only)
+- Decorative borders and frames
+- Clip art and irrelevant imagery
+- Shadow effects and beveling
 
 **Avoid cluttered or overly complex displays:**
 - Don't include too many variables in one figure
@@ -124,7 +156,14 @@ differences in age, BMI, or blood pressure (all p > 0.15)."
 - Provide adequate spacing between elements
 - Use high contrast (especially for color-blind accessibility)
 - Remove unnecessary grid lines, borders, or decoration
-- Maximize data-ink ratio (Tufte principle: minimize non-data ink)
+
+**Example of data-ink improvement:**
+```
+Before: 3D bar chart with gradient fills, heavy gridlines, decorative border
+After:  2D bar chart, single color, minimal axis lines, no border
+
+Result: Same data, 50% less visual clutter, faster comprehension
+```
 
 ## Figure Types and When to Use Them
 

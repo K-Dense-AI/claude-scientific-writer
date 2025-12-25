@@ -587,6 +587,36 @@ But: "The participants were heterogeneous." (Plural subject)
 
 ## Paragraph Structure
 
+### The C-C-C Framework (Context-Content-Conclusion)
+
+To ensure logical flow, structure every paragraph using the **Context-Content-Conclusion** scheme:
+
+| Component | Function | Position |
+|-----------|----------|----------|
+| **Context** | Defines the topic or links to the previous idea | First sentence |
+| **Content** | Presents new evidence, data, or analysis | Body (middle sentences) |
+| **Conclusion** | Delivers the take-home message or "answer" | Final sentence |
+
+**Example applying C-C-C:**
+
+```
+[CONTEXT] The relationship between exercise and cognitive function has been
+extensively studied in older adults.
+
+[CONTENT] A meta-analysis of 29 randomized trials (n=2,049) found that aerobic
+exercise improved executive function (SMD=0.23, 95% CI: 0.09-0.37) and memory
+(SMD=0.24, 95% CI: 0.09-0.39). The effects were strongest for moderate-intensity
+exercise performed 3-4 times weekly for at least 6 months.
+
+[CONCLUSION] These findings support exercise prescription as a non-pharmacological
+intervention for maintaining cognitive health in aging populations.
+```
+
+**Why C-C-C works:**
+- **Context** orients the reader and creates continuity
+- **Content** provides the substance without preamble
+- **Conclusion** ensures every paragraph has a clear purpose
+
 ### Ideal Paragraph Length
 
 **Guidelines:**
@@ -599,7 +629,7 @@ But: "The participants were heterogeneous." (Plural subject)
 
 **Techniques:**
 
-**1. Topic sentence:**
+**1. Topic sentence (Context in C-C-C):**
 ```
 "Exercise training improves cardiovascular function through multiple mechanisms.
 [Following sentences explain these mechanisms]"
