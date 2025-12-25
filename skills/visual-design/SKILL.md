@@ -1,6 +1,6 @@
 ---
 name: visual-design
-description: Design philosophy for publication-quality scientific visuals. Use when the user needs design guidance for figures, charts, infographics, posters, or slides. Use when asked about typography, color, layout, or visual best practices for science communication. Provides principles, not code—delegates implementation to scientific-visualization and plotting-libraries skills.
+description: Provides design philosophy for publication-quality scientific visuals. Use when the user needs guidance on figures, charts, infographics, posters, or slides. Triggers on questions about typography, color, layout, accessibility, or visual best practices for science communication. Delivers principles, not code—delegates implementation to scientific-visualization and plotting-libraries skills.
 version: 1.0.0
 license: Internal use - Oligon brand standards apply
 allowed-tools: Read, Glob, Write
@@ -51,6 +51,11 @@ Scientific visuals demand legible, professional typography:
 - For posters/slides: pair a distinctive display font with a clean body font
 - **Test at final size**: A beautiful font that's illegible at 8pt fails
 
+**Typography rules:**
+- **Maximum 2 font families** - One for headings, one for body; create variation through weight/size
+- **High contrast required** - Dark text on light backgrounds (or vice versa); minimum 4.5:1 ratio
+- **Consistent sizing** - Establish a type scale and stick to it across all panels/slides
+
 **Anti-patterns to avoid:**
 - Default matplotlib fonts without customization
 - Inconsistent font sizes across panels
@@ -71,7 +76,13 @@ Color communicates data and establishes visual identity:
 - Sequential palettes for continuous data (light→dark)
 - Diverging palettes for data with meaningful center (e.g., fold change)
 - Categorical palettes for discrete groups (max 7-8 distinguishable colors)
-- **Always check colorblind accessibility** (use colorblind-safe palettes)
+
+**Accessibility essentials:**
+- **Avoid red/green contrast alone** - ~8% of males are red-green colorblind; use blue/orange or magenta/green instead
+- **Redundant coding** - Never rely on color alone; add shapes, patterns, or direct labels to convey meaning
+- **Greyscale test** - Convert your design to black & white; if meaning is lost, contrast is insufficient
+- **Colorblind-safe palettes** - Verify with simulators (e.g., Coblis, Color Oracle) before finalizing
+- **Sufficient contrast** - WCAG recommends 4.5:1 ratio for text; avoid light-on-light or dark-on-dark
 
 **Color hierarchy:**
 - Dominant color draws attention to the key insight
@@ -92,6 +103,11 @@ Spatial arrangement guides the viewer's eye:
 - Most important element gets most visual weight (size, color, position)
 - Guide the eye: top-left → bottom-right (Western reading order)
 - Group related elements; separate distinct concepts with whitespace
+
+**Gestalt principles** (how the brain groups visual elements):
+- **Proximity** - Elements placed close together are perceived as related; use spacing to create logical groups
+- **Similarity** - Elements sharing color, shape, or size are seen as belonging together
+- **Alignment** - Use a grid system; misaligned elements look unprofessional and confuse relationships
 
 **Figure panels:**
 - Consistent sizing across multi-panel figures
@@ -161,66 +177,11 @@ Every visual choice should be intentional:
 
 ## Output-Specific Guidance
 
-### Figures (matplotlib/seaborn/SVG)
-
-For implementation details and code, see the `plotting-libraries` and `scientific-visualization` skills.
-
-**Journal requirements:**
-- Check target journal for figure size limits (typically 3.5" or 7" width)
-- Resolution: 300 DPI minimum for print, 150 DPI for screen
-- File formats: PDF/EPS for vector, TIFF/PNG for raster
-- Font embedding for PDF outputs
-
-### Infographics (SVG)
-
-Infographics distill complex information into scannable visuals:
-
-- **One clear message** per infographic
-- **Visual metaphors** that aid understanding (not just decoration)
-- **Data callouts** with key statistics prominently displayed
-- **Minimal text** - let visuals carry the narrative
-- **Consistent iconography** aligned with brand
-
-SVG output enables:
-- Infinite scaling without quality loss
-- Easy editing in vector software (Illustrator, Inkscape)
-- Web embedding with interactivity potential
-
-### Report Illustrations (ReportLab)
-
-For branded PDF reports using the `oligon_reports` package:
-
-**Available components:**
-- `MetricCard`: Key statistics with labels
-- `CalloutBox`: Highlighted insights
-- `SectionHeader`: Branded section dividers
-- `DataTable`: Formatted tabular data
-
-**Design principles:**
-- Consistent margins and spacing throughout
-- Brand colors applied to headers, accents, callouts
-- Professional typography hierarchy
-- Visual breaks between sections
-
-### Presentations (PPTX/Beamer)
-
-**Slide design:**
-- **One idea per slide** - if you need bullets, you need more slides
-- **Minimal text** - speak the details, show the visually
-- **Large fonts** - minimum 24pt for body text, 36pt+ for titles
-- **High-contrast** - visible from the back of the room
-
-**Figure adaptation:**
-- Simplify journal figures for slides (remove fine details)
-- Increase line weights and font sizes
-- Use animation sparingly and purposefully
-- Ensure colors work on projectors (avoid subtle gradients)
-
-**Poster design:**
-- Scannable hierarchy: title (3 sec), key figure (10 sec), details (60 sec)
-- Limited color palette (3-4 colors maximum)
-- Generous whitespace guides the eye
-- QR code for additional resources
+For detailed format-specific guidance, see `references/OUTPUT_FORMATS.md`. Key formats:
+- **Figures**: Journal specs, resolution, vector vs raster
+- **Infographics**: SVG best practices, visual metaphors
+- **Reports**: ReportLab components (MetricCard, CalloutBox, etc.)
+- **Presentations**: Slide design, poster hierarchy
 
 ## Brand Integration
 
