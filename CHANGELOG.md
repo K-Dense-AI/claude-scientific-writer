@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `skills/scientific-writing/`: **Refactored for token efficiency** (health score: 52% → 93%, tokens: ~8428 → ~3139)
+- `skills/scientific-writing/`: **Refactored for token efficiency** (health score: 52% → 95%, tokens: ~8428 → ~3139)
   - **SKILL.md**:
     - Added frontmatter: `version: 1.0.0`, improved description with trigger verb ("Guides...")
     - Fixed `allowed-tools` format (array → space-separated)
@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **New reference files**:
     - `references/field_terminology.md`: Discipline-specific terminology guides (Biomedical, Molecular Biology, Chemistry, Ecology, Physics, Neuroscience, Social Sciences)
     - `references/writing_process.md`: Two-stage writing process with examples (outline → prose conversion)
+  - Removed `IMPLEMENTATION_PLAN.md` after completion (validation cleanup)
 - `skills/scientific-writing/`: Major best practices update aligned with modern scientific writing guidelines
   - **SKILL.md**:
     - Added **Core Philosophy** section (reader-centricity, parsimony, logical flow as narrative)
