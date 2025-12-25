@@ -1,12 +1,14 @@
 ---
 name: visual-design
-description: Create distinctive, publication-quality scientific visuals with high design quality. Use this skill when creating figures, charts, infographics, report illustrations, posters, or presentation slides. Generates polished visuals that avoid generic defaults and communicate science effectively.
+description: Design philosophy for publication-quality scientific visuals. Use when the user needs design guidance for figures, charts, infographics, posters, or slides. Use when asked about typography, color, layout, or visual best practices for science communication. Provides principles, not code—delegates implementation to scientific-visualization and plotting-libraries skills.
+version: 1.0.0
 license: Internal use - Oligon brand standards apply
+allowed-tools: Read, Glob, Write
 ---
 
-This skill guides creation of distinctive, publication-quality scientific visuals that avoid generic "default matplotlib" aesthetics. Apply intentional design thinking to every visual output.
+Apply intentional design thinking to create publication-quality scientific visuals that avoid generic "default matplotlib" aesthetics.
 
-The user provides visualization requirements: a figure, chart, infographic, poster, or presentation to create. They may include context about the audience, publication venue, or technical constraints.
+Analyze the user's visualization requirements—figure, chart, infographic, poster, or presentation—considering their audience, publication venue, and technical constraints.
 
 ## Design Thinking
 
@@ -60,7 +62,7 @@ Scientific visuals demand legible, professional typography:
 Color communicates data and establishes visual identity:
 
 **Brand integration:**
-- Use Oligon color palette as the foundation (see `BRAND_COLORS_v4.md`)
+- Use Oligon color palette as the foundation (see `references/BRAND_COLORS_v4.md`)
 - Primary colors for main data series
 - Accent colors for highlights and callouts
 - Neutral palette for backgrounds, axes, gridlines
@@ -161,31 +163,7 @@ Every visual choice should be intentional:
 
 ### Figures (matplotlib/seaborn/SVG)
 
-```python
-# Example: Oligon-styled matplotlib configuration
-import matplotlib.pyplot as plt
-
-# Brand-aligned defaults
-plt.rcParams.update({
-    'figure.facecolor': 'white',
-    'axes.facecolor': 'white',
-    'axes.edgecolor': '#333333',
-    'axes.labelcolor': '#1a1a1a',
-    'axes.titlesize': 12,
-    'axes.labelsize': 10,
-    'xtick.labelsize': 9,
-    'ytick.labelsize': 9,
-    'legend.fontsize': 9,
-    'font.family': 'sans-serif',
-    'font.sans-serif': ['Helvetica', 'Arial', 'Source Sans Pro'],
-    'axes.spines.top': False,
-    'axes.spines.right': False,
-    'axes.grid': False,
-    'figure.dpi': 150,
-    'savefig.dpi': 300,
-    'savefig.bbox': 'tight',
-})
-```
+For implementation details and code, see the `plotting-libraries` and `scientific-visualization` skills.
 
 **Journal requirements:**
 - Check target journal for figure size limits (typically 3.5" or 7" width)
@@ -250,7 +228,7 @@ This skill operates within the Oligon visual identity system:
 
 | Resource | Purpose |
 |----------|---------|
-| `BRAND_COLORS_v4.md` | Color palette definitions |
+| `references/BRAND_COLORS_v4.md` | Color palette definitions |
 | `oligon-brand` skill | Brand application guidance |
 | `src/oligon_reports/` | Python components for branded PDFs |
 
@@ -285,7 +263,3 @@ This skill provides the **design philosophy layer**. For implementation details,
 | `generate-image` | AI image generation (FLUX/Gemini) |
 
 **Workflow**: Start here for design decisions → use implementation skills for execution.
-
----
-
-*Remember: Claude is capable of extraordinary creative work. Apply these principles to create visuals that are both scientifically rigorous and visually distinctive.*

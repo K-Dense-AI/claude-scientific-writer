@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `skills/visual-design/`: Skill audit and improvements (76% → 90% health score)
+  - Added frontmatter: `version: 1.0.0`, `allowed-tools: Read, Glob, Write`
+  - Improved description with explicit trigger conditions ("Use when...")
+  - Strengthened opening to imperative voice
+  - Created `references/` directory with `BRAND_COLORS_v4.md` (copied from docs/template-project/brand/)
+  - Updated all internal file references to use local paths
+  - Removed weak closing meta-commentary
+  - Clarified skill purpose: design philosophy only, delegates code to `plotting-libraries` and `scientific-visualization`
 - `README.md`: Complete rewrite with comprehensive project documentation
   - Clear fork identity and purpose (customized skill repository, not a plugin)
   - Key customizations table (skills removed, brand integration, visualization skills added)

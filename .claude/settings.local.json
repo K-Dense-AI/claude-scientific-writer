@@ -15,7 +15,9 @@
       "mcp__plugin_claude-mem_mem-search__search",
       "mcp__plugin_claude-mem_mem-search__get_observations",
       "Skill(taches-cc-resources:create-agent-skills)",
-      "Skill(readme-skill)"
+      "Skill(readme-skill)",
+      "Skill(skill-reviewer)",
+      "Bash(git -C /Users/jeffkiefer/Documents/projects/claude-scientific-writer_fork status)"
     ]
   }
 }
