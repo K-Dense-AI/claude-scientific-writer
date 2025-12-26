@@ -3,6 +3,8 @@
 > Review Date: 2025-12-25
 > Status: Planning Document
 > Priority: Low (for future enhancement)
+>
+> **Update 2025-12-26**: The `scientific-visualization` skill referenced in this document has been merged into `visual-design`. Publication specifications are now in `visual-design/references/publication_specs.md`.
 
 ---
 

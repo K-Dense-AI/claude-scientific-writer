@@ -111,8 +111,7 @@ plt.savefig('figure.png', dpi=300, bbox_inches='tight')
 <styling_integration>
 For scientific figures, coordinate with:
 
-- **[scientific-visualization](../scientific-visualization/SKILL.md)**: Design principles, chart selection, publication requirements
-- **[visual-design](../visual-design/SKILL.md)**: Brand colors, typography, consistent aesthetics
+- **[visual-design](../visual-design/SKILL.md)**: Design principles, publication requirements, brand colors
 
 **Apply brand colors:**
 ```python

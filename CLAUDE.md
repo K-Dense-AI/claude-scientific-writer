@@ -2,7 +2,7 @@
 
 > Claude Scientific Writer Fork - Development Documentation
 > Forked from: [K-Dense-AI/claude-scientific-writer](https://github.com/K-Dense-AI/claude-scientific-writer) v2.10.0
-> Last Updated: 2025-12-25
+> Last Updated: 2025-12-26
 
 ## Project Overview
 
@@ -10,7 +10,7 @@ This is a **customized fork** of the Claude Scientific Writer plugin, adapted fo
 
 ### What This Fork Is
 
-- A scientific research writing assistant with 19 specialized skills
+- A scientific research writing assistant with 18 specialized skills
 - Integrated with Oligon brand standards for document generation
 - Focused on academic papers, literature reviews, posters, and presentations
 - Uses LaTeX with BibTeX as the default output format
@@ -24,11 +24,43 @@ Clinical and business-focused skills removed to streamline scientific focus:
 ### What Was Added
 
 - `skills/plotting-libraries/` - Python plotting library reference (matplotlib, seaborn)
-- `skills/scientific-visualization/` - Publication-quality figure creation
-- `skills/visual-design/` - Design philosophy for scientific visuals
+- `skills/visual-design/` - Design philosophy and publication specifications for scientific visuals
 - `src/oligon_reports/` - Python package for branded PDF generation (ReportLab)
 - `docs/template-project/brand/` - Oligon brand standards and visual identity
 - `INTEGRATION_ANALYSIS.md` - Roadmap for template-project merge
+
+---
+
+## Agent Behavior
+
+### Role Context
+
+Senior Scientific Software Engineer with focus on Python, R, and Bash tools for data analysis and research computing. CLI-first workflows, automation, reproducible scripts.
+
+### Default Mode
+
+- **Execute directly**: Follow instructions without excessive preamble
+- **Zero fluff**: No philosophy or generic tutorials unless asked
+- **Stay focused**: Answer exactly what was asked
+- **Output first**: Prefer commands, code, or concrete structures
+- **Practical defaults**: Make sensible assumptions, clearly stated
+
+### ULTRATHINK Mode
+
+**Trigger**: User types **ULTRATHINK** before a request
+
+When active, suspend brevity and analyze from multiple angles:
+- Technical correctness and efficiency
+- Data handling and failure modes
+- Maintainability and clarity
+- Reproducibility and debuggability
+- Justify all design choices
+
+### Input Handling
+
+- If key details are missing, make reasonable assumptions and label them
+- If errors/logs are provided, prioritize debugging over rewriting
+- If ambiguous, choose the simplest viable interpretation
 
 ---
 
@@ -53,14 +85,14 @@ uv run ty                  # Type check
 | `INTEGRATION_ANALYSIS.md` | Template-project merge roadmap |
 | `docs/original/` | Archived upstream documentation |
 
-### Active Skills (19)
+### Active Skills (18)
 
 | Category | Skills |
 |----------|--------|
 | **Writing** | `scientific-writing`, `literature-review`, `hypothesis-generation` |
 | **Presentations** | `scientific-slides`, `latex-posters`, `pptx-posters` |
 | **Research** | `research-lookup`, `citation-management`, `peer-review`, `scholar-evaluation` |
-| **Visuals** | `scientific-schematics`, `generate-image`, `plotting-libraries`, `scientific-visualization`, `visual-design` |
+| **Visuals** | `scientific-schematics`, `generate-image`, `plotting-libraries`, `visual-design` |
 | **Documents** | `markitdown`, `venue-templates` |
 | **Analysis** | `scientific-critical-thinking` |
 | **Conversion** | `paper-2-web` |
@@ -87,7 +119,6 @@ claude-scientific-writer_fork/
 │   ├── scientific-critical-thinking/
 │   ├── scientific-schematics/
 │   ├── scientific-slides/
-│   ├── scientific-visualization/
 │   ├── scientific-writing/
 │   ├── venue-templates/
 │   └── visual-design/
@@ -193,6 +224,39 @@ git commit -m "type: description
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
+
+---
+
+## Coding Standards
+
+### Engineering Philosophy: Intentional Code
+
+- **Anti-generic**: Avoid copy-paste patterns without justification
+- **Purpose first**: Every line should serve a clear function
+- **Minimalism**: Fewer moving parts > clever abstractions
+- **Predictability**: Explicit behavior beats implicit magic
+
+### Language-Specific Standards
+
+**Python**
+- Clear functions with explicit inputs/outputs
+- Minimal dependencies; use stdlib when possible
+- Type hints for public interfaces
+
+**R**
+- Scriptable and analysis-focused
+- Reproducible results (set seeds, document versions)
+
+**Bash**
+- Safe defaults: `set -euo pipefail`
+- Portable where possible
+- Never run destructive commands without preview
+
+### General Practices
+
+- Prefer existing, well-known tools over custom reinvention
+- Avoid loading large data into memory unless necessary
+- Never propose destructive commands without a safe preview
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: visual-design
-description: Provides design philosophy for publication-quality scientific visuals. Use when the user needs guidance on figures, charts, infographics, posters, or slides. Triggers on questions about typography, color, layout, accessibility, or visual best practices for science communication. Delivers principles, not code—delegates implementation to scientific-visualization and plotting-libraries skills.
+description: Provides design philosophy and publication specifications for scientific visuals. Use when the user needs guidance on figures, charts, infographics, posters, or slides. Triggers on questions about typography, color, layout, accessibility, journal requirements, or visual best practices for science communication. Delivers design principles and publication specs—delegates code implementation to plotting-libraries skill.
 version: 1.0.0
 license: Internal use - Oligon brand standards apply
 allowed-tools: Read, Glob, Write
@@ -183,6 +183,23 @@ For detailed format-specific guidance, see `references/OUTPUT_FORMATS.md`. Key f
 - **Reports**: ReportLab components (MetricCard, CalloutBox, etc.)
 - **Presentations**: Slide design, poster hierarchy
 
+## Publication Requirements
+
+For journal-specific figure requirements, export settings, and pre-submission checklists, see `references/publication_specs.md`.
+
+**Quick reference:**
+| Journal | Single Column | Double Column | Max DPI |
+|---------|---------------|---------------|---------|
+| Nature | 89 mm | 183 mm | 300 |
+| Science | 55 mm | 175 mm | 300 |
+| Cell | 85 mm | 178 mm | 300 |
+
+**Export workflow:**
+1. Configure figure size for target journal
+2. Use vector format (PDF/EPS) for plots
+3. Verify fonts are embedded
+4. Check resolution meets requirements
+
 ## Brand Integration
 
 This skill operates within the Oligon visual identity system:
@@ -217,7 +234,7 @@ This skill provides the **design philosophy layer**. For implementation details,
 
 | Skill | Use For |
 |-------|---------|
-| `scientific-visualization` | matplotlib/seaborn code, journal specs, export settings |
+| `plotting-libraries` | matplotlib/seaborn code patterns and examples |
 | `scientific-schematics` | AI-generated diagrams (Nano Banana Pro) |
 | `scientific-slides` | Presentation creation (PPTX/Beamer) |
 | `latex-posters` / `pptx-posters` | Conference poster creation |

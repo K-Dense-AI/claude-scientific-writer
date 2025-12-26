@@ -4,7 +4,7 @@ Detailed design guidance for each output format. Load this reference when workin
 
 ## Figures (matplotlib/seaborn/SVG)
 
-For implementation details and code, see the `plotting-libraries` and `scientific-visualization` skills.
+For implementation details and code, see the `plotting-libraries` skill. For journal specifications and export requirements, see `publication_specs.md`.
 
 **Journal requirements:**
 - Check target journal for figure size limits (typically 3.5" or 7" width)

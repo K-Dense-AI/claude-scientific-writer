@@ -7,7 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- `skills/scientific-visualization/`: **Merged into `visual-design`** to eliminate 80% content duplication
+  - Unique publication content extracted to `visual-design/references/publication_specs.md`
+  - Journal dimension specs, DPI requirements, multi-panel conventions, checklists preserved
+  - Skill count reduced from 19 to 18
+
 ### Changed
+
+- `skills/visual-design/`: **Expanded scope to include publication specifications** (health score: 95%)
+  - Added `references/publication_specs.md` with journal specs (Nature, Science, Cell, PLOS, PNAS)
+  - Added Publication Requirements section to SKILL.md with quick reference table
+  - Updated description to reflect expanded scope ("publication specifications")
+  - Updated Related Skills table (scientific-visualization → plotting-libraries)
+- `skills/plotting-libraries/`: Updated cross-reference to visual-design (consolidated from two references)
+- `skills/visual-design/references/OUTPUT_FORMATS.md`: Updated reference to publication_specs.md
+- `skills/venue-templates/REVIEW_AND_IMPROVEMENTS.md`: Added note about scientific-visualization merge
+- `CLAUDE.md`: Updated skill count 19→18, removed scientific-visualization from structure and skill lists
 
 - `skills/scientific-writing/`: **Refactored for token efficiency** (health score: 52% → 95%, tokens: ~8428 → ~3139)
   - **SKILL.md**:
