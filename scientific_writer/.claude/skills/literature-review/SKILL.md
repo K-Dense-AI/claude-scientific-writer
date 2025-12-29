@@ -395,23 +395,68 @@ Detailed formatting guidelines are in `references/citation_styles.md`. Quick ref
 
 ## Best Practices
 
+### Prioritizing High-Impact Papers (CRITICAL)
+
+**Always prioritize influential, highly-cited papers from reputable authors and top venues.** Quality matters more than quantity in literature reviews.
+
+#### Citation Count Thresholds
+
+Use citation counts to identify the most impactful papers:
+
+| Paper Age | Citation Threshold | Classification |
+|-----------|-------------------|----------------|
+| 0-3 years | 20+ citations | Noteworthy |
+| 0-3 years | 100+ citations | Highly Influential |
+| 3-7 years | 100+ citations | Significant |
+| 3-7 years | 500+ citations | Landmark Paper |
+| 7+ years | 500+ citations | Seminal Work |
+| 7+ years | 1000+ citations | Foundational |
+
+#### Journal and Venue Tiers
+
+Prioritize papers from higher-tier venues:
+
+- **Tier 1 (Always Prefer):** Nature, Science, Cell, NEJM, Lancet, JAMA, PNAS, Nature Medicine, Nature Biotechnology
+- **Tier 2 (Strong Preference):** High-impact specialized journals (IF>10), top conferences (NeurIPS, ICML for ML/AI)
+- **Tier 3 (Include When Relevant):** Respected specialized journals (IF 5-10)
+- **Tier 4 (Use Sparingly):** Lower-impact peer-reviewed venues
+
+#### Author Reputation Assessment
+
+Prefer papers from:
+- **Senior researchers** with high h-index (>40 in established fields)
+- **Leading research groups** at recognized institutions (Harvard, Stanford, MIT, Oxford, etc.)
+- **Authors with multiple Tier-1 publications** in the relevant field
+- **Researchers with recognized expertise** (awards, editorial positions, society fellows)
+
+#### Identifying Seminal Papers
+
+For any topic, identify foundational work by:
+1. **High citation count** (typically 500+ for papers 5+ years old)
+2. **Frequently cited by other included studies** (appears in many reference lists)
+3. **Published in Tier-1 venues** (Nature, Science, Cell family)
+4. **Written by field pioneers** (often cited as establishing concepts)
+
 ### Search Strategy
 1. **Use multiple databases** (minimum 3): Ensures comprehensive coverage
 2. **Include preprint servers**: Captures latest unpublished findings
 3. **Document everything**: Search strings, dates, result counts for reproducibility
 4. **Test and refine**: Run pilot searches, review results, adjust search terms
+5. **Sort by citations**: When available, sort search results by citation count to surface influential work first
 
 ### Screening and Selection
 1. **Use clear criteria**: Document inclusion/exclusion criteria before screening
 2. **Screen systematically**: Title → Abstract → Full text
 3. **Document exclusions**: Record reasons for excluding studies
 4. **Consider dual screening**: For systematic reviews, have two reviewers screen independently
+5. **Prioritize Tier-1 venues**: Include all relevant papers from top venues before considering lower-tier sources
 
 ### Synthesis
 1. **Organize thematically**: Group by themes, NOT by individual studies
 2. **Synthesize across studies**: Compare, contrast, identify patterns
 3. **Be critical**: Evaluate quality and consistency of evidence
 4. **Identify gaps**: Note what's missing or understudied
+5. **Lead with high-impact work**: Start each theme with the most influential/cited papers
 
 ### Quality and Reproducibility
 1. **Assess study quality**: Use appropriate quality assessment tools
@@ -424,6 +469,7 @@ Detailed formatting guidelines are in `references/citation_styles.md`. Quick ref
 2. **Be systematic**: Follow structured template
 3. **Be specific**: Include numbers, statistics, effect sizes where available
 4. **Be clear**: Use clear headings, logical flow, thematic organization
+5. **Cite impact indicators**: When relevant, mention citation counts and venue prestige
 
 ## Common Pitfalls to Avoid
 

@@ -123,13 +123,34 @@ IMPORTANT INSTRUCTIONS:
 6. Include key findings, methodologies, and implications when relevant
 7. Note any controversies, limitations, or conflicting evidence
 
+PAPER QUALITY AND POPULARITY PRIORITIZATION (CRITICAL):
+8. ALWAYS prioritize HIGHLY-CITED papers over obscure publications:
+   - Recent papers (0-3 years): prefer 20+ citations, highlight 100+ as highly influential
+   - Mid-age papers (3-7 years): prefer 100+ citations, highlight 500+ as landmark
+   - Older papers (7+ years): prefer 500+ citations, highlight 1000+ as foundational
+9. ALWAYS prioritize papers from TOP-TIER VENUES:
+   - Tier 1 (highest priority): Nature, Science, Cell, NEJM, Lancet, JAMA, PNAS, Nature Medicine, Nature Biotechnology
+   - Tier 2 (high priority): High-impact specialized journals (IF>10), top conferences (NeurIPS, ICML, ICLR for AI/ML)
+   - Tier 3: Respected specialized journals (IF 5-10)
+   - Only cite lower-tier venues if directly relevant AND no better source exists
+10. PREFER papers from ESTABLISHED, REPUTABLE AUTHORS:
+    - Senior researchers with high h-index and multiple high-impact publications
+    - Leading research groups at recognized institutions
+    - Authors with recognized expertise (awards, editorial positions)
+11. For EACH citation, include when available:
+    - Approximate citation count (e.g., "cited 500+ times")
+    - Journal/venue tier indicator
+    - Notable author credentials if relevant
+12. PRIORITIZE papers that DIRECTLY address the research question over tangentially related work
+
 RESPONSE FORMAT:
 - Start with a brief summary (2-3 sentences)
 - Present key findings and studies in organized sections
+- Rank papers by impact: most influential/cited first
 - End with future directions or research gaps if applicable
-- Include 5-8 high-quality citations at the end
+- Include 5-8 high-quality citations, emphasizing Tier-1 venues and highly-cited papers
 
-Remember: This is for academic research purposes. Prioritize accuracy, completeness, and proper attribution."""
+Remember: Quality over quantity. Prioritize influential, highly-cited papers from prestigious venues and established researchers."""
 
     def lookup(self, query: str) -> Dict[str, Any]:
         """Perform a research lookup for the given query."""
@@ -145,7 +166,22 @@ Remember: This is for academic research purposes. Prioritize accuracy, completen
         messages = [
             {
                 "role": "system", 
-                "content": "You are an academic research assistant. Focus exclusively on scholarly sources: peer-reviewed journals, academic papers, research institutions, and reputable scientific publications. Prioritize recent academic literature (2020-2026) and provide complete citations with DOIs. Use academic/scholarly search mode."
+                "content": """You are an academic research assistant specializing in finding HIGH-IMPACT, INFLUENTIAL research.
+
+QUALITY PRIORITIZATION (CRITICAL):
+- ALWAYS prefer highly-cited papers over obscure publications
+- ALWAYS prioritize Tier-1 venues: Nature, Science, Cell, NEJM, Lancet, JAMA, PNAS, and their family journals
+- ALWAYS prefer papers from established researchers with strong publication records
+- Include citation counts when known (e.g., "cited 500+ times")
+- Quality matters more than quantity - 5 excellent papers beats 10 mediocre ones
+
+VENUE HIERARCHY:
+1. Nature/Science/Cell family, NEJM, Lancet, JAMA (highest priority)
+2. High-impact specialized journals (IF>10), top ML conferences (NeurIPS, ICML, ICLR)
+3. Respected field-specific journals (IF 5-10)
+4. Other peer-reviewed sources (only if no better option exists)
+
+Focus exclusively on scholarly sources: peer-reviewed journals, academic papers, research institutions. Prioritize recent academic literature (2020-2026) and provide complete citations with DOIs. Always indicate paper impact through citation counts and venue prestige."""
             },
             {"role": "user", "content": research_prompt}
         ]
