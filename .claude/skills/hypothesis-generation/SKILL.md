@@ -284,3 +284,10 @@ Ensure all generated hypotheses meet these standards:
 - `hypothesis_generation.sty` - LaTeX style package providing colored boxes, professional formatting, and custom environments for hypothesis reports
 - `hypothesis_report_template.tex` - Complete LaTeX template with main text structure and comprehensive appendix sections
 - `FORMATTING_GUIDE.md` - Quick reference guide with examples of all box types, color schemes, citation practices, and troubleshooting tips
+
+### Related Skills
+
+When preparing hypothesis-driven research for publication, consult the **venue-templates** skill for writing style guidance:
+- `venue_writing_styles.md` - Master guide comparing styles across venues
+- Venue-specific guides for Nature/Science, Cell Press, medical journals, and ML/CS conferences
+- `reviewer_expectations.md` - What reviewers look for when evaluating research hypotheses

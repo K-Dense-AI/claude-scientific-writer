@@ -50,7 +50,46 @@ The research lookup tool is automatically available in Claude Code when you:
 - **Complete Citations:** Provides full bibliographic information with DOIs
 - **Multiple Formats:** Supports various query types and research needs
 - **High Search Context:** Always uses high search context for deeper, more comprehensive research
+- **Quality Prioritization:** Automatically prioritizes highly-cited papers from top venues
 - **Cost Effective:** Typically $0.01-0.05 per research query
+
+## Paper Quality Prioritization
+
+This skill **always prioritizes high-impact, influential papers** over obscure publications. Results are ranked by:
+
+### Citation-Based Ranking
+
+| Paper Age | Citation Threshold | Classification |
+|-----------|-------------------|----------------|
+| 0-3 years | 20+ citations | Noteworthy |
+| 0-3 years | 100+ citations | Highly Influential |
+| 3-7 years | 100+ citations | Significant |
+| 3-7 years | 500+ citations | Landmark |
+| 7+ years | 500+ citations | Seminal |
+| 7+ years | 1000+ citations | Foundational |
+
+### Venue Quality Tiers
+
+Papers from higher-tier venues are always preferred:
+
+- **Tier 1 (Highest Priority):** Nature, Science, Cell, NEJM, Lancet, JAMA, PNAS, Nature Medicine, Nature Biotechnology
+- **Tier 2 (High Priority):** High-impact journals (IF>10), top conferences (NeurIPS, ICML, ICLR for ML/AI)
+- **Tier 3 (Good):** Respected specialized journals (IF 5-10)
+- **Tier 4 (Use Sparingly):** Other peer-reviewed venues
+
+### Author Reputation
+
+The skill prefers papers from:
+- Senior researchers with high h-index
+- Established research groups at recognized institutions
+- Authors with multiple publications in Tier-1 venues
+- Researchers with recognized expertise (awards, editorial positions)
+
+### Relevance Priority
+
+1. Papers directly addressing the research question
+2. Papers with applicable methods/data
+3. Tangentially related papers (only from top venues or highly cited)
 
 ## Query Examples
 
