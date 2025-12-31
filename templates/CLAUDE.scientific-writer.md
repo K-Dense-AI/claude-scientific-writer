@@ -173,8 +173,8 @@ When the user requests "market research", "market analysis", "industry report", 
 
 - **Treatment Plans**: Use treatment-plans skill with professional medical formatting
 - **Clinical Reports**: Use clinical-reports skill with appropriate medical templates
-- **Scientific Posters**: Use latex-posters skill with conference poster templates
-- **Presentations/Slides**: Use scientific-slides skill with Beamer templates
+- **Scientific Posters**: Use latex-posters skill (DEFAULT) with AI-generated visuals; use pptx-posters ONLY if PPTX explicitly requested
+- **Presentations/Slides**: Use scientific-slides skill with Nano Banana Pro AI-generated PDF slides
 - **Literature Reviews**: Use literature-review skill with systematic review structure
 - **Research Grants**: Use research-grants skill with funding agency requirements
 

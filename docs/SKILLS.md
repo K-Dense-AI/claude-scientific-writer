@@ -383,11 +383,14 @@ Claude will use validation scripts to check quality and compliance.
 
 ---
 
-### 8. LaTeX Research Posters
+### 8. LaTeX Research Posters (DEFAULT)
 **Location**: `.claude/skills/latex-posters/`
+
+**⚠️ This is the DEFAULT skill for all poster requests.** Use this unless user explicitly requests PPTX/PowerPoint format.
 
 **Capabilities**:
 - Creating professional research posters using LaTeX (beamerposter, tikzposter, baposter)
+- AI-powered visual element generation (generate figures BEFORE assembling poster)
 - Conference poster design and layout
 - Full-page poster templates with proper spacing
 - Color schemes and visual design principles
@@ -395,6 +398,7 @@ Claude will use validation scripts to check quality and compliance.
 - PDF generation and quality control
 - Accessibility and inclusive design
 - Poster size configuration (A0, A1, 36×48", etc.)
+- Overflow prevention and content density guidelines
 
 **References**:
 - `latex_poster_packages.md`: Detailed comparison of beamerposter, tikzposter, and baposter
@@ -412,12 +416,17 @@ Claude will use validation scripts to check quality and compliance.
 - `poster_quality_checklist.md`: Comprehensive pre-printing checklist
 
 **Features**:
+- **AI-Powered Visual Generation**: Generate all figures using scientific-schematics before creating poster
+- **Poster-Size Font Requirements**: Guidelines for readable text in AI-generated graphics (72pt+ for key numbers)
+- **Overflow Prevention**: Content limits (5-6 sections max, 300-800 words) to prevent cutoff
 - Ensures posters span the full page without excessive margins
-- PDF review and quality control guidelines
+- PDF review and quality control guidelines with overflow check
 - Automated checking scripts for page size, fonts, and images
 - Reduced-scale print testing instructions
 - Color contrast and accessibility verification
 - Common issues troubleshooting guide
+
+**For PPTX/PowerPoint posters**: Use `pptx-posters` skill ONLY when user explicitly requests PPTX format. Located at `.claude/skills/pptx-posters/`.
 
 ---
 
@@ -425,9 +434,9 @@ Claude will use validation scripts to check quality and compliance.
 **Location**: `.claude/skills/scientific-slides/`
 
 **Capabilities**:
-- Create slide decks for scientific talks (conference presentations, seminars, defenses)
+- Create stunning PDF slide decks using Nano Banana Pro AI
 - Structure presentations for different contexts (5-60 minute talks)
-- Design professional slides with PowerPoint (via pptx skill) or LaTeX Beamer
+- AI-generated slides with publication-quality visuals
 - Optimize data visualizations for presentation context
 - Timing and pacing guidance with practice strategies
 - Visual review workflow with automated validation
@@ -446,16 +455,9 @@ Claude will use validation scripts to check quality and compliance.
 - `slide_design_principles.md`: Typography, color theory, layout, accessibility
 - `data_visualization_slides.md`: Simplifying figures for presentations
 - `talk_types_guide.md`: Specific guidance for each presentation type
-- `beamer_guide.md`: Complete LaTeX Beamer documentation
 - `visual_review_workflow.md`: PDF to images, systematic inspection, iteration
 
-**Templates**:
-- `beamer_template_conference.tex`: 15-minute conference talk
-- `beamer_template_seminar.tex`: 45-minute academic seminar
-- `beamer_template_defense.tex`: Dissertation defense
-
 **Assets**:
-- `powerpoint_design_guide.md`: Complete PowerPoint design with pptx skill integration
 - `timing_guidelines.md`: Comprehensive timing, pacing, and practice strategies
 
 **Scripts**:
@@ -463,8 +465,8 @@ Claude will use validation scripts to check quality and compliance.
 - `pdf_to_images.py`: Convert PDF to images for visual inspection
 
 **Features**:
+- **Nano Banana Pro AI**: Generate stunning PDF slides with AI-powered visuals
 - **Research-lookup integration**: Automatically gather citations for background and discussion
-- **Two implementation paths**: PowerPoint (via pptx skill) or LaTeX Beamer
 - **Visual validation workflow**: Convert to images, inspect systematically, iterate
 - **Timing guidance**: One-slide-per-minute rule with adjustments
 - **Design principles**: Minimal text (24pt+), high contrast, color-blind safe
@@ -484,7 +486,7 @@ Claude will use validation scripts to check quality and compliance.
 ```
 > Create a 15-minute conference presentation on my machine learning research
 ```
-Claude will use research-lookup to gather citations, structure the talk, and provide guidance for creating slides with either PowerPoint or Beamer.
+Claude will use research-lookup to gather citations, structure the talk, and generate stunning PDF slides using Nano Banana Pro AI.
 
 ### Seminar Presentation
 ```
