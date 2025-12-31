@@ -36,6 +36,71 @@ This is the recommended approach for creating visually compelling posters:
 
 ---
 
+### CRITICAL: Preventing Content Overflow
+
+**⚠️ POSTERS MUST NOT HAVE TEXT OR CONTENT CUT OFF AT EDGES.**
+
+**Common Overflow Problems:**
+1. **Title/footer text extending beyond page boundaries**
+2. **Too many sections crammed into available space**
+3. **Figures placed too close to edges**
+4. **Text blocks exceeding column widths**
+
+**Prevention Rules:**
+
+**1. Limit Content Sections (MAXIMUM 5-6 sections for A0):**
+```
+✅ GOOD - 5 sections with room to breathe:
+   - Title/Header
+   - Introduction/Problem
+   - Methods
+   - Results (1-2 key findings)
+   - Conclusions
+
+❌ BAD - 8+ sections crammed together:
+   - Overview, Introduction, Background, Methods, 
+   - Results 1, Results 2, Discussion, Conclusions, Future Work
+```
+
+**2. Set Safe Margins in LaTeX:**
+```latex
+% tikzposter - add generous margins
+\documentclass[25pt, a0paper, portrait, margin=25mm]{tikzposter}
+
+% baposter - ensure content doesn't touch edges
+\begin{poster}{
+  columns=3,
+  colspacing=2em,           % Space between columns
+  headerheight=0.1\textheight,  % Smaller header
+  % Leave space at bottom
+}
+```
+
+**3. Figure Sizing - Never 100% Width:**
+```latex
+% Leave margins around figures
+\includegraphics[width=0.85\linewidth]{figure.png}  % NOT 1.0\linewidth
+```
+
+**4. Check for Overflow Before Printing:**
+```bash
+# Compile and check PDF at 100% zoom
+pdflatex poster.tex
+
+# Look for:
+# - Text cut off at any edge
+# - Content touching page boundaries  
+# - Overfull hbox warnings in .log file
+grep -i "overfull" poster.log
+```
+
+**5. Word Count Limits:**
+- **A0 poster**: 300-800 words MAXIMUM
+- **Per section**: 50-100 words maximum
+- **If you have more content**: Cut it or make a handout
+
+---
+
 ### CRITICAL: Poster-Size Font Requirements
 
 **⚠️ ALL text within AI-generated visualizations MUST be poster-readable.**
@@ -52,42 +117,62 @@ The #1 issue with AI-generated poster graphics is **TOO MUCH CONTENT**. This cau
 
 **SOLUTION: Generate SIMPLE graphics with MINIMAL content.**
 
-**Required prompt additions for poster graphics:**
+**MANDATORY prompt requirements for EVERY poster graphic:**
 
 ```
-POSTER FORMAT REQUIREMENTS:
-- MAXIMUM 3-5 elements per graphic (NOT 10+)
-- MAXIMUM 10-15 words total per graphic
-- ALL text must be VERY LARGE and bold (readable from 6 feet away)
-- Title text: minimum 72pt equivalent, bold
-- Key metrics/numbers: minimum 60pt equivalent, bold  
-- Labels and captions: minimum 36pt equivalent
-- Use high contrast (dark text on light background or vice versa)
-- GENEROUS white space (40-50% of graphic should be empty)
-- Large icons and graphics with thick lines
-- ONE main message per graphic
+POSTER FORMAT REQUIREMENTS (STRICTLY ENFORCE):
+- ABSOLUTE MAXIMUM 3-4 elements per graphic (3 is ideal)
+- ABSOLUTE MAXIMUM 10 words total in the entire graphic
+- NO complex workflows with 5+ steps (split into 2-3 simple graphics instead)
+- NO multi-level nested diagrams (flatten to single level)
+- NO case studies with multiple sub-sections (one key point per case)
+- ALL text GIANT BOLD (80pt+ for labels, 120pt+ for key numbers)
+- High contrast ONLY (dark on white OR white on dark, NO gradients with text)
+- MANDATORY 50% white space minimum (half the graphic should be empty)
+- Thick lines only (5px+ minimum), large icons (200px+ minimum)
+- ONE SINGLE MESSAGE per graphic (not 3 related messages)
 ```
 
-**Content limits per graphic type:**
-| Graphic Type | Max Elements | Max Words | Example |
-|--------------|--------------|-----------|---------|
-| Flowchart | 4-5 boxes | 15 words | "DATA → PROCESS → MODEL → OUTPUT" |
-| Key findings | 3 items | 12 words | "95% Accuracy, 2X Faster, Clinical Ready" |
-| Comparison chart | 3-4 bars | 10 words | "Method A: 70%, Method B: 85%, Ours: 95%" |
-| Diagram | 3-5 components | 15 words | Simple architecture with labeled parts |
+**⚠️ BEFORE GENERATING: Review your prompt and count elements**
+- If your description has 5+ items → STOP. Split into multiple graphics
+- If your workflow has 5+ stages → STOP. Show only 3-4 high-level steps
+- If your comparison has 4+ methods → STOP. Show only top 3 or Our vs Best Baseline
 
-**Example - WRONG (too much content, text too small):**
+**Content limits per graphic type (STRICT):**
+| Graphic Type | Max Elements | Max Words | Reject If | Good Example |
+|--------------|--------------|-----------|-----------|--------------|
+| Flowchart | **3-4 boxes MAX** | **8 words** | 5+ stages, nested steps | "DISCOVER → VALIDATE → APPROVE" (3 words) |
+| Key findings | **3 items MAX** | **9 words** | 4+ metrics, paragraphs | "95% ACCURATE" "2X FASTER" "FDA READY" (6 words) |
+| Comparison chart | **3 bars MAX** | **6 words** | 4+ methods, legend text | "OURS: 95%" "BEST: 85%" (4 words) |
+| Case study | **1 case, 3 elements** | **6 words** | Multiple cases, substories | Logo + "18 MONTHS" + "to discovery" (2 words) |
+| Timeline | **3-4 points MAX** | **8 words** | Year-by-year detail | "2020 START" "2022 TRIAL" "2024 APPROVED" (6 words) |
+
+**Example - WRONG (7-stage workflow - TOO COMPLEX):**
 ```bash
-# BAD - too complex, too many elements, no size specs
-python scripts/generate_schematic.py "Infographic showing machine learning pipeline with data collection, preprocessing, feature extraction, model training, validation, hyperparameter tuning, testing, deployment, monitoring, and feedback loops. Include accuracy metrics, performance graphs, comparison tables, and technical specifications." -o figures/pipeline.png
-# Result: Cluttered graphic with tiny unreadable text, overflow issues
+# ❌ BAD - This creates tiny unreadable text like the drug discovery poster
+python scripts/generate_schematic.py "Drug discovery workflow showing: Stage 1 Target Identification, Stage 2 Molecular Synthesis, Stage 3 Virtual Screening, Stage 4 AI Lead Optimization, Stage 5 Clinical Trial Design, Stage 6 FDA Approval. Include success metrics, timelines, and validation steps for each stage." -o figures/workflow.png
+# Result: 7+ stages with tiny text, unreadable from 6 feet - POSTER FAILURE
 ```
 
-**Example - CORRECT (simple, poster-appropriate):**
+**Example - CORRECT (simplified to 3 key stages):**
 ```bash
-# GOOD - minimal content, explicit size requirements, generous spacing
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE flowchart with ONLY 4 boxes: DATA → MODEL → PREDICT → RESULT. Each box label in GIANT bold text (80pt+). Thick arrows between boxes. GENEROUS white space (50% empty). High contrast. Maximum 4 words per box. Readable from 8 feet." -o figures/pipeline.png
-# Result: Clean, readable graphic with large text
+# ✅ GOOD - Same content, split into ONE simple high-level graphic
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ULTRA-SIMPLE 3-box workflow: 'DISCOVER' → 'VALIDATE' → 'APPROVE'. Each word in GIANT bold (120pt+). Thick arrows (10px). 60% white space. NO substeps, NO details. 3 words total. Readable from 10 feet." -o figures/workflow_overview.png
+# Result: Clean, impactful, readable - can add detail graphics separately if needed
+```
+
+**Example - WRONG (complex case studies with multiple sections):**
+```bash
+# ❌ BAD - Creates cramped unreadable sections
+python scripts/generate_schematic.py "Case studies: Insilico Medicine (drug candidate, discovery time, clinical trials), Recursion Pharma (platform, methodology, results), Exscientia (drug candidates, FDA status, timeline). Include company logos, metrics, and outcomes." -o figures/cases.png
+# Result: 3 case studies with 4+ elements each = 12+ total elements, tiny text
+```
+
+**Example - CORRECT (one case study, one key metric):**
+```bash
+# ✅ GOOD - Show ONE case with ONE key number
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ONE case study card: Company logo (large), '18 MONTHS' in GIANT text (150pt), 'to discovery' below (60pt). 3 elements total: logo + number + caption. 50% white space. Readable from 10 feet." -o figures/case_single.png
+# Result: Clear, readable, impactful. Make 3 separate graphics if you need 3 cases.
 ```
 
 **Example - WRONG (key findings too complex):**
@@ -118,21 +203,105 @@ python scripts/generate_schematic.py "POSTER FORMAT for A0. KEY FINDINGS with ON
 - Specific text that should appear (so it's baked into the image)
 - "minimal text, maximum impact"
 - "high contrast" for readability
+- "generous margins" and "no text near edges"
 
 ---
 
+### CRITICAL: AI-Generated Graphic Sizing
+
+**⚠️ Each AI-generated graphic should focus on ONE concept with MINIMAL content.**
+
+**Problem**: Generating complex diagrams with many elements leads to small text.
+
+**Solution**: Generate SIMPLE graphics with FEW elements and LARGE text.
+
+**Example - WRONG (too complex, text will be small):**
+```bash
+# BAD - too many elements in one graphic
+python scripts/generate_schematic.py "Complete ML pipeline showing data collection, 
+preprocessing with 5 steps, feature engineering with 8 techniques, model training 
+with hyperparameter tuning, validation with cross-validation, and deployment with 
+monitoring. Include all labels and descriptions." -o figures/pipeline.png
+```
+
+**Example - CORRECT (simple, focused, large text):**
+```bash
+# GOOD - split into multiple simple graphics with large text
+
+# Graphic 1: High-level overview (3-4 elements max)
+python scripts/generate_schematic.py "POSTER FORMAT for A0: Simple 4-step pipeline. 
+Four large boxes: DATA → PROCESS → MODEL → RESULTS. 
+GIANT labels (80pt+), thick arrows, lots of white space. 
+Only 4 words total. Readable from 8 feet." -o figures/overview.png
+
+# Graphic 2: Key result (1 metric highlighted)
+python scripts/generate_schematic.py "POSTER FORMAT for A0: Single key metric display.
+Giant '95%' text (150pt+) with 'ACCURACY' below (60pt+).
+Checkmark icon. Minimal design, high contrast.
+Readable from 10 feet." -o figures/accuracy.png
+```
+
+**Rules for AI-generated poster graphics:**
+| Rule | Limit | Reason |
+|------|-------|--------|
+| **Elements per graphic** | 3-5 maximum | More elements = smaller text |
+| **Words per graphic** | 10-15 maximum | Minimal text = larger fonts |
+| **Flowchart steps** | 4-5 maximum | Keeps labels readable |
+| **Chart categories** | 3-4 maximum | Prevents crowding |
+| **Nested levels** | 1-2 maximum | Avoids complexity |
+
+**Split complex content into multiple simple graphics:**
+```
+Instead of 1 complex diagram with 12 elements:
+→ Create 3 simple diagrams with 4 elements each
+→ Each graphic can have LARGER text
+→ Arrange in poster with clear visual flow
+```
+
+---
+
+### Step 0: MANDATORY Pre-Generation Review (DO THIS FIRST)
+
+**⚠️ BEFORE generating ANY graphics, review your content plan:**
+
+**For EACH planned graphic, ask these questions:**
+1. **Element count**: Can I describe this in 3-4 items or less?
+   - ❌ NO → Simplify or split into multiple graphics
+   - ✅ YES → Continue
+
+2. **Complexity check**: Is this a multi-stage workflow (5+ steps) or nested diagram?
+   - ❌ YES → Flatten to 3-4 high-level steps only
+   - ✅ NO → Continue
+
+3. **Word count**: Can I describe all text in 10 words or less?
+   - ❌ NO → Cut text, use single-word labels
+   - ✅ YES → Continue
+
+4. **Message clarity**: Does this graphic convey ONE clear message?
+   - ❌ NO → Split into multiple focused graphics
+   - ✅ YES → Continue to generation
+
+**Common patterns that ALWAYS fail (reject these):**
+- "Show stages 1 through 7..." → Split into high-level overview (3 stages) + detail graphics
+- "Multiple case studies..." → One case per graphic
+- "Timeline from 2015 to 2024 with annual milestones..." → Show only 3-4 key years
+- "Comparison of 6 methods..." → Show only top 3 or Our method vs Best baseline
+- "Architecture with all layers and connections..." → High-level only (3-4 components)
+
 ### Step 1: Plan Your Poster Elements
 
-Before creating the LaTeX poster, identify all visual elements needed:
+After passing the pre-generation review, identify visual elements needed:
 
 1. **Title Block** - Stylized title with institutional branding (optional - can be LaTeX text)
-2. **Introduction Graphic** - Conceptual overview or problem statement visual
-3. **Methods Diagram** - Workflow, pipeline, or experimental design
-4. **Results Figures** - Data visualizations, charts, key findings (2-4 figures)
-5. **Conclusion Graphic** - Summary visual or take-home message
-6. **Supplementary Icons** - Icons for sections, QR codes, logos
+2. **Introduction Graphic** - Conceptual overview (3 elements max)
+3. **Methods Diagram** - High-level workflow (3-4 steps max)
+4. **Results Figures** - Key findings (3 metrics max per figure, may need 2-3 separate figures)
+5. **Conclusion Graphic** - Summary visual (3 takeaways max)
+6. **Supplementary Icons** - Simple icons, QR codes, logos (minimal)
 
-### Step 2: Generate Each Element
+### Step 2: Generate Each Element (After Pre-Generation Review)
+
+**⚠️ CRITICAL: Review Step 0 checklist before proceeding.**
 
 Use the appropriate tool for each element type:
 
@@ -141,17 +310,25 @@ Use the appropriate tool for each element type:
 # Create figures directory
 mkdir -p figures
 
-# Methods flowchart - SIMPLE, 4 steps only
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE flowchart with ONLY 4 boxes: DATA → PROCESS → MODEL → RESULTS. Each label in GIANT bold text (80pt+). Thick arrows. 50% white space. NO additional details or sub-steps. Readable from 8 feet." -o figures/methods_flowchart.png
+# Drug discovery workflow - HIGH-LEVEL ONLY, 3 stages
+# BAD: "Stage 1: Target ID, Stage 2: Molecular Synthesis, Stage 3: Virtual Screening, Stage 4: AI Lead Opt..."
+# GOOD: Collapse to 3 mega-stages
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ULTRA-SIMPLE 3-box workflow: 'DISCOVER' (120pt bold) → 'VALIDATE' (120pt bold) → 'APPROVE' (120pt bold). Thick arrows (10px). 60% white space. ONLY these 3 words. NO substeps. Readable from 12 feet." -o figures/workflow_simple.png
 
-# System architecture - SIMPLE, 4 components only
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE architecture diagram with ONLY 4 components: INPUT → NETWORK → PROCESSING → OUTPUT. GIANT labels (80pt+). Thick lines. 50% white space. NO layer details. Readable from 8 feet." -o figures/architecture.png
+# System architecture - MAXIMUM 3 components
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ULTRA-SIMPLE 3-component stack: 'DATA' box (120pt) → 'AI MODEL' box (120pt) → 'PREDICTION' box (120pt). Thick vertical arrows. 60% white space. 3 words only. Readable from 12 feet." -o figures/architecture.png
 
-# Conceptual framework - SIMPLE, 3 elements only
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE diagram with ONLY 3 elements: A → B → C. Each label in GIANT bold text (80pt+). Thick arrows. 50% white space. NO additional text. Readable from 8 feet." -o figures/concept_framework.png
+# Timeline - ONLY 3 key milestones (not year-by-year)
+# BAD: "2018, 2019, 2020, 2021, 2022, 2023, 2024 with events"
+# GOOD: Only 3 breakthrough moments
+python scripts/generate_schematic.py "POSTER FORMAT for A0. Timeline with ONLY 3 points: '2018' + icon, '2021' + icon, '2024' + icon. GIANT years (120pt). Large icons. 60% white space. NO connecting lines or details. Readable from 12 feet." -o figures/timeline.png
 
-# Experimental design - SIMPLE, 3 groups only
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE design diagram: CONTROL vs TREATMENT with arrow to OUTCOMES. ONLY 3 boxes total. GIANT labels (80pt+). 50% white space. NO detailed sub-groups. Readable from 8 feet." -o figures/experimental_design.png
+# Case study - ONE case, ONE key metric
+# BAD: "3 case studies: Insilico (details), Recursion (details), Exscientia (details)"
+# GOOD: ONE case with ONE number
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ONE case study: Large logo + '18 MONTHS' (150pt bold) + 'to discovery' (60pt). 3 elements total. 60% white space. Readable from 12 feet." -o figures/case1.png
+
+# If you need 3 cases → make 3 separate simple graphics (not one complex graphic)
 ```
 
 **For Stylized Blocks and Graphics (Nano Banana Pro):**
@@ -175,9 +352,39 @@ python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE visual with O
 python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE bar chart with ONLY 3 bars: BASELINE (70%), EXISTING (85%), OURS (95%). GIANT percentage labels ON the bars (100pt+). NO axis labels, NO legend, NO gridlines. Our bar highlighted in different color. 40% white space. Readable from 8 feet." -o figures/comparison_chart.png
 ```
 
+### Step 2b: MANDATORY Post-Generation Review (Before Assembly)
+
+**⚠️ CRITICAL: Review EVERY generated graphic before adding to poster.**
+
+**For each generated figure, open at 25% zoom and check:**
+
+1. **✅ PASS criteria (all must be true):**
+   - Can read ALL text clearly at 25% zoom
+   - Count elements: 3-4 or fewer
+   - White space: 50%+ of image is empty
+   - Simple enough to understand in 2 seconds
+   - NOT a complex workflow with 5+ stages
+   - NOT multiple nested sections
+
+2. **❌ FAIL criteria (regenerate if ANY are true):**
+   - Text is small or hard to read at 25% zoom → REGENERATE with "150pt+" fonts
+   - More than 4 elements → REGENERATE with "ONLY 3 elements"
+   - Less than 50% white space → REGENERATE with "60% white space"
+   - Complex multi-stage workflow → SPLIT into 2-3 simple graphics
+   - Multiple case studies cramped together → SPLIT into separate graphics
+   - Takes more than 3 seconds to understand → SIMPLIFY and regenerate
+
+**Common failures and fixes:**
+- "7-stage workflow with tiny text" → Regenerate as "3 high-level stages only"
+- "3 case studies in one graphic" → Generate 3 separate simple graphics
+- "Timeline with 8 years" → Regenerate with "ONLY 3 key milestones"
+- "Comparison of 5 methods" → Regenerate with "ONLY Our method vs Best baseline (2 bars)"
+
+**DO NOT PROCEED to assembly if ANY graphic fails the checks above.**
+
 ### Step 3: Assemble in LaTeX Template
 
-Include all generated figures in your poster template:
+After all figures pass the post-generation review, include them in your poster template:
 
 **tikzposter example:**
 ```latex
@@ -247,78 +454,104 @@ Include all generated figures in your poster template:
 
 ### Example: Complete Poster Generation Workflow
 
-**Remember: SIMPLE graphics with MINIMAL content. Each graphic = ONE message.**
+**Full workflow with ALL quality checks:**
 
 ```bash
-# 1. Create figures directory
+# STEP 0: Pre-Generation Review (MANDATORY)
+# Content plan: Drug discovery poster
+# - Workflow: 7 stages → ❌ TOO MANY → Reduce to 3 mega-stages ✅
+# - 3 case studies → ❌ TOO MANY → One case per graphic (make 3 graphics) ✅
+# - Timeline 2018-2024 → ❌ TOO DETAILED → Only 3 key years ✅
+
+# STEP 1: Create figures directory
 mkdir -p figures
 
-# 2. Generate SIMPLE visual elements - MAXIMUM 5 elements per graphic
+# STEP 2: Generate ULTRA-SIMPLE graphics with strict limits
 
-# Problem statement - ONLY 3 icons
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE visual with 3 icons only: PATIENT icon → DELAY icon → RISK icon. ONE word label each (80pt+). 50% white space. Readable from 8 feet." -o figures/problem.png
+# Workflow - HIGH-LEVEL ONLY (collapsed from 7 stages to 3)
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ULTRA-SIMPLE 3-box workflow: 'DISCOVER' → 'VALIDATE' → 'APPROVE'. Each word 120pt+ bold. Thick arrows (10px). 60% white space. ONLY 3 words total. Readable from 12 feet." -o figures/workflow.png
 
-# Methods pipeline - ONLY 4 steps
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE flowchart with ONLY 4 boxes: IMAGES → PROCESS → MODEL → DIAGNOSIS. GIANT labels (100pt+). Thick arrows. 50% white space. NO sub-steps. Readable from 8 feet." -o figures/methods.png
+# Case study 1 - ONE case, ONE metric (will make 3 separate graphics)
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ONE case: Company logo + '18 MONTHS' (150pt bold) + 'to drug discovery' (60pt). 3 elements only. 60% white space. Readable from 12 feet." -o figures/case1.png
 
-# Architecture diagram - ONLY 4 components  
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE architecture with ONLY 4 blocks: INPUT → CNN → DENSE → OUTPUT. GIANT labels (80pt+). Thick lines. 50% white space. NO layer details. Readable from 8 feet." -o figures/architecture.png
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ONE case: Company logo + '95% SUCCESS' (150pt bold) + 'in trials' (60pt). 3 elements only. 60% white space." -o figures/case2.png
 
-# Results - ONLY 3 bars
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE bar chart with ONLY 3 bars: 82% BASELINE, 88% EXISTING, 95% OURS (highlighted). GIANT percentages ON bars (120pt+). NO axis, NO legend. 40% white space. Readable from 10 feet." -o figures/results.png
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ONE case: Company logo + 'FDA APPROVED' (150pt bold) + '2024' (60pt). 3 elements only. 60% white space." -o figures/case3.png
 
-# Key findings - ONLY 3 items with GIANT numbers
-python scripts/generate_schematic.py "POSTER FORMAT for A0. EXACTLY 3 cards only: '95%' (150pt) 'ACCURACY' (60pt), '2X' (150pt) 'FASTER' (60pt), checkmark 'VALIDATED' (60pt). 50% white space. NO other text. Readable from 10 feet." -o figures/conclusions.png
+# Timeline - ONLY 3 key years (not 7 years)
+python scripts/generate_schematic.py "POSTER FORMAT for A0. ONLY 3 years: '2018' (150pt) + icon, '2021' (150pt) + icon, '2024' (150pt) + icon. Large icons. 60% white space. NO lines or details. Readable from 12 feet." -o figures/timeline.png
 
-# 3. Compile LaTeX poster with all figures
+# Results - ONLY 2 bars (our method vs best baseline, not 5 methods)
+python scripts/generate_schematic.py "POSTER FORMAT for A0. TWO bars only: 'BASELINE 70%' and 'OURS 95%' (highlighted). GIANT percentages (150pt) ON bars. NO axis, NO legend. 60% white space. Readable from 12 feet." -o figures/results.png
+
+# STEP 2b: Post-Generation Review (MANDATORY)
+# Open each figure at 25% zoom:
+# ✅ workflow.png: 3 elements, text readable, 60% white - PASS
+# ✅ case1.png: 3 elements, giant numbers, clean - PASS
+# ✅ case2.png: 3 elements, giant numbers, clean - PASS  
+# ✅ case3.png: 3 elements, giant numbers, clean - PASS
+# ✅ timeline.png: 3 elements, readable, simple - PASS
+# ✅ results.png: 2 bars, giant percentages, clear - PASS
+# ALL PASS → Proceed to assembly
+
+# STEP 3: Compile LaTeX poster
 pdflatex poster.tex
+
+# STEP 4: PDF Overflow Check (see Section 11)
+grep "Overfull" poster.log
+# Open at 100% and check all 4 edges
 ```
 
-**If graphics still overflow or have small text:**
-1. Reduce number of elements further (try 3 instead of 5)
-2. Add "EVEN SIMPLER" or "ONLY 3 elements" to prompt
-3. Increase font size requirements (try 150pt+ for key numbers)
-4. Add "60% white space" instead of 50%
+**If ANY graphic fails Step 2b review:**
+- Too many elements → Regenerate with "ONLY 3 elements"
+- Small text → Regenerate with "150pt+" or "GIANT BOLD (150pt+)"
+- Cluttered → Regenerate with "60% white space" and "ULTRA-SIMPLE"
+- Complex workflow → SPLIT into multiple simple 3-element graphics
 
 ### Visual Element Guidelines
 
-**⚠️ CRITICAL: Each graphic should have ONE main message and MINIMAL content.**
+**⚠️ CRITICAL: Each graphic must have ONE message and MAXIMUM 3-4 elements.**
 
-**Content limits - NEVER exceed these:**
-- **Maximum 5 boxes/elements** per flowchart
-- **Maximum 3-4 bars** per chart  
-- **Maximum 3 key findings** per infographic
-- **Maximum 15 words** total per graphic
-- **50% white space** minimum
+**ABSOLUTE LIMITS - These are NOT guidelines, these are HARD LIMITS:**
+- **MAXIMUM 3-4 elements** per graphic (3 is ideal)
+- **MAXIMUM 10 words** total per graphic
+- **MINIMUM 50% white space** (60% is better)
+- **MINIMUM 120pt** for key numbers/metrics
+- **MINIMUM 80pt** for labels
 
-**For each poster section, generate SIMPLE visuals with POSTER FORMAT:**
+**For each poster section - STRICT requirements:**
 
-| Section | Max Elements | Example Prompt |
-|---------|--------------|----------------|
-| **Introduction** | 3-4 icons | "POSTER FORMAT for A0: SIMPLE problem visual with 3 large icons and 3 word labels. 50% white space." |
-| **Methods** | 4-5 boxes max | "POSTER FORMAT for A0: SIMPLE flowchart with ONLY 4 steps: A → B → C → D. GIANT labels (80pt+). 50% white space." |
-| **Results** | 3-4 bars max | "POSTER FORMAT for A0: SIMPLE bar chart with ONLY 3 bars. GIANT percentages (100pt+). NO legend, direct labels." |
-| **Conclusions** | 3 items only | "POSTER FORMAT for A0: ONLY 3 key findings. GIANT numbers (120pt+). One word labels. 50% white space." |
+| Section | Max Elements | Max Words | Example Prompt (REQUIRED PATTERN) |
+|---------|--------------|-----------|-------------------------------------|
+| **Introduction** | 3 icons | 6 words | "POSTER FORMAT for A0: ULTRA-SIMPLE 3 icons: [icon1] [icon2] [icon3]. ONE WORD labels (100pt bold). 60% white space. 3 words total." |
+| **Methods** | 3 boxes | 6 words | "POSTER FORMAT for A0: ULTRA-SIMPLE 3-box workflow: 'STEP1' → 'STEP2' → 'STEP3'. GIANT labels (120pt+). 60% white space. 3 words only." |
+| **Results** | 2-3 bars | 6 words | "POSTER FORMAT for A0: TWO bars: 'BASELINE 70%' 'OURS 95%'. GIANT percentages (150pt+) ON bars. NO axis. 60% white space." |
+| **Conclusions** | 3 cards | 9 words | "POSTER FORMAT for A0: THREE cards: '95%' (150pt) 'ACCURATE', '2X' (150pt) 'FASTER', checkmark 'READY'. 60% white space." |
+| **Case Study** | 3 elements | 5 words | "POSTER FORMAT for A0: ONE case: logo + '18 MONTHS' (150pt) + 'to discovery' (60pt). 60% white space." |
+| **Timeline** | 3 points | 3 words | "POSTER FORMAT for A0: THREE years only: '2018' '2021' '2024' (150pt each). Large icons. 60% white space. NO details." |
 
-**MANDATORY prompt elements for poster graphics:**
-1. **"POSTER FORMAT for A0"** - size indicator
-2. **"SIMPLE"** or **"ONLY X elements"** - content limit
-3. **"GIANT (80pt+)"** or **"HUGE (100pt+)"** - font sizes
-4. **"50% white space"** - prevent crowding
-5. **"readable from 6-8 feet"** - viewing distance
-6. **Exact text** that should appear (keep minimal!)
+**MANDATORY prompt elements (ALL required, NO exceptions):**
+1. **"POSTER FORMAT for A0"** - MUST be first
+2. **"ULTRA-SIMPLE"** or **"ONLY X elements"** - content limit
+3. **"GIANT (120pt+)"** or specific font sizes - readability
+4. **"60% white space"** - mandatory breathing room
+5. **"readable from 10-12 feet"** - viewing distance
+6. **Exact count** of words/elements - "3 words total" or "ONLY 3 icons"
 
-**ANTI-PATTERNS TO AVOID:**
-- ❌ "Show all the steps in the methodology" → Too many elements
-- ❌ "Include accuracy, precision, recall, F1, AUC" → Too many metrics
-- ❌ "Comparison of 6 different methods" → Too many comparisons
-- ❌ "Detailed architecture with all layers" → Too complex
+**PATTERNS THAT ALWAYS FAIL (REJECT IMMEDIATELY):**
+- ❌ "7-stage drug discovery workflow" → Split to "3 mega-stages"
+- ❌ "Timeline from 2015-2024 with annual updates" → "ONLY 3 key years"
+- ❌ "3 case studies with details" → Make 3 separate simple graphics
+- ❌ "Comparison of 5 methods with metrics" → "ONLY 2: ours vs best"
+- ❌ "Complete architecture showing all layers" → "3 components only"
+- ❌ "Show stages 1,2,3,4,5,6" → "3 high-level stages"
 
-**CORRECT PATTERNS:**
-- ✅ "ONLY 4 main steps" → Limited elements
-- ✅ "ONLY the top 3 metrics" → Focused content
-- ✅ "Compare ONLY our method vs baseline" → Simple comparison
-- ✅ "HIGH-LEVEL architecture with 4 components" → Simplified view
+**PATTERNS THAT WORK:**
+- ✅ "3 mega-stages collapsed from 7" → Proper simplification
+- ✅ "ONE case with ONE metric" → Will make multiple if needed
+- ✅ "ONLY 3 milestones" → Selective, focused
+- ✅ "2 bars: ours vs baseline" → Direct comparison
+- ✅ "3-component high-level view" → Appropriately simplified
 
 ---
 
@@ -726,7 +959,85 @@ pdfinfo poster.pdf | grep "Page size"
 # A1: 1684 x 2384 points (594 x 841 mm)
 ```
 
-**Step 2: Visual Inspection Checklist**
+**Step 2: OVERFLOW CHECK (CRITICAL) - DO THIS IMMEDIATELY AFTER COMPILATION**
+
+**⚠️ THIS IS THE #1 CAUSE OF POSTER FAILURES. Check BEFORE proceeding.**
+
+**Step 2a: Check LaTeX Log File**
+```bash
+# Check for overflow warnings (these are ERRORS, not suggestions)
+grep -i "overfull\|underfull\|badbox" poster.log
+
+# ANY "Overfull" warning = content is cut off or extending beyond boundaries
+# FIX ALL OF THESE before proceeding
+```
+
+**Common overflow warnings and what they mean:**
+- `Overfull \hbox (15.2pt too wide)` → Text or graphic is 15.2pt wider than column
+- `Overfull \vbox (23.5pt too high)` → Content is 23.5pt taller than available space
+- `Badbox` → LaTeX struggling to fit content within boundaries
+
+**Step 2b: Visual Edge Inspection (100% zoom in PDF viewer)**
+
+**Check ALL FOUR EDGES systematically:**
+
+1. **TOP EDGE:**
+   - [ ] Title completely visible (not cut off)
+   - [ ] Author names fully visible
+   - [ ] No graphics touching top margin
+   - [ ] Header content within safe zone
+
+2. **BOTTOM EDGE:**
+   - [ ] References fully visible (not cut off)
+   - [ ] Acknowledgments complete
+   - [ ] Contact info readable
+   - [ ] No graphics cut off at bottom
+
+3. **LEFT EDGE:**
+   - [ ] No text touching left margin
+   - [ ] All bullet points fully visible
+   - [ ] Graphics have left margin (not bleeding off)
+   - [ ] Column content within bounds
+
+4. **RIGHT EDGE:**
+   - [ ] No text extending beyond right margin
+   - [ ] Graphics not cut off on right
+   - [ ] Column content stays within bounds
+   - [ ] QR codes fully visible
+
+5. **BETWEEN COLUMNS:**
+   - [ ] Content stays within individual columns
+   - [ ] No text bleeding into adjacent columns
+   - [ ] Figures respect column boundaries
+
+**If ANY check fails, you have overflow. FIX IMMEDIATELY before continuing:**
+
+**Fix hierarchy (try in order):**
+1. **Check AI-generated graphics first:**
+   - Are they too complex (5+ elements)? → Regenerate simpler
+   - Do they have tiny text? → Regenerate with "150pt+" fonts
+   - Are there too many? → Reduce number of figures
+
+2. **Reduce sections:**
+   - More than 5-6 sections? → Combine or remove
+   - Example: Merge "Discussion" into "Conclusions"
+
+3. **Cut text content:**
+   - More than 800 words total? → Cut to 300-500
+   - More than 100 words per section? → Cut to 50-80
+
+4. **Adjust figure sizing:**
+   - Using `width=\linewidth`? → Change to `width=0.85\linewidth`
+   - Using `width=1.0\columnwidth`? → Change to `width=0.9\columnwidth`
+
+5. **Increase margins (last resort):**
+   ```latex
+   \documentclass[25pt, a0paper, portrait, margin=25mm]{tikzposter}
+   ```
+
+**DO NOT proceed to Step 3 if ANY overflow exists.**
+
+**Step 3: Visual Inspection Checklist**
 
 Open PDF at 100% zoom and check:
 
@@ -768,7 +1079,7 @@ Open PDF at 100% zoom and check:
 - [ ] All cross-references working
 - [ ] Page boundaries correct (no content cut off)
 
-**Step 3: Reduced-Scale Print Test**
+**Step 4: Reduced-Scale Print Test**
 
 **Essential Pre-Printing Test**:
 ```bash
@@ -787,7 +1098,7 @@ Open PDF at 100% zoom and check:
 - [ ] Colors printed accurately
 - [ ] No obvious design flaws
 
-**Step 4: Digital Quality Checks**
+**Step 5: Digital Quality Checks**
 
 **Font Embedding Verification**:
 ```bash
@@ -819,7 +1130,7 @@ gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 \
 # For printing, keep original (no compression)
 ```
 
-**Step 5: Accessibility Check**
+**Step 6: Accessibility Check**
 
 **Color Contrast Verification**:
 - [ ] Text-background contrast ratio ≥ 4.5:1 (WCAG AA)
@@ -831,7 +1142,7 @@ gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 \
 - [ ] Information not lost with red-green simulation
 - [ ] Use Coblis (color-blindness.com) or similar tool
 
-**Step 6: Content Proofreading**
+**Step 7: Content Proofreading**
 
 **Systematic Review**:
 - [ ] Spell-check all text
@@ -847,7 +1158,7 @@ gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 \
 - [ ] 5-minute review: Do they understand conclusions?
 - [ ] Note any confusing elements
 
-**Step 7: Technical Validation**
+**Step 8: Technical Validation**
 
 **LaTeX Compilation Log Review**:
 ```bash
@@ -876,7 +1187,7 @@ grep -i "warning\|error\|overfull\|underfull" poster.log
 \graphicspath{{./figures/}{./images/}}
 ```
 
-**Step 8: Final Pre-Print Checklist**
+**Step 9: Final Pre-Print Checklist**
 
 **Before Sending to Printer**:
 - [ ] PDF size exactly matches requirements (check with pdfinfo)
