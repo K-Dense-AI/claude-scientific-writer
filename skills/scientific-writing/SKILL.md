@@ -367,7 +367,123 @@ This two-stage process ensures you:
 - Produce polished, publication-ready prose
 - Maintain focus on the narrative flow
 
-### 8. Journal-Specific Formatting
+### 8. Professional Report Formatting (Non-Journal Documents)
+
+For research reports, technical reports, white papers, and other professional documents that are NOT journal manuscripts, use the `scientific_report.sty` LaTeX style package for a polished, professional appearance.
+
+**When to Use Professional Report Formatting:**
+- Research reports and technical reports
+- White papers and policy briefs
+- Grant reports and progress reports
+- Industry reports and technical documentation
+- Internal research summaries
+- Feasibility studies and project deliverables
+
+**When NOT to Use (Use Venue-Specific Formatting Instead):**
+- Journal manuscripts → Use `venue-templates` skill
+- Conference papers → Use `venue-templates` skill
+- Academic theses → Use institutional templates
+
+**The `scientific_report.sty` Style Package Provides:**
+
+| Feature | Description |
+|---------|-------------|
+| Typography | Helvetica font family for modern, professional appearance |
+| Color Scheme | Professional blues, greens, and accent colors |
+| Box Environments | Colored boxes for key findings, methods, recommendations, limitations |
+| Tables | Alternating row colors, professional headers |
+| Figures | Consistent caption formatting |
+| Scientific Commands | Shortcuts for p-values, effect sizes, confidence intervals |
+
+**Box Environments for Content Organization:**
+
+```latex
+% Key findings (blue) - for major discoveries
+\begin{keyfindings}[Title]
+Content with key findings and statistics.
+\end{keyfindings}
+
+% Methodology (green) - for methods highlights
+\begin{methodology}[Study Design]
+Description of methods and procedures.
+\end{methodology}
+
+% Recommendations (purple) - for action items
+\begin{recommendations}[Clinical Implications]
+\begin{enumerate}
+    \item Specific recommendation 1
+    \item Specific recommendation 2
+\end{enumerate}
+\end{recommendations}
+
+% Limitations (orange) - for caveats and cautions
+\begin{limitations}[Study Limitations]
+Description of limitations and their implications.
+\end{limitations}
+```
+
+**Professional Table Formatting:**
+
+```latex
+\begin{table}[htbp]
+\centering
+\caption{Results Summary}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Variable} & \textbf{Treatment} & \textbf{Control} & \textbf{p} \\
+\midrule
+Outcome 1 & \meansd{42.5}{8.3} & \meansd{35.2}{7.9} & <.001\sigthree \\
+\rowcolor{tablealt} Outcome 2 & \meansd{3.8}{1.2} & \meansd{3.1}{1.1} & .012\sigone \\
+Outcome 3 & \meansd{18.2}{4.5} & \meansd{17.8}{4.2} & .58\signs \\
+\bottomrule
+\end{tabular}
+
+{\small \siglegend}
+\end{table}
+```
+
+**Scientific Notation Commands:**
+
+| Command | Output | Purpose |
+|---------|--------|---------|
+| `\pvalue{0.023}` | *p* = 0.023 | P-values |
+| `\psig{< 0.001}` | ***p* = < 0.001** | Significant p-values (bold) |
+| `\CI{0.45}{0.72}` | 95% CI [0.45, 0.72] | Confidence intervals |
+| `\effectsize{d}{0.75}` | d = 0.75 | Effect sizes |
+| `\samplesize{250}` | *n* = 250 | Sample sizes |
+| `\meansd{42.5}{8.3}` | 42.5 ± 8.3 | Mean with SD |
+| `\sigone`, `\sigtwo`, `\sigthree` | *, **, *** | Significance stars |
+
+**Getting Started:**
+
+```latex
+\documentclass[11pt,letterpaper]{report}
+\usepackage{scientific_report}
+
+\begin{document}
+\makereporttitle
+    {Report Title}
+    {Subtitle}
+    {Author Name}
+    {Institution}
+    {Date}
+
+% Your content with professional formatting
+\end{document}
+```
+
+**Compilation**: Use XeLaTeX or LuaLaTeX for proper Helvetica font rendering:
+```bash
+xelatex report.tex
+```
+
+For complete documentation, refer to:
+- `assets/scientific_report.sty`: The style package
+- `assets/scientific_report_template.tex`: Complete template example
+- `assets/REPORT_FORMATTING_GUIDE.md`: Quick reference guide
+- `references/professional_report_formatting.md`: Comprehensive formatting guide
+
+### 9. Journal-Specific Formatting
 
 Adapt manuscripts to journal requirements:
 - Follow author guidelines for structure, length, and format
@@ -377,7 +493,7 @@ Adapt manuscripts to journal requirements:
 - Adhere to word limits for each section
 - Format according to template requirements when provided
 
-### 9. Field-Specific Language and Terminology
+### 10. Field-Specific Language and Terminology
 
 Adapt language, terminology, and conventions to match the specific scientific discipline. Each field has established vocabulary, preferred phrasings, and domain-specific conventions that signal expertise and ensure clarity for the target audience.
 
@@ -467,7 +583,7 @@ Adapt language, terminology, and conventions to match the specific scientific di
 - Use domain-specific databases and ontologies (e.g., Gene Ontology, MeSH terms)
 - When uncertain, cite a key reference that establishes terminology
 
-### 10. Common Pitfalls to Avoid
+### 11. Common Pitfalls to Avoid
 
 **Top Rejection Reasons:**
 1. Inappropriate, incomplete, or insufficiently described statistics
@@ -531,7 +647,21 @@ This skill works effectively with:
 - **Statistical analysis**: For determining appropriate statistical presentations
 - **Literature review skills**: For contextualizing research
 - **Figure creation tools**: For developing publication-quality visualizations
-- **Venue-templates skill**: For venue-specific writing styles and formatting
+- **Venue-templates skill**: For venue-specific writing styles and formatting (journal manuscripts)
+- **scientific_report.sty**: For professional reports, white papers, and technical documents
+
+### Professional Reports vs. Journal Manuscripts
+
+**Choose the right formatting approach:**
+
+| Document Type | Formatting Approach |
+|---------------|---------------------|
+| Journal manuscripts | Use `venue-templates` skill |
+| Conference papers | Use `venue-templates` skill |
+| Research reports | Use `scientific_report.sty` (this skill) |
+| White papers | Use `scientific_report.sty` (this skill) |
+| Technical reports | Use `scientific_report.sty` (this skill) |
+| Grant reports | Use `scientific_report.sty` (this skill) |
 
 ### Venue-Specific Writing Styles
 
@@ -561,6 +691,23 @@ This skill includes comprehensive reference files covering specific aspects of s
 - `references/figures_tables.md`: Best practices for creating effective data visualizations
 - `references/reporting_guidelines.md`: Study-specific reporting standards and checklists
 - `references/writing_principles.md`: Core principles of effective scientific communication
+- `references/professional_report_formatting.md`: Guide to professional report styling with `scientific_report.sty`
+
+## Assets
+
+This skill includes LaTeX style packages and templates for professional report formatting:
+
+- `assets/scientific_report.sty`: Professional LaTeX style package with Helvetica fonts, colored boxes, and attractive tables
+- `assets/scientific_report_template.tex`: Complete report template demonstrating all style features
+- `assets/REPORT_FORMATTING_GUIDE.md`: Quick reference guide for the style package
+
+**Key Features of `scientific_report.sty`:**
+- Helvetica font family for modern, professional appearance
+- Professional color scheme (blues, greens, oranges, purples)
+- Box environments: `keyfindings`, `methodology`, `resultsbox`, `recommendations`, `limitations`, `criticalnotice`, `definition`, `executivesummary`, `hypothesis`
+- Tables with alternating row colors and professional headers
+- Scientific notation commands for p-values, effect sizes, confidence intervals
+- Professional headers and footers
 
 **For venue-specific writing styles** (tone, voice, abstract format, reviewer expectations), see the **venue-templates** skill which provides comprehensive style guides for Nature/Science, Cell Press, medical journals, ML conferences, and CS conferences.
 
