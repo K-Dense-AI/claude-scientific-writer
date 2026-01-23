@@ -105,6 +105,7 @@ Get an API key at: https://openrouter.ai/keys
 - Colorblind-friendly colors (Okabe-Ito palette)
 - Proper spacing to prevent crowding
 - Scale bars, legends, axes where appropriate
+- **No figure numbers** - figures should not include "Figure 1:", "Fig. 1", or similar labels (these are added by the document/LaTeX)
 
 ## When to Use This Skill
 

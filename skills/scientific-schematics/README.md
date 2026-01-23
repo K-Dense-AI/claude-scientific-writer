@@ -49,6 +49,7 @@ All diagrams automatically follow:
 - Colorblind-friendly colors
 - Proper spacing between elements
 - Scale bars, legends, axes where appropriate
+- **No figure numbers** - diagrams do not include "Figure 1:" or similar labels (added by document/LaTeX)
 
 ## Installation
 

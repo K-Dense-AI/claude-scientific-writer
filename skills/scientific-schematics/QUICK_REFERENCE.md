@@ -175,6 +175,7 @@ Typical cost per diagram (max 2 iterations):
 - ✓ Automatic quality review
 - ✓ Publication-ready output
 - ✓ Works for any diagram type
+- ✓ No figure numbers included (added separately in document/LaTeX)
 
 **Just describe what you want, and it's generated automatically.**
 
