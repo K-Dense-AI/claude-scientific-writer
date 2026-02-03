@@ -1,6 +1,6 @@
 [project]
 name = "scientific-writer"
-version = "2.10.3"
+version = "2.10.4"
 description = "Deep research and writing tool - combines AI-driven deep research with well-formatted written outputs. Generates publication-ready scientific documents with verified citations."
 readme = "README.md"
 requires-python = ">=3.10"

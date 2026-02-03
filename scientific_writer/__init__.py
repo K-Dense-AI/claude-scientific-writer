@@ -33,7 +33,7 @@ Example:
 from .api import generate_paper
 from .models import ProgressUpdate, TextUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
 
-__version__ = "2.10.3"
+__version__ = "2.10.4"
 __author__ = "K-Dense"
 __license__ = "MIT"
 
