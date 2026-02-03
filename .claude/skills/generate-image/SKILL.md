@@ -154,6 +154,21 @@ The script provides clear error messages for:
 
 If the script fails, read the error message and address the issue before retrying.
 
+## Critical Prompt Requirements
+
+**IMPORTANT: No Meta Instructions in Output**
+
+When generating prompts for the AI image generation models, ensure the generated image does NOT contain any visible text showing:
+- The prompt or instructions that were given to generate it
+- System instructions or AI-related metadata
+- Any "meta" text describing how the image was created
+- Watermarks or labels indicating AI generation
+- Layout descriptions (e.g., "left panel", "right panel", "center panel")
+- Font specifications or typography instructions
+- Color scheme descriptions or palette information
+
+The image should only contain the requested visual content. Always include this instruction in your prompts: "Do not include any text showing the prompt, instructions, layout descriptions, font/color specifications, or metadata in the generated image."
+
 ## Notes
 
 - Images are returned as base64-encoded data URLs and automatically saved as PNG files

@@ -106,6 +106,7 @@ Get an API key at: https://openrouter.ai/keys
 - Proper spacing to prevent crowding
 - Scale bars, legends, axes where appropriate
 - **No figure numbers** - figures should not include "Figure 1:", "Fig. 1", or similar labels (these are added by the document/LaTeX)
+- **No meta instructions in output** - the generated image must NOT contain any visible text showing the prompt, system instructions, or AI-related metadata. This includes: layout descriptions (e.g., "left panel", "right panel", "center panel"), font specifications, color scheme descriptions, or any other technical instructions used to create the image. The image should only contain the requested diagram content, not any instructions that were given to generate it
 
 ## When to Use This Skill
 
