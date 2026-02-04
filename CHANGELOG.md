@@ -6,6 +6,35 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.11.0] - 2026-02-03
+
+### 🎨 New Infographics Skill
+
+New comprehensive skill for AI-powered infographic generation with smart iterative refinement.
+
+### ✨ Added
+
+#### Infographics Skill (`infographics/`)
+
+- **AI-Powered Generation** using Nano Banana Pro with Gemini 3 Pro quality review
+- **Research Integration** - Use `--research` flag to gather accurate data via Perplexity Sonar Pro before generation
+- **10 Infographic Types**: statistical, timeline, process, comparison, list, geographic, hierarchical, anatomical, resume, and social media
+- **8 Industry Style Presets**: corporate, healthcare, technology, nature, education, marketing, finance, and nonprofit
+- **3 Colorblind-Safe Palettes**: Wong, IBM, and Tol
+- **Smart Iteration** - Only regenerates if quality is below document-type threshold
+- **Quality Thresholds** - Marketing (8.5/10), Report (8.0/10), Presentation (7.5/10), Social (7.0/10), Draft (6.5/10)
+
+#### New Files
+
+- `SKILL.md` - Comprehensive documentation with usage examples
+- `scripts/generate_infographic.py` - Main entry point wrapper
+- `scripts/generate_infographic_ai.py` - Core AI generation with iterative refinement (1,290 lines)
+- `references/infographic_types.md` - Detailed guides for all 10 infographic types (907 lines)
+- `references/design_principles.md` - Visual hierarchy, layout patterns, typography (636 lines)
+- `references/color_palettes.md` - Colorblind-safe and industry-specific palettes (496 lines)
+
+---
+
 ## [2.10.0] - 2025-12-21
 
 ### 📝 Comprehensive Venue Writing Style Guides
