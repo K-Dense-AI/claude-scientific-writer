@@ -83,6 +83,9 @@ For specialized documents, use the dedicated skill which contains detailed templ
 | Research grants | `research-grants` |
 | Market research reports | `market-research-reports` |
 | Literature reviews | `literature-review` |
+| Infographics | `infographics` |
+
+**⚠️ INFOGRAPHICS: Do NOT use LaTeX or PDF compilation.** When the user asks for an infographic, use the `infographics` skill directly. Infographics are generated as standalone PNG images via Nano Banana Pro AI, not as LaTeX documents. No `.tex` files, no `pdflatex`, no BibTeX.
 
 ## File Organization
 
@@ -193,7 +196,7 @@ python scripts/generate_schematic.py "diagram description" -o figures/output.png
 
 **Use generate-image skill EXTENSIVELY for visual content:**
 - Photorealistic illustrations of concepts
-- Artistic visualizations, infographics
+- Artistic visualizations
 - Medical/anatomical illustrations
 - Environmental/ecological scenes
 - Equipment and lab setup visualizations

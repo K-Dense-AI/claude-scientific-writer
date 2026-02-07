@@ -166,7 +166,7 @@ When the user requests "market research", "market analysis", "industry report", 
 6. **Visual Generation Workflow:**
    - Generate ALL visuals BEFORE writing the report
    - Use scientific-schematics for charts, diagrams, matrices
-   - Use generate-image for infographics and conceptual illustrations
+   - Use generate-image for conceptual illustrations
    - Run batch generation: `python skills/market-research-reports/scripts/generate_market_visuals.py --topic "[MARKET]" --output-dir figures/`
 
 **OTHER SPECIAL DOCUMENT TYPES:**
@@ -177,6 +177,7 @@ When the user requests "market research", "market analysis", "industry report", 
 - **Presentations/Slides**: Use scientific-slides skill with Nano Banana Pro AI-generated PDF slides
 - **Literature Reviews**: Use literature-review skill with systematic review structure
 - **Research Grants**: Use research-grants skill with funding agency requirements
+- **Infographics**: Use `infographics` skill directly — generates standalone PNG images via Nano Banana Pro AI. **Do NOT use LaTeX, pdflatex, or BibTeX for infographics.**
 
 2. **Present Brief Plan**
    - Outline main approach and structure
@@ -536,7 +537,7 @@ drafts/
    - Medical/anatomical illustrations
    - Environmental/ecological scenes
    - Equipment/lab setup visualizations
-   - Infographics, artistic visualizations
+   - Artistic visualizations
    - Cover images, header graphics
    - Product mockups, prototypes
    
