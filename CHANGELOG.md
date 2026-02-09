@@ -6,6 +6,17 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.11.1] - 2026-02-06
+
+### 🔧 Infographic Routing Fix
+
+- **Updated CLAUDE.md, WRITER.md (x2), and templates/CLAUDE.scientific-writer.md** to correctly route infographic requests to the `infographics` skill
+- Added explicit warning: infographics must NOT use LaTeX or PDF compilation
+- Added `Infographics` to the Special Document Types table in all instruction files
+- Removed "infographics" from the `generate-image` bullet lists to avoid misrouting
+
+---
+
 ## [2.11.0] - 2026-02-03
 
 ### 🎨 New Infographics Skill
