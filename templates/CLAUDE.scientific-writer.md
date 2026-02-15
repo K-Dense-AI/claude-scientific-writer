@@ -30,7 +30,7 @@ This is non-negotiable:
 - ✅ **100% requirement: All claims must be supported by real papers** or rephrased/removed
 
 **Research-Lookup First Approach:**
-1. Before writing ANY section, perform extensive research-lookup
+1. Before writing ANY section, perform extensive research-lookup (uses Parallel Deep Research by default)
 2. Find 5-10 real papers per major section (more for introduction)
 3. Verify each paper exists and is relevant
 4. Begin writing, integrating ONLY the real papers found
@@ -43,6 +43,32 @@ This is non-negotiable:
 - Still no papers after multiple searches? Remove the unsupported claim
 - Every citation in references.bib must correspond to a real paper you looked up
 - Be able to explain where you found each citation (e.g., "found via research-lookup query: 'transformer attention mechanisms'")
+
+## CRITICAL: Parallel Web Search Policy
+
+**Use Parallel Web Systems APIs for ALL web searches, URL extraction, and deep research.**
+
+Parallel is the **primary tool for all web-related operations**. Do NOT use the built-in WebSearch tool except as a last-resort fallback if Parallel is unavailable.
+
+**Required Environment Variable:** `PARALLEL_API_KEY`
+
+**Web Search & Research Tool Routing:**
+
+| Task | Tool | Command |
+|------|------|---------|
+| Web search (any) | `parallel-web` skill | `python scripts/parallel_web.py search "query"` |
+| Extract URL content | `parallel-web` skill | `python scripts/parallel_web.py extract "url" --objective "focus"` |
+| Deep research (any topic) | `parallel-web` skill | `python scripts/parallel_web.py research "query" --processor pro-fast` |
+| Academic paper search | `research-lookup` skill | `python research_lookup.py "find papers on..."` (auto-routes to Perplexity) |
+| DOI/metadata verification | `parallel-web` skill | `python scripts/parallel_web.py search "DOI query"` or `extract` |
+| Current events/news | `parallel-web` skill | `python scripts/parallel_web.py search "news query"` |
+
+**Key Rules:**
+- Use `parallel_web.py search` instead of WebSearch for ALL web information gathering
+- Use `parallel_web.py extract` to read and extract content from any URL (gets clean LLM-optimized markdown)
+- Use `parallel_web.py research --processor pro-fast` for comprehensive research on any topic
+- Use `research_lookup.py` for academic-specific paper searches (auto-routes to Perplexity sonar-pro-search)
+- WebSearch should ONLY be used as a last-resort fallback if Parallel is unavailable
 
 ## Workflow Protocol
 
@@ -178,6 +204,7 @@ When the user requests "market research", "market analysis", "industry report", 
 - **Literature Reviews**: Use literature-review skill with systematic review structure
 - **Research Grants**: Use research-grants skill with funding agency requirements
 - **Infographics**: Use `infographics` skill directly — generates standalone PNG images via Nano Banana Pro AI. **Do NOT use LaTeX, pdflatex, or BibTeX for infographics.**
+- **Web search, URL extraction, deep research**: Use `parallel-web` skill for ALL web operations
 
 2. **Present Brief Plan**
    - Outline main approach and structure
@@ -879,7 +906,7 @@ Verify for each citation:
 **Step 4: Verification Process**
 
 1. Look up via research-lookup for finding papers and scholarly content
-2. **Use WebSearch for basic metadata lookup** (DOI, year, journal, volume, pages, publisher)
+2. **Use `parallel_web.py search` or `parallel_web.py extract` for metadata lookup** (DOI, year, journal, volume, pages, publisher)
 3. Verify against official sources (DOI resolver, Google Scholar, PubMed, arXiv)
 4. Cross-check at least 2 sources
 5. Use citation keys: `firstauthor_year_keyword` (lowercase, meaningful)
@@ -887,8 +914,9 @@ Verify for each citation:
 7. Log verification: `[HH:MM:SS] VERIFIED: [Author Year] - all fields present ✅`
 
 **Available Research Tools:**
-- **research-lookup**: Primary tool for finding academic papers, literature search, and scholarly research
-- **WebSearch**: Use for quick metadata verification, looking up DOIs, checking publication years, finding journal names, volume/page numbers, and general information that complements academic research
+- **parallel-web** (`parallel_web.py`): Primary tool for ALL web searches, URL extraction, deep research, metadata verification, DOI lookups, and general information
+- **research-lookup** (`research_lookup.py`): Routes to Parallel Deep Research (default) or Perplexity sonar-pro-search (academic paper searches)
+- **WebSearch**: Last-resort fallback only — use `parallel_web.py search` instead
 
 **Quality Standards**
 - **100% citations must be REAL papers found via research-lookup**
@@ -1493,10 +1521,11 @@ Request: "Create 15-minute slides on my CRISPR research"
 
 ## Remember
 
+- **Use Parallel for ALL web searches** - `parallel_web.py search/extract/research` replaces WebSearch; WebSearch is last-resort fallback only
 - **Plan first, execute second** - ALWAYS present plan then start immediately
 - **LaTeX is the default format** - always use LaTeX unless explicitly told otherwise
 - **Skeleton first, content second** - create full LaTeX structure before writing content
-- **Research before writing** - lookup relevant papers for each section BEFORE writing
+- **Research before writing** - lookup relevant papers for each section BEFORE writing (research-lookup uses Parallel Deep Research by default)
 - **ONLY REAL CITATIONS** - NEVER use placeholder, illustrative, or invented citations; use research-lookup extensively to find actual papers
 - **One section at a time** - complete each section fully before moving to the next
 - **Use BibTeX for all citations** - maintain references.bib file with complete entries

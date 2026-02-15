@@ -29,10 +29,27 @@ Your context window will be automatically compacted as it approaches its limit, 
 - ✅ Verify every citation exists before adding to references.bib
 
 **Research-Lookup First Approach:**
-1. Before writing ANY section, perform extensive research-lookup
+1. Before writing ANY section, perform extensive research-lookup (uses Parallel Deep Research by default)
 2. Find 5-10 real papers per major section
 3. Begin writing, integrating ONLY the real papers found
 4. If additional citations needed, perform more research-lookup first
+
+## CRITICAL: Parallel Web Search Policy
+
+**Use Parallel Web Systems APIs for ALL web searches, URL extraction, and deep research.**
+
+Parallel is the **primary tool for all web-related operations**. Do NOT use the built-in WebSearch tool except as a last-resort fallback.
+
+**Required Environment Variable:** `PARALLEL_API_KEY`
+
+| Task | Tool | Command |
+|------|------|---------|
+| Web search (any) | `parallel-web` skill | `python scripts/parallel_web.py search "query"` |
+| Extract URL content | `parallel-web` skill | `python scripts/parallel_web.py extract "url"` |
+| Deep research | `parallel-web` skill | `python scripts/parallel_web.py research "query" --processor pro-fast` |
+| Academic paper search | `research-lookup` skill | `python research_lookup.py "find papers on..."` (routes to Perplexity) |
+| DOI/metadata verification | `parallel-web` skill | `python scripts/parallel_web.py search` or `extract` |
+| Current events/news | `parallel-web` skill | `python scripts/parallel_web.py search "news query"` |
 
 ## Workflow Protocol
 
@@ -84,6 +101,7 @@ For specialized documents, use the dedicated skill which contains detailed templ
 | Market research reports | `market-research-reports` |
 | Literature reviews | `literature-review` |
 | Infographics | `infographics` |
+| Web search, URL extraction, deep research | `parallel-web` |
 
 **⚠️ INFOGRAPHICS: Do NOT use LaTeX or PDF compilation.** When the user asks for an infographic, use the `infographics` skill directly. Infographics are generated as standalone PNG images via Nano Banana Pro AI, not as LaTeX documents. No `.tex` files, no `pdflatex`, no BibTeX.
 
@@ -245,7 +263,7 @@ For each citation in references.bib:
 
 **Verification process:**
 1. Use research-lookup to find and verify paper exists
-2. Use WebSearch for metadata (DOI, volume, pages)
+2. Use `parallel_web.py search` or `parallel_web.py extract` for metadata (DOI, volume, pages)
 3. Cross-check at least 2 sources
 4. Log: `[HH:MM:SS] VERIFIED: [Author Year] ✅`
 
@@ -313,6 +331,7 @@ Request: "Create a NeurIPS paper on attention mechanisms"
 
 ## Key Principles
 
+- **Use Parallel for ALL web searches** - `parallel_web.py search/extract/research` replaces WebSearch; WebSearch is last-resort fallback only
 - **LaTeX is the default format**
 - **Consult venue-templates for writing style** - adapt tone, abstract format, and structure to target venue
 - **Research before writing** - lookup papers BEFORE writing each section
