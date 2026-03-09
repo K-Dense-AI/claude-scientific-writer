@@ -435,7 +435,7 @@ async def generate_paper(
     query: str,
     output_dir: Optional[str] = None,
     api_key: Optional[str] = None,
-    model: str = "claude-opus-4-6",
+    model: str = "claude-sonnet-4-6",
     data_files: Optional[List[str]] = None,
     cwd: Optional[str] = None,
 ) -> AsyncGenerator[Dict[str, Any], None]
@@ -522,7 +522,7 @@ async for update in generate_paper(
     query="Create a paper",
     output_dir="./my_custom_directory",
     api_key="sk-ant-custom-key",
-    model="claude-opus-4-6",
+    model="claude-sonnet-4-6",
     data_files=["data.csv"],
     cwd="/path/to/project"
 ):

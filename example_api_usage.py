@@ -88,7 +88,7 @@ async def advanced_example():
         query=query,
         output_dir="./my_custom_papers",  # Custom output directory
         data_files=data_files,
-        model="claude-opus-4-6"
+        model="claude-sonnet-4-6"
     ):
         if update["type"] == "text":
             # Stream live output
