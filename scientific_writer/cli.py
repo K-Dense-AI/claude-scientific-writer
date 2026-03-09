@@ -120,7 +120,7 @@ IMPORTANT - CONVERSATION CONTINUITY:
     # Configure agent options with stop hook for completion checking
     options = ClaudeAgentOptions(
         system_prompt=system_instructions,
-        model="claude-opus-4-6",
+        model="claude-sonnet-4-6",
         allowed_tools=["Read", "Write", "Edit", "Bash", "WebSearch", "research-lookup"],
         permission_mode="bypassPermissions",  # Execute immediately without approval prompts
         setting_sources=["project"],  # Load skills from project .claude directory

@@ -44,7 +44,7 @@ async def generate_paper(
     query: str,
     output_dir: Optional[str] = None,
     api_key: Optional[str] = None,
-    model: str = "claude-opus-4-6",
+    model: str = "claude-sonnet-4-6",
     data_files: Optional[List[str]] = None,
     cwd: Optional[str] = None,
     track_token_usage: bool = False,
@@ -58,7 +58,7 @@ async def generate_paper(
 | `query` | `str` | Yes | - | The paper generation request (e.g., "Create a Nature paper on CRISPR") |
 | `output_dir` | `str` | No | `None` | Custom output directory. Defaults to `cwd/writing_outputs` |
 | `api_key` | `str` | No | `None` | Anthropic API key. Defaults to `ANTHROPIC_API_KEY` env var |
-| `model` | `str` | No | `"claude-opus-4-6"` | Claude model to use |
+| `model` | `str` | No | `"claude-sonnet-4-6"` | Claude model to use |
 | `data_files` | `List[str]` | No | `None` | List of file paths to include in the paper |
 | `cwd` | `str` | No | `None` | Working directory. Defaults to package parent directory |
 | `track_token_usage` | `bool` | No | `False` | If True, track and return token usage in the final result |
@@ -518,7 +518,7 @@ Choose different Claude models (though Sonnet 4.5 is recommended):
 ```python
 async for update in generate_paper(
     query="Create a paper",
-    model="claude-opus-4-6"  # Latest Opus 4.6
+    model="claude-sonnet-4-6"  # Latest Opus 4.6
 ):
     pass
 ```
