@@ -6,6 +6,18 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.12.1] - 2026-03-09
+
+### 🔄 Changed
+
+- **Updated default model** - Replaced claude-opus model references with claude-sonnet across API, CLI, documentation, and examples for improved performance and cost efficiency
+
+### 🔧 Fixed
+
+- **Version consistency** - Fixed version mismatch between pyproject.toml and __init__.py
+
+---
+
 ## [2.11.1] - 2026-02-06
 
 ### 🔧 Infographic Routing Fix
