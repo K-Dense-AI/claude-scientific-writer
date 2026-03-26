@@ -45,7 +45,7 @@ export ANTHROPIC_API_KEY='your_key'
 ### Usage Options
 
 #### Use as Plugin (Recommended)
-After installing the plugin and running `/scientific-writer:init`, simply ask Claude:
+After installing the plugin and running `/claude-scientific-writer:scientific-writer-init`, simply ask Claude:
 ```bash
 > Create a Nature paper on CRISPR gene editing. Present experimental_data.csv 
   (efficiency across 5 cell lines), include Western_blot.png and flow_cytometry.png 
@@ -120,7 +120,7 @@ asyncio.run(main())
 
 4. **Initialize in your project**:
    ```bash
-   /scientific-writer:init
+   /claude-scientific-writer:scientific-writer-init
    ```
    This creates a `CLAUDE.md` file with comprehensive scientific writing instructions and makes all 19+ skills available.
 
@@ -447,7 +447,7 @@ For developers working on the plugin or testing locally:
 
 6. **Test the plugin**:
    - Open any project directory
-   - Run `/scientific-writer:init`
+   - Run `/claude-scientific-writer:scientific-writer-init`
    - Verify CLAUDE.md is created
    - Test skills: "What skills are available?"
    - Try creating a document: "Create a short scientific abstract on quantum computing"
@@ -460,7 +460,7 @@ claude-scientific-writer/
 ├── .claude-plugin/
 │   └── plugin.json          # Plugin metadata
 ├── commands/
-│   └── scientific-writer-init.md  # /scientific-writer:init command
+│   └── scientific-writer-init.md  # /claude-scientific-writer:scientific-writer-init command
 ├── skills/                  # All 20 skills
 │   ├── citation-management/
 │   ├── clinical-decision-support/

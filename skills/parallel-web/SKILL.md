@@ -1,7 +1,7 @@
 ---
 name: parallel-web
 description: "Search the web, extract URL content, and run deep research using the Parallel Chat API and Extract API. Use for ALL web searches, research queries, and general information gathering. Provides synthesized summaries with citations."
-allowed-tools: [Read, Write, Edit, Bash]
+allowed-tools: [Read, Grep, Glob]
 ---
 
 # Parallel Web Systems API
