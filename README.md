@@ -525,6 +525,54 @@ Want to see what Scientific Writer can create? Check out real examples in the [`
 - [📋 Release Notes](CHANGELOG.md) - Version history and updates
 - [🤖 System Instructions](CLAUDE.md) - Agent instructions (advanced)
 
+## Use with Gemini CLI and Other Agents
+
+The skills in this repository follow the [Claude Code SKILL.md format](https://docs.anthropic.com/en/docs/claude-code/skills). Each skill is a self-contained prompt file that tells an AI agent how to perform a specific task.
+
+### Automatic translation with SkillKit
+
+[SkillKit](https://www.npmjs.com/package/skillkit) is a community tool that translates Claude Code skills into formats understood by other agents:
+
+```bash
+npm install -g skillkit
+
+# Translate all skills for Gemini CLI
+skillkit translate claude-scientific-writer --agent gemini-cli
+
+# Translate a specific skill
+skillkit translate claude-scientific-writer --skill scientific-writing --agent gemini-cli
+```
+
+Supported target agents include `gemini-cli`, `aider`, `continue`, and `cursor`.
+
+### Manual approach
+
+To use any skill with another agent (Gemini CLI, Aider, Continue, etc.):
+
+1. Open the relevant `skills/<skill-name>/SKILL.md` file.
+2. Copy the content below the YAML frontmatter (everything after the closing `---`).
+3. Paste it into your agent's system prompt, custom instructions file, or equivalent configuration.
+
+For example, to use the `scientific-writing` skill in Gemini CLI:
+
+```bash
+# Copy skill content to Gemini CLI system prompt file
+tail -n +6 skills/scientific-writing/SKILL.md > ~/.gemini/system_prompt.md
+gemini "Write a Nature paper on CRISPR off-target effects"
+```
+
+### Claude Code-specific features
+
+The following SKILL.md frontmatter fields are Claude Code-specific and can be safely ignored by other agents:
+
+| Field | Claude Code behaviour | Other agents |
+|-------|-----------------------|--------------|
+| `allowed-tools` | Restricts which tools the agent may call | Ignore or map to your agent's tool-permission system |
+| `hooks` | Runs shell commands before/after skill execution | Ignore or implement equivalent pre/post hooks manually |
+| `version` | Used by Claude Code marketplace | Informational only |
+
+All skill *content* (instructions, workflows, code examples) is agent-agnostic and works with any sufficiently capable LLM.
+
 ## Versioning and Publishing (short)
 Use `uv` and the helper scripts:
 - Bump version (keeps pyproject + __init__ in sync): `uv run scripts/bump_version.py [patch|minor|major]`
