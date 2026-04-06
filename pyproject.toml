@@ -83,4 +83,5 @@ ignore-regex = '\b[a-z]+[A-Z]\w*\b|\b[A-Z][a-z]+[A-Z]\w*\b|\*\*.\*\*\w+|\\textbf
 #  re-use - valid hyphenation
 #  edn - abbreviation for "edition" (Nature citation style: "10th edn")
 #  bu - Business Unit abbreviation
-ignore-words-list = 'theses,infarction,ser,pres,commun,stard,ehr,anc,ot,som,caf,cafs,promis,slac,als,abd,rouge,nd,reacher,fallow,trough,childs,recuse,inh,ois,re-use,edn,bu'
+#  vermillion - valid alternate spelling of vermilion
+ignore-words-list = 'theses,infarction,ser,pres,commun,stard,ehr,anc,ot,som,caf,cafs,promis,slac,als,abd,rouge,nd,reacher,fallow,trough,childs,recuse,inh,ois,re-use,edn,bu,vermillion'
