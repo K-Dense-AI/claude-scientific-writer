@@ -50,7 +50,37 @@ dev-dependencies = []
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git,.gitignore,.gitattributes,*.pdf'
+skip = '.git,.gitignore,.gitattributes,*.pdf,*.svg,*.css,*.xsd'
 check-hidden = true
-# ignore-regex = ''
-# ignore-words-list = ''
+# Ignore camelCase/PascalCase identifiers, and word fragments from bold formatting
+# (**S**pecific, \textbf{F}requency, etc.)
+ignore-regex = '\b[a-z]+[A-Z]\w*\b|\b[A-Z][a-z]+[A-Z]\w*\b|\*\*.\*\*\w+|\\textbf\{.\}\w+'
+# Domain-specific terms:
+#  theses - plural of thesis (BibTeX entry type)
+#  infarction - medical term (myocardial infarction)
+#  ser - XML series element
+#  pres - presentation abbreviation
+#  commun - as in "Nature Communications" journal
+#  stard - STARD reporting guideline (Standards for Reporting Diagnostic Accuracy)
+#  ehr - Electronic Health Record
+#  anc - Absolute Neutrophil Count
+#  ot - Occupational Therapy
+#  som - Serviceable Obtainable Market
+#  caf/cafs - Cancer-Associated Fibroblasts
+#  promis - PROMIS patient-reported outcome measures
+#  slac - SLAC National Accelerator Laboratory
+#  als - Amyotrophic Lateral Sclerosis / Advanced Light Source
+#  abd - abbreviation for abdomen/abdominal
+#  rouge - ROUGE metric (NLP evaluation)
+#  nd - shorthand for 2nd
+#  reacher - Functional Reach test (rehabilitation)
+#  fallow - Gutenberg diagram layout term (fallow area)
+#  trough - Gartner Hype Cycle term (Trough of Disillusionment)
+#  childs - surname
+#  recuse - legitimate word (to recuse oneself)
+#  inh - medical abbreviation (inhalation)
+#  ois - Optimal Information Size (statistics)
+#  re-use - valid hyphenation
+#  edn - abbreviation for "edition" (Nature citation style: "10th edn")
+#  bu - Business Unit abbreviation
+ignore-words-list = 'theses,infarction,ser,pres,commun,stard,ehr,anc,ot,som,caf,cafs,promis,slac,als,abd,rouge,nd,reacher,fallow,trough,childs,recuse,inh,ois,re-use,edn,bu'
