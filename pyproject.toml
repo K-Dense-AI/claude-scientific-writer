@@ -47,3 +47,10 @@ packages = ["scientific_writer"]
 [tool.uv]
 dev-dependencies = []
 
+
+[tool.codespell]
+# Ref: https://github.com/codespell-project/codespell#using-a-config-file
+skip = '.git,.gitignore,.gitattributes,*.pdf'
+check-hidden = true
+# ignore-regex = ''
+# ignore-words-list = ''
