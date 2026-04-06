@@ -4,7 +4,7 @@
 [![Total Downloads](https://static.pepy.tech/badge/scientific-writer)](https://pepy.tech/project/scientific-writer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> 🚀 **Looking for more advanced capabilities?** For end-to-end scientiic writing, deep scientfic search, advanced image generation and enterprise solutions, visit **[www.k-dense.ai](https://www.k-dense.ai)**
+> 🚀 **Looking for more advanced capabilities?** For end-to-end scientiic writing, deep scientific search, advanced image generation and enterprise solutions, visit **[www.k-dense.ai](https://www.k-dense.ai)**
 
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
