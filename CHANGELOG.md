@@ -6,6 +6,20 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.13.0] - 2026-04-20
+
+### 🚀 Improved
+
+- **pptx-posters**: Fixed skill name metadata, clarified PPTX is opt-in only (latex-posters is default for all research posters), new AI-visual workflow targeting 60-70% visual area coverage
+- **latex-posters**: Added content overflow prevention guide — max 5-6 sections for A0, safe margin settings, 0.85\linewidth figure limit, 300-800 word count limits, mandatory compile-check step for overfull warnings
+- **parallel-web**: Full rewrite as unified routing skill with 4 capabilities (web search, web extract, data enrichment, deep research); routing table; academic source prioritization baked in; 4 new reference files (web-search.md, web-extract.md, data-enrichment.md, deep-research.md)
+- **research-lookup**: Replaced Perplexity/OpenRouter backend with `parallel-cli search` as primary backend; academic queries now use two-search pattern with `--include-domains` for scholarly sources; Parallel Chat API retained for explicit deep research only; removed all OPENROUTER_API_KEY dependencies
+- **scientific-slides**: Added PPT workflow with `--visual-only` flag for generating figures to embed in PowerPoint; added visual-only prompt examples
+- **scientific-schematics**: Model upgrades (Nano Banana 2, Gemini 3.1 Pro Preview); removed overly restrictive figure label and meta-instruction rules
+- **scientific-writing**: Added `scientific_report.sty` professional report formatting system with colored box environments, LaTeX scientific notation commands, and document-type routing guidance
+
+---
+
 ## [2.12.1] - 2026-03-09
 
 ### 🔄 Changed
