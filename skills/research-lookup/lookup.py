@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Research Lookup Tool for Claude Code
-Performs research queries using Perplexity Sonar Pro Search via OpenRouter.
+Routes research queries to parallel-cli search (primary) or Parallel Chat API (deep research).
 """
 
 import os
@@ -149,10 +149,10 @@ def _detect_venue_tier(url: str) -> Optional[str]:
 def main():
     """Main entry point for Claude Code tool."""
     # Check for API key
-    if not os.getenv("OPENROUTER_API_KEY"):
-        print("❌ Error: OPENROUTER_API_KEY environment variable not set")
+    if not os.getenv("PARALLEL_API_KEY"):
+        print("❌ Error: PARALLEL_API_KEY environment variable not set or parallel-cli not installed")
         print("Please set it in your .env file or export it:")
-        print("  export OPENROUTER_API_KEY='your_openrouter_api_key'")
+        print("  parallel-cli auth  # or: export PARALLEL_API_KEY='your_key'")
         return 1
 
     # Get query from command line arguments

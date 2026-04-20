@@ -130,10 +130,10 @@ def example_scientific_writing_workflow():
 
 
 def main():
-    """Run all examples (requires OPENROUTER_API_KEY to be set)."""
+    """Run all examples (requires parallel-cli or PARALLEL_API_KEY to be set)."""
     
-    if not os.getenv("OPENROUTER_API_KEY"):
-        print("Note: Set OPENROUTER_API_KEY environment variable to run live queries")
+    if not os.getenv("PARALLEL_API_KEY"):
+        print("Note: Install parallel-cli or set PARALLEL_API_KEY to run live queries")
         print("These examples show the structure without making actual API calls")
         print()
     
@@ -149,7 +149,7 @@ def main():
     print("=" * 80)
     print()
     
-    os.environ.setdefault("OPENROUTER_API_KEY", "test")
+    os.environ.setdefault("PARALLEL_API_KEY", "test")
     research = ResearchLookup()
     
     test_queries = [
