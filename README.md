@@ -3,8 +3,13 @@
 [![PyPI version](https://img.shields.io/pypi/v/scientific-writer.svg)](https://pypi.org/project/scientific-writer/)
 [![Total Downloads](https://static.pepy.tech/badge/scientific-writer)](https://pepy.tech/project/scientific-writer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![X](https://img.shields.io/badge/Follow_on_X-%40k__dense__ai-000000?logo=x)](https://x.com/k_dense_ai)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-K--Dense_Inc.-0A66C2?logo=linkedin)](https://www.linkedin.com/company/k-dense-inc)
+[![YouTube](https://img.shields.io/badge/YouTube-K--Dense_Inc.-FF0000?logo=youtube)](https://www.youtube.com/@K-Dense-Inc)
 
 > 🚀 **Looking for more advanced capabilities?** For end-to-end scientiic writing, deep scientfic search, advanced image generation and enterprise solutions, visit **[www.k-dense.ai](https://www.k-dense.ai)**
+
+> **Stay up to date:** Follow K-Dense on [X](https://x.com/k_dense_ai), [LinkedIn](https://www.linkedin.com/company/k-dense-inc), and [YouTube](https://www.youtube.com/@K-Dense-Inc) for new features, release announcements, walkthroughs, research workflow demos, and examples you can use with Scientific Writer.
 
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
@@ -544,6 +549,8 @@ MIT - see LICENSE.
 - See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common problems
 
 ## 💬 Join Our Community!
+
+**Follow us for updates:** [X](https://x.com/k_dense_ai) · [LinkedIn](https://www.linkedin.com/company/k-dense-inc) · [YouTube](https://www.youtube.com/@K-Dense-Inc)
 
 **Want to connect with other researchers, share tips, and get help in real-time?** Join our vibrant Slack community! 🎉
 
