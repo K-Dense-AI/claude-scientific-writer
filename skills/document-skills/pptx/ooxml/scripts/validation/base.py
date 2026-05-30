@@ -602,7 +602,7 @@ class BaseSchemaValidator:
                         )
 
                 except Exception:
-                    continue  # Skip unparseable files
+                    continue  # Skip unparsable files
 
             # Check all non-XML files for Default extension declarations
             for file_path in all_files:
