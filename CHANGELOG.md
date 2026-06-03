@@ -6,6 +6,17 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.14.0] - 2026-06-03
+
+### 🚀 Improved
+
+- **Citation policies** — Stricter real-citation requirements: diverse referencing (20–30 citations for full papers), zero tolerance for fabricated metadata or lazy citation repetition, mandatory publisher-page verification via web search and URL extract
+- **Writing standards** — Narrative prose guidance (avoid AI bullet-point trap in manuscript body); historical timeline schematics encouraged; expanded figure-generation categories
+- **Venue integration** — Research-paper workflow now directs agents to consult `venue-templates` skill for venue-specific tone, abstract format, and reviewer expectations
+- **Documentation sync** — `WRITER.md`, `CLAUDE.md`, `.claude/WRITER.md`, and `templates/CLAUDE.scientific-writer.md` aligned with updated policies
+
+---
+
 ## [2.13.0] - 2026-04-20
 
 ### 🚀 Improved
