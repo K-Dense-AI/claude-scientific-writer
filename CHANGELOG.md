@@ -6,6 +6,17 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.15.0] - 2026-06-10
+
+### 🚀 Improved
+
+- **Academic Citation Targets** — Established much higher publication standards for reference counts matching top-tier venues (35-50+ for Nature/Science/Cell, 30-45+ for ML/CS conferences like NeurIPS and medical journals like NEJM/Lancet/JAMA, and 40-65+ for Literature Reviews / Market Research).
+- **Post-Writing Reference Checks** — Introduced a mandatory validation step to check and verify all references immediately after a manuscript or report has been compiled, preventing orphaned, unresolved, or critically low citations.
+- **Enhanced Citation Validation Tool** — Upgraded the `validate_citations.py` script to programmatically enforce venue-specific reference counts and cross-check the BibTeX bibliography against a written manuscript file (Markdown or LaTeX) for missing or unused citations.
+- **Skill & Configuration Sync** — Synchronized system-wide instructions across `CLAUDE.md`, `WRITER.md`, and all duplicate package/skill files so that execution, package distribution, and template structures are perfectly aligned.
+
+---
+
 ## [2.14.0] - 2026-06-03
 
 ### 🚀 Improved
