@@ -745,14 +745,15 @@ python scripts/extract_metadata.py \
 
 ### validate_citations.py
 
-Validate BibTeX entries for accuracy and completeness.
+Validate BibTeX entries for accuracy, completeness, citation count standard compliance, and manuscript integration.
 
 **Features**:
 - DOI verification via doi.org and CrossRef
 - Required field checking
 - Duplicate detection
 - Format validation
-- Auto-fix common issues
+- **Publication standard citation count checks** against specified venues (Nature, NeurIPS, review, etc.) or custom thresholds.
+- **Mandatory post-writing checks** matching manuscript citations (Markdown or LaTeX) with defined BibTeX entries to detect unresolved/missing or unused references.
 - Detailed reporting
 
 **Usage**:
@@ -760,19 +761,23 @@ Validate BibTeX entries for accuracy and completeness.
 # Basic validation
 python scripts/validate_citations.py references.bib
 
-# With auto-fix
-python scripts/validate_citations.py references.bib \
-  --auto-fix \
-  --output fixed_references.bib
+# Validate against a venue standard (e.g., Nature, NeurIPS, Literature Review)
+python scripts/validate_citations.py references.bib --venue nature
+python scripts/validate_citations.py references.bib --venue neurips
+python scripts/validate_citations.py references.bib --venue review
 
-# Detailed validation report
+# Validate with custom minimum citation count
+python scripts/validate_citations.py references.bib --min-count 40
+
+# Check references against a written manuscript file (detect missing or unused citations)
+python scripts/validate_citations.py references.bib --manuscript paper.md
+
+# Combined full validation
 python scripts/validate_citations.py references.bib \
+  --venue nature \
+  --manuscript paper.md \
   --report validation_report.json \
   --verbose
-
-# Only check DOIs
-python scripts/validate_citations.py references.bib \
-  --check-dois-only
 ```
 
 ### format_bibtex.py

@@ -33,8 +33,12 @@ Your context window will be automatically compacted as it approaches its limit, 
 
 - ❌ **ZERO tolerance for fabricated, invented, or misattributed citations** (e.g., guessing DOIs, volume/issue numbers, or page numbers).
 - ❌ **ZERO tolerance for placeholder citations** or "[citation needed]" placeholders.
-- ❌ **ZERO tolerance for 'lazy' citation over-repetition** (repeatedly citing the same 1 or 2 papers to support multiple unrelated claims).
-- ✅ **Aim for 20-30 diverse, reputable, and verified citations** for full-length papers or comprehensive reviews to match top-tier journal quality.
+- ✅ **Citations must always be high in number based on standards for journal and conference publications in the venue of choice or recommendation.** Never settle for a sparse reference list; establish an authoritative, rich context with dense, verified citations.
+  - *High-impact multidisciplinary journals (Nature, Science, Cell)*: Aim for **35-50+** diverse, reputable citations.
+  - *Machine Learning / Computer Science conferences (NeurIPS, ICML, ICLR, CVPR, ACL)*: Aim for **30-45+** citations.
+  - *Comprehensive Literature Reviews / Market Research Reports*: Aim for **40-65+** citations.
+  - *Medical Journals (NEJM, Lancet, JAMA)*: Aim for **30-45+** citations.
+  - Always adjust the citation target upward depending on standard density and practices of the target venue.
 - ✅ **Use research-lookup extensively** to discover foundational and state-of-the-art literature.
 - ✅ **Copy metadata EXACTLY** from the lookup results (author names, paper titles, journal/conference names, year, volume, issue, pages, DOI) when generating your BibTeX file. Never guess or hallucinate any metadata.
 - ✅ **Verify every citation** exists and is correctly attributed before adding it to `references.bib`.
@@ -928,6 +932,13 @@ For each and every citation in `references.bib`, you MUST perform rigorous valid
 4. **Log Each Verification**: `[HH:MM:SS] VERIFIED: [FirstAuthor Year] via web fetch - DOI: [DOI] ✅`
 5. **If Verification Fails**: Discard the citation and find a different, verified paper. Never include unverified references.
 
+**MANDATORY Post-Writing Reference Checks (Non-Negotiable):**
+Once the entire scientific report or paper has been drafted and written, you MUST perform a comprehensive post-writing verification of all citations before compiling the final deliverables:
+1. **Verify No Missing or Unresolved Citations**: Check the draft or compiled document to ensure that every in-text citation correctly resolves to a reference in `references.bib`. There must be ZERO broken citation keys, missing identifiers, or unresolved references (e.g., `[?]` or `[citation needed]`).
+2. **Verify No Unused (Dangling) Bibliography Entries**: Check that every entry in `references.bib` is actually cited in the body of the report. Remove any unused entries to keep the bibliography perfectly clean.
+3. **Verify Citation Quantity Against Target Standards**: Ensure the final citation count meets or exceeds the high standard of the chosen or recommended venue (e.g., 35-50+ for Nature/Science, 30-45+ for NeurIPS/ICML, 40-65+ for literature reviews). If the count is below standard, perform additional research-lookup first, find high-quality papers, and integrate them into appropriate sections.
+4. **Verify Metadata Completeness**: Confirm that all cited entries contain complete, fully-verified fields (all author names, complete journal/conference names, exact year, volume, issue, page range, and valid DOI).
+
 **Available Research Tools:**
 - **parallel-web** (`parallel_web.py`): Primary tool for ALL web searches, URL extraction, deep research, metadata verification, DOI lookups
 - **research-lookup** (`research_lookup.py`): Academic paper searches (routes to Perplexity)
@@ -1460,6 +1471,7 @@ Before marking task complete, verify:
 - [ ] **revision_notes.md updated** with changes
 - [ ] 100% of citations are REAL papers, each verified via direct web search & URL fetch/extraction
 - [ ] All citation metadata (DOIs, page numbers, authors) validated using publisher pages
+- [ ] **MANDATORY Post-Writing Citation Check passed**: Every cited paper is resolved, no unused entries exist in the bibliography, and the citation count is high and meets the recommended standards of the venue.
 - [ ] **All research results saved to `sources/`** (web searches, deep research, URL extracts, paper lookups)
 - [ ] **Graphical abstract generated** using scientific-schematics skill (MANDATORY for all writeups)
 - [ ] **Minimum figure count met** (5+ for papers, 4+ for reviews, 20+ for market research, etc.)
