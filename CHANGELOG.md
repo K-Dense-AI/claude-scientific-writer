@@ -6,6 +6,14 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.15.1] - 2026-06-15
+
+### 🚀 Improved
+
+- **Model Upgrade** — Made Claude Opus 4.8 the default model across the CLI, API, and documentation for superior reasoning and writing capability.
+
+---
+
 ## [2.15.0] - 2026-06-10
 
 ### 🚀 Improved
