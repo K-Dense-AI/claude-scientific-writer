@@ -32,8 +32,8 @@ from .utils import (
 # Model mapping for effort levels
 EFFORT_LEVEL_MODELS = {
     "low": "claude-haiku-4-5",
-    "medium": "claude-sonnet-4-6",
-    "high": "claude-sonnet-4-6",
+    "medium": "claude-opus-4-8",
+    "high": "claude-opus-4-8",
 }
 
 
@@ -92,8 +92,8 @@ async def generate_paper(
         model: Optional explicit Claude model to use. If provided, overrides effort_level.
         effort_level: Effort level that determines the model to use (default: "medium"):
             - "low": Uses Claude Haiku 4.5 (fastest, most economical)
-            - "medium": Uses Claude Sonnet 4.5 (balanced) [default]
-            - "high": Uses Claude Opus 4.6 (most capable)
+            - "medium": Uses Claude Opus 4.8 (balanced, premium) [default]
+            - "high": Uses Claude Opus 4.8 (most capable)
         data_files: Optional list of data file paths to include
         cwd: Optional working directory (defaults to package parent directory)
         track_token_usage: If True, track and return token usage in the final result
