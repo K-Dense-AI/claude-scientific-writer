@@ -534,22 +534,6 @@ Want to see what Scientific Writer can create? Check out real examples in the [`
 
 The skills in this repository follow the [Claude Code SKILL.md format](https://docs.anthropic.com/en/docs/claude-code/skills). Each skill is a self-contained prompt file that tells an AI agent how to perform a specific task.
 
-### Automatic translation with SkillKit
-
-[SkillKit](https://www.npmjs.com/package/skillkit) is a community tool that translates Claude Code skills into formats understood by other agents:
-
-```bash
-npm install -g skillkit
-
-# Translate all skills for Gemini CLI
-skillkit translate claude-scientific-writer --agent gemini-cli
-
-# Translate a specific skill
-skillkit translate claude-scientific-writer --skill scientific-writing --agent gemini-cli
-```
-
-Supported target agents include `gemini-cli`, `aider`, `continue`, and `cursor`.
-
 ### Manual approach
 
 To use any skill with another agent (Gemini CLI, Aider, Continue, etc.):
