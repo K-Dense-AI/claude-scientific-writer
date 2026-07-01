@@ -1,6 +1,6 @@
 ---
 name: scientific-schematics
-description: "Create publication-quality scientific diagrams using Nano Banana Pro AI with smart iterative refinement. Uses Gemini 3 Pro for quality review. Only regenerates if quality is below threshold for your document type. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations."
+description: "Create publication-quality scientific diagrams using Nano Banana Pro AI or Atlas Cloud image generation with smart iterative refinement. Uses Gemini 3 Pro for quality review when OpenRouter is configured. Only regenerates if quality is below threshold for your document type. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations."
 allowed-tools: [Read, Write, Edit, Bash]
 ---
 
@@ -8,11 +8,12 @@ allowed-tools: [Read, Write, Edit, Bash]
 
 ## Overview
 
-Scientific schematics and diagrams transform complex concepts into clear visual representations for publication. **This skill uses Nano Banana Pro AI for diagram generation with Gemini 3 Pro quality review.**
+Scientific schematics and diagrams transform complex concepts into clear visual representations for publication. **This skill uses Nano Banana Pro AI by default, with optional Atlas Cloud image generation, and Gemini 3 Pro quality review when OpenRouter is configured.**
 
 **How it works:**
 - Describe your diagram in natural language
 - Nano Banana Pro generates publication-quality images automatically
+- Or select Atlas Cloud with `--provider atlascloud --model <image-model-id>`
 - **Gemini 3 Pro reviews quality** against document-type thresholds
 - **Smart iteration**: Only regenerates if quality is below threshold
 - Publication-ready output in minutes
@@ -49,6 +50,9 @@ python scripts/generate_schematic.py "MAPK signaling pathway from EGFR to gene t
 
 # Custom max iterations (max 2)
 python scripts/generate_schematic.py "Complex circuit diagram with op-amp, resistors, and capacitors" -o figures/circuit.png --iterations 2 --doc-type journal
+
+# Use Atlas Cloud media API with an explicitly selected image model
+python scripts/generate_schematic.py "Mechanistic interpretability workflow diagram" -o figures/workflow.png --provider atlascloud --model "$ATLASCLOUD_IMAGE_MODEL"
 ```
 
 **What happens behind the scenes:**
@@ -74,6 +78,16 @@ export OPENROUTER_API_KEY='your_api_key_here'
 ```
 
 Get an API key at: https://openrouter.ai/keys
+
+To generate with Atlas Cloud instead of OpenRouter, set an Atlas Cloud key and pass a current image model ID:
+
+```bash
+export ATLASCLOUD_API_KEY='your_api_key_here'
+export ATLASCLOUD_IMAGE_MODEL='provider/model-id'
+python scripts/generate_schematic.py "Transformer architecture diagram" -o figures/transformer.png --provider atlascloud
+```
+
+Choose the Atlas Cloud model from the live model list at `https://api.atlascloud.ai/api/v1/models`. Atlas Cloud generation uses the async media API and polls until the image is ready. If `OPENROUTER_API_KEY` is also configured, Gemini review still runs; otherwise review is skipped and recorded in the review log.
 
 ### AI Generation Best Practices
 
@@ -258,6 +272,7 @@ from scripts.generate_schematic_ai import ScientificSchematicGenerator
 # Initialize generator
 generator = ScientificSchematicGenerator(
     api_key="your_openrouter_key",
+    provider="openrouter",
     verbose=True
 )
 
@@ -298,6 +313,9 @@ python scripts/generate_schematic.py "flowchart" -o flow.png -v
 
 # Provide API key via flag
 python scripts/generate_schematic.py "diagram" -o out.png --api-key "sk-or-v1-..."
+
+# Use Atlas Cloud media API
+python scripts/generate_schematic.py "diagram" -o out.png --provider atlascloud --model "$ATLASCLOUD_IMAGE_MODEL"
 
 # Combine options
 python scripts/generate_schematic.py "neural network" -o nn.png --doc-type journal --iterations 2 -v
@@ -614,4 +632,3 @@ python scripts/generate_schematic.py "your diagram description" -o output.png
 ---
 
 Use this skill to create clear, accessible, publication-quality diagrams that effectively communicate complex scientific concepts. The AI-powered workflow with iterative refinement ensures diagrams meet professional standards.
-

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Scientific schematic generation using Nano Banana Pro.
+Scientific schematic generation using OpenRouter or Atlas Cloud.
 
 Generate any scientific diagram by describing it in natural language.
-Nano Banana Pro handles everything automatically with smart iterative refinement.
+The selected image provider handles generation automatically with smart iterative refinement.
 
 Smart iteration: Only regenerates if quality is below threshold for your document type.
 Quality review: Uses Gemini 3 Pro for professional scientific evaluation.
@@ -34,7 +34,7 @@ def main():
         epilog="""
 How it works:
   Simply describe your diagram in natural language
-  Nano Banana Pro generates it automatically with:
+  The selected image provider generates it automatically with:
   - Smart iteration (only regenerates if quality is below threshold)
   - Quality review by Gemini 3 Pro
   - Document-type aware quality thresholds
@@ -67,8 +67,13 @@ Examples:
   # Verbose output
   python generate_schematic.py "Circuit diagram" -o circuit.png -v
 
+  # Use Atlas Cloud media API
+  python generate_schematic.py "System diagram" -o system.png --provider atlascloud --model "$ATLASCLOUD_IMAGE_MODEL"
+
 Environment Variables:
-  OPENROUTER_API_KEY    Required for AI generation
+  OPENROUTER_API_KEY     Required for OpenRouter generation and optional Gemini review
+  ATLASCLOUD_API_KEY     Required for Atlas Cloud generation
+  ATLASCLOUD_IMAGE_MODEL Atlas Cloud image model ID, or pass --model
         """
     )
     
@@ -82,23 +87,45 @@ Environment Variables:
                        help="Document type for quality threshold (default: default)")
     parser.add_argument("--iterations", type=int, default=2,
                        help="Maximum refinement iterations (default: 2, max: 2)")
-    parser.add_argument("--api-key", 
-                       help="OpenRouter API key (or use OPENROUTER_API_KEY env var)")
+    parser.add_argument("--provider", default="openrouter",
+                       choices=["openrouter", "atlascloud"],
+                       help="Image generation provider (default: openrouter)")
+    parser.add_argument("--model",
+                       help="Image model ID. Defaults to Nano Banana Pro on OpenRouter; required for Atlas Cloud unless ATLASCLOUD_IMAGE_MODEL is set.")
+    parser.add_argument("--api-key",
+                       help="Provider API key (or use OPENROUTER_API_KEY / ATLASCLOUD_API_KEY)")
     parser.add_argument("-v", "--verbose", action="store_true",
                        help="Verbose output")
     
     args = parser.parse_args()
     
-    # Check for API key
-    api_key = args.api_key or os.getenv("OPENROUTER_API_KEY")
-    if not api_key:
-        print("Error: OPENROUTER_API_KEY environment variable not set")
-        print("\nFor AI generation, you need an OpenRouter API key.")
-        print("Get one at: https://openrouter.ai/keys")
-        print("\nSet it with:")
-        print("  export OPENROUTER_API_KEY='your_api_key'")
-        print("\nOr use --api-key flag")
-        sys.exit(1)
+    # Check provider-specific configuration before delegating.
+    if args.provider == "openrouter":
+        api_key = args.api_key or os.getenv("OPENROUTER_API_KEY")
+        if not api_key:
+            print("Error: OPENROUTER_API_KEY environment variable not set")
+            print("\nFor OpenRouter generation, you need an OpenRouter API key.")
+            print("Get one at: https://openrouter.ai/keys")
+            print("\nSet it with:")
+            print("  export OPENROUTER_API_KEY='your_api_key'")
+            print("\nOr use --api-key flag")
+            sys.exit(1)
+    else:
+        api_key = args.api_key or os.getenv("ATLASCLOUD_API_KEY") or os.getenv("ATLAS_CLOUD_API_KEY")
+        atlas_model = args.model or os.getenv("ATLASCLOUD_IMAGE_MODEL") or os.getenv("ATLAS_IMAGE_MODEL")
+        if not api_key:
+            print("Error: ATLASCLOUD_API_KEY environment variable not set")
+            print("\nFor Atlas Cloud generation, set:")
+            print("  export ATLASCLOUD_API_KEY='your_api_key'")
+            print("\nOr use --api-key flag")
+            sys.exit(1)
+        if not atlas_model:
+            print("Error: Atlas Cloud requires an image model ID")
+            print("\nChoose a current Image model from:")
+            print("  https://api.atlascloud.ai/api/v1/models")
+            print("\nThen pass it with --model or set:")
+            print("  export ATLASCLOUD_IMAGE_MODEL='provider/model-id'")
+            sys.exit(1)
     
     # Find AI generation script
     script_dir = Path(__file__).parent
@@ -118,6 +145,12 @@ Environment Variables:
     iterations = min(args.iterations, 2)
     if iterations != 2:
         cmd.extend(["--iterations", str(iterations)])
+
+    if args.provider != "openrouter":
+        cmd.extend(["--provider", args.provider])
+
+    if args.model:
+        cmd.extend(["--model", args.model])
     
     if api_key:
         cmd.extend(["--api-key", api_key])
@@ -136,4 +169,3 @@ Environment Variables:
 
 if __name__ == "__main__":
     main()
-
