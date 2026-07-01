@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 """
-AI-powered scientific schematic generation using Nano Banana Pro.
+AI-powered scientific schematic generation using OpenRouter or Atlas Cloud.
 
 This script uses a smart iterative refinement approach:
-1. Generate initial image with Nano Banana Pro
+1. Generate initial image with the selected image provider
 2. AI quality review using Gemini 3 Pro for scientific critique
 3. Only regenerate if quality is below threshold for document type
 4. Repeat until quality meets standards (max iterations)
 
 Requirements:
-    - OPENROUTER_API_KEY environment variable
+    - OPENROUTER_API_KEY environment variable for OpenRouter
+    - ATLASCLOUD_API_KEY environment variable for Atlas Cloud
     - requests library
 
 Usage:
     python generate_schematic_ai.py "Create a flowchart showing CONSORT participant flow" -o flowchart.png
     python generate_schematic_ai.py "Neural network architecture diagram" -o architecture.png --iterations 2
     python generate_schematic_ai.py "Simple block diagram" -o diagram.png --doc-type poster
+    python generate_schematic_ai.py "System diagram" -o diagram.png --provider atlascloud --model "$ATLASCLOUD_IMAGE_MODEL"
 """
 
 import argparse
@@ -143,37 +145,72 @@ IMPORTANT - NO FIGURE NUMBERS:
 - The diagram should contain only the visual content itself
 """
     
-    def __init__(self, api_key: Optional[str] = None, verbose: bool = False):
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        verbose: bool = False,
+        provider: str = "openrouter",
+        model: Optional[str] = None,
+    ):
         """
         Initialize the generator.
         
         Args:
-            api_key: OpenRouter API key (or use OPENROUTER_API_KEY env var)
+            api_key: Provider API key, or use the provider-specific environment variable
             verbose: Print detailed progress information
+            provider: Image generation backend: "openrouter" or "atlascloud"
+            model: Image model ID. Atlas Cloud requires an explicit model or env var.
         """
-        # Priority: 1) explicit api_key param, 2) environment variable, 3) .env file
-        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
-        
-        # If not found in environment, try loading from .env file
-        if not self.api_key:
-            _load_env_file()
-            self.api_key = os.getenv("OPENROUTER_API_KEY")
-        
-        if not self.api_key:
-            raise ValueError(
-                "OPENROUTER_API_KEY not found. Please either:\n"
-                "  1. Set the OPENROUTER_API_KEY environment variable\n"
-                "  2. Add OPENROUTER_API_KEY to your .env file\n"
-                "  3. Pass api_key parameter to the constructor\n"
-                "Get your API key from: https://openrouter.ai/keys"
-            )
-        
         self.verbose = verbose
         self._last_error = None  # Track last error for better reporting
+        self.provider = provider.lower().replace("-", "").replace("_", "")
+        if self.provider not in {"openrouter", "atlascloud"}:
+            raise ValueError("provider must be either 'openrouter' or 'atlascloud'")
+
+        _load_env_file()
+
+        self.openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+        self.atlas_api_key = os.getenv("ATLASCLOUD_API_KEY") or os.getenv("ATLAS_CLOUD_API_KEY")
+
+        if self.provider == "openrouter":
+            self.api_key = api_key or self.openrouter_api_key
+            if not self.api_key:
+                raise ValueError(
+                    "OPENROUTER_API_KEY not found. Please either:\n"
+                    "  1. Set the OPENROUTER_API_KEY environment variable\n"
+                    "  2. Add OPENROUTER_API_KEY to your .env file\n"
+                    "  3. Pass api_key parameter to the constructor\n"
+                    "Get your API key from: https://openrouter.ai/keys"
+                )
+            self.openrouter_api_key = self.api_key
+            # Nano Banana Pro - Google's advanced image generation model
+            # https://openrouter.ai/google/gemini-3-pro-image-preview
+            self.image_model = model or "google/gemini-3-pro-image-preview"
+        else:
+            self.api_key = api_key or self.atlas_api_key
+            if not self.api_key:
+                raise ValueError(
+                    "ATLASCLOUD_API_KEY not found. Please either:\n"
+                    "  1. Set ATLASCLOUD_API_KEY or ATLAS_CLOUD_API_KEY\n"
+                    "  2. Add ATLASCLOUD_API_KEY to your .env file\n"
+                    "  3. Pass api_key parameter to the constructor\n"
+                    "Create a key at: https://www.atlascloud.ai/console/api-keys"
+                )
+            self.atlas_api_key = self.api_key
+            self.image_model = (
+                model
+                or os.getenv("ATLASCLOUD_IMAGE_MODEL")
+                or os.getenv("ATLAS_IMAGE_MODEL")
+            )
+            if not self.image_model:
+                raise ValueError(
+                    "Atlas Cloud requires an image model ID. Pass --model or set "
+                    "ATLASCLOUD_IMAGE_MODEL after selecting a current Image model from "
+                    "https://api.atlascloud.ai/api/v1/models"
+                )
+
         self.base_url = "https://openrouter.ai/api/v1"
-        # Nano Banana Pro - Google's advanced image generation model
-        # https://openrouter.ai/google/gemini-3-pro-image-preview
-        self.image_model = "google/gemini-3-pro-image-preview"
+        self.atlas_media_url = "https://api.atlascloud.ai/api/v1"
         # Gemini 3 Pro for quality review - excellent vision and reasoning
         self.review_model = "google/gemini-3-pro"
         
@@ -195,8 +232,11 @@ IMPORTANT - NO FIGURE NUMBERS:
         Returns:
             API response as dictionary
         """
+        if not self.openrouter_api_key:
+            raise RuntimeError("OPENROUTER_API_KEY is required for OpenRouter requests")
+
         headers = {
-            "Authorization": f"Bearer {self.api_key}",
+            "Authorization": f"Bearer {self.openrouter_api_key}",
             "Content-Type": "application/json",
             "HTTP-Referer": "https://github.com/scientific-writer",
             "X-Title": "Scientific Schematic Generator"
@@ -237,6 +277,111 @@ IMPORTANT - NO FIGURE NUMBERS:
             raise RuntimeError("API request timed out after 120 seconds")
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"API request failed: {str(e)}")
+
+    def _atlas_headers(self) -> Dict[str, str]:
+        """Return headers for Atlas Cloud media generation requests."""
+        return {
+            "Authorization": f"Bearer {self.atlas_api_key}",
+            "Content-Type": "application/json",
+        }
+
+    def _atlas_post_image(self, prompt: str) -> str:
+        """Submit an Atlas Cloud image generation job and return its prediction ID."""
+        payload = {
+            "model": self.image_model,
+            "prompt": prompt,
+        }
+        self._log(f"Submitting Atlas Cloud image job with model {self.image_model}...")
+        response = requests.post(
+            f"{self.atlas_media_url}/model/generateImage",
+            headers=self._atlas_headers(),
+            json=payload,
+            timeout=60,
+        )
+
+        try:
+            response_json = response.json()
+        except json.JSONDecodeError:
+            response_json = {"raw_text": response.text[:500]}
+
+        if response.status_code != 200:
+            raise RuntimeError(f"Atlas Cloud request failed (HTTP {response.status_code}): {response_json}")
+
+        data = response_json.get("data", response_json)
+        prediction_id = data.get("id") or data.get("prediction_id")
+        if not prediction_id:
+            raise RuntimeError(f"Atlas Cloud response did not include a prediction ID: {response_json}")
+        return prediction_id
+
+    def _atlas_poll_prediction(self, prediction_id: str, timeout_seconds: int = 300) -> Dict[str, Any]:
+        """Poll an Atlas Cloud prediction until it completes or fails."""
+        deadline = time.time() + timeout_seconds
+        while time.time() < deadline:
+            response = requests.get(
+                f"{self.atlas_media_url}/model/prediction/{prediction_id}",
+                headers=self._atlas_headers(),
+                timeout=30,
+            )
+            try:
+                response_json = response.json()
+            except json.JSONDecodeError:
+                response_json = {"raw_text": response.text[:500]}
+
+            if response.status_code != 200:
+                raise RuntimeError(f"Atlas Cloud polling failed (HTTP {response.status_code}): {response_json}")
+
+            data = response_json.get("data", response_json)
+            status = str(data.get("status", "")).lower()
+            self._log(f"Atlas Cloud prediction {prediction_id}: {status or 'unknown'}")
+
+            if status in {"completed", "succeeded", "success"}:
+                return data
+            if status in {"failed", "error", "canceled", "cancelled"}:
+                raise RuntimeError(f"Atlas Cloud generation failed: {data}")
+
+            time.sleep(3)
+
+        raise TimeoutError(f"Timed out waiting for Atlas Cloud prediction {prediction_id}")
+
+    def _atlas_output_to_bytes(self, output: Any) -> Optional[bytes]:
+        """Convert an Atlas Cloud output URL or data URL into image bytes."""
+        if isinstance(output, dict):
+            output = output.get("url") or output.get("image_url") or output.get("output")
+        if not isinstance(output, str) or not output:
+            return None
+
+        if output.startswith("data:image") and "," in output:
+            base64_str = output.split(",", 1)[1].replace("\n", "").replace("\r", "").replace(" ", "")
+            return base64.b64decode(base64_str)
+
+        if output.startswith("http://") or output.startswith("https://"):
+            response = requests.get(output, timeout=120)
+            response.raise_for_status()
+            return response.content
+
+        return None
+
+    def _generate_atlas_image(self, prompt: str) -> Optional[bytes]:
+        """Generate an image through Atlas Cloud's asynchronous media API."""
+        prediction_id = self._atlas_post_image(prompt)
+        data = self._atlas_poll_prediction(prediction_id)
+        outputs = (
+            data.get("outputs")
+            or data.get("output")
+            or data.get("images")
+            or data.get("urls")
+            or []
+        )
+        if isinstance(outputs, (str, dict)):
+            outputs = [outputs]
+
+        for output in outputs:
+            image_data = self._atlas_output_to_bytes(output)
+            if image_data:
+                self._log(f"✓ Downloaded Atlas Cloud image ({len(image_data)} bytes)")
+                return image_data
+
+        raise RuntimeError(f"Atlas Cloud completed but no downloadable image output was found: {data}")
     
     def _extract_image_from_response(self, response: Dict[str, Any]) -> Optional[bytes]:
         """
@@ -347,7 +492,7 @@ IMPORTANT - NO FIGURE NUMBERS:
     
     def generate_image(self, prompt: str) -> Optional[bytes]:
         """
-        Generate an image using Nano Banana Pro.
+        Generate an image using the configured provider.
         
         Args:
             prompt: Description of the diagram to generate
@@ -356,6 +501,14 @@ IMPORTANT - NO FIGURE NUMBERS:
             Image bytes or None if generation failed
         """
         self._last_error = None  # Reset error
+
+        if self.provider == "atlascloud":
+            try:
+                return self._generate_atlas_image(prompt)
+            except Exception as e:
+                self._last_error = str(e)
+                self._log(f"✗ Atlas Cloud generation failed: {self._last_error}")
+                return None
         
         messages = [
             {
@@ -442,6 +595,16 @@ IMPORTANT - NO FIGURE NUMBERS:
         Returns:
             Tuple of (critique text, quality score 0-10, needs_improvement bool)
         """
+        if not self.openrouter_api_key:
+            self._log("Review skipped: OPENROUTER_API_KEY is not configured")
+            threshold = self.QUALITY_THRESHOLDS.get(doc_type.lower(),
+                                                     self.QUALITY_THRESHOLDS["default"])
+            return (
+                "Image generated successfully (review skipped; set OPENROUTER_API_KEY to enable Gemini 3 Pro review)",
+                threshold,
+                False,
+            )
+
         # Use Gemini 3 Pro for review - excellent vision and analysis
         image_data_url = self._image_to_base64(image_path)
         
@@ -527,7 +690,7 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
             # Extract text response
             choices = response.get("choices", [])
             if not choices:
-                return "Image generated successfully", 8.0
+                return "Image generated successfully", 8.0, False
             
             message = choices[0].get("message", {})
             content = message.get("content", "")
@@ -653,6 +816,8 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
         print(f"Generating Scientific Schematic")
         print(f"{'='*60}")
         print(f"Description: {user_prompt}")
+        print(f"Provider: {self.provider}")
+        print(f"Image Model: {self.image_model}")
         print(f"Document Type: {doc_type}")
         print(f"Quality Threshold: {threshold}/10")
         print(f"Max Iterations: {iterations}")
@@ -769,6 +934,9 @@ Examples:
   # Verbose output
   python generate_schematic_ai.py "Circuit diagram" -o circuit.png -v
 
+  # Generate through Atlas Cloud media API
+  python generate_schematic_ai.py "System architecture" -o system.png --provider atlascloud --model "$ATLASCLOUD_IMAGE_MODEL"
+
 Document Types (quality thresholds):
   journal      8.5/10  - Nature, Science, peer-reviewed journals
   conference   8.0/10  - Conference papers
@@ -784,7 +952,9 @@ Note: Multiple iterations only occur if quality is BELOW the threshold.
       If the first generation meets the threshold, no extra API calls are made.
 
 Environment:
-  OPENROUTER_API_KEY    OpenRouter API key (required)
+  OPENROUTER_API_KEY    Required for OpenRouter generation and optional Gemini review
+  ATLASCLOUD_API_KEY    Required for Atlas Cloud generation
+  ATLASCLOUD_IMAGE_MODEL Atlas Cloud image model ID, or pass --model
         """
     )
     
@@ -797,20 +967,42 @@ Environment:
                        choices=["journal", "conference", "poster", "presentation", 
                                "report", "grant", "thesis", "preprint", "default"],
                        help="Document type for quality threshold (default: default)")
-    parser.add_argument("--api-key", help="OpenRouter API key (or set OPENROUTER_API_KEY)")
+    parser.add_argument("--provider", default="openrouter",
+                       choices=["openrouter", "atlascloud"],
+                       help="Image generation provider (default: openrouter)")
+    parser.add_argument("--model",
+                       help="Image model ID. Defaults to Nano Banana Pro on OpenRouter; required for Atlas Cloud unless ATLASCLOUD_IMAGE_MODEL is set.")
+    parser.add_argument("--api-key", help="Provider API key (or set OPENROUTER_API_KEY / ATLASCLOUD_API_KEY)")
     parser.add_argument("-v", "--verbose", action="store_true",
                        help="Verbose output")
     
     args = parser.parse_args()
     
-    # Check for API key
-    api_key = args.api_key or os.getenv("OPENROUTER_API_KEY")
-    if not api_key:
-        print("Error: OPENROUTER_API_KEY environment variable not set")
-        print("\nSet it with:")
-        print("  export OPENROUTER_API_KEY='your_api_key'")
-        print("\nOr provide via --api-key flag")
-        sys.exit(1)
+    # Check provider-specific configuration before starting the run.
+    if args.provider == "openrouter":
+        api_key = args.api_key or os.getenv("OPENROUTER_API_KEY")
+        if not api_key:
+            print("Error: OPENROUTER_API_KEY environment variable not set")
+            print("\nSet it with:")
+            print("  export OPENROUTER_API_KEY='your_api_key'")
+            print("\nOr provide via --api-key flag")
+            sys.exit(1)
+    else:
+        api_key = args.api_key or os.getenv("ATLASCLOUD_API_KEY") or os.getenv("ATLAS_CLOUD_API_KEY")
+        atlas_model = args.model or os.getenv("ATLASCLOUD_IMAGE_MODEL") or os.getenv("ATLAS_IMAGE_MODEL")
+        if not api_key:
+            print("Error: ATLASCLOUD_API_KEY environment variable not set")
+            print("\nSet it with:")
+            print("  export ATLASCLOUD_API_KEY='your_api_key'")
+            print("\nOr provide via --api-key flag")
+            sys.exit(1)
+        if not atlas_model:
+            print("Error: Atlas Cloud requires an image model ID")
+            print("\nChoose a current Image model from:")
+            print("  https://api.atlascloud.ai/api/v1/models")
+            print("\nThen pass it with --model or set:")
+            print("  export ATLASCLOUD_IMAGE_MODEL='provider/model-id'")
+            sys.exit(1)
     
     # Validate iterations - enforce max of 2
     if args.iterations < 1 or args.iterations > 2:
@@ -818,7 +1010,12 @@ Environment:
         sys.exit(1)
     
     try:
-        generator = ScientificSchematicGenerator(api_key=api_key, verbose=args.verbose)
+        generator = ScientificSchematicGenerator(
+            api_key=api_key,
+            verbose=args.verbose,
+            provider=args.provider,
+            model=args.model,
+        )
         results = generator.generate_iterative(
             user_prompt=args.prompt,
             output_path=args.output,
@@ -841,4 +1038,3 @@ Environment:
 
 if __name__ == "__main__":
     main()
-

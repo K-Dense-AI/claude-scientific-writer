@@ -13,13 +13,13 @@
 
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
-Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup via Perplexity Sonar Pro Search, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro. You have the option of using it as a claude code plugin, python package or a native CLI
+Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup via Perplexity Sonar Pro Search, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro or the optional Atlas Cloud backend. You have the option of using it as a claude code plugin, python package or a native CLI
 
 ## Quick Start
 
 ### Prerequisites
 - Python 3.10-3.12
-- ANTHROPIC_API_KEY (required), OPENROUTER_API_KEY (optional for research lookup)
+- ANTHROPIC_API_KEY (required), OPENROUTER_API_KEY (optional for research lookup and diagram review), ATLASCLOUD_API_KEY (optional for Atlas Cloud diagram generation)
 
 ### Installation Options
 
@@ -43,6 +43,7 @@ uv sync
 # .env file (recommended)
 echo "ANTHROPIC_API_KEY=your_key" > .env
 echo "OPENROUTER_API_KEY=your_openrouter_key" >> .env
+echo "ATLASCLOUD_API_KEY=your_atlascloud_key" >> .env  # optional, for Atlas Cloud diagrams
 # or export in your shell
 export ANTHROPIC_API_KEY='your_key'
 ```
@@ -165,7 +166,7 @@ asyncio.run(main())
 ### Available Skills
 
 When installed as a plugin, you get instant access to:
-- `scientific-schematics` - AI diagram generation with Nano Banana Pro (CONSORT, neural networks, pathways)
+- `scientific-schematics` - AI diagram generation with Nano Banana Pro or Atlas Cloud (CONSORT, neural networks, pathways)
 - `research-lookup` - Real-time literature search
 - `peer-review` - Systematic manuscript evaluation
 - `citation-management` - BibTeX and reference handling
@@ -187,11 +188,11 @@ See the [Plugin Testing Guide](#plugin-testing-local-development) below for loca
 - **Research posters** using LaTeX (beamerposter, tikzposter, baposter)
 - **Grant proposals** (NSF, NIH, DOE, DARPA) with agency-specific formatting
 - **Literature reviews** with systematic citation management
-- **Scientific schematics** powered by Nano Banana Pro (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
+- **Scientific schematics** powered by Nano Banana Pro or Atlas Cloud (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
 
 ### 🤖 AI-Powered Capabilities
 - **Real-time research lookup** using Perplexity Sonar Pro Search (via OpenRouter)
-- **AI-powered diagram generation** with Nano Banana Pro - create any scientific diagram from natural language descriptions
+- **AI-powered diagram generation** with Nano Banana Pro or Atlas Cloud - create any scientific diagram from natural language descriptions
 - **Intelligent paper detection** - automatically identifies references to existing papers
 - **Peer review feedback** with quantitative ScholarEval framework (8-dimension scoring)
 - **Iterative editing** with context-aware revision suggestions

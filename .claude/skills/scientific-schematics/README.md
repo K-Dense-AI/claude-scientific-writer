@@ -1,8 +1,8 @@
-# Scientific Schematics - Nano Banana Pro
+# Scientific Schematics - Nano Banana Pro or Atlas Cloud
 
 **Generate any scientific diagram by describing it in natural language.**
 
-Nano Banana Pro creates publication-quality diagrams automatically - no coding, no templates, no manual drawing required.
+Nano Banana Pro creates publication-quality diagrams automatically by default. Atlas Cloud can be selected as an optional image-generation backend when you want to use its async media API.
 
 ## Quick Start
 
@@ -20,6 +20,11 @@ python scripts/generate_schematic.py "Transformer encoder-decoder architecture" 
 
 # Biological pathway
 python scripts/generate_schematic.py "MAPK signaling pathway" -o figures/pathway.png
+
+# Atlas Cloud backend with an explicitly selected image model
+export ATLASCLOUD_API_KEY='your_api_key_here'
+export ATLASCLOUD_IMAGE_MODEL='provider/model-id'
+python scripts/generate_schematic.py "Transformer encoder-decoder architecture" -o figures/transformer.png --provider atlascloud
 ```
 
 ### What You Get
@@ -68,6 +73,21 @@ echo "OPENROUTER_API_KEY=sk-or-v1-..." >> .env
 # Install Python dependencies (if not already installed)
 pip install requests
 ```
+
+### Optional Atlas Cloud backend
+
+```bash
+# Choose a current Image model from https://api.atlascloud.ai/api/v1/models
+export ATLASCLOUD_API_KEY='your_api_key_here'
+export ATLASCLOUD_IMAGE_MODEL='provider/model-id'
+
+python scripts/generate_schematic.py \
+  "Clean scientific workflow diagram for multimodal model evaluation" \
+  -o figures/workflow.png \
+  --provider atlascloud
+```
+
+Atlas Cloud generation submits an async media job and polls until the output is ready. If `OPENROUTER_API_KEY` is also configured, the Gemini review step still runs; otherwise the generated image is accepted and the review log records that review was skipped.
 
 ## Usage Examples
 
@@ -129,7 +149,9 @@ python scripts/generate_schematic.py [OPTIONS] "description" -o output.png
 
 Options:
   --iterations N          Number of AI refinement iterations (default: 2, max: 2)
-  --api-key KEY          OpenRouter API key (or use env var)
+  --provider PROVIDER     Image provider: openrouter or atlascloud
+  --model MODEL           Image model ID; required for Atlas Cloud unless ATLASCLOUD_IMAGE_MODEL is set
+  --api-key KEY          Provider API key (or use OPENROUTER_API_KEY / ATLASCLOUD_API_KEY)
   -v, --verbose          Verbose output
   -h, --help             Show help message
 ```
@@ -325,4 +347,3 @@ For issues or questions:
 ## License
 
 Part of the scientific-writer package. See main repository for license information.
-
