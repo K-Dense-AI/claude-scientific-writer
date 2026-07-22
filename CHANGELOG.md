@@ -4,6 +4,10 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ## [Unreleased]
 
+---
+
+## [2.17.0] - 2026-07-22
+
 ### Fixed
 
 - **Programmatic API contracts** — explicit API keys now reach the SDK, input files are staged before generation, custom output roots resolve relative to `cwd`, token usage reads the SDK mapping correctly, each invocation owns a race-free output directory, and Stop-hook continuation is bounded and functional.
