@@ -8,19 +8,23 @@ name: Release
 on:
   push:
     tags: ["v*"]
-  workflow_dispatch:
 
 jobs:
-  verify:
-    name: Verify release
+  publish:
+    name: Verify and publish to PyPI
     runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9
         with:
           python-version: "3.12"
+      - name: Sync locked environment
+        run: uv sync --frozen --group dev
       - name: Tag matches package version
-        if: github.ref_type == 'tag'
         run: |
           python - <<'EOF'
           import os, re, sys
@@ -31,28 +35,23 @@ jobs:
               sys.exit(f"tag v{tag} does not match pyproject version {version}")
           print(f"tag matches version {version}")
           EOF
-      - name: Lint
-        run: uv run ruff check .
-      - name: Tests
-        run: uv run pytest tests/ -q
+      - name: Ruff
+        run: uv run --frozen ruff check .
+      - name: Mypy
+        run: uv run --frozen mypy
+      - name: Pytest
+        run: uv run --frozen pytest tests/ -q
+      - name: Codespell
+        run: >-
+          uv run --frozen codespell README.md CHANGELOG.md CONTRIBUTING.md
+          example_api_usage.py CLAUDE.md pyproject.toml
+          .env.example scientific_writer scripts tests docs commands templates .github
       - name: Skill mirrors in sync
-        run: python scripts/sync_skills.py --check
+        run: uv run --frozen python scripts/sync_skills.py --check
       - name: Repository consistency
-        run: python scripts/check_consistency.py
-
-  publish:
-    name: Publish to PyPI
-    needs: verify
-    runs-on: ubuntu-latest
-    environment: pypi
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
-        with:
-          python-version: "3.12"
+        run: uv run --frozen python scripts/check_consistency.py
+      - name: Package verification
+        run: uv run --frozen python scripts/verify_package.py
       - name: Build
         run: uv build
       - name: Wheel ships the .claude payload

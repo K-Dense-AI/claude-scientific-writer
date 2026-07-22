@@ -1,15 +1,17 @@
 """Core utilities for scientific writer."""
 
+from collections import defaultdict
+from collections.abc import Mapping
+from datetime import datetime
 import logging
 import os
+import re
 import shutil
 import zipfile
 from pathlib import Path
-from typing import Optional, List, Dict, Any
-from dotenv import load_dotenv
+from typing import Any
 
-# Load environment variables from .env file if it exists
-load_dotenv()
+from claude_agent_sdk.types import HookContext, StopHookInput
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +22,61 @@ EFFORT_LEVEL_MODELS = {
     "medium": "claude-opus-4-8",
     "high": "claude-opus-4-8",
 }
+
+
+def create_completion_check_stop_hook(
+    auto_continue: bool = True,
+    max_continuations: int = 1,
+):
+    """Create a bounded Stop hook that requests one final completion check."""
+    continuation_count = 0
+
+    async def completion_check_stop_hook(
+        hook_input: StopHookInput,
+        tool_use_id: str | None,
+        context: HookContext,
+    ) -> dict[str, Any]:
+        del tool_use_id, context
+        nonlocal continuation_count
+
+        if (
+            not auto_continue
+            or max_continuations <= 0
+            or continuation_count >= max_continuations
+            or hook_input.get("stop_hook_active", False)
+        ):
+            return {}
+
+        continuation_count += 1
+        return {
+            "decision": "block",
+            "reason": (
+                "Before stopping, verify that every requested deliverable and validation "
+                "step is complete. Finish any missing work, then provide the final result. "
+                "If everything is already complete, summarize it and stop."
+            ),
+        }
+
+    return completion_check_stop_hook
+
+
+def resolve_auto_continue(requested: bool, env: Mapping[str, str] | None = None) -> bool:
+    """Resolve auto-continue, with an explicit environment override when present."""
+    environment = os.environ if env is None else env
+    value = environment.get("SCIENTIFIC_WRITER_AUTO_CONTINUE")
+    if value is None:
+        return requested
+    normalized = value.strip().lower()
+    if normalized in {"true", "1", "yes", "on"}:
+        return True
+    if normalized in {"false", "0", "no", "off"}:
+        return False
+    logger.warning(
+        "Ignoring invalid SCIENTIFIC_WRITER_AUTO_CONTINUE value %r; using %s",
+        value,
+        requested,
+    )
+    return requested
 
 
 def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
@@ -81,7 +138,10 @@ def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
         )
 
 
-def get_api_key(api_key: Optional[str] = None) -> str:
+def get_api_key(
+    api_key: str | None = None,
+    env: Mapping[str, str] | None = None,
+) -> str:
     """
     Get the Anthropic API key.
 
@@ -97,7 +157,8 @@ def get_api_key(api_key: Optional[str] = None) -> str:
     if api_key:
         return api_key
 
-    env_key = os.getenv("ANTHROPIC_API_KEY")
+    environment = os.environ if env is None else env
+    env_key = environment.get("ANTHROPIC_API_KEY")
     if not env_key:
         raise ValueError(
             "ANTHROPIC_API_KEY not found. Either pass api_key parameter or set "
@@ -119,17 +180,16 @@ def load_system_instructions(work_dir: Path) -> str:
     instructions_file = work_dir / ".claude" / "WRITER.md"
 
     if instructions_file.exists():
-        with open(instructions_file, 'r', encoding='utf-8') as f:
-            return f.read()
-    else:
-        # Fallback if WRITER.md doesn't exist
-        return (
-            "You are a scientific writing assistant. Follow best practices for "
-            "scientific communication and always present a plan before execution."
-        )
+        return instructions_file.read_text(encoding="utf-8")
+
+    logger.warning("System instructions not found at %s; using minimal fallback", instructions_file)
+    return (
+        "You are a scientific writing assistant. Follow best practices for "
+        "scientific communication and always present a plan before execution."
+    )
 
 
-def ensure_output_folder(cwd: Path, custom_dir: Optional[str] = None) -> Path:
+def ensure_output_folder(cwd: Path, custom_dir: str | None = None) -> Path:
     """
     Ensure the writing_outputs folder exists.
 
@@ -141,7 +201,12 @@ def ensure_output_folder(cwd: Path, custom_dir: Optional[str] = None) -> Path:
         Path to the output folder.
     """
     if custom_dir:
-        output_folder = Path(custom_dir).resolve()
+        configured = Path(custom_dir).expanduser()
+        output_folder = (
+            configured.resolve()
+            if configured.is_absolute()
+            else (cwd / configured).resolve()
+        )
     else:
         output_folder = cwd / "writing_outputs"
 
@@ -149,27 +214,53 @@ def ensure_output_folder(cwd: Path, custom_dir: Optional[str] = None) -> Path:
     return output_folder
 
 
-def get_image_extensions() -> set:
+def create_output_project(
+    output_folder: Path,
+    query: str,
+    now: datetime | None = None,
+) -> Path:
+    """Atomically create one standard output project for an invocation."""
+    local_now = (now or datetime.now().astimezone()).astimezone()
+    timestamp = local_now.strftime("%Y%m%d_%H%M%S")
+    words = re.findall(r"[a-z0-9]+", query.lower())
+    slug = "_".join(words[:8])[:64].strip("_") or "document"
+    base_name = f"{timestamp}_{slug}"
+
+    for index in range(1, 10_000):
+        suffix = "" if index == 1 else f"_{index}"
+        candidate = output_folder / f"{base_name}{suffix}"
+        try:
+            candidate.mkdir(parents=False, exist_ok=False)
+        except FileExistsError:
+            continue
+        for directory in ("drafts", "final", "references", "figures", "data", "sources"):
+            (candidate / directory).mkdir()
+        return candidate
+
+    raise FileExistsError(f"Could not create a unique project in {output_folder}")
+
+
+def get_image_extensions() -> set[str]:
     """Return a set of common image file extensions."""
     return {'.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.tif', '.svg', '.webp', '.ico'}
 
 
-def get_manuscript_extensions() -> set:
+def get_manuscript_extensions() -> set[str]:
     """Return a set of manuscript file extensions that should go to drafts/ folder."""
     return {'.tex'}
 
 
-def get_source_extensions() -> set:
+def get_source_extensions() -> set[str]:
     """Return a set of source/context file extensions that should go to sources/ folder."""
     return {'.md', '.docx', '.pdf'}
 
 
-def get_data_extensions() -> set:
+def get_data_extensions() -> set[str]:
     """Return a set of data file extensions that should go to data/ folder."""
     return {'.csv', '.json', '.txt', '.xlsx', '.xls', '.tsv', '.xml', '.yaml', '.yml', '.sql'}
 
 
-def get_data_files(cwd: Path, data_files: Optional[List[str]] = None) -> List[Path]:
+def get_data_files(cwd: Path, data_files: list[str] | None = None) -> list[Path]:
     """
     Get data files either from provided list or from data folder.
 
@@ -181,21 +272,46 @@ def get_data_files(cwd: Path, data_files: Optional[List[str]] = None) -> List[Pa
         List of Path objects for data files.
     """
     if data_files:
-        return [Path(f).resolve() for f in data_files]
+        resolved: list[Path] = []
+        for value in data_files:
+            path = Path(value).expanduser()
+            if not path.is_absolute():
+                path = cwd / path
+            path = path.resolve()
+            if not path.is_file():
+                raise FileNotFoundError(f"Input file not found: {path}")
+            resolved.append(path)
+        return resolved
 
     data_folder = cwd / "data"
     if not data_folder.exists():
         return []
 
-    files = []
-    for file_path in data_folder.iterdir():
+    files: list[Path] = []
+    for file_path in sorted(data_folder.iterdir()):
         if file_path.is_file():
             files.append(file_path)
 
     return files
 
 
-def extract_images_from_docx(docx_path: Path, figures_output: Path) -> List[Dict[str, Any]]:
+def _unique_destination(destination: Path) -> Path:
+    """Return a collision-free destination without overwriting existing data."""
+    if not destination.exists():
+        return destination
+    for index in range(2, 10_000):
+        candidate = destination.with_name(
+            f"{destination.stem}_{index}{destination.suffix}"
+        )
+        if not candidate.exists():
+            return candidate
+    raise FileExistsError(f"Could not find a free destination for {destination}")
+
+
+def extract_images_from_docx(
+    docx_path: Path,
+    figures_output: Path,
+) -> list[dict[str, Any]]:
     """
     Extract all images from a .docx file and copy them to the figures folder.
 
@@ -210,7 +326,7 @@ def extract_images_from_docx(docx_path: Path, figures_output: Path) -> List[Dict
         List of dictionaries containing information about extracted images.
         Each dict has 'name', 'path', and 'source_docx' keys.
     """
-    extracted_images = []
+    extracted_images: list[dict[str, Any]] = []
     image_extensions = get_image_extensions()
 
     try:
@@ -229,7 +345,7 @@ def extract_images_from_docx(docx_path: Path, figures_output: Path) -> List[Dict
                 # Only extract if it's an image file
                 if file_ext in image_extensions:
                     # Extract to figures folder
-                    output_path = figures_output / file_name
+                    output_path = _unique_destination(figures_output / file_name)
 
                     # Read the file from the zip and write it to the output
                     with zip_ref.open(media_file) as source:
@@ -237,25 +353,25 @@ def extract_images_from_docx(docx_path: Path, figures_output: Path) -> List[Dict
                             target.write(source.read())
 
                     extracted_images.append({
-                        'name': file_name,
+                        'name': output_path.name,
                         'path': str(output_path),
                         'source_docx': docx_path.name
                     })
 
     except zipfile.BadZipFile:
-        print(f"Warning: {docx_path.name} is not a valid .docx file (ZIP archive)")
-    except Exception as e:
-        print(f"Warning: Could not extract images from {docx_path.name}: {str(e)}")
+        logger.warning("%s is not a valid .docx file (ZIP archive)", docx_path.name)
+    except Exception:
+        logger.warning("Could not extract images from %s", docx_path.name, exc_info=True)
 
     return extracted_images
 
 
 def process_data_files(
     cwd: Path,
-    data_files: List[Path],
+    data_files: list[Path],
     paper_output_path: str,
-    delete_originals: bool = True
-) -> Optional[Dict[str, Any]]:
+    delete_originals: bool = False,
+) -> dict[str, Any] | None:
     """
     Process data files by copying them to the paper output folder.
     Manuscript files (.tex) go to drafts/,
@@ -290,18 +406,29 @@ def process_data_files(
 
     image_extensions = get_image_extensions()
     manuscript_extensions = get_manuscript_extensions()
-    get_source_extensions()
+    source_extensions = get_source_extensions()
     data_extensions = get_data_extensions()
 
-    processed_info: Dict[str, Any] = {
+    processed_info: dict[str, Any] = {
         'data_files': [],
         'image_files': [],
         'manuscript_files': [],
         'source_files': [],
-        'all_files': []
+        'all_files': [],
+        'errors': [],
     }
 
-    for file_path in data_files:
+    for original_path in data_files:
+        file_path = original_path.expanduser()
+        if not file_path.is_absolute():
+            file_path = cwd / file_path
+        file_path = file_path.resolve()
+        if not file_path.is_file():
+            message = f"Input file not found: {file_path}"
+            logger.warning(message)
+            processed_info["errors"].append(message)
+            continue
+
         file_ext = file_path.suffix.lower()
         file_name = file_path.name
 
@@ -311,48 +438,64 @@ def process_data_files(
 
         if file_ext in manuscript_extensions:
             # CRITICAL: Only .tex files go to drafts/ folder for editing workflow
-            destination = drafts_output / file_name
+            destination = _unique_destination(drafts_output / file_name)
             file_type = 'manuscript'
-            processed_info['manuscript_files'].append({
-                'name': file_name,
+            category = 'manuscript_files'
+            file_record = {
+                'name': destination.name,
                 'path': str(destination),
                 'original': str(file_path),
                 'extension': file_ext
-            })
+            }
         elif file_ext in image_extensions:
-            destination = figures_output / file_name
+            destination = _unique_destination(figures_output / file_name)
             file_type = 'image'
-            processed_info['image_files'].append({
-                'name': file_name,
+            category = 'image_files'
+            file_record = {
+                'name': destination.name,
                 'path': str(destination),
                 'original': str(file_path)
-            })
+            }
         elif file_ext in data_extensions:
-            destination = data_output / file_name
+            destination = _unique_destination(data_output / file_name)
             file_type = 'data'
-            processed_info['data_files'].append({
-                'name': file_name,
+            category = 'data_files'
+            file_record = {
+                'name': destination.name,
                 'path': str(destination),
                 'original': str(file_path)
-            })
-        else:
-            # Source files (.md, .docx, .pdf) and everything else go to sources/
-            destination = sources_output / file_name
+            }
+        elif file_ext in source_extensions:
+            destination = _unique_destination(sources_output / file_name)
             file_type = 'source'
-            processed_info['source_files'].append({
-                'name': file_name,
+            category = 'source_files'
+            file_record = {
+                'name': destination.name,
+                'path': str(destination),
+                'original': str(file_path),
+                'extension': file_ext,
+            }
+        else:
+            # Unknown files are preserved as source/context rather than discarded.
+            destination = _unique_destination(sources_output / file_name)
+            file_type = 'source'
+            category = 'source_files'
+            file_record = {
+                'name': destination.name,
                 'path': str(destination),
                 'original': str(file_path),
                 'extension': file_ext
-            })
+            }
 
         # Copy the file
         try:
             shutil.copy2(file_path, destination)
+            processed_info[category].append(file_record)
             processed_info['all_files'].append({
-                'name': file_name,
+                'name': destination.name,
                 'type': file_type,
-                'destination': str(destination)
+                'destination': str(destination),
+                'original': str(file_path),
             })
 
             # If it's a .docx file, extract images to figures folder
@@ -366,13 +509,15 @@ def process_data_files(
             if delete_originals:
                 file_path.unlink()
 
-        except Exception as e:
-            print(f"Warning: Could not process {file_name}: {str(e)}")
+        except Exception as exc:
+            message = f"Could not process {file_name}: {exc}"
+            logger.warning(message, exc_info=True)
+            processed_info["errors"].append(message)
 
     return processed_info
 
 
-def create_data_context_message(processed_info: Optional[Dict[str, Any]]) -> str:
+def create_data_context_message(processed_info: dict[str, Any] | None) -> str:
     """
     Create a context message about available data files.
 
@@ -425,7 +570,6 @@ def create_data_context_message(processed_info: Optional[Dict[str, Any]]) -> str
 
         if extracted_images:
             # Group extracted images by source docx
-            from collections import defaultdict
             images_by_docx = defaultdict(list)
             for img in extracted_images:
                 images_by_docx[img['source_docx']].append(img)

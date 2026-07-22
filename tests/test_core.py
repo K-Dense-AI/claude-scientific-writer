@@ -1,8 +1,19 @@
 """Tests for scientific_writer.core."""
 
+import asyncio
 from pathlib import Path
 
-from scientific_writer.core import setup_claude_skills
+import pytest
+
+from scientific_writer.core import (
+    create_completion_check_stop_hook,
+    create_output_project,
+    ensure_output_folder,
+    get_data_files,
+    process_data_files,
+    resolve_auto_continue,
+    setup_claude_skills,
+)
 
 
 def _make_bundled_claude(package_dir: Path, writer_text: str, skill_text: str) -> None:
@@ -83,3 +94,88 @@ def test_missing_bundle_logs_warning_instead_of_silence(tmp_path, caplog):
         setup_claude_skills(package_dir, work_dir)
 
     assert any("claude" in record.message.lower() for record in caplog.records)
+
+
+def test_stop_hook_blocks_once_then_allows_stop():
+    hook = create_completion_check_stop_hook(auto_continue=True, max_continuations=1)
+
+    first = asyncio.run(
+        hook({"hook_event_name": "Stop", "stop_hook_active": False}, None, {})
+    )
+    second = asyncio.run(
+        hook({"hook_event_name": "Stop", "stop_hook_active": False}, None, {})
+    )
+
+    assert first["decision"] == "block"
+    assert "verify" in first["reason"]
+    assert second == {}
+
+
+def test_stop_hook_disabled_allows_stop():
+    hook = create_completion_check_stop_hook(auto_continue=False)
+    assert (
+        asyncio.run(
+            hook({"hook_event_name": "Stop", "stop_hook_active": False}, None, {})
+        )
+        == {}
+    )
+
+
+def test_resolve_auto_continue_environment_override():
+    assert resolve_auto_continue(True, {"SCIENTIFIC_WRITER_AUTO_CONTINUE": "false"}) is False
+    assert resolve_auto_continue(False, {"SCIENTIFIC_WRITER_AUTO_CONTINUE": "yes"}) is True
+    assert resolve_auto_continue(False, {}) is False
+
+
+def test_relative_output_folder_is_anchored_to_cwd(tmp_path):
+    assert ensure_output_folder(tmp_path, "custom") == (tmp_path / "custom").resolve()
+
+
+def test_create_output_project_is_collision_safe(tmp_path):
+    first = create_output_project(tmp_path, "Create a concise report")
+    second = create_output_project(tmp_path, "Create a concise report")
+
+    assert first != second
+    for project in (first, second):
+        assert {path.name for path in project.iterdir()} == {
+            "data",
+            "drafts",
+            "figures",
+            "final",
+            "references",
+            "sources",
+        }
+
+
+def test_explicit_data_files_resolve_against_cwd(tmp_path):
+    source = tmp_path / "results.csv"
+    source.write_text("value\n1\n")
+
+    assert get_data_files(tmp_path, ["results.csv"]) == [source.resolve()]
+    with pytest.raises(FileNotFoundError):
+        get_data_files(tmp_path, ["missing.csv"])
+
+
+def test_process_data_files_preserves_inputs_and_avoids_collisions(tmp_path):
+    source = tmp_path / "results.csv"
+    source.write_text("value\n1\n")
+    project = tmp_path / "project"
+
+    first = process_data_files(tmp_path, [source], str(project))
+    second = process_data_files(tmp_path, [source], str(project))
+
+    assert source.exists()
+    assert first is not None and first["errors"] == []
+    assert second is not None and second["errors"] == []
+    assert (project / "data" / "results.csv").read_text() == source.read_text()
+    assert (project / "data" / "results_2.csv").read_text() == source.read_text()
+
+
+def test_process_data_files_only_reports_successful_copies(tmp_path):
+    missing = tmp_path / "missing.csv"
+    result = process_data_files(tmp_path, [missing], str(tmp_path / "project"))
+
+    assert result is not None
+    assert result["all_files"] == []
+    assert result["data_files"] == []
+    assert result["errors"]

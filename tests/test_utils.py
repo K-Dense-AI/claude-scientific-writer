@@ -3,8 +3,11 @@
 
 from scientific_writer.utils import (
     count_citations_in_bib,
+    count_words_in_tex,
     detect_paper_reference,
     extract_citation_style,
+    extract_title_from_tex,
+    scan_paper_directory,
 )
 
 
@@ -56,3 +59,56 @@ def test_count_citations_in_bib(tmp_path):
     bib.write_text("@article{a, title={A}}\n@book{b, title={B}}\n")
     assert count_citations_in_bib(str(bib)) == 2
     assert count_citations_in_bib(None) == 0
+
+
+def test_count_citations_ignores_bibtex_directives(tmp_path):
+    bib = tmp_path / "references.bib"
+    bib.write_text(
+        '@string{journal = "Journal"}\n'
+        '@preamble{"prefix"}\n'
+        '@comment{not a citation}\n'
+        '@article{real, title={Real}}\n'
+    )
+
+    assert count_citations_in_bib(str(bib)) == 1
+
+
+def test_count_words_preserves_formatted_text_and_ignores_preamble(tmp_path):
+    tex = tmp_path / "main.tex"
+    tex.write_text(
+        "\\documentclass{article}\n"
+        "\\title{Preamble words}\n"
+        "\\begin{document}\n"
+        "Plain words and \\textbf{formatted words remain}. "
+        "\\cite{ignored-key}\n"
+        "\\end{document}\n"
+    )
+
+    assert count_words_in_tex(str(tex)) == 6
+
+
+def test_extract_title_handles_nested_braces(tmp_path):
+    tex = tmp_path / "main.tex"
+    tex.write_text("\\title{From \\textit{ELMo} to {BERT}: A Review}\n")
+
+    assert extract_title_from_tex(str(tex)) == "From ELMo to BERT: A Review"
+
+
+def test_scan_directory_reports_generic_artifacts_and_sources(tmp_path):
+    project = tmp_path / "project"
+    (project / "final").mkdir(parents=True)
+    (project / "drafts").mkdir()
+    (project / "sources").mkdir()
+    final = project / "final" / "slides.pptx"
+    draft = project / "drafts" / "outline.md"
+    source = project / "sources" / "search.json"
+    final.write_bytes(b"pptx")
+    draft.write_text("draft")
+    source.write_text("{}")
+
+    result = scan_paper_directory(project)
+
+    assert result["final_artifacts"] == [str(final)]
+    assert result["draft_artifacts"] == [str(draft)]
+    assert result["sources"] == [str(source)]
+    assert {str(final), str(draft), str(source)} <= set(result["artifacts"])

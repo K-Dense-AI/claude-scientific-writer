@@ -834,6 +834,71 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 
 ---
 
+### 19. Research Lookup
+**Location**: `.claude/skills/research-lookup/`
+
+Compiles manuscript-ready scholarly evidence packets with Parallel Search and Extract,
+academic-domain filtering, source verification, and saved research artifacts.
+
+---
+
+### 20. Parallel Web
+**Location**: `.claude/skills/parallel-web/`
+
+Provides current web search, URL extraction, deep research, data enrichment, entity
+discovery, and monitoring through `parallel-cli`.
+
+---
+
+### 21. Generate Image
+**Location**: `.claude/skills/generate-image/`
+
+Generates or edits non-technical visual assets with OpenRouter image models. Technical
+flowcharts, pathways, and architectures remain the responsibility of
+`scientific-schematics`.
+
+---
+
+### 22. Infographics
+**Location**: `.claude/skills/infographics/`
+
+Creates standalone PNG infographics with iterative visual review, accessible palettes,
+and optional researched content. This route does not use LaTeX or PDF compilation.
+
+---
+
+### 23. Hypothesis Generation
+**Location**: `.claude/skills/hypothesis-generation/`
+
+Turns observations into competing, falsifiable hypotheses with mechanisms, predictions,
+and experiments that distinguish among alternatives.
+
+---
+
+### 24. Scientific Critical Thinking
+**Location**: `.claude/skills/scientific-critical-thinking/`
+
+Evaluates claims, experimental design, bias, confounding, statistical pitfalls, and
+evidence quality using established critical-appraisal frameworks.
+
+---
+
+### 25. Treatment Plans
+**Location**: `.claude/skills/treatment-plans/`
+
+Produces concise clinical treatment plans with SMART goals, evidence-based interventions,
+monitoring, safety considerations, and regulatory-aware formatting.
+
+---
+
+### 26. PPTX Posters
+**Location**: `.claude/skills/pptx-posters/`
+
+Creates research posters in editable PowerPoint format when PPTX is explicitly requested.
+LaTeX posters remain the default route for standard poster requests.
+
+---
+
 ## How Skills Are Used
 
 When you interact with the Scientific Writer CLI, Claude automatically:
@@ -950,16 +1015,17 @@ Claude can guide you through using the validation script to check formatting com
 
 ---
 
-## Adding Custom Skills
+## Adding Local-Only Custom Skills
 
-To add your own skills:
+To add a private skill used only in your project:
 
 1. Create a new directory in `.claude/skills/`
 2. Add a `SKILL.md` file with your skill definition
 3. Optionally add `references/`, `scripts/`, and `assets/` subdirectories
 4. Restart the CLI
 
-The new skill will be automatically loaded and available.
+The new skill will be automatically loaded and preserved during bundled-skill refreshes,
+provided its directory name does not collide with a shipped skill.
 
 To ship a skill with Scientific Writer, contribute it to the canonical [Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) repository and then follow the pinning workflow in the [Skill Authoring Guide](SKILL_AUTHORING.md).
 

@@ -188,5 +188,5 @@ If you can't find what you're looking for:
 
 ---
 
-**Last Updated**: July 4, 2026 (v2.15.1)
+**Last Updated**: July 22, 2026 (v2.16.0)
 

@@ -1,6 +1,6 @@
 # Development and Architecture
 
-This document is for contributors and maintainers. It summarizes the package architecture, design decisions, and development workflow for Scientific Writer (v2.15+). For day-to-day contribution workflow (tests, lint, PR guidelines), see [CONTRIBUTING.md](../CONTRIBUTING.md).
+This document is for contributors and maintainers. It summarizes the package architecture, design decisions, and development workflow for Scientific Writer v2.16+. For day-to-day contribution workflow (tests, lint, PR guidelines), see [CONTRIBUTING.md](../CONTRIBUTING.md).
 
 ## Architecture Overview
 
@@ -35,7 +35,7 @@ claude-scientific-writer/
 └── scientific_writer/       # Python package
 ```
 
-There is no `.claude-plugin/plugin.json`; the repository itself acts as a plugin marketplace via `.claude-plugin/marketplace.json`. Skill content is sourced from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), pinned by `skills.lock.json`, and vendored into `skills/` for deterministic plugin and package builds.
+There is no `.claude-plugin/plugin.json`; the repository itself acts as a plugin marketplace via `.claude-plugin/marketplace.json`. Skill content is sourced from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), pinned by `skills.lock.json`, and vendored into `skills/` for deterministic plugin and package builds. `CLAUDE.md` is the instruction source for both runtime `WRITER.md` mirrors and `templates/CLAUDE.scientific-writer.md`; `scripts/sync_skills.py --check` enforces all three.
 
 The 26 selected skills are: citation-management, clinical-decision-support, clinical-reports, docx, pdf, pptx, xlsx, generate-image, hypothesis-generation, infographics, latex-posters, literature-review, market-research-reports, markitdown, parallel-web, peer-review, pptx-posters, research-grants, research-lookup, scholar-evaluation, scientific-critical-thinking, scientific-schematics, scientific-slides, scientific-writing, treatment-plans, and venue-templates. The four document skills are grouped under the local `document-skills/` plugin path.
 
@@ -70,13 +70,13 @@ All models are fully typed and serializable to dictionaries.
 ### Setup
 
 ```bash
-uv sync
+uv sync --frozen --group dev
 ```
 
 Environment variables (see `.env.example` for the full list):
 
 - `ANTHROPIC_API_KEY` (required)
-- `PARALLEL_API_KEY` (required for research lookup, web search, and deep research via parallel-cli and the Parallel Chat API)
+- Parallel CLI login or `PARALLEL_API_KEY` (research lookup, web search, and deep research)
 - `OPENROUTER_API_KEY` (optional, for AI image generation: schematics, figures, slides, infographics, and markitdown AI features)
 - `NCBI_API_KEY` / `NCBI_EMAIL` (optional, for higher-rate PubMed lookups in literature-review scripts)
 
@@ -93,14 +93,15 @@ uv run python example_api_usage.py
 ## Testing and Quality
 
 - Full type hints across the package
-- Lint/format according to project defaults
-- Validate imports and API signatures locally via example usage
+- Ruff, mypy, pytest, and codespell in CI
+- Locked dependency resolution through committed `uv.lock`
+- Validate imports and API signatures locally via `example_api_usage.py`
 
 ## Plugin Development
 
 ### Testing Plugin Locally
 
-For local plugin development and testing (step-by-step manual test instructions are in `TESTING_INSTRUCTIONS.md`):
+Use the following steps for local plugin development and manual testing:
 
 1. **Create test marketplace** in the parent directory:
    ```bash
@@ -172,20 +173,20 @@ See the [Skill Authoring Guide](SKILL_AUTHORING.md) for the full workflow, front
    Note that `allowed-tools` is a space-separated string, not a YAML list.
 3. Add references, scripts, and assets upstream as needed, then merge and release the change.
 4. Select the upstream skill in `skills.lock.json` and register its generated destination in `.claude-plugin/marketplace.json`.
-5. Run `python3 scripts/sync_skills.py --update-ref <tag-or-commit>` to regenerate `skills/` and both mirrors; never edit generated skill snapshots directly.
+5. Run `python3 scripts/sync_skills.py --update-ref <tag-or-commit>` to regenerate `skills/`, both runtime mirrors, and the plugin instruction template; never edit generated skill snapshots directly.
 6. Run `python3 scripts/sync_skills.py --check` and test skill availability after plugin reinstall.
 
 ## Release Notes
 
 v2.13+ highlights:
 
-- **Parallel research backend** - research lookup, web search, and deep research moved to parallel-cli and the Parallel Chat API (`PARALLEL_API_KEY`); OpenRouter is now only used for AI image generation skills
+- **Parallel research backend** - research lookup, web search, and deep research use Parallel Search, Extract, and Research through `parallel-cli`; OpenRouter is only used for image generation and explicitly requested optional fallbacks
 
 v2.7.0 highlights:
 
 - **Claude Code Plugin Focus** - Optimized for IDE integration
 - Plugin installation with `/claude-scientific-writer:scientific-writer-init`
-- All skills accessible via plugin (25 as of v2.15)
+- All selected skills accessible via plugin (26 as of v2.16)
 - Streamlined IDE workflow
 
 v2.0 highlights:
@@ -221,8 +222,8 @@ For best IDE experience:
 
 ### Research backend (v2.13+)
 
-- Set `PARALLEL_API_KEY` to keep research lookup, web search, and deep research working
-- `OPENROUTER_API_KEY` is no longer used for research; it remains optional for the AI image generation skills
+- Authenticate with `parallel-cli login` or set `PARALLEL_API_KEY`
+- `OPENROUTER_API_KEY` is optional for image generation and explicitly requested Perplexity fallback research
 
 ## Contributing
 

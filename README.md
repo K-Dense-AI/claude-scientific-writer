@@ -13,15 +13,17 @@
 
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
-Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup and web search powered by the Parallel Chat API, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro. You have the option of using it as a claude code plugin, python package or a native CLI
+Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup through Parallel Search and Extract, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation. You can use it as a Claude Code plugin, Python package, or native CLI.
 
 ## Quick Start
 
 ### Prerequisites
-- Python 3.10-3.12
+- Python 3.10 or newer
 - ANTHROPIC_API_KEY (required)
-- PARALLEL_API_KEY (required for research lookup, web search, and deep research)
+- Parallel CLI authentication (`parallel-cli login`) or `PARALLEL_API_KEY`
 - OPENROUTER_API_KEY (optional, for AI image generation: schematics, figures, slides, and infographics)
+- A LaTeX distribution for PDF generation (`pdflatex`, `bibtex`, and preferably `latexmk`)
+- Optional: LibreOffice for Office rendering/recalculation and FFmpeg for media conversion
 
 ### Installation Options
 
@@ -31,6 +33,10 @@ The easiest way to use Scientific Writer is as a Claude Code plugin. See the [Pl
 #### Option 2: Install from PyPI (CLI/API Usage)
 ```bash
 pip install scientific-writer
+
+# Optional bundled-script runtimes
+pip install "scientific-writer[analysis]"  # cohort statistics and survival analysis
+pip install "scientific-writer[office]"    # DOCX/PPTX/XLSX and MarkItDown helpers
 ```
 
 #### Option 3: Install from source with uv
@@ -48,6 +54,14 @@ echo "PARALLEL_API_KEY=your_parallel_key" >> .env            # research lookup a
 echo "OPENROUTER_API_KEY=your_openrouter_key" >> .env        # optional: AI image generation
 # or export in your shell
 export ANTHROPIC_API_KEY='your_key'
+```
+
+Install and authenticate the research CLI when it is not already available:
+
+```bash
+uv tool install "parallel-web-tools[cli]==0.7.1"
+parallel-cli login
+parallel-cli auth
 ```
 
 ### Usage Options
@@ -71,10 +85,13 @@ After installing the plugin and running `/claude-scientific-writer:scientific-wr
 ```bash
 # If installed via pip
 scientific-writer
+scientific-writer --effort high
 
 # If installed from source with uv
 uv run scientific-writer
 ```
+
+Use `scientific-writer --help` for permission, budget, token-usage, and input-consumption controls. Input files are preserved by default; `--consume-inputs` explicitly removes them after a successful copy.
 
 #### Use the Python API
 ```python
@@ -99,11 +116,13 @@ async def main():
             "off_target_analysis.csv"
         ]
     ):
-        if update["type"] == "progress":
+        if update["type"] == "text":
+            print(update["content"], end="", flush=True)
+        elif update["type"] == "progress":
             print(f"[{update['stage']}] {update['message']}")
-        else:
+        elif update["type"] == "result":
             print(f"✓ PDF: {update['files']['pdf_final']}")
-            print(f"  Figures: {len(update.get('figures', []))} included")
+            print(f"  Figures: {len(update['files']['figures'])} included")
 
 asyncio.run(main())
 ```
@@ -168,7 +187,7 @@ asyncio.run(main())
 ### Available Skills
 
 When installed as a plugin, you get instant access to a reproducible subset of [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), pinned in `skills.lock.json`:
-- `scientific-schematics` - AI diagram generation with Nano Banana Pro (CONSORT, neural networks, pathways)
+- `scientific-schematics` - AI diagram generation with Nano Banana 2 (CONSORT, neural networks, pathways)
 - `research-lookup` - Real-time literature search
 - `peer-review` - Systematic manuscript evaluation
 - `citation-management` - BibTeX and reference handling
@@ -190,11 +209,11 @@ For local plugin development and testing, see the [Development Guide](docs/DEVEL
 - **Research posters** using LaTeX (beamerposter, tikzposter, baposter)
 - **Grant proposals** (NSF, NIH, DOE, DARPA) with agency-specific formatting
 - **Literature reviews** with systematic citation management
-- **Scientific schematics** powered by Nano Banana Pro (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
+- **Scientific schematics** powered by Nano Banana 2 (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
 
 ### 🤖 AI-Powered Capabilities
-- **Real-time research lookup** powered by the Parallel Chat API
-- **AI-powered diagram generation** with Nano Banana Pro - create any scientific diagram from natural language descriptions
+- **Real-time research lookup** powered by Parallel Search and Extract
+- **AI-powered diagram generation** - create scientific diagrams from natural-language descriptions
 - **Intelligent paper detection** - automatically identifies references to existing papers
 - **Peer review feedback** with quantitative ScholarEval framework (8-dimension scoring)
 - **Iterative editing** with context-aware revision suggestions
@@ -250,9 +269,11 @@ async def main():
         output_dir="./my_papers",
         track_token_usage=True  # Optional: track token consumption
     ):
-        if update["type"] == "progress":
+        if update["type"] == "text":
+            print(update["content"], end="", flush=True)
+        elif update["type"] == "progress":
             print(f"[{update['stage']}] {update['message']}")
-        else:
+        elif update["type"] == "result":
             print(f"✓ PDF: {update['files']['pdf_final']}")
             # Token usage available when track_token_usage=True
             if "token_usage" in update:
@@ -306,7 +327,7 @@ For more extensive API examples (multiple data files, clinical trial reports, to
 
 ## Plugin Testing (Local Development)
 
-For developers working on the plugin or testing it locally, see the [Development Guide](docs/DEVELOPMENT.md#plugin-development), which covers setting up a local test marketplace, installing the plugin from a local checkout, verifying the plugin structure, and troubleshooting installation issues. Step-by-step manual test instructions live in [TESTING_INSTRUCTIONS.md](TESTING_INSTRUCTIONS.md).
+For developers working on the plugin or testing it locally, see the [Development Guide](docs/DEVELOPMENT.md#plugin-development), which covers setting up a local test marketplace, installing the plugin from a local checkout, verifying the plugin structure, and troubleshooting installation issues.
 
 ## 📄 Example Outputs
 
@@ -315,7 +336,7 @@ Want to see what Scientific Writer can create? Check out real examples in the [`
 | Document Type | Example | Description |
 |--------------|---------|-------------|
 | **Research Paper** | Coming soon | Full scientific papers with IMRaD structure |
-| **Grant Proposal** | [NSF Proposal](docs/examples/grants/v6_draft.pdf) | Complete NSF grant with budget and timeline |
+| **Grant Proposal** | [NSF Proposal](docs/examples/grants/NSF_draft1.pdf) | Complete NSF grant with budget and timeline |
 | **Research Poster** | [Conference Poster](docs/examples/poster/poster.pdf) | LaTeX-generated academic poster |
 | **Presentation Slides** | [AI Scientist Talk](docs/examples/slides/ai_scientist_talk.pdf) | Professional research presentation |
 | **Clinical Report** | [Treatment Plan](docs/examples/treatment_plan/GERD.pdf) | Patient treatment documentation |
@@ -340,6 +361,7 @@ Want to see what Scientific Writer can create? Check out real examples in the [`
 - [📦 Releasing Guide](docs/RELEASING.md) - Versioning and publishing
 - [📋 Release Notes](CHANGELOG.md) - Version history and updates
 - [🤖 System Instructions](CLAUDE.md) - Agent instructions (advanced)
+- [📝 Zotero DOCX Extension](extensions/docx-editor-zotero/README.md) - Optional citation-preserving Word workflow
 
 ## Use with Gemini CLI and Other Agents
 
@@ -387,8 +409,8 @@ See [docs/RELEASING.md](docs/RELEASING.md) for prerequisites, dry runs, tagging,
 - Legacy single-file script is replaced by a proper package; no action needed for CLI users.
 
 ### Research backend (v2.13+)
-- Research lookup, web search, and deep research now use parallel-cli and the Parallel Chat API. Set `PARALLEL_API_KEY` to keep research lookup working.
-- `OPENROUTER_API_KEY` is no longer used for research lookup. It remains optional and is only needed for the AI image generation skills (generate-image, scientific-schematics, scientific-slides, infographics, and markitdown AI features).
+- Research lookup, web search, and deep research use Parallel Search, Extract, and Research through `parallel-cli`. Authenticate with `parallel-cli login` or set `PARALLEL_API_KEY`.
+- `OPENROUTER_API_KEY` is not used by the default research path. It remains optional for image-generation skills and explicitly requested Perplexity fallback research.
 
 ## License
 MIT - see LICENSE.

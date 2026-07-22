@@ -13,8 +13,9 @@ Releases publish to PyPI through `.github/workflows/release.yml` using [Trusted 
 ```bash
 # 1. Bump the version (updates pyproject.toml, __init__.py, marketplace.json)
 uv run scripts/bump_version.py minor   # or patch | major
+uv lock
 
-# 2. Update CHANGELOG.md, then commit and push
+# 2. Update CHANGELOG.md, then commit the version files and uv.lock
 git add -A && git commit -m "Bump version to X.Y.Z" && git push
 
 # 3. Tag and push the tag — this triggers the release workflow
@@ -22,7 +23,10 @@ git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin vX.Y.Z
 ```
 
-The workflow verifies the tag matches the package version, runs lint/tests/consistency checks, builds, asserts the wheel ships the bundled `.claude` payload, and publishes.
+The workflow verifies the tag matches the package version, installs the committed lock
+with `--frozen`, runs Ruff, mypy, pytest, codespell, consistency and package checks,
+builds the exact artifacts to publish, asserts the wheel ships the bundled `.claude`
+payload, and publishes.
 
 ## Alternative: Local publish with a token
 
@@ -40,7 +44,9 @@ uv run scripts/publish.py
 uv run scripts/publish.py --bump patch   # or minor | major
 ```
 
-The publisher script validates metadata, verifies skill mirrors, builds sdist and wheel, checks the wheel payload, publishes via `uv publish`, and only then creates and pushes the git tag (`vX.Y.Z`).
+The publisher script validates metadata, verifies skills and quality checks, pushes any
+automatically created release commit, builds and checks the artifacts, publishes via
+`uv publish`, and only then creates and pushes the git tag (`vX.Y.Z`).
 
 ## Bump the Version (semver)
 

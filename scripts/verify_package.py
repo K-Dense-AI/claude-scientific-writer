@@ -118,6 +118,7 @@ def check_package_structure() -> Dict[str, bool]:
 
     required_files = {
         'pyproject.toml': root / "pyproject.toml",
+        'uv.lock': root / "uv.lock",
         'README.md': root / "README.md",
         'LICENSE': root / "LICENSE",
         '__init__.py': root / "scientific_writer" / "__init__.py",

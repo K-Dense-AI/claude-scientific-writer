@@ -212,11 +212,17 @@ set ANTHROPIC_API_KEY=your_api_key_here
 
 ## Research Lookup and Web Search Issues
 
-Research lookup, web search, and deep research are powered by parallel-cli and the Parallel Chat API.
+Research lookup, web search, and deep research use Parallel Search, Extract, and Research through `parallel-cli`.
 
 ### Problem: "PARALLEL_API_KEY not set" or research lookup returns no results
 
-Research lookup requires a Parallel API key. Add it to your `.env` file (see `.env.example`):
+Authenticate interactively:
+```bash
+parallel-cli login
+parallel-cli auth
+```
+
+For headless environments, add a Parallel API key to `.env` (see `.env.example`):
 ```bash
 PARALLEL_API_KEY=your_key_here
 ```
@@ -232,16 +238,15 @@ You can obtain a key from [parallel.ai](https://parallel.ai/).
 
 Fast web searches use the `parallel-cli` tool. If it is not installed, install it with:
 ```bash
-curl -fsSL https://parallel.ai/install.sh | bash
-# or
-uv tool install "parallel-web-tools[cli]"
+uv tool install "parallel-web-tools[cli]==0.7.1"
 ```
 
-If parallel-cli is unavailable, the research-lookup skill falls back to the Parallel Chat API (which requires `PARALLEL_API_KEY`).
+After installation, authenticate with `parallel-cli login` or provide `PARALLEL_API_KEY`.
+Explicit Parallel Chat remains available only when a workflow specifically requests it.
 
-### Note: OpenRouter is no longer used for research
+### Note: OpenRouter is not used by the default research path
 
-Older versions used `OPENROUTER_API_KEY` for research lookup via Perplexity. Since v2.13, research goes through Parallel. `OPENROUTER_API_KEY` is now only needed for the AI image generation skills (generate-image, scientific-schematics, scientific-slides, infographics, and markitdown AI features).
+Default research goes through Parallel. `OPENROUTER_API_KEY` is needed for image-generation skills and only for optional Perplexity research when that fallback is explicitly requested.
 
 ---
 

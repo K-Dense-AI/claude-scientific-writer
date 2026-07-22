@@ -5,36 +5,53 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   quality:
-    name: Lint, typecheck, test
+    name: Quality (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12", "3.14"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
+      - name: Sync locked environment
+        run: uv sync --frozen --group dev
       - name: Ruff
-        run: uv run ruff check .
+        run: uv run --frozen ruff check .
       - name: Mypy
-        run: uv run mypy
+        run: uv run --frozen mypy
       - name: Pytest
-        run: uv run pytest tests/ -q
+        run: uv run --frozen pytest tests/ -q
+      - name: Codespell
+        if: matrix.python-version == '3.12'
+        run: >-
+          uv run --frozen codespell README.md CHANGELOG.md CONTRIBUTING.md
+          example_api_usage.py CLAUDE.md pyproject.toml
+          .env.example scientific_writer scripts tests docs commands templates .github
 
   integrity:
     name: Skill mirrors, consistency, package build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9
         with:
           python-version: "3.12"
+      - name: Sync locked environment
+        run: uv sync --frozen --group dev
       - name: Skill mirrors in sync
-        run: python scripts/sync_skills.py --check
+        run: uv run --frozen python scripts/sync_skills.py --check
       - name: Repository consistency
-        run: python scripts/check_consistency.py
+        run: uv run --frozen python scripts/check_consistency.py
       - name: Package verification
-        run: python scripts/verify_package.py
+        run: uv run --frozen python scripts/verify_package.py
       - name: Build wheel
         run: uv build
       - name: Wheel ships the .claude payload

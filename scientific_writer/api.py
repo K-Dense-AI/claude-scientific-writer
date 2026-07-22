@@ -1,22 +1,27 @@
 """Async API for programmatic scientific document generation."""
 
+import logging
 import os
-import time
 from pathlib import Path
-from typing import Optional, List, Dict, Any, AsyncGenerator, Literal
 from datetime import datetime, timezone
-from dotenv import load_dotenv
+from typing import Any, AsyncGenerator, Literal
+
+from dotenv import dotenv_values
 
 from claude_agent_sdk import query as claude_query, ClaudeAgentOptions
-from claude_agent_sdk.types import HookMatcher, StopHookInput, HookContext
+from claude_agent_sdk.types import HookEvent, HookMatcher
 
 from .core import (
     EFFORT_LEVEL_MODELS,
+    create_completion_check_stop_hook,
+    create_data_context_message,
+    create_output_project,
     get_api_key,
     load_system_instructions,
     ensure_output_folder,
     get_data_files,
     process_data_files,
+    resolve_auto_continue,
     setup_claude_skills,
 )
 from .models import ProgressUpdate, TextUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
@@ -29,46 +34,47 @@ from .utils import (
 )
 
 
-def create_completion_check_stop_hook(auto_continue: bool = True):
-    """
-    Create a stop hook that optionally forces continuation.
+logger = logging.getLogger(__name__)
 
-    Args:
-        auto_continue: If True, always continue (never stop on agent's own).
-                      If False, allow normal stopping behavior.
-    """
-    async def completion_check_stop_hook(
-        hook_input: StopHookInput,
-        matcher: str | None,
-        context: HookContext,
-    ) -> dict:
-        """
-        Stop hook that checks if the task is complete before allowing stop.
+PermissionMode = Literal[
+    "default",
+    "acceptEdits",
+    "plan",
+    "bypassPermissions",
+    "dontAsk",
+    "auto",
+]
 
-        When auto_continue is True, this returns continue_=True to force
-        the agent to continue working instead of stopping.
-        """
-        if auto_continue:
-            # Force continuation - the agent should not stop on its own
-            return {"continue_": True}
 
-        # Allow the stop
-        return {"continue_": False}
-
-    return completion_check_stop_hook
+def _build_agent_environment(work_dir: Path, api_key: str | None) -> dict[str, str]:
+    """Build an invocation-local environment without mutating process globals."""
+    file_values = dotenv_values(work_dir / ".env")
+    environment = {
+        key: value
+        for key, value in file_values.items()
+        if value is not None
+    }
+    environment.update(os.environ)
+    environment["ANTHROPIC_API_KEY"] = get_api_key(api_key, environment)
+    return environment
 
 
 async def generate_paper(
     query: str,
-    output_dir: Optional[str] = None,
-    api_key: Optional[str] = None,
-    model: Optional[str] = None,
+    output_dir: str | None = None,
+    api_key: str | None = None,
+    model: str | None = None,
     effort_level: Literal["low", "medium", "high"] = "medium",
-    data_files: Optional[List[str]] = None,
-    cwd: Optional[str] = None,
+    data_files: list[str] | None = None,
+    cwd: str | None = None,
     track_token_usage: bool = False,
     auto_continue: bool = True,
-) -> AsyncGenerator[Dict[str, Any], None]:
+    permission_mode: PermissionMode = "bypassPermissions",
+    max_turns: int = 500,
+    max_budget_usd: float | None = None,
+    max_auto_continuations: int = 1,
+    skills: list[str] | Literal["all"] | None = "all",
+) -> AsyncGenerator[dict[str, Any], None]:
     """
     Generate a scientific document asynchronously with progress updates.
 
@@ -81,28 +87,35 @@ async def generate_paper(
                "Generate conference slides on AI", "Create a research poster")
         output_dir: Optional custom output directory (defaults to cwd/writing_outputs)
         api_key: Optional Anthropic API key (defaults to ANTHROPIC_API_KEY env var)
-        model: Optional explicit Claude model to use. If provided, overrides effort_level.
-        effort_level: Effort level that determines the model to use (default: "medium"):
+        model: Optional explicit Claude model to use. If provided, overrides model selection.
+        effort_level: SDK reasoning effort and default model tier:
             - "low": Uses Claude Haiku 4.5 (fastest, most economical)
             - "medium": Uses Claude Opus 4.8 (balanced, premium) [default]
-            - "high": Uses Claude Opus 4.8 (most capable)
+            - "high": Uses Claude Opus 4.8 with higher reasoning effort
         data_files: Optional list of data file paths to include
-        cwd: Optional working directory (defaults to package parent directory)
+        cwd: Optional working directory (defaults to the current working directory)
         track_token_usage: If True, track and return token usage in the final result
-        auto_continue: If True (default), the agent will not stop on its own and will
-            continue working until the task is complete. Set to False to allow
-            normal stopping behavior.
+        auto_continue: Request one bounded completion-verification pass before stopping.
+        permission_mode: Claude Agent SDK permission mode. ``bypassPermissions`` is
+            retained as the compatibility default; callers can choose a safer mode.
+        max_turns: Maximum SDK conversation turns.
+        max_budget_usd: Optional hard spend ceiling enforced by the SDK.
+        max_auto_continuations: Maximum Stop-hook completion-verification passes.
+        skills: Skills exposed through the SDK (default: all project skills).
 
     Yields:
+        Text updates (dict with type="text") as content streams
         Progress updates (dict with type="progress") during execution
         Final result (dict with type="result") containing all document information
 
     Example:
         ```python
         async for update in generate_paper("Create a NeurIPS paper on transformers"):
-            if update["type"] == "progress":
+            if update["type"] == "text":
+                print(update["content"], end="")
+            elif update["type"] == "progress":
                 print(f"[{update['stage']}] {update['message']}")
-            else:
+            elif update["type"] == "result":
                 print(f"Document created: {update['paper_directory']}")
                 print(f"PDF: {update['files']['pdf_final']}")
 
@@ -112,172 +125,179 @@ async def generate_paper(
                 print(f"Token usage: {update.get('token_usage')}")
         ```
     """
-    # Initialize
-    start_time = time.time()
+    started_at = datetime.now(timezone.utc)
 
-    # Resolve model: explicit model parameter takes precedence, otherwise use effort_level
-    if model is None:
-        model = EFFORT_LEVEL_MODELS[effort_level]
-
-    # Explicitly load .env file from working directory
-    # Determine working directory first
-    if cwd:
-        work_dir = Path(cwd).resolve()
-    else:
-        work_dir = Path.cwd().resolve()
-
-    # Load .env from working directory
-    env_file = work_dir / ".env"
-    if env_file.exists():
-        load_dotenv(dotenv_path=env_file, override=True)
-
-    # Get API key
-    try:
-        get_api_key(api_key)
-    except ValueError as e:
-        yield _create_error_result(str(e))
+    if effort_level not in EFFORT_LEVEL_MODELS:
+        yield _create_error_result(f"Unknown effort level: {effort_level}")
+        return
+    if max_turns <= 0:
+        yield _create_error_result("max_turns must be greater than zero")
+        return
+    if max_budget_usd is not None and max_budget_usd <= 0:
+        yield _create_error_result("max_budget_usd must be greater than zero")
+        return
+    if max_auto_continuations < 0:
+        yield _create_error_result("max_auto_continuations cannot be negative")
         return
 
-    # Get package directory for copying skills to working directory
-    package_dir = Path(__file__).parent.absolute()  # scientific_writer/ directory
+    resolved_model = model or EFFORT_LEVEL_MODELS[effort_level]
+    work_dir = Path(cwd).expanduser().resolve() if cwd else Path.cwd().resolve()
+    if not work_dir.is_dir():
+        yield _create_error_result(f"Working directory does not exist: {work_dir}")
+        return
 
-    # Set up Claude skills in the working directory (includes WRITER.md)
+    try:
+        agent_env = _build_agent_environment(work_dir, api_key)
+    except ValueError as exc:
+        yield _create_error_result(str(exc))
+        return
+
+    package_dir = Path(__file__).parent.absolute()
     setup_claude_skills(package_dir, work_dir)
-
-    # Ensure output folder exists in user's directory
     output_folder = ensure_output_folder(work_dir, output_dir)
+    try:
+        output_directory = create_output_project(output_folder, query)
+    except OSError as exc:
+        yield _create_error_result(f"Could not create output directory: {exc}")
+        return
 
-    # Initial progress update
     yield ProgressUpdate(
         message="Initializing document generation",
         stage="initialization",
+        details={"output_directory": str(output_directory)},
     ).to_dict()
 
-    # Load system instructions from .claude/WRITER.md in working directory
     system_instructions = load_system_instructions(work_dir)
-
-    # Add conversation continuity instruction
     system_instructions += "\n\n" + f"""
 IMPORTANT - WORKING DIRECTORY:
 - Your working directory is: {work_dir}
-- ALWAYS create writing_outputs folder in this directory: {work_dir}/writing_outputs/
-- NEVER write to /tmp/ or any other temporary directory
-- All paper outputs MUST go to: {work_dir}/writing_outputs/<timestamp>_<description>/
+- The output project has already been created at: {output_directory}
+- Write every generated artifact inside that exact project directory.
+- Do NOT create or switch to another output project.
+- The output root is: {output_folder}
 
 IMPORTANT - CONVERSATION CONTINUITY:
-- This is a NEW paper request - create a new paper directory
-- Create a unique timestamped directory in the writing_outputs folder
-- Do NOT assume there's an existing paper unless explicitly told in the prompt context
+- This invocation owns the project directory above.
+- Imported manuscript files in drafts/ indicate an editing task.
 """
 
-    # Resolve data files once; they are processed after the output directory exists
-    data_file_paths = get_data_files(work_dir, data_files) if data_files else []
+    processed_info: dict[str, Any] | None = None
+    try:
+        data_file_paths = get_data_files(work_dir, data_files) if data_files else []
+        if data_file_paths:
+            processed_info = process_data_files(
+                work_dir,
+                data_file_paths,
+                str(output_directory),
+                delete_originals=False,
+            )
+    except (OSError, ValueError) as exc:
+        yield _create_error_result(
+            f"Could not prepare input files: {exc}",
+            output_directory=output_directory,
+        )
+        return
+
     if data_file_paths:
+        processed_count = len(processed_info["all_files"]) if processed_info else 0
         yield ProgressUpdate(
-            message=f"Found {len(data_file_paths)} data file(s) to process",
+            message=f"Staged {processed_count} input file(s)",
             stage="initialization",
         ).to_dict()
 
-    # Check if auto-continue is enabled (parameter takes precedence over env var)
-    # Environment variable can override if parameter is True (default)
-    env_auto_continue = os.environ.get("SCIENTIFIC_WRITER_AUTO_CONTINUE", "").lower()
-    if env_auto_continue in ("false", "0", "no"):
-        auto_continue = False
+    data_context = create_data_context_message(processed_info)
+    contextual_query = f"""[CONTEXT: Work only in {output_directory}]
+[INSTRUCTION: Use the staged files below while completing the request.]
+{data_context}
 
-    # Configure Claude agent options with stop hook for completion checking
-    options = ClaudeAgentOptions(
-        system_prompt=system_instructions,
-        model=model,
-        allowed_tools=["Read", "Write", "Edit", "Bash", "WebSearch", "research-lookup"],
-        permission_mode="bypassPermissions",
-        setting_sources=["project"],  # Load skills from project .claude directory
-        cwd=str(work_dir),  # User's working directory
-        max_turns=500,  # Allow many turns for long document generation
-        hooks={
+User request:
+{query}"""
+
+    resolved_auto_continue = resolve_auto_continue(auto_continue, agent_env)
+    hooks: dict[HookEvent, list[HookMatcher]] | None = None
+    if resolved_auto_continue:
+        hooks = {
             "Stop": [
                 HookMatcher(
-                    matcher=None,  # Match all stop events
-                    hooks=[create_completion_check_stop_hook(auto_continue=auto_continue)],
+                    matcher=None,
+                    hooks=[
+                        create_completion_check_stop_hook(
+                            auto_continue=True,
+                            max_continuations=max_auto_continuations,
+                        )
+                    ],
                 )
             ]
-        },
+        }
+
+    options = ClaudeAgentOptions(
+        system_prompt=system_instructions,
+        model=resolved_model,
+        effort=effort_level,
+        allowed_tools=["Read", "Write", "Edit", "Bash", "WebSearch"],
+        permission_mode=permission_mode,
+        setting_sources=["project"],
+        skills=skills,
+        cwd=str(work_dir),
+        max_turns=max_turns,
+        max_budget_usd=max_budget_usd,
+        env=agent_env,
+        hooks=hooks,
     )
 
-    # Track progress through message analysis
     current_stage = "initialization"
-    output_directory = None
-    last_message = ""  # Track last message to avoid duplicates
+    last_message = ""
     tool_call_count = 0
-    files_written = []
-
-    # Token usage tracking (when enabled)
-    total_input_tokens = 0
-    total_output_tokens = 0
-    total_cache_creation_tokens = 0
-    total_cache_read_tokens = 0
+    files_written: set[str] = set()
+    token_usage = TokenUsage()
 
     yield ProgressUpdate(
         message="Starting document generation",
         stage="initialization",
-        details={"query_length": len(query)},
+        details={
+            "query_length": len(query),
+            "output_directory": str(output_directory),
+        },
     ).to_dict()
 
-    # Execute query
     try:
-        accumulated_text = ""
-        async for message in claude_query(prompt=query, options=options):
-            # Track token usage if enabled
+        recent_text = ""
+        async for message in claude_query(prompt=contextual_query, options=options):
             if track_token_usage and hasattr(message, "usage") and message.usage:
-                usage = message.usage
-                total_input_tokens += getattr(usage, "input_tokens", 0)
-                total_output_tokens += getattr(usage, "output_tokens", 0)
-                total_cache_creation_tokens += getattr(usage, "cache_creation_input_tokens", 0)
-                total_cache_read_tokens += getattr(usage, "cache_read_input_tokens", 0)
+                token_usage.add_usage(message.usage)
 
             if hasattr(message, "content") and message.content:
                 for block in message.content:
-                    # Handle text blocks - stream live and analyze for progress
                     if hasattr(block, "text"):
                         text = block.text
-                        accumulated_text += text
-
-                        # Yield live text update - stream Scientific-Writer's actual response
+                        recent_text = (recent_text + text)[-20_000:]
                         yield TextUpdate(content=text).to_dict()
 
-                        # Analyze text for major stage transitions (fallback)
-                        stage, msg = _analyze_progress(accumulated_text, current_stage)
-
-                        # Only yield progress if we have a stage change with a message
+                        stage, msg = _analyze_progress(recent_text, current_stage)
                         if stage != current_stage and msg and msg != last_message:
                             current_stage = stage
                             last_message = msg
-
                             yield ProgressUpdate(
                                 message=msg,
                                 stage=stage,
                             ).to_dict()
 
-                    # Handle tool use blocks - provide detailed progress on actions
                     elif hasattr(block, "type") and block.type == "tool_use":
                         tool_call_count += 1
                         tool_name = getattr(block, "name", "unknown")
                         tool_input = getattr(block, "input", {})
 
-                        # Track files being written
                         if tool_name.lower() == "write":
                             file_path = tool_input.get("file_path", tool_input.get("path", ""))
                             if file_path:
-                                files_written.append(file_path)
+                                files_written.add(file_path)
 
-                        # Analyze tool usage for progress
                         tool_progress = _analyze_tool_use(tool_name, tool_input, current_stage)
-
                         if tool_progress:
                             stage, msg = tool_progress
                             if msg != last_message:
                                 current_stage = stage
                                 last_message = msg
-
                                 yield ProgressUpdate(
                                     message=msg,
                                     stage=stage,
@@ -288,82 +308,40 @@ IMPORTANT - CONVERSATION CONTINUITY:
                                     },
                                 ).to_dict()
 
-        # Document generation complete - now scan for results
         yield ProgressUpdate(
             message="Scanning output directory",
             stage="complete",
         ).to_dict()
 
-        # Find the most recently created output directory
-        output_directory = _find_most_recent_output(output_folder, start_time)
-
-        if not output_directory:
-            error_result = _create_error_result("Output directory not found after generation")
-            if track_token_usage:
-                error_result['token_usage'] = TokenUsage(
-                    input_tokens=total_input_tokens,
-                    output_tokens=total_output_tokens,
-                    cache_creation_input_tokens=total_cache_creation_tokens,
-                    cache_read_input_tokens=total_cache_read_tokens,
-                ).to_dict()
-            yield error_result
-            return
-
-        # Process any data files now if we have an output directory
-        if data_file_paths:
-            processed_info = process_data_files(
-                work_dir,
-                data_file_paths,
-                str(output_directory),
-                delete_originals=False  # Don't delete when using programmatic API
-            )
-            if processed_info:
-                manuscript_count = len(processed_info.get('manuscript_files', []))
-                processed_message = f"Processed {len(processed_info['all_files'])} file(s)"
-                if manuscript_count > 0:
-                    processed_message += f" ({manuscript_count} manuscript(s) copied to drafts/)"
-                yield ProgressUpdate(
-                    message=processed_message,
-                    stage="complete",
-                ).to_dict()
-
-        # Scan the output directory for all files
         file_info = scan_paper_directory(output_directory)
-
-        # Build comprehensive result
-        result = _build_paper_result(output_directory, file_info)
-
-        # Add token usage if tracking is enabled
+        result = _build_paper_result(
+            output_directory,
+            file_info,
+            created_at=started_at,
+        )
+        if processed_info:
+            result.errors.extend(processed_info.get("errors", []))
         if track_token_usage:
-            result.token_usage = TokenUsage(
-                input_tokens=total_input_tokens,
-                output_tokens=total_output_tokens,
-                cache_creation_input_tokens=total_cache_creation_tokens,
-                cache_read_input_tokens=total_cache_read_tokens,
-            )
+            result.token_usage = token_usage
 
         yield ProgressUpdate(
             message="Document generation complete",
             stage="complete",
         ).to_dict()
-
-        # Final result
         yield result.to_dict()
 
-    except Exception as e:
-        error_result = _create_error_result(f"Error during document generation: {str(e)}")
-        # Include token usage even on error if tracking was enabled
+    except Exception as exc:
+        logger.exception("Document generation failed")
+        error_result = _create_error_result(
+            f"Error during document generation: {exc}",
+            output_directory=output_directory,
+        )
         if track_token_usage:
-            error_result['token_usage'] = TokenUsage(
-                input_tokens=total_input_tokens,
-                output_tokens=total_output_tokens,
-                cache_creation_input_tokens=total_cache_creation_tokens,
-                cache_read_input_tokens=total_cache_read_tokens,
-            ).to_dict()
+            error_result['token_usage'] = token_usage.to_dict()
         yield error_result
 
 
-def _analyze_progress(text: str, current_stage: str) -> tuple[str, Optional[str]]:
+def _analyze_progress(text: str, current_stage: str) -> tuple[str, str | None]:
     """
     Minimal fallback for progress detection from text.
 
@@ -408,7 +386,7 @@ def _detect_document_type(file_path: str) -> str:
     return "document"
 
 
-def _get_section_from_filename(filename: str) -> Optional[str]:
+def _get_section_from_filename(filename: str) -> str | None:
     """Extract section name from filename for more descriptive messages."""
     name_lower = filename.lower().replace('.tex', '').replace('.md', '')
 
@@ -440,8 +418,8 @@ def _get_section_from_filename(filename: str) -> Optional[str]:
 
 
 def _analyze_tool_use(
-    tool_name: str, tool_input: Dict[str, Any], current_stage: str
-) -> Optional[tuple[str, str]]:
+    tool_name: str, tool_input: dict[str, Any], current_stage: str
+) -> tuple[str, str] | None:
     """
     Analyze tool usage to provide dynamic, context-aware progress updates.
 
@@ -583,7 +561,7 @@ def _analyze_tool_use(
     return None
 
 
-def _find_most_recent_output(output_folder: Path, start_time: float) -> Optional[Path]:
+def _find_most_recent_output(output_folder: Path, start_time: float) -> Path | None:
     """
     Find the most recently created/modified output directory.
 
@@ -606,17 +584,21 @@ def _find_most_recent_output(output_folder: Path, start_time: float) -> Optional
         ]
 
         if not recent_dirs:
-            # Fallback to most recent directory overall
-            recent_dirs = output_dirs
+            return None
 
         # Return the most recent
         most_recent = max(recent_dirs, key=lambda d: d.stat().st_mtime)
         return most_recent
-    except Exception:
+    except OSError:
+        logger.warning("Could not inspect output folder %s", output_folder, exc_info=True)
         return None
 
 
-def _build_paper_result(paper_dir: Path, file_info: Dict[str, Any]) -> PaperResult:
+def _build_paper_result(
+    paper_dir: Path,
+    file_info: dict[str, Any],
+    created_at: datetime | None = None,
+) -> PaperResult:
     """
     Build a comprehensive PaperResult from scanned files.
 
@@ -639,9 +621,22 @@ def _build_paper_result(paper_dir: Path, file_info: Dict[str, Any]) -> PaperResu
     if len(parts) >= 3:
         topic = parts[2].replace('_', ' ')
 
+    if created_at is None:
+        try:
+            local_created_at = datetime.strptime(
+                paper_dir.name[:15],
+                "%Y%m%d_%H%M%S",
+            ).astimezone()
+            created_at = local_created_at.astimezone(timezone.utc)
+        except ValueError:
+            created_at = datetime.fromtimestamp(
+                paper_dir.stat().st_mtime,
+                tz=timezone.utc,
+            )
+
     metadata = PaperMetadata(
         title=title,
-        created_at=datetime.fromtimestamp(paper_dir.stat().st_ctime, tz=timezone.utc).isoformat(),
+        created_at=created_at.astimezone(timezone.utc).isoformat(),
         topic=topic,
         word_count=word_count,
     )
@@ -655,6 +650,10 @@ def _build_paper_result(paper_dir: Path, file_info: Dict[str, Any]) -> PaperResu
         bibliography=file_info['bibliography'],
         figures=file_info['figures'],
         data=file_info['data'],
+        sources=file_info['sources'],
+        final_artifacts=file_info['final_artifacts'],
+        draft_artifacts=file_info['draft_artifacts'],
+        artifacts=file_info['artifacts'],
         progress_log=file_info['progress_log'],
         summary=file_info['summary'],
     )
@@ -670,14 +669,16 @@ def _build_paper_result(paper_dir: Path, file_info: Dict[str, Any]) -> PaperResu
     }
 
     # Determine status
-    status = "success"
     compilation_success = file_info['pdf_final'] is not None
-
-    if not compilation_success:
-        if file_info['tex_final']:
-            status = "partial"  # TeX created but PDF failed
-        else:
-            status = "failed"
+    errors: list[str] = []
+    if file_info['final_artifacts']:
+        status = "success"
+    elif file_info['draft_artifacts']:
+        status = "partial"
+        errors.append("No final artifact was produced")
+    else:
+        status = "failed"
+        errors.append("No final or draft document artifact was produced")
 
     result = PaperResult(
         status=status,
@@ -688,13 +689,16 @@ def _build_paper_result(paper_dir: Path, file_info: Dict[str, Any]) -> PaperResu
         citations=citations,
         figures_count=len(file_info['figures']),
         compilation_success=compilation_success,
-        errors=[],
+        errors=errors,
     )
 
     return result
 
 
-def _create_error_result(error_message: str) -> Dict[str, Any]:
+def _create_error_result(
+    error_message: str,
+    output_directory: Path | None = None,
+) -> dict[str, Any]:
     """
     Create an error result dictionary.
 
@@ -706,8 +710,8 @@ def _create_error_result(error_message: str) -> Dict[str, Any]:
     """
     result = PaperResult(
         status="failed",
-        paper_directory="",
-        paper_name="",
+        paper_directory=str(output_directory) if output_directory else "",
+        paper_name=output_directory.name if output_directory else "",
         errors=[error_message],
     )
     return result.to_dict()

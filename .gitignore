@@ -53,7 +53,6 @@ __pycache__/
 
 # uv
 /.uv/
-/uv.lock
 
 # IDE
 /.idea/

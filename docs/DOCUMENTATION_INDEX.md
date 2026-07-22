@@ -1,6 +1,6 @@
 # Complete Documentation Index
 
-**Scientific Writer v2.15.1** - Comprehensive documentation navigation guide.
+**Scientific Writer v2.16.0** - Comprehensive documentation navigation guide.
 
 ---
 
@@ -10,16 +10,16 @@
 
 | Document | Purpose | Audience | Last Updated |
 |----------|---------|----------|--------------|
-| [README.md](../README.md) | Main entry point, quick start, features overview | Everyone | v2.15.1 |
-| [docs/README.md](README.md) | Documentation hub with navigation guide | Everyone | v2.15.1 |
-| [CHANGELOG.md](../CHANGELOG.md) | Version history and release notes | Everyone | v2.15.1 |
+| [README.md](../README.md) | Main entry point, quick start, features overview | Everyone | v2.16.0 |
+| [docs/README.md](README.md) | Documentation hub with navigation guide | Everyone | v2.16.0 |
+| [CHANGELOG.md](../CHANGELOG.md) | Version history and release notes | Everyone | v2.16.0 |
 
 ### User Guides
 
 | Document | Content | When to Read |
 |----------|---------|--------------|
 | [FEATURES.md](FEATURES.md) | Complete feature guide (document generation, AI capabilities, file integration) | To understand what's possible |
-| [SKILLS.md](SKILLS.md) | The 25 available skills with examples | To learn available capabilities |
+| [SKILLS.md](SKILLS.md) | The 26 available skills with examples | To learn available capabilities |
 | [API.md](API.md) | Programmatic API reference with code examples | When using Python API |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues and solutions | When you encounter problems |
 
@@ -32,7 +32,6 @@
 | [SKILL_AUTHORING.md](SKILL_AUTHORING.md) | How to write and register a new skill | Skill authors |
 | [RELEASING.md](RELEASING.md) | Version management, PyPI publishing | Maintainers |
 | [example_api_usage.py](../example_api_usage.py) | Working Python examples | API users |
-| [TESTING_INSTRUCTIONS.md](../TESTING_INSTRUCTIONS.md) | Plugin testing guide | Plugin developers |
 
 ### System Documentation
 
@@ -87,7 +86,6 @@
 **Plugin Development:**
 1. [Plugin Structure](DEVELOPMENT.md#plugin-structure)
 2. [Local Testing](DEVELOPMENT.md#testing-plugin-locally)
-3. [Testing Guide](../TESTING_INSTRUCTIONS.md)
 
 **Python Package Development:**
 1. [Architecture](DEVELOPMENT.md#architecture-overview)
@@ -96,7 +94,7 @@
 
 **Publishing:**
 1. [Version Management](RELEASING.md#bump-the-version-semver)
-2. [Publishing to PyPI](RELEASING.md#publish-to-pypi)
+2. [Publishing to PyPI](RELEASING.md#recommended-trusted-publishing-via-github-actions)
 3. [Verification](RELEASING.md#verify)
 
 ---
@@ -144,7 +142,6 @@ claude-scientific-writer/
 ├── README.md                    # Main entry point
 ├── CHANGELOG.md                 # Version history
 ├── CLAUDE.md                    # System instructions
-├── TESTING_INSTRUCTIONS.md      # Plugin testing
 ├── example_api_usage.py         # API examples
 ├── docs/
 │   ├── README.md                # Documentation hub
@@ -169,7 +166,7 @@ claude-scientific-writer/
 
 ### Version References
 
-- Always specify version when referencing features (e.g., "v2.15.1")
+- Always specify version when referencing features (e.g., "v2.16.0")
 - Use "Latest" for current version, "Previous" for older versions
 - Update version numbers during releases
 
@@ -214,5 +211,5 @@ Found an issue with the documentation? Please:
 
 ---
 
-**Last Updated**: July 4, 2026 (v2.15.1)
+**Last Updated**: July 22, 2026 (v2.16.0)
 

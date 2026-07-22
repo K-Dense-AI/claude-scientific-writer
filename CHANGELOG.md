@@ -4,10 +4,19 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ## [Unreleased]
 
+### Fixed
+
+- **Programmatic API contracts** — explicit API keys now reach the SDK, input files are staged before generation, custom output roots resolve relative to `cwd`, token usage reads the SDK mapping correctly, each invocation owns a race-free output directory, and Stop-hook continuation is bounded and functional.
+- **Document-neutral results** — final status now recognizes PDF, TeX, DOCX, PPTX, Markdown, HTML, spreadsheet, and image artifacts; results include saved sources and complete artifact inventories while retaining the paper-prefixed compatibility models.
+- **Input and metadata safety** — CLI inputs are preserved by default with collision-safe copies, BibTeX directives no longer inflate citation counts, formatted LaTeX text remains in word counts, nested title braces are supported, and creation timestamps no longer use filesystem `st_ctime`.
+- **Documentation drift** — restored the API and testing examples, repaired broken links and counts, documented all 26 skills and CLI controls, and generated the plugin template from the canonical `CLAUDE.md`.
+
 ### Changed
 
 - **Scientific Agent Skills is now canonical** — the writing-skill subset is vendored from `K-Dense-AI/scientific-agent-skills` release `v2.54.0` at its immutable commit, with provenance and content hashes recorded in `skills.lock.json`. `scripts/sync_skills.py` now fetches pinned upstream content, refreshes all plugin/package snapshots, supports explicit upstream ref updates, and verifies snapshots offline in CI.
 - **Skill set aligned with upstream** — removed the local-only `paper-2-web` and `poster-presentation` skills; Scientific Writer now ships 26 selected upstream skills, including the four document skills grouped under `document-skills/`.
+- **SDK and execution controls** — project skills and native reasoning effort now use the current Claude Agent SDK surface; API/CLI callers can set permission mode, turn limits, budget ceilings, and completion-verification bounds.
+- **Reproducible packaging and releases** — `uv.lock` is committed, dependency and workflow versions are refreshed, optional analysis/office runtimes are declared, CI tests Python 3.10/3.12/3.14 with frozen installs, release verification matches CI, and Dependabot/pre-commit/codespell are wired.
 
 ---
 

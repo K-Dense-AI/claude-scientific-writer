@@ -31,7 +31,17 @@ Example:
 """
 
 from .api import generate_paper
-from .models import ProgressUpdate, TextUpdate, PaperResult, PaperMetadata, PaperFiles, TokenUsage
+from .models import (
+    DocumentFiles,
+    DocumentMetadata,
+    DocumentResult,
+    PaperFiles,
+    PaperMetadata,
+    PaperResult,
+    ProgressUpdate,
+    TextUpdate,
+    TokenUsage,
+)
 
 __version__ = "2.16.0"
 __author__ = "K-Dense"
@@ -44,6 +54,9 @@ __all__ = [
     "PaperResult",
     "PaperMetadata",
     "PaperFiles",
+    "DocumentResult",
+    "DocumentMetadata",
+    "DocumentFiles",
     "TokenUsage",
 ]
 

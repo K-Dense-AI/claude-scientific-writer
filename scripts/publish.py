@@ -131,7 +131,10 @@ def build_package(root: Path) -> None:
     if not dist_dir.exists():
         raise RuntimeError("Build failed: dist/ directory not created")
 
-    artifacts = list(dist_dir.glob("*"))
+    artifacts = sorted(
+        [*dist_dir.glob("*.whl"), *dist_dir.glob("*.tar.gz")],
+        key=lambda path: path.name,
+    )
     if not artifacts:
         raise RuntimeError("Build failed: no artifacts in dist/ directory")
 
@@ -327,6 +330,7 @@ def bump_version_before_publish(root: Path, bump_type: str) -> str:
         raise RuntimeError(f"Bump script not found at {bump_script}")
 
     run_command(["uv", "run", str(bump_script), bump_type], cwd=root)
+    run_command(["uv", "lock"], cwd=root)
 
     # Read new version
     pyproject_path = root / "pyproject.toml"
@@ -349,11 +353,25 @@ def commit_version_bump(root: Path, version: str) -> None:
         "pyproject.toml",
         "scientific_writer/__init__.py",
         ".claude-plugin/marketplace.json",
+        "uv.lock",
     ]
     existing = [f for f in version_files if (root / f).exists()]
     run_command(["git", "add", *existing], cwd=root)
     run_command(["git", "commit", "-m", f"Bump version to {version}"], cwd=root)
     print(f"  ✓ Committed version bump to {version}")
+
+
+def push_release_commit(root: Path) -> None:
+    """Push the release commit before uploading artifacts or creating a tag."""
+    branch = run_command(
+        ["git", "branch", "--show-current"],
+        cwd=root,
+        capture_output=True,
+    ).stdout.strip()
+    if not branch:
+        raise RuntimeError("Cannot publish from a detached HEAD")
+    run_command(["git", "push", "origin", branch], cwd=root)
+    print(f"  ✓ Pushed release commit on {branch}")
 
 
 def verify_skill_mirrors(root: Path) -> None:
@@ -370,6 +388,40 @@ def verify_skill_mirrors(root: Path) -> None:
         raise RuntimeError(f"Sync script not found at {sync_script}")
     run_command([sys.executable, str(sync_script), "--check"], cwd=root)
     print("  ✓ Skill mirrors are in sync")
+
+
+def run_release_checks(root: Path) -> None:
+    """Run the same quality and package checks enforced by release CI."""
+    commands = [
+        ["uv", "run", "--frozen", "ruff", "check", "."],
+        ["uv", "run", "--frozen", "mypy"],
+        ["uv", "run", "--frozen", "pytest", "tests/", "-q"],
+        [
+            "uv",
+            "run",
+            "--frozen",
+            "codespell",
+            "README.md",
+            "CHANGELOG.md",
+            "CONTRIBUTING.md",
+            "example_api_usage.py",
+            "CLAUDE.md",
+            "pyproject.toml",
+            ".env.example",
+            "scientific_writer",
+            "scripts",
+            "tests",
+            "docs",
+            "commands",
+            "templates",
+            ".github",
+        ],
+        ["uv", "run", "--frozen", "python", "scripts/check_consistency.py"],
+        ["uv", "run", "--frozen", "python", "scripts/verify_package.py"],
+    ]
+    for command in commands:
+        run_command(command, cwd=root)
+    print("  ✓ Release quality checks passed")
 
 
 def validate_package_metadata(root: Path) -> None:
@@ -444,6 +496,7 @@ def main() -> int:
     try:
         root = get_project_root()
         pyproject_path = root / "pyproject.toml"
+        release_commit_created = False
 
         print("=" * 60)
         print("Scientific Writer - PyPI Publishing")
@@ -461,6 +514,7 @@ def main() -> int:
             print(f"\n  ✓ Version bumped to {new_version}")
             if not args.dry_run:
                 commit_version_bump(root, new_version)
+                release_commit_created = True
 
         # Read current version
         current_version = read_current_version(pyproject_path)
@@ -473,6 +527,11 @@ def main() -> int:
         # Verify skill mirrors are in sync with skills/
         print("\nVerifying skill mirrors...")
         verify_skill_mirrors(root)
+
+        print("\nRunning release checks...")
+        run_release_checks(root)
+        if release_commit_created:
+            push_release_commit(root)
 
         # Clean old builds
         print("\nCleaning build artifacts...")

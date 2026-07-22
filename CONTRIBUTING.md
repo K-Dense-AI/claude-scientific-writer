@@ -7,20 +7,20 @@ Thank you for your interest in contributing! This guide covers the development s
 ```bash
 git clone https://github.com/K-Dense-AI/claude-scientific-writer.git
 cd claude-scientific-writer
-uv sync
+uv sync --frozen --group dev
 ```
 
 Copy `.env.example` to `.env` and fill in your API keys:
 
 - `ANTHROPIC_API_KEY` (required)
-- `PARALLEL_API_KEY` (required for research lookup, web search, and deep research)
+- Parallel CLI login or `PARALLEL_API_KEY` (research lookup, web search, and deep research)
 - `OPENROUTER_API_KEY` (optional, for AI image generation skills)
 - `NCBI_API_KEY` / `NCBI_EMAIL` (optional, for higher-rate PubMed lookups)
 
 ## Running Tests
 
 ```bash
-uv run pytest
+uv run --frozen pytest
 ```
 
 Tests live in `tests/` and cover the Python package (`scientific_writer/`). Please add or update tests for any behavior you change.
@@ -28,7 +28,9 @@ Tests live in `tests/` and cover the Python package (`scientific_writer/`). Plea
 ## Linting
 
 ```bash
-uv run ruff check .
+uv run --frozen ruff check .
+uv run --frozen mypy
+uv run --frozen pre-commit run codespell --all-files
 ```
 
 Ruff configuration lives in `pyproject.toml`. Fix all lint errors before opening a pull request.
@@ -46,7 +48,7 @@ Similarly, `CLAUDE.md` at the root is the source of truth for the agent instruct
 **Never edit any of the three local skill snapshots directly.** Make skill-content changes upstream, then pin and vendor an upstream tag or commit:
 
 ```bash
-python3 scripts/sync_skills.py --update-ref v2.55.0
+python3 scripts/sync_skills.py --update-ref <tag-or-commit>
 ```
 
 To verify the pinned snapshot and mirrors without using the network (this is what CI checks):
@@ -61,8 +63,8 @@ New skills must be merged upstream, selected in `skills.lock.json`, and register
 
 1. **Fork and branch**: Create a feature branch from `main` with a descriptive name (e.g., `fix/latex-compilation-retry`).
 2. **Keep changes focused**: One logical change per pull request. Small, reviewable diffs merge faster.
-3. **Test locally**: Run `uv run pytest` and `uv run ruff check .`. If you changed the upstream skill pin, run `python3 scripts/sync_skills.py --check` and commit the lock plus all regenerated snapshots.
-4. **Exercise what you changed**: For CLI changes run `uv run scientific-writer`; for API changes run `uv run python example_api_usage.py`; for plugin changes follow [TESTING_INSTRUCTIONS.md](TESTING_INSTRUCTIONS.md).
+3. **Test locally**: Run Ruff, mypy, pytest, and codespell with `uv run --frozen`. If you changed the upstream skill pin, run `python3 scripts/sync_skills.py --check` and commit the skill lock plus all regenerated snapshots. Commit `uv.lock` whenever project dependencies change.
+4. **Exercise what you changed**: For CLI changes run `uv run scientific-writer`; for API changes run `uv run python example_api_usage.py`; for plugin changes follow [Testing Plugin Locally](docs/DEVELOPMENT.md#testing-plugin-locally).
 5. **Update documentation**: If your change affects user-facing behavior, update the README and the relevant files under `docs/`.
 6. **Write clear commits**: Use concise, descriptive commit messages that explain the why, not just the what.
 7. **Open the pull request**: Include a short description of the problem, the approach, and how you verified it.

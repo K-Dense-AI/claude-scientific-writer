@@ -84,7 +84,7 @@ After writing the file, provide a brief summary:
 📋 What's Included:
 - A deep research and writing tool that combines AI-driven research with well-formatted written outputs
 - Complete scientific writing workflow with real-time literature search and verified citations
-- 25 specialized skills for academic writing:
+- 26 selected skills for academic writing:
   • research-lookup: Real-time literature search
   • peer-review: Systematic manuscript evaluation
   • citation-management: BibTeX and reference handling
@@ -92,7 +92,7 @@ After writing the file, provide a brief summary:
   • research-grants: NSF, NIH, DOE proposal support
   • scientific-slides: Research presentations
   • latex-posters: Conference poster generation
-  • And 18 more specialized skills...
+  • And 19 more specialized skills...
 
 📝 Document Types Supported:
 - Scientific papers (Nature, Science, NeurIPS, IEEE, etc.)

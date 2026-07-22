@@ -168,7 +168,7 @@ Publication-quality diagrams and visualizations.
 
 ### Real-Time Research Lookup
 
-Powered by parallel-cli and the Parallel Chat API.
+Powered by Parallel Search, Extract, and Research through `parallel-cli`.
 
 **Features:**
 - Live internet search during paper generation
@@ -317,7 +317,7 @@ Simply drop files into the `data/` folder at the project root.
 **File Routing:**
 - **Images** (png, jpg, svg, etc.) → `figures/`
 - **Data files** (csv, json, txt, xlsx) → `data/`
-- **Original files** automatically deleted after copying
+- **Original files** preserved by default (`--consume-inputs` opts into deletion)
 
 **Supported Image Formats:**
 `.png`, `.jpg`, `.jpeg`, `.gif`, `.bmp`, `.tiff`, `.svg`, `.webp`, `.ico`
@@ -334,7 +334,7 @@ scientific-writer
 # 3. Files are automatically detected and processed
 > Create a paper analyzing the experimental results
 # ✓ Files copied to paper's data/ and figures/
-# ✓ Original files deleted from data/
+# ✓ Original files preserved in data/
 ```
 
 ### Programmatic Data Files
@@ -441,16 +441,23 @@ async def generate_paper(
     cwd: Optional[str] = None,
     track_token_usage: bool = False,
     auto_continue: bool = True,
+    permission_mode: str = "bypassPermissions",
+    max_turns: int = 500,
+    max_budget_usd: Optional[float] = None,
+    max_auto_continuations: int = 1,
+    skills: List[str] | Literal["all"] | None = "all",
 ) -> AsyncGenerator[Dict[str, Any], None]
 ```
 
-When `model` is omitted, it is resolved from `effort_level` (`low` = Claude Haiku 4.5, `medium` = Claude Opus 4.8, `high` = Claude Opus 4.8). See the [API Reference](API.md#generate_paper) for full parameter details.
+When `model` is omitted, it is resolved from `effort_level` (`low` = Claude Haiku 4.5, `medium`/`high` = Claude Opus 4.8). The same value configures the SDK's native reasoning effort. See the [API Reference](API.md#generate_paper) for execution, permission, budget, and skill controls.
 
 **Type-Safe Models:**
 ```python
 from scientific_writer import (
     ProgressUpdate,  # Progress information
+    TextUpdate,      # Streamed assistant text
     PaperResult,     # Final result with all paper info
+    DocumentResult,  # Document-neutral alias
     PaperMetadata,   # Paper metadata (title, date, word count)
     PaperFiles,      # All file paths (PDF, TeX, BibTeX, etc.)
 )

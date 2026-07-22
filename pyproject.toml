@@ -4,17 +4,41 @@ version = "2.16.0"
 description = "Deep research and writing tool - combines AI-driven deep research with well-formatted written outputs. Generates publication-ready scientific documents with verified citations."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+authors = [
+    { name = "K-Dense Inc.", email = "contact@k-dense.ai" },
+]
+keywords = ["scientific-writing", "research", "latex", "citations", "claude"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+]
 dependencies = [
     # The code imports the 0.2.x hook/types surface (StopHookInput, HookContext);
     # cap below 0.3 since the SDK API is still evolving pre-1.0.
-    "claude-agent-sdk>=0.2.0,<0.3",
+    "claude-agent-sdk>=0.2.126,<0.3",
     "python-dotenv>=1.0.0",
     # requests and pymupdf are not imported by scientific_writer itself, but the
     # bundled skill scripts (web lookup, pdf_to_images) rely on them at runtime.
     "requests>=2.31.0",
     "pymupdf>=1.24.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/K-Dense-AI/claude-scientific-writer"
+Repository = "https://github.com/K-Dense-AI/claude-scientific-writer"
+Issues = "https://github.com/K-Dense-AI/claude-scientific-writer/issues"
+Changelog = "https://github.com/K-Dense-AI/claude-scientific-writer/blob/main/CHANGELOG.md"
 
 # System Dependencies (must be installed separately):
 # 
@@ -37,22 +61,51 @@ dependencies = [
 # Optional but recommended:
 #   - Ghostscript (for PDF manipulation)
 #   - ImageMagick (for image processing)
+#   - LibreOffice (for Office rendering and recalculation helpers)
+#   - FFmpeg (for audio/video conversion through MarkItDown)
 
 [project.scripts]
 scientific-writer = "scientific_writer.cli:cli_main"
 
+[project.optional-dependencies]
+analysis = [
+    "lifelines>=0.30.0",
+    "matplotlib>=3.10.9",
+    "numpy>=2.2.6",
+    "pandas>=2.3.3",
+    "scipy>=1.15.3",
+]
+office = [
+    "defusedxml>=0.7.1",
+    # 0.1.6 currently requires an unavailable Azure prerelease on a supported split.
+    "markitdown[all]>=0.1.5,!=0.1.6",
+    "openai>=2.47.0",
+    "openpyxl>=3.1.5",
+    "pillow>=12.3.0",
+]
+
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.31,<2"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["scientific_writer"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.claude",
+    "/docs/examples",
+    "/extensions",
+    "/skills",
+]
 
 [dependency-groups]
 dev = [
     "pytest>=8.0",
     "ruff>=0.4",
     "mypy>=1.10",
+    "codespell>=2.4.3",
+    "pre-commit>=4.6.1",
 ]
 
 [tool.ruff]
@@ -81,7 +134,7 @@ ignore_missing_imports = true
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git,.gitignore,.gitattributes,*.pdf,*.svg,*.css,*.xsd'
+skip = '.git,.gitignore,.gitattributes,.claude,skills,scientific_writer/.claude,extensions,docs/examples,*.pdf,*.svg,*.css,*.xsd'
 check-hidden = true
 # Ignore camelCase/PascalCase identifiers, and word fragments from bold formatting
 # (**S**pecific, \textbf{F}requency, etc.)

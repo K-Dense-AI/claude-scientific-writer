@@ -15,7 +15,7 @@ The following three directories are generated and must never be edited directly:
 After an upstream skill change is released, pin and vendor that release:
 
 ```bash
-python3 scripts/sync_skills.py --update-ref v2.55.0
+python3 scripts/sync_skills.py --update-ref <tag-or-commit>
 ```
 
 CI verifies the pinned content hashes and both mirrors, without a network request, using `python3 scripts/sync_skills.py --check`.
