@@ -3,8 +3,8 @@ name: scientific-writing
 description: Core skill for the deep research and writing tool. Write scientific manuscripts in full paragraphs (never bullet points). Use two-stage process with (1) section outlines with key points using research-lookup then (2) convert to flowing prose. IMRAD structure, citations (APA/AMA/Vancouver), figures/tables, reporting guidelines (CONSORT/STROBE/PRISMA), for research papers and journal submissions.
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-    skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 # Scientific Writing
@@ -50,7 +50,7 @@ This is not optional. Scientific papers without visual elements are incomplete. 
 
 **Generate the graphical abstract FIRST:**
 ```bash
-python <path-to-scientific-schematics-skill>/scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description showing workflow from input → methods → key findings → conclusions]" -o figures/graphical_abstract.png
+python scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description showing workflow from input → methods → key findings → conclusions]" -o figures/graphical_abstract.png
 ```
 
 **Graphical Abstract Requirements:**
@@ -80,7 +80,7 @@ Every document should be richly illustrated. Generate figures liberally - when i
 
 **Use scientific-schematics EXTENSIVELY for technical diagrams:**
 ```bash
-python <path-to-scientific-schematics-skill>/scripts/generate_schematic.py "your diagram description" -o figures/output.png
+python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
 - Study design and methodology flowcharts (CONSORT, PRISMA, STROBE)

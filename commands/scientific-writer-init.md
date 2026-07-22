@@ -127,7 +127,7 @@ Happy writing! 🔬📄
 
 Remind the user:
 - The `CLAUDE.md` file can be opened and edited manually at any time
-- All 25 skills are now available for use in this project
+- All 26 selected skills are now available for use in this project
 - They can ask "What skills are available?" to see the full list
 - They can reference specific skills like "@research-lookup" in their prompts
 

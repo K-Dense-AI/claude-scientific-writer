@@ -754,27 +754,26 @@ title = {Study of H\textsubscript{2}O}  % H₂O
 
 1. **Identify the missing fields** by scanning the BibTeX entry for empty or absent `volume`, `pages`, `number`, `doi` fields.
 
-2. **Search for the missing metadata using web search**:
+2. **Search for the missing metadata using web search** (parallel-web skill):
    ```bash
    # Search by author + title to find complete citation info
-   python scripts/parallel_web.py search \
-     "AUTHOR_NAME PAPER_TITLE JOURNAL volume pages DOI" \
-     -o sources/search_YYYYMMDD_HHMMSS_citation_CITATIONKEY.md
+   parallel-cli search "AUTHOR_NAME PAPER_TITLE JOURNAL volume pages DOI" \
+     --json --max-results 10 \
+     -o sources/search_citation_CITATIONKEY.json
    ```
 
 3. **If DOI is known, extract from DOI resolver page**:
    ```bash
-   python scripts/parallel_web.py extract \
-     "https://doi.org/DOI_HERE" \
+   parallel-cli extract "https://doi.org/DOI_HERE" --json \
      --objective "extract volume, issue number, page range, publication date" \
-     -o sources/extract_YYYYMMDD_HHMMSS_doi_CITATIONKEY.md
+     -o sources/extract_doi_CITATIONKEY.json
    ```
 
 4. **If DOI is unknown, search for it**:
    ```bash
-   python scripts/parallel_web.py search \
-     "AUTHOR_NAME PAPER_TITLE JOURNAL_NAME DOI" \
-     -o sources/search_YYYYMMDD_HHMMSS_find_doi_CITATIONKEY.md
+   parallel-cli search "AUTHOR_NAME PAPER_TITLE JOURNAL_NAME DOI" \
+     --json --max-results 10 \
+     -o sources/search_find_doi_CITATIONKEY.json
    ```
 
 5. **Try alternative metadata sources**:

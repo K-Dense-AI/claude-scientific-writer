@@ -1,7 +1,10 @@
 ---
 name: citation-management
 description: Comprehensive citation management for academic research. Search Google Scholar and PubMed for papers, extract accurate metadata, validate citations, and generate properly formatted BibTeX entries. This skill should be used when you need to find papers, verify citation information, convert DOIs to BibTeX, or ensure reference accuracy in scientific writing.
-allowed-tools: [Read, Write, Edit, Bash]
+allowed-tools: Read Write Edit Bash
+license: MIT License
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for LLM-powered citation steps.", "required_for": "optional features"}, {"name": "NCBI_EMAIL", "prompt": "Email for NCBI Entrez identification.", "required_for": "optional features"}, {"name": "NCBI_API_KEY", "prompt": "NCBI API key to raise Entrez rate limits.", "required_for": "optional features"}]
+metadata: {"version": "1.2", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for LLM-powered citation steps."}, {"name": "NCBI_EMAIL", "required": false, "description": "Email for NCBI Entrez identification."}, {"name": "NCBI_API_KEY", "required": false, "description": "NCBI API key to raise Entrez rate limits."}]}}
 ---
 
 # Citation Management
@@ -39,7 +42,7 @@ If your document does not already contain schematics or diagrams:
 
 **How to generate schematics:**
 ```bash
-python <path-to-scientific-schematics-skill>/scripts/generate_schematic.py "your diagram description" -o figures/output.png
+python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
 The AI will automatically:
@@ -233,35 +236,34 @@ Any `@article` entry missing `volume`, `pages`, or `doi` is considered **incompl
 
 #### Step 2: Web Search for Missing Metadata
 
-For each incomplete entry, search for the missing information:
+For each incomplete entry, use the **parallel-web skill** to search for the missing information:
 
 **Option A — Search by title and author** (best for finding DOI):
 ```bash
-python scripts/parallel_web.py search \
-  "FIRST_AUTHOR TITLE JOURNAL_NAME volume pages DOI" \
-  -o sources/search_YYYYMMDD_HHMMSS_citation_CITATIONKEY.md
+parallel-cli search "FIRST_AUTHOR TITLE JOURNAL_NAME volume pages DOI" \
+  --json --max-results 10 \
+  -o sources/search_citation_CITATIONKEY.json
 ```
 
 **Option B — Extract from DOI page** (best when DOI is known but volume/pages missing):
 ```bash
-python scripts/parallel_web.py extract \
-  "https://doi.org/10.XXXX/YYYY" \
+parallel-cli extract "https://doi.org/10.XXXX/YYYY" --json \
   --objective "extract complete citation metadata: volume, issue, pages, publication date" \
-  -o sources/extract_YYYYMMDD_HHMMSS_doi_CITATIONKEY.md
+  -o sources/extract_doi_CITATIONKEY.json
 ```
 
 **Option C — Search CrossRef API directly** (programmatic, fast):
 ```bash
-python scripts/parallel_web.py search \
-  "crossref DOI metadata FIRST_AUTHOR TITLE" \
-  -o sources/search_YYYYMMDD_HHMMSS_crossref_CITATIONKEY.md
+parallel-cli search "crossref DOI metadata FIRST_AUTHOR TITLE" \
+  --json --max-results 10 \
+  -o sources/search_crossref_CITATIONKEY.json
 ```
 
 **Option D — Search Google Scholar** (fallback for hard-to-find papers):
 ```bash
-python scripts/parallel_web.py search \
-  "google scholar FIRST_AUTHOR TITLE YEAR complete citation" \
-  -o sources/search_YYYYMMDD_HHMMSS_scholar_CITATIONKEY.md
+parallel-cli search "google scholar FIRST_AUTHOR TITLE YEAR complete citation" \
+  --json --max-results 10 \
+  -o sources/search_scholar_CITATIONKEY.json
 ```
 
 #### Step 3: Update BibTeX Entries
@@ -294,7 +296,7 @@ If metadata genuinely cannot be found after web search (very old paper, obscure 
 
 | Missing Field | Best Search Strategy |
 |---------------|---------------------|
-| DOI | Search "AUTHOR TITLE DOI" via parallel_web.py |
+| DOI | Search "AUTHOR TITLE DOI" via parallel-cli search |
 | Volume | Extract from DOI page or search "JOURNAL YEAR TITLE volume" |
 | Pages | Extract from DOI page or search publisher website |
 | Issue/Number | Extract from DOI page or CrossRef |
@@ -398,13 +400,21 @@ python scripts/format_bibtex.py references.bib \
 # Validate BibTeX file
 python scripts/validate_citations.py references.bib
 
-# Validate and fix common issues
-python scripts/validate_citations.py references.bib \
-  --auto-fix \
-  --output validated_references.bib
+# Validate against a venue standard (e.g., Nature, NeurIPS, Literature Review)
+python scripts/validate_citations.py references.bib --venue nature
+python scripts/validate_citations.py references.bib --venue neurips
+python scripts/validate_citations.py references.bib --venue review
+
+# Validate with custom minimum citation count
+python scripts/validate_citations.py references.bib --min-count 40
+
+# Check references against a written manuscript file (detect missing or unused citations)
+python scripts/validate_citations.py references.bib --manuscript paper.md
 
 # Generate detailed validation report
 python scripts/validate_citations.py references.bib \
+  --venue nature \
+  --manuscript paper.md \
   --report validation_report.json \
   --verbose
 ```
@@ -466,6 +476,39 @@ python scripts/validate_citations.py references.bib \
     }
   ]
 }
+```
+
+#### Citation Count Standards by Venue
+
+**Citations must always be high in number based on standards for journal and conference publications in the venue of choice or recommendation.** Never settle for a sparse reference list; establish an authoritative, rich context with dense, verified citations.
+
+| Venue Type | Target Citation Count |
+|------------|----------------------|
+| High-impact multidisciplinary journals (Nature, Science, Cell) | **35-50+** |
+| ML / CS conferences (NeurIPS, ICML, ICLR, CVPR, ACL) | **30-45+** |
+| Comprehensive literature reviews / market research reports | **40-65+** |
+| Medical journals (NEJM, Lancet, JAMA) | **30-45+** |
+
+Always adjust the citation target upward depending on standard density and practices of the target venue. Avoid 'lazy' citation over-repetition — do not repeatedly cite the same 1 or 2 papers to support multiple unrelated claims; draw from a diverse, high-quality set of reputable references.
+
+Enforce these standards programmatically with `validate_citations.py --venue <venue>` or `--min-count <N>`.
+
+#### Mandatory Post-Writing Reference Checks (Non-Negotiable)
+
+Once the entire scientific report or paper has been drafted and written, perform a comprehensive post-writing verification of all citations before compiling the final deliverables:
+
+1. **Verify No Missing or Unresolved Citations**: Check the draft or compiled document to ensure that every in-text citation correctly resolves to a reference in `references.bib`. There must be ZERO broken citation keys, missing identifiers, or unresolved references (e.g., `[?]` or `[citation needed]`).
+2. **Verify No Unused (Dangling) Bibliography Entries**: Check that every entry in `references.bib` is actually cited in the body of the report. Remove any unused entries to keep the bibliography perfectly clean.
+3. **Verify Citation Quantity Against Target Standards**: Ensure the final citation count meets or exceeds the high standard of the chosen or recommended venue (see table above). If the count is below standard, perform additional literature search first, find high-quality papers, and integrate them into appropriate sections.
+4. **Verify Metadata Completeness**: Confirm that all cited entries contain complete, fully-verified fields (all author names, complete journal/conference names, exact year, volume, issue, page range, and valid DOI).
+
+Run all of these checks in one command:
+
+```bash
+python scripts/validate_citations.py references.bib \
+  --venue <venue> \
+  --manuscript paper.md \
+  --report post_writing_check.json
 ```
 
 ### Phase 5: Integration with Writing Workflow
@@ -1203,4 +1246,5 @@ The citation-management skill provides:
 7. **Reproducibility** through documented search and extraction methods
 
 Use this skill to maintain accurate, complete citations throughout your research and ensure publication-ready bibliographies.
+
 

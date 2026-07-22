@@ -157,7 +157,8 @@ claude-scientific-writer/
 │   ├── SKILL_AUTHORING.md       # Skill authoring guide
 │   ├── RELEASING.md             # Release process
 │   └── examples/                # Example outputs
-└── skills/                      # 25 skill directories
+├── skills.lock.json             # Pinned upstream skill provenance
+└── skills/                      # 26 generated upstream skills
 ```
 
 ### Link Format

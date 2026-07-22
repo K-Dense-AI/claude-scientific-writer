@@ -1,7 +1,10 @@
 ---
 name: clinical-decision-support
-description: "Generate professional clinical decision support (CDS) documents for pharmaceutical and clinical research settings, including patient cohort analyses (biomarker-stratified with outcomes) and treatment recommendation reports (evidence-based guidelines with decision algorithms). Supports GRADE evidence grading, statistical analysis (hazard ratios, survival curves, waterfall plots), biomarker integration, and regulatory compliance. Outputs publication-ready LaTeX/PDF format optimized for drug development, clinical research, and evidence synthesis."
-allowed-tools: [Read, Write, Edit, Bash]
+description: Generate professional clinical decision support (CDS) documents for pharmaceutical and clinical research settings, including patient cohort analyses (biomarker-stratified with outcomes) and treatment recommendation reports (evidence-based guidelines with decision algorithms). Supports GRADE evidence grading, statistical analysis (hazard ratios, survival curves, waterfall plots), biomarker integration, and regulatory compliance. Outputs publication-ready LaTeX/PDF format optimized for drug development, clinical research, and evidence synthesis.
+allowed-tools: Read Write Edit Bash
+license: MIT License
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 # Clinical Decision Support Documents
@@ -114,7 +117,7 @@ This is not optional. Clinical decision documents require clear visual algorithm
 
 **How to generate schematics:**
 ```bash
-python <path-to-scientific-schematics-skill>/scripts/generate_schematic.py "your diagram description" -o figures/output.png
+python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
 The AI will automatically:
@@ -481,7 +484,6 @@ See the `assets/` directory for LaTeX templates:
 - `treatment_recommendation_template.tex` - Evidence-based clinical practice guidelines with GRADE grading
 - `clinical_pathway_template.tex` - TikZ decision algorithm flowcharts for treatment sequencing
 - `biomarker_report_template.tex` - Molecular subtype classification and genomic profile reports
-- `evidence_synthesis_template.tex` - Systematic evidence review and meta-analysis summaries
 
 **Template Features:**
 - 0.5in margins for compact presentation
@@ -503,4 +505,5 @@ See the `scripts/` directory for analysis and visualization tools:
 - `calculate_statistics.py` - Hazard ratios, Cox regression, log-rank tests, Fisher's exact
 - `validate_cds_document.py` - Quality and compliance checks (HIPAA, statistical reporting standards)
 - `grade_evidence.py` - Automated GRADE assessment helper for treatment recommendations
+
 

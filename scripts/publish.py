@@ -144,7 +144,7 @@ def build_package(root: Path) -> None:
 
 def verify_wheel_payload(dist_dir: Path) -> None:
     """
-    Assert the built wheel ships the bundled .claude payload (WRITER.md + skills).
+    Assert the wheel ships WRITER.md, the skill provenance lock, and skills.
 
     The entire runtime depends on these non-.py data files; if the build tooling
     ever drops them, the package would silently degrade to a generic prompt with
@@ -169,15 +169,20 @@ def verify_wheel_payload(dist_dir: Path) -> None:
         names = zf.namelist()
     claude_files = [n for n in names if "/.claude/" in n or n.startswith("scientific_writer/.claude/")]
     has_writer = any(n.endswith(".claude/WRITER.md") for n in names)
+    has_skills_lock = any(n.endswith(".claude/skills.lock.json") for n in names)
     skill_files = [n for n in claude_files if "/skills/" in n]
 
-    if not has_writer or len(skill_files) < 100:
+    if not has_writer or not has_skills_lock or len(skill_files) < 100:
         raise RuntimeError(
             f"Wheel {wheel.name} is missing the bundled .claude payload "
-            f"(WRITER.md found: {has_writer}, skill files: {len(skill_files)}). "
+            f"(WRITER.md found: {has_writer}, skills.lock.json found: {has_skills_lock}, "
+            f"skill files: {len(skill_files)}). "
             "Check the hatchling build configuration before publishing."
         )
-    print(f"  ✓ Wheel contains .claude payload ({len(claude_files)} files, WRITER.md present)")
+    print(
+        f"  ✓ Wheel contains .claude payload ({len(claude_files)} files, "
+        "WRITER.md and skills.lock.json present)"
+    )
 
 
 def verify_git_status(root: Path) -> None:

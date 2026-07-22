@@ -1,0 +1,14 @@
+---
+alwaysApply: true
+---
+
+Skills are sourced from `https://github.com/K-Dense-AI/scientific-agent-skills`
+at the revision pinned in `skills.lock.json`.
+
+Never edit `skills/`, `.claude/skills/`, or
+`scientific_writer/.claude/skills/` directly. Make skill-content changes in
+the upstream repository, then run:
+
+```bash
+python3 scripts/sync_skills.py --update-ref <tag-or-commit>
+```

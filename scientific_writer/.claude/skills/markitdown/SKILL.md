@@ -1,9 +1,10 @@
 ---
 name: markitdown
-description: "Convert files and office documents to Markdown. Supports PDF, DOCX, PPTX, XLSX, images (with OCR), audio (with transcription), HTML, CSV, JSON, XML, ZIP, YouTube URLs, EPubs and more."
-allowed-tools: [Read, Write, Edit, Bash]
-license: MIT
-source: https://github.com/microsoft/markitdown
+description: Convert files and office documents to Markdown. Supports PDF, DOCX, PPTX, XLSX, images (with OCR), audio (with transcription), HTML, CSV, JSON, XML, ZIP, YouTube URLs, EPubs and more.
+allowed-tools: Read Write Edit Bash
+license: MIT license
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 # MarkItDown - File to Markdown Conversion
@@ -33,7 +34,7 @@ If your document does not already contain schematics or diagrams:
 
 **How to generate schematics:**
 ```bash
-python <path-to-scientific-schematics-skill>/scripts/generate_schematic.py "your diagram description" -o figures/output.png
+python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
 The AI will automatically:
@@ -138,7 +139,7 @@ client = OpenAI(
 
 md = MarkItDown(
     llm_client=client,
-    llm_model="anthropic/claude-sonnet-4.5",  # recommended for scientific vision
+    llm_model="anthropic/claude-opus-4.5",  # recommended for scientific vision
     llm_prompt="Describe this image in detail for scientific documentation"
 )
 
@@ -261,7 +262,7 @@ client = OpenAI(
 
 md = MarkItDown(
     llm_client=client,
-    llm_model="anthropic/claude-sonnet-4.5",  # recommended for presentations
+    llm_model="anthropic/claude-opus-4.5",  # recommended for presentations
     llm_prompt="Describe this slide image in detail, focusing on key visual elements and data"
 )
 
@@ -418,7 +419,7 @@ client = OpenAI(
 
 md_ai = MarkItDown(
     llm_client=client,
-    llm_model="anthropic/claude-sonnet-4.5",
+    llm_model="anthropic/claude-opus-4.5",
     llm_prompt="Describe scientific figures with technical precision"
 )
 ```
@@ -483,4 +484,5 @@ print(result.text_content)
 - **OpenRouter Models**: https://openrouter.ai/models
 - **MCP Server**: markitdown-mcp (for Claude Desktop integration)
 - **Plugin Development**: See `packages/markitdown-sample-plugin`
+
 

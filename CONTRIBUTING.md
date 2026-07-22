@@ -35,32 +35,33 @@ Ruff configuration lives in `pyproject.toml`. Fix all lint errors before opening
 
 ## Skills: Source of Truth
 
-The `skills/` directory at the repository root is the **canonical source of truth** for all skills. Two mirrors are generated from it:
+The canonical source of truth for skill content is [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills). `skills.lock.json` pins the exact upstream release and content hashes selected for Scientific Writer.
 
+- `skills/` is the generated plugin snapshot
 - `.claude/skills/`
 - `scientific_writer/.claude/skills/`
 
 Similarly, `CLAUDE.md` at the root is the source of truth for the agent instructions mirrored to `.claude/WRITER.md` and `scientific_writer/.claude/WRITER.md`.
 
-**Never edit the mirrors directly.** Edit `skills/` (or `CLAUDE.md`) and regenerate the mirrors:
+**Never edit any of the three local skill snapshots directly.** Make skill-content changes upstream, then pin and vendor an upstream tag or commit:
 
 ```bash
-python scripts/sync_skills.py
+python3 scripts/sync_skills.py --update-ref v2.55.0
 ```
 
-To verify the mirrors are in sync (this is what CI checks):
+To verify the pinned snapshot and mirrors without using the network (this is what CI checks):
 
 ```bash
-python scripts/sync_skills.py --check
+python3 scripts/sync_skills.py --check
 ```
 
-New skills must also be registered in `.claude-plugin/marketplace.json` so they are available through the Claude Code plugin. See the [Skill Authoring Guide](docs/SKILL_AUTHORING.md) for the full workflow.
+New skills must be merged upstream, selected in `skills.lock.json`, and registered in `.claude-plugin/marketplace.json` so they are available through the Claude Code plugin. See the [Skill Authoring Guide](docs/SKILL_AUTHORING.md) for the full workflow.
 
 ## Pull Request Guidelines
 
 1. **Fork and branch**: Create a feature branch from `main` with a descriptive name (e.g., `fix/latex-compilation-retry`).
 2. **Keep changes focused**: One logical change per pull request. Small, reviewable diffs merge faster.
-3. **Test locally**: Run `uv run pytest` and `uv run ruff check .`. If you touched skills, run `python scripts/sync_skills.py` and commit the regenerated mirrors.
+3. **Test locally**: Run `uv run pytest` and `uv run ruff check .`. If you changed the upstream skill pin, run `python3 scripts/sync_skills.py --check` and commit the lock plus all regenerated snapshots.
 4. **Exercise what you changed**: For CLI changes run `uv run scientific-writer`; for API changes run `uv run python example_api_usage.py`; for plugin changes follow [TESTING_INSTRUCTIONS.md](TESTING_INSTRUCTIONS.md).
 5. **Update documentation**: If your change affects user-facing behavior, update the README and the relevant files under `docs/`.
 6. **Write clear commits**: Use concise, descriptive commit messages that explain the why, not just the what.

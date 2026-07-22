@@ -10,6 +10,7 @@ def _make_bundled_claude(package_dir: Path, writer_text: str, skill_text: str) -
     claude = package_dir / ".claude"
     (claude / "skills" / "demo-skill").mkdir(parents=True)
     (claude / "WRITER.md").write_text(writer_text)
+    (claude / "skills.lock.json").write_text('{"commit": "upstream-v2"}')
     (claude / "skills" / "demo-skill" / "SKILL.md").write_text(skill_text)
 
 
@@ -23,6 +24,7 @@ def test_copies_claude_dir_when_missing(tmp_path):
     setup_claude_skills(package_dir, work_dir)
 
     assert (work_dir / ".claude" / "WRITER.md").read_text() == "writer v2"
+    assert (work_dir / ".claude" / "skills.lock.json").read_text() == '{"commit": "upstream-v2"}'
     assert (work_dir / ".claude" / "skills" / "demo-skill" / "SKILL.md").read_text() == "skill v2"
 
 
@@ -37,12 +39,14 @@ def test_refreshes_bundled_skills_when_claude_exists(tmp_path):
     stale = work_dir / ".claude"
     (stale / "skills" / "demo-skill").mkdir(parents=True)
     (stale / "WRITER.md").write_text("writer v1")
+    (stale / "skills.lock.json").write_text('{"commit": "upstream-v1"}')
     (stale / "skills" / "demo-skill" / "SKILL.md").write_text("skill v1")
     (stale / "skills" / "demo-skill" / "leftover.md").write_text("obsolete")
 
     setup_claude_skills(package_dir, work_dir)
 
     assert (work_dir / ".claude" / "WRITER.md").read_text() == "writer v2"
+    assert (work_dir / ".claude" / "skills.lock.json").read_text() == '{"commit": "upstream-v2"}'
     assert (work_dir / ".claude" / "skills" / "demo-skill" / "SKILL.md").read_text() == "skill v2"
     # Bundled skill dirs are replaced wholesale so stale files don't linger
     assert not (work_dir / ".claude" / "skills" / "demo-skill" / "leftover.md").exists()

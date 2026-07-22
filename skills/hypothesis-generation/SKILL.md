@@ -1,7 +1,10 @@
 ---
 name: hypothesis-generation
-description: "Generate testable hypotheses. Formulate from observations, design experiments, explore competing explanations, develop predictions, propose mechanisms, for scientific inquiry across domains."
-allowed-tools: [Read, Write, Edit, Bash]
+description: Structured hypothesis formulation from observations. Use when you have experimental observations or data and need to formulate testable hypotheses with predictions, propose mechanisms, and design experiments to test them. Follows scientific method framework. For open-ended ideation use scientific-brainstorming; for automated LLM-driven hypothesis testing on datasets use hypogenic.
+allowed-tools: Read Write Edit Bash
+license: MIT license
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 # Scientific Hypothesis Generation
@@ -35,7 +38,7 @@ This is not optional. Hypothesis reports without visual elements are incomplete.
 
 **How to generate schematics:**
 ```bash
-python <path-to-scientific-schematics-skill>/scripts/generate_schematic.py "your diagram description" -o figures/output.png
+python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
 The AI will automatically:
@@ -291,3 +294,4 @@ When preparing hypothesis-driven research for publication, consult the **venue-t
 - `venue_writing_styles.md` - Master guide comparing styles across venues
 - Venue-specific guides for Nature/Science, Cell Press, medical journals, and ML/CS conferences
 - `reviewer_expectations.md` - What reviewers look for when evaluating research hypotheses
+

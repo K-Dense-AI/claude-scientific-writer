@@ -24,19 +24,20 @@ claude-scientific-writer/
 │   └── marketplace.json     # Defines the claude-scientific-writer plugin and its skills
 ├── commands/                # Plugin commands
 │   └── scientific-writer-init.md
-├── skills/                  # All 25 skills (canonical source of truth)
+├── skills.lock.json         # Pinned upstream revision, selection, and hashes
+├── skills/                  # Generated snapshot of 26 upstream skills
 │   ├── citation-management/
 │   ├── clinical-reports/
 │   ├── research-lookup/
-│   └── ... (22 more)
+│   └── ... (23 more)
 ├── templates/               # CLAUDE.md template
 │   └── CLAUDE.scientific-writer.md
 └── scientific_writer/       # Python package
 ```
 
-There is no `.claude-plugin/plugin.json`; the repository itself acts as a plugin marketplace via `.claude-plugin/marketplace.json`, which registers the `claude-scientific-writer` plugin and lists all 25 skill directories.
+There is no `.claude-plugin/plugin.json`; the repository itself acts as a plugin marketplace via `.claude-plugin/marketplace.json`. Skill content is sourced from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), pinned by `skills.lock.json`, and vendored into `skills/` for deterministic plugin and package builds.
 
-The 25 skills are: citation-management, clinical-decision-support, clinical-reports, document-skills, generate-image, hypothesis-generation, infographics, latex-posters, literature-review, market-research-reports, markitdown, paper-2-web, parallel-web, peer-review, poster-presentation, pptx-posters, research-grants, research-lookup, scholar-evaluation, scientific-critical-thinking, scientific-schematics, scientific-slides, scientific-writing, treatment-plans, and venue-templates.
+The 26 selected skills are: citation-management, clinical-decision-support, clinical-reports, docx, pdf, pptx, xlsx, generate-image, hypothesis-generation, infographics, latex-posters, literature-review, market-research-reports, markitdown, parallel-web, peer-review, pptx-posters, research-grants, research-lookup, scholar-evaluation, scientific-critical-thinking, scientific-schematics, scientific-slides, scientific-writing, treatment-plans, and venue-templates. The four document skills are grouped under the local `document-skills/` plugin path.
 
 ### Key Components
 
@@ -156,8 +157,8 @@ For local plugin development and testing (step-by-step manual test instructions 
 
 See the [Skill Authoring Guide](SKILL_AUTHORING.md) for the full workflow, frontmatter reference, and quality bar. In brief:
 
-1. Create a directory in `skills/` (the canonical source of truth)
-2. Add `SKILL.md` with YAML frontmatter:
+1. Create the skill in the canonical `K-Dense-AI/scientific-agent-skills` repository.
+2. Add `SKILL.md` with Agent Skills YAML frontmatter:
    ```yaml
    ---
    name: skill-name
@@ -169,10 +170,10 @@ See the [Skill Authoring Guide](SKILL_AUTHORING.md) for the full workflow, front
    ---
    ```
    Note that `allowed-tools` is a space-separated string, not a YAML list.
-3. Add references, scripts, assets as needed
-4. Register the skill directory in `.claude-plugin/marketplace.json`
-5. Run `python scripts/sync_skills.py` to regenerate the `.claude/skills/` and `scientific_writer/.claude/skills/` mirrors (never edit the mirrors directly)
-6. Test skill availability after plugin reinstall
+3. Add references, scripts, and assets upstream as needed, then merge and release the change.
+4. Select the upstream skill in `skills.lock.json` and register its generated destination in `.claude-plugin/marketplace.json`.
+5. Run `python3 scripts/sync_skills.py --update-ref <tag-or-commit>` to regenerate `skills/` and both mirrors; never edit generated skill snapshots directly.
+6. Run `python3 scripts/sync_skills.py --check` and test skill availability after plugin reinstall.
 
 ## Release Notes
 

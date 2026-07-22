@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Scientific schematic generation using Nano Banana Pro.
+Scientific schematic generation using Nano Banana 2.
 
 Generate any scientific diagram by describing it in natural language.
-Nano Banana Pro handles everything automatically with smart iterative refinement.
+Nano Banana 2 handles everything automatically with smart iterative refinement.
 
 Smart iteration: Only regenerates if quality is below threshold for your document type.
-Quality review: Uses Gemini 3 Pro for professional scientific evaluation.
+Quality review: Uses Gemini 3.1 Pro Preview for professional scientific evaluation.
 
 Usage:
     # Generate for journal paper (highest quality threshold)
@@ -34,9 +34,9 @@ def main():
         epilog="""
 How it works:
   Simply describe your diagram in natural language
-  Nano Banana Pro generates it automatically with:
+  Nano Banana 2 generates it automatically with:
   - Smart iteration (only regenerates if quality is below threshold)
-  - Quality review by Gemini 3 Pro
+  - Quality review by Gemini 3.1 Pro Preview
   - Document-type aware quality thresholds
   - Publication-ready output
 
@@ -119,15 +119,15 @@ Environment Variables:
     if iterations != 2:
         cmd.extend(["--iterations", str(iterations)])
     
-    if api_key:
-        cmd.extend(["--api-key", api_key])
-    
     if args.verbose:
         cmd.append("-v")
     
-    # Execute
+    # Execute — pass API key via environment to avoid exposure in process listings
     try:
-        result = subprocess.run(cmd, check=False)
+        env = os.environ.copy()
+        if api_key:
+            env["OPENROUTER_API_KEY"] = api_key
+        result = subprocess.run(cmd, check=False, env=env)
         sys.exit(result.returncode)
     except Exception as e:
         print(f"Error executing AI generation: {e}")

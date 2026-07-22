@@ -2,7 +2,9 @@
 
 This guide provides an overview of how writing style varies across publication venues. Understanding these differences is essential for crafting papers that read like authentic publications at each venue.
 
-**Last Updated**: 2024
+**Reviewed**: 2026-07-20
+
+Writing conventions are descriptive, not submission requirements. Check the exact venue and article type before treating any element as mandatory.
 
 ---
 
@@ -160,7 +162,7 @@ ML abstracts are **dense and numbers-focused**:
 ### ACL/EMNLP (NLP)
 
 - **Task-focused**: Clear problem definition
-- **Benchmark-heavy**: Standard datasets (GLUE, SQuAD, etc.)
+- **Evaluation-heavy**: Use task-appropriate current benchmarks, strong model baselines, human evaluation, or safety/robustness tests; classic datasets such as GLUE or SQuAD remain relevant only for matching tasks
 - **Error analysis valued**: Where does it fail?
 - **Human evaluation**: Often expected alongside automatic metrics
 - **Ethical considerations**: Bias, fairness, environmental cost

@@ -845,7 +845,7 @@ When you interact with the Scientific Writer CLI, Claude automatically:
 
 ## Skill Integration
 
-All skills are loaded from the `.claude/skills/` directory and are automatically available when you run the CLI. You don't need to manually select or activate them - Claude will use the appropriate skills based on your requests.
+Skills are loaded from `.claude/skills/` when the CLI runs. The bundled set is selected from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) and pinned in `skills.lock.json` for reproducible plugin and package builds. You don't need to manually activate them; Claude selects the appropriate skills based on your request.
 
 ## Example Usage
 
@@ -961,5 +961,5 @@ To add your own skills:
 
 The new skill will be automatically loaded and available.
 
-To contribute a skill to this repository (where `skills/` is the canonical source of truth), follow the [Skill Authoring Guide](SKILL_AUTHORING.md).
+To ship a skill with Scientific Writer, contribute it to the canonical [Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) repository and then follow the pinning workflow in the [Skill Authoring Guide](SKILL_AUTHORING.md).
 

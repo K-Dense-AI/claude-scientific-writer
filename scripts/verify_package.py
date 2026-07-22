@@ -144,12 +144,13 @@ def check_claude_payload() -> Dict[str, object]:
     root = get_project_root()
     claude_dir = root / "scientific_writer" / ".claude"
     writer = claude_dir / "WRITER.md"
+    skills_lock = claude_dir / "skills.lock.json"
     skills_dir = claude_dir / "skills"
 
-    skill_dirs = (
-        sorted(d.name for d in skills_dir.iterdir() if d.is_dir())
+    skill_count = (
+        sum(1 for path in skills_dir.rglob("SKILL.md") if path.is_file())
         if skills_dir.is_dir()
-        else []
+        else 0
     )
     skill_file_count = (
         sum(1 for p in skills_dir.rglob("*") if p.is_file()) if skills_dir.is_dir() else 0
@@ -157,7 +158,8 @@ def check_claude_payload() -> Dict[str, object]:
 
     return {
         'writer_exists': writer.exists(),
-        'skill_count': len(skill_dirs),
+        'skills_lock_exists': skills_lock.exists(),
+        'skill_count': skill_count,
         'skill_file_count': skill_file_count,
     }
 
@@ -235,13 +237,15 @@ def main() -> int:
     print("\n5. Bundled .claude Payload Check")
     payload = check_claude_payload()
 
-    if payload['writer_exists'] and payload['skill_count'] >= 20 and payload['skill_file_count'] >= 100:
-        print(f"  ✓ WRITER.md present; {payload['skill_count']} skills "
+    if (payload['writer_exists'] and payload['skills_lock_exists']
+            and payload['skill_count'] >= 20 and payload['skill_file_count'] >= 100):
+        print(f"  ✓ WRITER.md and skills.lock.json present; {payload['skill_count']} skills "
               f"({payload['skill_file_count']} files) bundled")
     else:
         print(f"  ✗ Bundled payload incomplete: WRITER.md={payload['writer_exists']}, "
+              f"skills.lock.json={payload['skills_lock_exists']}, "
               f"skills={payload['skill_count']}, files={payload['skill_file_count']}")
-        print("    Run: python scripts/sync_skills.py")
+        print("    Run: python3 scripts/sync_skills.py")
         all_checks_passed = False
 
     # Summary

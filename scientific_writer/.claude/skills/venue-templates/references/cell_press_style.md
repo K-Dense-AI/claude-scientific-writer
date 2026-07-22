@@ -2,7 +2,9 @@
 
 Comprehensive writing guide for Cell, Neuron, Immunity, Molecular Cell, Developmental Cell, Cell Reports, and other Cell Press journals.
 
-**Last Updated**: 2024
+**Reviewed**: 2026-07-20
+
+Cell Press requirements differ by journal and article type. Verify each front-matter and STAR Methods element in the current author instructions.
 
 ---
 
@@ -20,15 +22,15 @@ Cell Press journals emphasize **mechanistic depth**, **rigorous experimentation*
 
 ## Unique Cell Press Features
 
-Cell Press has several distinctive elements not found in other journals:
+Cell Press journals may use several distinctive elements not found in other journals:
 
 ### 1. Summary (Not Abstract)
 
 Cell uses "Summary" instead of "Abstract" - functionally similar but emphasizes synthesis.
 
-### 2. Graphical Abstract (REQUIRED)
+### 2. Graphical Abstract
 
-A visual summary appearing on the table of contents. **This is mandatory for all Cell Press journals.**
+A visual summary for discovery and the table of contents. It is required for some journals and article types; verify the current target-journal instructions.
 
 ### 3. eTOC Blurb
 
@@ -453,12 +455,13 @@ Nature 479, 232–236.
 
 ## Pre-Submission Checklist
 
-### Required Elements
-- [ ] Graphical abstract (square format)
-- [ ] Highlights (3-4 bullets, ≤85 characters each)
-- [ ] eTOC blurb (30-50 words)
-- [ ] Summary (≤150 words)
-- [ ] Key Resources Table
+### Required Elements (verify for the exact journal and article type)
+- [ ] Graphical abstract, if required
+- [ ] Highlights, eTOC blurb, and Summary within the current limits
+- [ ] Key Resources Table and STAR Methods components, if required
+- [ ] Limitations of the Study
+- [ ] Resource Availability and Lead Contact information
+- [ ] Declaration of generative AI and AI-assisted technologies, when applicable
 
 ### Content
 - [ ] Mechanistic depth throughout

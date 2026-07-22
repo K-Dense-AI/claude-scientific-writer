@@ -1,25 +1,28 @@
 # Skill Authoring Guide
 
-This guide explains how to write a new skill for Claude Scientific Writer and get it registered so it ships with the plugin, the CLI, and the Python API. For general contribution workflow (tests, lint, PRs), see [CONTRIBUTING.md](../CONTRIBUTING.md).
+This guide explains how to contribute a skill through the canonical [Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) repository and then include its pinned upstream version in Scientific Writer. For general contribution workflow (tests, lint, PRs), see [CONTRIBUTING.md](../CONTRIBUTING.md).
 
 ## Where Skills Live
 
-The `skills/` directory at the repository root is the **canonical source of truth**. Two mirrors are generated from it and must never be edited directly:
+The **canonical source of truth** is the `skills/` tree in [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills). This repository vendors a selected, reproducible snapshot at the revision recorded in `skills.lock.json`.
 
-- `.claude/skills/` (used by the CLI and local development)
-- `scientific_writer/.claude/skills/` (bundled with the Python package)
+The following three directories are generated and must never be edited directly:
 
-After any change under `skills/`, regenerate the mirrors:
+- `skills/` (Claude Code plugin payload)
+- `.claude/skills/` (CLI and local-development mirror)
+- `scientific_writer/.claude/skills/` (Python package mirror)
+
+After an upstream skill change is released, pin and vendor that release:
 
 ```bash
-python scripts/sync_skills.py
+python3 scripts/sync_skills.py --update-ref v2.55.0
 ```
 
-CI verifies the mirrors with `python scripts/sync_skills.py --check`.
+CI verifies the pinned content hashes and both mirrors, without a network request, using `python3 scripts/sync_skills.py --check`.
 
 ## Directory Layout
 
-Each skill is a directory under `skills/` containing a `SKILL.md` file and optional supporting subdirectories:
+Each skill is authored in the upstream repository as a directory under `skills/` containing a `SKILL.md` file and optional supporting subdirectories:
 
 ```
 skills/
@@ -72,7 +75,7 @@ Below the frontmatter, write the instructions the agent follows when the skill i
 
 ## Registering the Skill
 
-New skills must be registered in `.claude-plugin/marketplace.json`, which defines the `claude-scientific-writer` plugin. Add the skill directory to the `skills` array of the plugin entry:
+After a new skill is merged upstream, add it to `skills.lock.json` so the sync script selects it. Then register its generated local destination in `.claude-plugin/marketplace.json`, which defines the `claude-scientific-writer` plugin:
 
 ```json
 "skills": [
@@ -82,17 +85,18 @@ New skills must be registered in `.claude-plugin/marketplace.json`, which define
 ]
 ```
 
-A skill that exists under `skills/` but is not listed in `marketplace.json` will not be available to plugin users.
+A selected skill that is not listed in `marketplace.json` will not be available to plugin users.
 
 ## Full Workflow Checklist
 
-1. Create `skills/my-skill-name/` with a `SKILL.md` (and `references/`, `scripts/`, `assets/` as needed).
-2. Fill in the frontmatter: `name`, `description`, `allowed-tools` (space-separated), `license`, `metadata.skill-author`.
-3. Register the directory in `.claude-plugin/marketplace.json`.
-4. Run `python scripts/sync_skills.py` to regenerate the mirrors, and commit the regenerated files.
-5. Verify with `python scripts/sync_skills.py --check`.
-6. Test locally: reinstall the plugin from a test marketplace (see [DEVELOPMENT.md](DEVELOPMENT.md#plugin-development)) and confirm the skill appears when you ask "What skills are available?".
-7. Add a section describing the skill to [docs/SKILLS.md](SKILLS.md) if it is user-facing.
+1. Create or update `skills/my-skill-name/` in `K-Dense-AI/scientific-agent-skills`.
+2. Follow that repository's contribution, metadata-versioning, validation, and security-scanning requirements.
+3. Merge and release the upstream change.
+4. Add the upstream skill and its local destination to `skills.lock.json`, then register the destination in `.claude-plugin/marketplace.json`.
+5. Run `python3 scripts/sync_skills.py --update-ref <upstream-tag-or-commit>` to refresh all generated snapshots and hashes.
+6. Verify with `python3 scripts/sync_skills.py --check`.
+7. Test locally: reinstall the plugin from a test marketplace (see [DEVELOPMENT.md](DEVELOPMENT.md#plugin-development)) and confirm the skill appears when you ask "What skills are available?".
+8. Add a section describing the skill to [docs/SKILLS.md](SKILLS.md) if it is user-facing.
 
 ## Minimum Quality Bar
 
@@ -103,7 +107,7 @@ Before opening a pull request, a new skill should meet all of the following:
 - **Working examples**: every command shown in `SKILL.md` has been executed successfully from a clean checkout.
 - **No secrets or personal paths**: no API keys, usernames, or absolute paths from your machine.
 - **Consistent voice**: instructions are written as directives to the agent, matching the style of existing skills.
-- **Mirrors in sync**: `python scripts/sync_skills.py --check` passes.
+- **Pinned snapshot and mirrors in sync**: `python3 scripts/sync_skills.py --check` passes.
 
 ## See Also
 

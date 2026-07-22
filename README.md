@@ -130,7 +130,7 @@ asyncio.run(main())
    ```bash
    /claude-scientific-writer:scientific-writer-init
    ```
-   This creates a `CLAUDE.md` file with comprehensive scientific writing instructions and makes all 25 skills available.
+   This creates a `CLAUDE.md` file with comprehensive scientific writing instructions and makes all 26 selected skills available.
 
 5. **Start using immediately**:
    ```bash
@@ -160,14 +160,14 @@ asyncio.run(main())
 ### Why Use the Plugin?
 
 - ✅ **No CLI Required** - Everything works directly in Claude Code
-- ✅ **Instant Access** - All 25 skills available immediately
+- ✅ **Instant Access** - All 26 selected skills available immediately
 - ✅ **IDE Integration** - Files created and edited in your project
 - ✅ **Context Aware** - Skills understand your project structure
 - ✅ **Seamless Workflow** - No switching between tools
 
 ### Available Skills
 
-When installed as a plugin, you get instant access to:
+When installed as a plugin, you get instant access to a reproducible subset of [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), pinned in `skills.lock.json`:
 - `scientific-schematics` - AI diagram generation with Nano Banana Pro (CONSORT, neural networks, pathways)
 - `research-lookup` - Real-time literature search
 - `peer-review` - Systematic manuscript evaluation
@@ -178,7 +178,7 @@ When installed as a plugin, you get instant access to:
 - `latex-posters` - Conference poster generation
 - `hypothesis-generation` - Scientific hypothesis development
 - `market-research-reports` - Comprehensive 50+ page market analysis reports with visuals
-- And 15 more specialized skills...
+- And 16 more specialized skills...
 
 For local plugin development and testing, see the [Development Guide](docs/DEVELOPMENT.md#plugin-development).
 

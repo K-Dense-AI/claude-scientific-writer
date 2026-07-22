@@ -1,110 +1,106 @@
-# Research Lookup Skill
+# Research Lookup
 
-Provides real-time research information lookup with intelligent backend routing: **parallel-cli search** (primary, fast) and the **Parallel Chat API** (deep research only).
+Parallel-first evidence compilation for scientific manuscripts. Academic retrieval
+targets 60 verified, unique references by default and produces a research packet with
+structured study evidence, claim provenance, contradictions, gaps, and section briefs.
+
+`SKILL.md` is the authoritative workflow and safety reference.
+
+## Routing
+
+| Request | Backend |
+|---|---|
+| Manuscript literature or many academic references | Parallel Search + Extract |
+| Fast current-information lookup | Parallel Search |
+| Explicit deep/exhaustive report | Parallel Research |
+| Explicit OpenAI-compatible synthesis | Parallel Chat |
+| Optional alternative/failure fallback | Perplexity through OpenRouter |
+
+A bare query uses Parallel Search. Parallel Chat remains available through
+`--force-backend chat`, but automatic routing never selects it. The legacy
+`--force-backend parallel` flag remains an alias for explicit Parallel Research.
 
 ## Setup
 
-1. **Install parallel-cli** (primary backend — required):
-   ```bash
-   curl -fsSL https://parallel.ai/install.sh | bash
-   # Or:
-   uv tool install "parallel-web-tools[cli]"
-   ```
-
-2. **Authenticate:**
-   ```bash
-   parallel-cli auth
-   # Or set directly:
-   export PARALLEL_API_KEY="your_parallel_api_key"
-   ```
-
-3. **Test Setup:**
-   ```bash
-   parallel-cli search "test query" --json --max-results 3
-   ```
-
-## Usage
-
-### Command Line Usage
-
 ```bash
-# General research (parallel-cli search — fast, default)
-parallel-cli search "Recent advances in CRISPR gene editing 2025" \
-  --json --max-results 10 --excerpt-max-chars-total 27000 \
-  -o sources/research_crispr.json
-
-# Academic-focused search (include scholarly domains)
-parallel-cli search "find papers on CRISPR off-target effects" \
-  --json --max-results 10 \
-  --include-domains "scholar.google.com,arxiv.org,pubmed.ncbi.nlm.nih.gov,nature.com,science.org,cell.com,pnas.org,nih.gov" \
-  -o sources/research_crispr-academic.json
-
-# Deep research via research_lookup.py (Parallel Chat API — slow)
-python scripts/research_lookup.py "comprehensive review of mRNA vaccines" --force-backend parallel-chat
-
-# Auto-routed research (detects academic vs general)
-python scripts/research_lookup.py "your research query" -o sources/research_topic.md
+uv tool install "parallel-web-tools[cli]==0.7.1"
+parallel-cli login
+parallel-cli auth
 ```
 
-### Integration
+CLI login may be replaced by `PARALLEL_API_KEY`. `OPENROUTER_API_KEY` is needed only
+for explicit Perplexity use or an enabled fallback. Explicit Chat requires
+`PARALLEL_API_KEY` in the process environment.
 
-The research lookup tool is automatically available when you:
+## Manuscript packet
 
-1. **Ask research questions:** "Research recent advances in quantum computing"
-2. **Request literature reviews:** "Find current studies on climate change impacts"
-3. **Need citations:** "What are the latest papers on transformer attention mechanisms?"
-4. **Want technical information:** "Standard protocols for flow cytometry"
+```bash
+python skills/research-lookup/scripts/research_lookup.py \
+  "Evidence for the manuscript research question" \
+  --academic \
+  --target-references 60 \
+  --context-file manuscript-context.json \
+  --packet-dir sources/manuscript-research \
+  --json
+```
 
-## Backend Routing
+The academic workflow runs bounded searches for primary studies, reviews and
+meta-analyses, seminal publications, methods/mechanisms, and contradictory evidence.
+It deduplicates candidates and verifies the strongest sources in batches with
+Parallel Extract.
 
-| Query Type | Backend | Speed |
-|------------|---------|-------|
-| General research | parallel-cli search | Fast (2-10s) |
-| Academic paper queries (contains: "find papers", "doi", "peer-reviewed", etc.) | parallel-cli search + academic domains | Fast (2-10s) |
-| Deep/exhaustive research (explicit request) | Parallel Chat API | Slow (60s-5min) |
+Packet artifacts include:
 
-## Paper Quality Prioritization
+- complete packet in JSON and Markdown
+- normalized references in JSON and BibTeX
+- evidence matrix
+- claim-to-source map
+- synthesis of consensus, conflicts, patterns, and gaps
+- Introduction, Methods-rationale, and Discussion briefs
+- coverage diagnostics and reproducible search ledger
 
-When searching for papers, prioritize by:
+The target is not padded. If 60 credible references cannot be verified, the packet
+reports the shortfall.
 
-### Venue Quality Tiers
+## Preserved compatibility
 
-- **Tier 1 (Highest):** Nature, Science, Cell, NEJM, Lancet, JAMA, PNAS
-- **Tier 2 (High):** High-impact journals (IF>10), top conferences (NeurIPS, ICML, ICLR)
-- **Tier 3 (Good):** Respected specialized journals (IF 5-10)
+- reusable `ResearchLookup` class
+- `--batch`, `--json`, and `-o/--output`
+- explicit backend selection
+- per-query error isolation
+- DOI/URL citation extraction
+- human-readable and structured output
+- result fields such as `success`, `query`, `response`, `citations`, `sources`,
+  `timestamp`, `backend`, `model`, and `usage`
 
-### Citation-Based Ranking
+## Other modes
 
-| Paper Age | Citation Threshold | Classification |
-|-----------|-------------------|----------------|
-| 0-3 years | 20+ citations | Noteworthy |
-| 0-3 years | 100+ citations | Highly Influential |
-| 3-7 years | 100+ citations | Significant |
-| 7+ years | 500+ citations | Seminal/Foundational |
+```bash
+# Fast bounded Search
+python skills/research-lookup/scripts/research_lookup.py \
+  "Latest official guidance" --no-academic
 
-## Troubleshooting
+# Explicit Parallel Research
+python skills/research-lookup/scripts/research_lookup.py \
+  "Comprehensive review of topic" \
+  --force-backend research \
+  --processor pro
 
-**"parallel-cli not found"**
-- Install: `curl -fsSL https://parallel.ai/install.sh | bash`
+# Explicit Parallel Chat (never automatic)
+python skills/research-lookup/scripts/research_lookup.py \
+  "Synthesize the strongest evidence" \
+  --force-backend chat \
+  --chat-model core
 
-**"Authentication error"**
-- Run `parallel-cli auth` or set `PARALLEL_API_KEY`
+# Explicit Perplexity
+python skills/research-lookup/scripts/research_lookup.py \
+  "Find academic evidence" \
+  --force-backend perplexity
+```
 
-**"No relevant results"**
-- Try more specific queries or add `-q "keyword"` flags
-- Include time frames (e.g., `--after-date 2024-01-01`)
-- Use `--include-domains` to restrict to high-quality sources
+## Boundaries
 
-**"Rate limit exceeded"**
-- Add delays between requests
-- Check your Parallel account limits
-
-## Integration with Scientific Writing
-
-1. **Literature Reviews:** Current research for introduction sections
-2. **Methods Validation:** Verify protocols against current standards
-3. **Results Context:** Compare findings with recent similar studies
-4. **Discussion Support:** Latest evidence for arguments
-5. **Citation Management:** Properly formatted references
-
-Always save results to `sources/` for reproducibility and to avoid duplicate queries.
+This skill compiles external evidence. It does not generate the user's unpublished
+Results or guarantee a PRISMA-complete systematic review. Use `literature-review` for
+formal database searching, screening, exclusion tracking, and risk-of-bias procedures;
+use `scientific-writing` to turn the packet into manuscript prose.

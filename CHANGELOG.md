@@ -4,6 +4,11 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ## [Unreleased]
 
+### Changed
+
+- **Scientific Agent Skills is now canonical** — the writing-skill subset is vendored from `K-Dense-AI/scientific-agent-skills` release `v2.54.0` at its immutable commit, with provenance and content hashes recorded in `skills.lock.json`. `scripts/sync_skills.py` now fetches pinned upstream content, refreshes all plugin/package snapshots, supports explicit upstream ref updates, and verifies snapshots offline in CI.
+- **Skill set aligned with upstream** — removed the local-only `paper-2-web` and `poster-presentation` skills; Scientific Writer now ships 26 selected upstream skills, including the four document skills grouped under `document-skills/`.
+
 ---
 
 ## [2.16.0] - 2026-07-04

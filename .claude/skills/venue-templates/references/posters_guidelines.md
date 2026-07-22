@@ -2,7 +2,9 @@
 
 Comprehensive guidelines for creating effective academic research posters including sizing, layout, typography, and design best practices.
 
-**Last Updated**: 2024
+**Reviewed**: 2026-07-20
+
+Poster dimensions and upload rules are event-specific. Confirm the current presenter instructions before choosing a size, orientation, or file format.
 
 ---
 
@@ -334,7 +336,7 @@ Use colorblind-friendly color combinations:
 - Steeper learning curve
 - Can be slow to compile
 
-**Template**: `assets/posters/tikzposter_research.tex`
+**Bundled template**: None. Start from the current `tikzposter` package documentation or an event-provided template.
 
 **Example Usage**:
 ```latex
@@ -358,7 +360,7 @@ Use colorblind-friendly color combinations:
 - Complex syntax
 - Less commonly used
 
-**Template**: `assets/posters/baposter_conference.tex`
+**Bundled template**: None. Start from the current `baposter` package documentation or an event-provided template.
 
 **Example Usage**:
 ```latex
@@ -594,8 +596,8 @@ Generate QR codes linking to:
 
 ### LaTeX Templates
 - `assets/posters/beamerposter_academic.tex`
-- `assets/posters/tikzposter_research.tex`
-- `assets/posters/baposter_conference.tex`
+
+This is the only poster template bundled with the skill. `tikzposter` and `baposter` remain possible external authoring packages, but no local templates are provided for them.
 
 ### Online Resources
 - Better Posters Blog: https://betterposters.blogspot.com/

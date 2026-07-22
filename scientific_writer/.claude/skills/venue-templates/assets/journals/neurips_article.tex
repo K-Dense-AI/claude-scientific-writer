@@ -1,12 +1,13 @@
 % NeurIPS Conference Paper Template
 % For submission to Neural Information Processing Systems (NeurIPS)
-% Last updated: 2024
-% Note: Use the official neurips_2024.sty file from the conference website
+% Reviewed: 2026-07-20
+% Note: Download the complete official NeurIPS 2026 package from:
+% https://neurips.cc/Conferences/2026/CallForPapers
 
 \documentclass{article}
 
-% Required packages (neurips_2024.sty provides most formatting)
-\usepackage{neurips_2024}  % Official NeurIPS style file (download from conference site)
+% Required package from the official NeurIPS 2026 author kit
+\usepackage{neurips_2026}
 
 % Recommended packages
 \usepackage{amsmath}
@@ -20,6 +21,7 @@
 \usepackage{booktabs}  % For better tables
 \usepackage{multirow}
 \usepackage{microtype}  % Improved typography
+\usepackage{xcolor}  % Required by the NeurIPS Paper Checklist
 
 % Theorems, lemmas, etc.
 \newtheorem{theorem}{Theorem}
@@ -181,15 +183,15 @@ Present your main experimental results.
 
 \begin{table}[t]
 \centering
-\caption{Performance comparison on benchmark datasets. Bold indicates best performance. Results reported as mean ± std over 3 runs.}
+\caption{Performance comparison on benchmark datasets. Bold indicates best performance. Results reported as mean $\pm$ standard deviation over 3 runs.}
 \label{tab:main_results}
 \begin{tabular}{lcccc}
 \toprule
 Method & Dataset 1 & Dataset 2 & Dataset 3 & Average \\
 \midrule
-Baseline 1 & 85.3 ± 0.5 & 72.1 ± 0.8 & 90.2 ± 0.3 & 82.5 \\
-Baseline 2 & 87.2 ± 0.4 & 74.5 ± 0.6 & 91.1 ± 0.5 & 84.3 \\
-\textbf{Our Method} & \textbf{91.7 ± 0.3} & \textbf{79.8 ± 0.5} & \textbf{94.3 ± 0.2} & \textbf{88.6} \\
+Baseline 1 & $85.3 \pm 0.5$ & $72.1 \pm 0.8$ & $90.2 \pm 0.3$ & 82.5 \\
+Baseline 2 & $87.2 \pm 0.4$ & $74.5 \pm 0.6$ & $91.1 \pm 0.5$ & 84.3 \\
+\textbf{Our Method} & $\mathbf{91.7 \pm 0.3}$ & $\mathbf{79.8 \pm 0.5}$ & $\mathbf{94.3 \pm 0.2}$ & \textbf{88.6} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -209,16 +211,19 @@ Discuss your findings, limitations, and broader implications.
 Honestly acknowledge limitations of your work.
 
 \subsection{Broader Impacts}
-Discuss potential positive and negative societal impacts (required by NeurIPS).
+Discuss potential positive and negative societal impacts when relevant. NeurIPS 2026
+does not require a separately titled Broader Impacts section; ensure the required
+Paper Checklist points to the relevant discussion.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
 Summarize your main contributions and findings. Suggest future research directions.
 
-% Acknowledgments (add after acceptance, not in submission version)
-\section*{Acknowledgments}
-Thank collaborators, funding sources (with grant numbers), and compute resources. Not included in double-blind submission.
+% The official ack environment hides acknowledgments in submission mode.
+\begin{ack}
+Thank collaborators, funding sources (with grant numbers), and compute resources.
+\end{ack}
 
 % References
 \bibliographystyle{plainnat}  % or other NeurIPS-compatible style
@@ -267,17 +272,21 @@ Provide links to code repository (anonymized for review, e.g., anonymous GitHub)
     \item Data: Available upon request / at [repository]
 \end{itemize}
 
+% Required for NeurIPS 2026. Keep checklist.tex from the official author kit.
+\input{checklist}
+
 \end{document}
 
 % Notes for Authors:
-% 1. Main paper: 8 pages maximum (excluding references and appendix)
-% 2. References: unlimited pages
-% 3. Appendix: unlimited pages (reviewed at discretion of reviewers)
-% 4. Use double-blind anonymization for initial submission
-% 5. Include broader impact statement
-% 6. Code submission strongly encouraged (anonymous for review)
-% 7. Use official neurips_2024.sty file (download from NeurIPS website)
-% 8. Font: Times, 10pt (enforced by style file)
-% 9. Figures should be colorblind-friendly
-% 10. Ensure reproducibility: report seeds, hyperparameters, dataset splits
+% 1. Main content: 9 pages maximum, including figures
+% 2. Acknowledgments, references, checklist, and optional technical appendices
+%    do not count as content pages
+% 3. Appendices are optional reading for reviewers
+% 4. Omit final and preprint options for the anonymized initial submission
+% 5. Keep the complete required NeurIPS Paper Checklist
+% 6. Anonymize submitted code, data, links, and supplementary material
+% 7. Use the complete official NeurIPS 2026 package; do not rename an old style
+% 8. Do not override formatting enforced by the style file
+% 9. Use accessible, color-independent figures
+% 10. Recheck the Call for Papers and Main Track Handbook before submission
 

@@ -24,7 +24,7 @@ EFFORT_LEVEL_MODELS = {
 
 def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
     """
-    Set up Claude skills and WRITER.md by copying .claude/ from package to working directory.
+    Set up skills, provenance lock, and WRITER.md from the packaged .claude directory.
 
     If work_dir already has a .claude directory, the bundled WRITER.md and each
     bundled skill are refreshed in place (so upgrades take effect), while any
@@ -58,6 +58,10 @@ def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
         source_writer = source_claude / "WRITER.md"
         if source_writer.exists():
             shutil.copyfile(source_writer, dest_claude / "WRITER.md")
+
+        source_lock = source_claude / "skills.lock.json"
+        if source_lock.exists():
+            shutil.copyfile(source_lock, dest_claude / "skills.lock.json")
 
         source_skills = source_claude / "skills"
         if source_skills.is_dir():

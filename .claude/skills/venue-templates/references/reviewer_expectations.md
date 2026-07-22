@@ -2,7 +2,9 @@
 
 Understanding what reviewers look for at different venues is essential for crafting successful submissions. This guide covers evaluation criteria, common rejection reasons, and how to address reviewer concerns.
 
-**Last Updated**: 2024
+**Reviewed**: 2026-07-20
+
+Review forms and scoring scales change by cycle. Use the current reviewer guidelines when predicting criteria or preparing a rebuttal.
 
 ---
 
@@ -30,7 +32,7 @@ Reviewers at different venues prioritize different aspects. Understanding these 
 
 ### Review Process
 
-1. **Editorial triage**: Most papers rejected without review (Nature: ~92%)
+1. **Editorial triage**: Highly selective journals reject many submissions before external review; do not confuse overall rejection rate with desk-rejection rate
 2. **Expert review**: 2-4 reviewers if sent out
 3. **Cross-discipline reviewer**: Often includes non-specialist
 4. **Quick turnaround**: First decision typically 2-4 weeks
@@ -175,15 +177,18 @@ Reviewers at different venues prioritize different aspects. Understanding these 
 
 ### Scoring Dimensions
 
-Typical NeurIPS/ICML scoring:
+Current ML review forms commonly separate dimensions such as:
 
-| Dimension | Score Range | What's Evaluated |
-|-----------|-------------|------------------|
-| **Soundness** | 1-4 | Technical correctness |
-| **Contribution** | 1-4 | Significance of results |
-| **Presentation** | 1-4 | Clarity and organization |
-| **Overall** | 1-10 | Holistic assessment |
-| **Confidence** | 1-5 | Reviewer expertise |
+| Dimension | What's Evaluated |
+|-----------|------------------|
+| **Quality** | Technical correctness, evidence, and rigor |
+| **Clarity** | Organization, explanation, and reproducibility |
+| **Significance** | Importance and likely impact |
+| **Originality** | Novelty relative to prior work |
+| **Overall assessment** | Holistic recommendation under the current rubric |
+| **Confidence** | Reviewer's expertise and certainty |
+
+Do not cache numeric ranges across years or venues; quote the current review form when a score matters.
 
 ### What Gets a Paper Rejected
 
