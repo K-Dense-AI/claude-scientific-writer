@@ -1,6 +1,6 @@
 # Complete Documentation Index
 
-**Scientific Writer v2.17.0** - Comprehensive documentation navigation guide.
+**Scientific Writer v2.17.1** - Comprehensive documentation navigation guide.
 
 ---
 
@@ -10,9 +10,9 @@
 
 | Document | Purpose | Audience | Last Updated |
 |----------|---------|----------|--------------|
-| [README.md](../README.md) | Main entry point, quick start, features overview | Everyone | v2.17.0 |
-| [docs/README.md](README.md) | Documentation hub with navigation guide | Everyone | v2.17.0 |
-| [CHANGELOG.md](../CHANGELOG.md) | Version history and release notes | Everyone | v2.17.0 |
+| [README.md](../README.md) | Main entry point, quick start, features overview | Everyone | v2.17.1 |
+| [docs/README.md](README.md) | Documentation hub with navigation guide | Everyone | v2.17.1 |
+| [CHANGELOG.md](../CHANGELOG.md) | Version history and release notes | Everyone | v2.17.1 |
 
 ### User Guides
 
@@ -166,7 +166,7 @@ claude-scientific-writer/
 
 ### Version References
 
-- Always specify version when referencing features (e.g., "v2.17.0")
+- Always specify version when referencing features (e.g., "v2.17.1")
 - Use "Latest" for current version, "Previous" for older versions
 - Update version numbers during releases
 
@@ -211,5 +211,5 @@ Found an issue with the documentation? Please:
 
 ---
 
-**Last Updated**: July 22, 2026 (v2.17.0)
+**Last Updated**: July 22, 2026 (v2.17.1)
 

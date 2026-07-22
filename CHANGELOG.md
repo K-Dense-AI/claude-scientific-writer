@@ -6,6 +6,14 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.17.1] - 2026-07-22
+
+### Fixed
+
+- **Release automation** — pin `astral-sh/setup-uv` to the published `v9.0.0` action tag because the nonexistent floating `v9` tag prevented CI and trusted PyPI publishing from starting.
+
+---
+
 ## [2.17.0] - 2026-07-22
 
 ### Fixed
