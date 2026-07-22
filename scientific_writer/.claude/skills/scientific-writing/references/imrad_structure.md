@@ -486,7 +486,7 @@ crisis in higher education.
 - Format according to journal style (see `citation_styles.md`)
 - Verify all citations are accurate
 - Ensure all citations appear in text and vice versa
-- Typical range: 20-50 references for original research
+- Typical range: 30-50 references for original research (35-50+ for high-impact multidisciplinary journals; see venue targets in `citation_styles.md`)
 
 ### Supplementary Materials
 - Additional figures, tables, or data sets

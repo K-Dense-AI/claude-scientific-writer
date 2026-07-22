@@ -208,8 +208,9 @@ After compiling any PDF:
 
 1. **Convert to images** (NEVER read PDF directly):
       ```bash
-   python scripts/pdf_to_images.py document.pdf review/page --dpi 150
+   python skills/scientific-slides/scripts/pdf_to_images.py document.pdf review/page --dpi 150
    ```
+   Skill scripts live under `skills/<skill-name>/scripts/`; in an initialized project the same tree may be at `.claude/skills/<skill-name>/scripts/` — use whichever prefix exists.
 
 2. **Inspect each page image** for: text overlaps, figure placement, margins, spacing
 
@@ -230,7 +231,7 @@ Documents without sufficient visual elements are incomplete. Generate figures li
 Every scientific writeup (research papers, literature reviews, reports) MUST include a graphical abstract as the first figure. Generate this using the scientific-schematics skill:
 
 ```bash
-python scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description of key finding/concept showing main workflow and conclusions]" -o figures/graphical_abstract.png
+python skills/scientific-schematics/scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description of key finding/concept showing main workflow and conclusions]" -o figures/graphical_abstract.png
 ```
 
 **Graphical Abstract Requirements:**
@@ -254,7 +255,7 @@ python scripts/generate_schematic.py "Graphical abstract for [paper title]: [bri
 - Any concept that benefits from schematic visualization
 
 ```bash
-python scripts/generate_schematic.py "diagram description" -o figures/output.png
+python skills/scientific-schematics/scripts/generate_schematic.py "diagram description" -o figures/output.png
 ```
 
 **Use generate-image skill EXTENSIVELY for visual content:**
@@ -269,7 +270,7 @@ python scripts/generate_schematic.py "diagram description" -o figures/output.png
 
 
 ```bash
-python scripts/generate_image.py "image description" -o figures/output.png
+python skills/generate-image/scripts/generate_image.py "image description" -o figures/output.png
 ```
 
 **MINIMUM Figure Requirements by Document Type:**

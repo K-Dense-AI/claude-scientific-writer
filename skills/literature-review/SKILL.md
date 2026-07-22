@@ -13,7 +13,7 @@ metadata: {"version": "1.2", "skill-author": "K-Dense Inc.", "openclaw": {"prima
 
 Conduct systematic, comprehensive literature reviews following rigorous academic methodology. Search multiple literature databases, synthesize findings thematically, verify all citations for accuracy, and generate professional output documents in markdown and PDF formats.
 
-This skill uses the **parallel-web skill** (`parallel-cli search`) as the primary web search tool for broad academic literature discovery, supplemented by specialized database access skills (gget, bioservices, datacommons-client). It provides specialized tools for citation verification, result aggregation, and document generation.
+This skill uses the **parallel-web skill** (`parallel-cli search`) as the primary web search tool for broad academic literature discovery, with domain-filtered searches against specialized databases (PubMed, preprint servers, and biomedical resources) for targeted coverage. It provides specialized tools for citation verification, result aggregation, and document generation.
 
 ## When to Use This Skill
 
@@ -118,19 +118,16 @@ Literature reviews follow a structured, multi-phase workflow:
    ```
 
    **Biomedical & Life Sciences:**
-   - Use `gget` skill: `gget search pubmed "search terms"` for PubMed/PMC
-   - Use `gget` skill: `gget search biorxiv "search terms"` for preprints
-   - Use `bioservices` skill for ChEMBL, KEGG, UniProt, etc.
+   - Target PubMed/PMC with `parallel-cli search --include-domains "pubmed.ncbi.nlm.nih.gov,ncbi.nlm.nih.gov"`
+   - Target preprints with `--include-domains "biorxiv.org,medrxiv.org"`
+   - Use `parallel-cli extract` on a paper or database record URL to pull full text and reference lists
 
    **General Scientific Literature:**
-   - Search arXiv via direct API (preprints in physics, math, CS, q-bio)
-   - Search Semantic Scholar via API (200M+ papers, cross-disciplinary)
-   - Use Google Scholar for comprehensive coverage (manual or careful scraping)
+   - Target arXiv, Semantic Scholar, and scholarly aggregators with `parallel-cli search --include-domains "arxiv.org,semanticscholar.org,scholar.google.com"`
+   - `parallel-cli extract` any resulting URL for full content
 
    **Specialized Databases:**
-   - Use `gget alphafold` for protein structures
-   - Use `gget cosmic` for cancer genomics
-   - Use `datacommons-client` for demographic/statistical data
+   - For domain databases (protein structures, cancer genomics, demographic/statistical data), search the database's public site with `parallel-cli search --include-domains` and `parallel-cli extract` the matching record pages
    - Use specialized databases as appropriate for the domain
 
 2. **Document Search Parameters**:
@@ -322,14 +319,16 @@ Literature reviews follow a structured, multi-phase workflow:
 
 ### PubMed / PubMed Central
 
-Access via `gget` skill:
+Access via `parallel-cli` (parallel-web skill):
 ```bash
-# Search PubMed
-gget search pubmed "CRISPR gene editing" -l 100
+# Search PubMed-indexed literature
+parallel-cli search "CRISPR gene editing" \
+  --include-domains "pubmed.ncbi.nlm.nih.gov,ncbi.nlm.nih.gov" \
+  --json --max-results 25 -o sources/litreview_pubmed.json
 
-# Search with filters
-# Use PubMed Advanced Search Builder to construct complex queries
-# Then execute via gget or direct Entrez API
+# Construct complex queries with the PubMed Advanced Search Builder,
+# then extract the resulting record pages
+parallel-cli extract "https://pubmed.ncbi.nlm.nih.gov/XXXXXXXX/" --json
 ```
 
 **Search tips**:
@@ -341,9 +340,11 @@ gget search pubmed "CRISPR gene editing" -l 100
 
 ### bioRxiv / medRxiv
 
-Access via `gget` skill:
+Access via `parallel-cli` (parallel-web skill):
 ```bash
-gget search biorxiv "CRISPR sickle cell" -l 50
+parallel-cli search "CRISPR sickle cell" \
+  --include-domains "biorxiv.org,medrxiv.org" \
+  --json --max-results 25 -o sources/litreview_preprints.json
 ```
 
 **Important considerations**:
@@ -354,7 +355,7 @@ gget search biorxiv "CRISPR sickle cell" -l 50
 
 ### arXiv
 
-Access via direct API or WebFetch:
+Target arXiv with `parallel-cli search --include-domains "arxiv.org"` and `parallel-cli extract` the abstract pages. Useful category filters when composing queries:
 ```python
 # Example search categories:
 # q-bio.QM (Quantitative Methods)
@@ -369,7 +370,7 @@ search_query = "cat:q-bio.QM AND ti:\"single cell sequencing\""
 
 ### Semantic Scholar
 
-Access via direct API (requires API key, or use free tier):
+Target with `parallel-cli search --include-domains "semanticscholar.org"`:
 - 200M+ papers across all fields
 - Excellent for cross-disciplinary searches
 - Provides citation graphs and paper recommendations
@@ -377,13 +378,13 @@ Access via direct API (requires API key, or use free tier):
 
 ### Specialized Biomedical Databases
 
-Use appropriate skills:
-- **ChEMBL**: `bioservices` skill for chemical bioactivity
-- **UniProt**: `gget` or `bioservices` skill for protein information
-- **KEGG**: `bioservices` skill for pathways and genes
-- **COSMIC**: `gget` skill for cancer mutations
-- **AlphaFold**: `gget alphafold` for protein structures
-- **PDB**: `gget` or direct API for experimental structures
+Search each database's public site with `parallel-cli search --include-domains` and `parallel-cli extract` the matching record pages:
+- **ChEMBL**: `ebi.ac.uk` — chemical bioactivity
+- **UniProt**: `uniprot.org` — protein information
+- **KEGG**: `genome.jp,kegg.jp` — pathways and genes
+- **COSMIC**: `cancer.sanger.ac.uk` — cancer mutations
+- **AlphaFold**: `alphafold.ebi.ac.uk` — predicted protein structures
+- **PDB**: `rcsb.org` — experimental structures
 
 ### Citation Chaining
 
@@ -545,9 +546,8 @@ parallel-cli search "CRISPR sickle cell disease clinical trials treatment" \
   --json --max-results 10 --excerpt-max-chars-total 27000 \
   -o sources/litreview_crispr_scd-general.json
 
-# 3. Search specialized databases using appropriate skills
-# - Use gget skill for PubMed, bioRxiv
-# - Use direct API access for arXiv, Semantic Scholar
+# 3. Search specialized databases with parallel-cli --include-domains
+# - PubMed/bioRxiv/arXiv/Semantic Scholar via domain-filtered parallel-cli search
 # - Export results in JSON format
 
 # 4. Aggregate and process results (combine parallel-cli + database results)
@@ -599,24 +599,20 @@ This skill works seamlessly with other scientific skills:
 - **parallel-cli extract**: Fetch full content from paper URLs, journal websites, and preprint servers — use for reading abstracts, extracting reference lists, and verifying paper details
 - **parallel-cli search --include-domains**: Academic-focused search across scholarly domains (arxiv.org, pubmed, nature.com, etc.)
 
-### Database Access Skills
-- **gget**: PubMed, bioRxiv, COSMIC, AlphaFold, Ensembl, UniProt
-- **bioservices**: ChEMBL, KEGG, Reactome, UniProt, PubChem
-- **datacommons-client**: Demographics, economics, health statistics
+### Database Access
+- Reach domain databases (PubMed, bioRxiv, ChEMBL, KEGG, UniProt, COSMIC, AlphaFold, PDB, Data Commons) with `parallel-cli search --include-domains` against the database's public site, then `parallel-cli extract` the matching record pages (see "Database-Specific Search Guidance" above)
 
-### Analysis Skills
+### Analysis Libraries (optional, via Bash if installed)
 - **pydeseq2**: RNA-seq differential expression (for methods sections)
-- **scanpy**: Single-cell analysis (for methods sections)
-- **anndata**: Single-cell data (for methods sections)
+- **scanpy** / **anndata**: Single-cell analysis and data structures (for methods sections)
 - **biopython**: Sequence analysis (for background sections)
 
-### Visualization Skills
+### Visualization Libraries (via Bash)
 - **matplotlib**: Generate figures and plots for review
 - **seaborn**: Statistical visualizations
 
 ### Writing Skills
-- **brand-guidelines**: Apply institutional branding to PDF
-- **internal-comms**: Adapt review for different audiences
+- **scientific-schematics** / **generate-image**: Generate PRISMA diagrams, conceptual frameworks, and other figures for the review
 - **venue-templates**: Access venue-specific writing style guides when preparing reviews for publication
 
 ### Venue-Specific Writing Styles
@@ -699,7 +695,7 @@ This literature-review skill provides:
 
 1. **Systematic methodology** following academic best practices
 2. **Parallel-web powered search** using `parallel-cli search` for fast, broad academic literature discovery with scholarly domain filtering
-3. **Multi-database integration** via existing scientific skills (gget, bioservices, datacommons-client)
+3. **Multi-database integration** via domain-filtered `parallel-cli search`/`extract` against PubMed, preprint servers, and specialized biomedical databases
 4. **Citation verification** ensuring accuracy and credibility
 5. **Professional output** in markdown and PDF formats
 6. **Comprehensive guidance** covering the entire review process

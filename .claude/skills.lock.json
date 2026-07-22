@@ -3,7 +3,7 @@
   "repository": "https://github.com/K-Dense-AI/scientific-agent-skills",
   "ref": "v2.54.0",
   "commit": "e8727695e34f19a80be02b1769aa64dabdd2938b",
-  "snapshot_sha256": "990e687fa9f42248db100d2001a0bb9d8cc7dd32366927bf403450db7551477f",
+  "snapshot_sha256": "02fd0c5965131bccc026405903573bba63610fa34358def1c1f8ed473cf86ea8",
   "skills": [
     {
       "source": "citation-management",
@@ -48,7 +48,7 @@
     {
       "source": "hypothesis-generation",
       "destination": "hypothesis-generation",
-      "sha256": "5873d62f7fa8e70125bf588c7dc886ebd2fddb1e1c7f866074a7a3f6cad94216"
+      "sha256": "662df4fd7d3db704e0edc5cbd6405f11dff953d5c9ce0a3f2f33c072421d84be"
     },
     {
       "source": "infographics",
@@ -63,7 +63,7 @@
     {
       "source": "literature-review",
       "destination": "literature-review",
-      "sha256": "0a50873910c061f781ea87c2344f2230296d168eceaed92a852ccfac007fa4bc"
+      "sha256": "5e77c8e29e4c01ce14586118d8b46808dcbed5a7fc0c4f1f615b485a866c8124"
     },
     {
       "source": "market-research-reports",
@@ -123,7 +123,7 @@
     {
       "source": "scientific-writing",
       "destination": "scientific-writing",
-      "sha256": "3790643bb06a4527824eda7c6575a9023a4ffd691926cc51570fddd5ea8b912b"
+      "sha256": "53070099bebeedd53c3764ee4b3d378ef68234cde6ba33513a636af82ffde082"
     },
     {
       "source": "treatment-plans",
