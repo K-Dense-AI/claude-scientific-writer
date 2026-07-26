@@ -264,18 +264,19 @@ GRADE (Grading of Recommendations Assessment, Development and Evaluation) assess
 ### For Different Study Types
 
 **RCTs:**
-- Cochrane Risk of Bias Tool
-- Jadad Scale
+- Cochrane RoB 2 (Risk of Bias 2) — current standard for randomized trials
 - PEDro Scale (for trials in physical therapy)
+- Legacy: Cochrane RoB 1, Jadad Scale (historical; prefer RoB 2 for new reviews)
 
 **Observational Studies:**
+- ROBINS-I (Risk of Bias in Non-randomized Studies — of Interventions)
 - Newcastle-Ottawa Scale
-- ROBINS-I (Risk of Bias in Non-randomized Studies)
 
 **Diagnostic Studies:**
 - QUADAS-2 (Quality Assessment of Diagnostic Accuracy Studies)
 
 **Systematic Reviews:**
+- PRISMA 2020 checklist (reporting standard for systematic reviews)
 - AMSTAR-2 (A Measurement Tool to Assess Systematic Reviews)
 
 **All Study Types:**

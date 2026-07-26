@@ -2,7 +2,9 @@
 
 Comprehensive writing guide for NeurIPS, ICML, ICLR, CVPR, ECCV, ICCV, and other major machine learning and computer vision conferences.
 
-**Last Updated**: 2024
+**Reviewed**: 2026-07-20
+
+Annual format, checklist, and review rules must be checked in the current author kit. See `conferences_formatting.md` for source links and verified 2026 snapshots.
 
 ---
 
@@ -334,7 +336,7 @@ FlashAttention-1 (baseline)          |   1.0x  |  1.0x
 - **Organized by theme**: Not chronological
 - **Position your work**: How you differ from each line of work
 - **Fair characterization**: Don't misrepresent prior work
-- **Recent citations**: Include 2023-2024 papers
+- **Recent citations**: Include relevant work from the last two to three years as well as foundational papers
 
 ### Example Structure
 
@@ -388,9 +390,9 @@ hold for future hardware generations.
 
 ## Reproducibility
 
-### Reproducibility Checklist (NeurIPS/ICML)
+### Paper and Reproducibility Checklists
 
-Most ML conferences require a reproducibility checklist covering:
+Many ML conferences use a paper checklist, reproducibility statement, or related disclosures. The exact name and questions vary. Common topics include:
 
 - [ ] Code availability
 - [ ] Dataset availability
@@ -459,7 +461,7 @@ Self-contained captions that explain:
 
 ### Reference Guidelines
 
-- **Cite recent work**: 2022-2024 papers expected
+- **Cite recent work**: Cover relevant work from the last two to three years without omitting foundational results
 - **Don't over-cite yourself**: Raises bias concerns
 - **Cite arxiv appropriately**: Use published version when available
 - **Include all relevant prior work**: Missing citations hurt review
@@ -468,32 +470,36 @@ Self-contained captions that explain:
 
 ## Venue-Specific Notes
 
+The limits below are verified 2026 snapshots for initial submissions. Recheck the exact year and track before use.
+
 ### NeurIPS
 
-- **8 pages** main + unlimited appendix/references
-- **Broader Impact** section sometimes required
-- **Reproducibility checklist** mandatory
-- OpenReview submission, public reviews
+- **9 content pages**, including figures
+- Acknowledgments, references, the required Paper Checklist, and optional technical appendices do not count as content pages
+- A separately titled Broader Impacts section is not universally required; discuss impacts where relevant and answer the checklist
+- Initial submission uses the anonymous mode of the official style
 
 ### ICML
 
-- **8 pages** main + unlimited appendix/references
+- **8 pages** main body + additional references/appendices in the same PDF
 - Strong emphasis on **theory + experiments**
-- Reproducibility statement encouraged
+- Use the official 2026 LaTeX style and anonymized submission mode
 
 ### ICLR
 
-- **8 pages** main (camera-ready can exceed)
+- **9 pages** main text for initial submission; 10 during discussion/rebuttal and camera-ready
 - OpenReview with **public reviews and discussion**
 - Author response period is interactive
 - Strong emphasis on **novelty and insight**
 
-### CVPR/ICCV/ECCV
+### CVPR
 
-- **8 pages** main including references
-- **Supplementary video** encouraged
+- **8 pages** including figures and tables, excluding cited-reference-only pages
+- Use the official CVPR 2026 author kit and follow its external-link restrictions
 - Heavy emphasis on **visual results**
 - Benchmark performance critical
+
+ICCV and ECCV have independent yearly instructions; do not inherit CVPR's current rules.
 
 ---
 

@@ -1,0 +1,4 @@
+# Vendored upstream snapshots are byte-for-byte inputs; preserve their whitespace.
+/skills/** -whitespace
+/.claude/skills/** -whitespace
+/scientific_writer/.claude/skills/** -whitespace

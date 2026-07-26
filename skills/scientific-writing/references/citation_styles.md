@@ -657,14 +657,14 @@ Some journals use modified versions of standard styles:
 
 | Venue Type | Expected Citations | Key Notes |
 |-----------|-------------------|-----------|
-| **Nature/Science research** | 30-50 | Selective, high-impact citations |
-| **Medical journals (RCT)** | 25-40 | Recent clinical evidence |
+| **Nature/Science research** | 35-50+ | Selective, high-impact citations |
+| **Medical journals (RCT)** | 30-45+ | Recent clinical evidence |
 | **Field-specific journals** | 30-60 | Comprehensive field coverage |
-| **ML conferences (8-page)** | 20-40 | Space-limited, recent work |
-| **Review articles** | 100-300+ | Comprehensive coverage |
+| **ML conferences (8-page)** | 30-45+ | Space-limited, recent work |
+| **Review articles** | 40-65+ | Comprehensive coverage; long-form reviews often exceed 100 |
 
 **ML conference citation practices:**
-- **NeurIPS/ICML**: 25-40 references typical for 8-page papers
+- **NeurIPS/ICML**: 30-45+ references typical for 8-page papers
 - **Workshop papers**: 15-25 references
 - **ArXiv preprints**: Widely accepted and cited
 - **Related work**: Concise but comprehensive; often moved to appendix

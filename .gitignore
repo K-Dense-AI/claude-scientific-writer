@@ -1,68 +1,119 @@
-# Python
+# Python bytecode and native extensions
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
+
+# Packaging
+/.Python
+/build/
+/develop-eggs/
+/dist/
+/downloads/
+/eggs/
+/.eggs/
+/lib/
+/lib64/
+/parts/
+/sdist/
+/var/
+/wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+/pip-wheel-metadata/
+
+# Test, coverage, and tool caches
+.cache/
+.hypothesis/
+.mypy_cache/
+.nox/
+.pyre/
+.pytest_cache/
+.pytype/
+.ruff_cache/
+.tox/
+/.coverage
+/.coverage.*
+/coverage.xml
+/htmlcov/
+/nosetests.xml
+*.cover
+*.py,cover
+
+# Jupyter
+.ipynb_checkpoints/
 
 # Virtual environments
-venv/
-ENV/
-env/
-.venv
+/.direnv/
+/.venv/
+/ENV/
+/env/
+/venv/
 
 # uv
-.uv/
-uv.lock
+/.uv/
 
 # IDE
-.vscode/
-.idea/
+/.idea/
+/.vscode/
 *.swp
 *.swo
 *~
 
 # Environment variables
 .env
-.env.local
+.env.*
+!.env.example
+!.env.*.example
 
-# Output directories
-paper_outputs/
-writing_outputs/
-data/
+# Project outputs
+# Keep these root-anchored so similarly named skill asset directories remain
+# tracked and are included in the built wheel.
+/paper_outputs/
+/writing_outputs/
+/data/
+/figures/
 
 # LaTeX auxiliary files
 *.aux
 *.bbl
+*.bcf
 *.blg
-*.log
-*.out
-*.toc
+*.dvi
 *.fdb_latexmk
 *.fls
+*.glg
+*.glo
+*.gls
+*.glsdefs
+*.idx
+*.ilg
+*.ind
+*.ist
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
 *.synctex.gz
+*.toc
+*.vrb
+*.xdv
+_minted-*/
 
 # OS
 .DS_Store
+._*
+Desktop.ini
 Thumbs.db
 
 # Temporary files
+*.bak
+*.orig
+*.temp
 *.tmp
-temp/
-tmp/
-figures/
+/temp/
+/tmp/

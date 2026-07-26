@@ -4,7 +4,7 @@ AI-powered scientific schematic generation using OpenRouter or Atlas Cloud.
 
 This script uses a smart iterative refinement approach:
 1. Generate initial image with the selected image provider
-2. AI quality review using Gemini 3 Pro for scientific critique
+2. AI quality review using Gemini 3.1 Pro Preview for scientific critique
 3. Only regenerate if quality is below threshold for document type
 4. Repeat until quality meets standards (max iterations)
 
@@ -37,51 +37,24 @@ except ImportError:
 
 # Try to load .env file from multiple potential locations
 def _load_env_file():
-    """Load .env file from current directory, parent directories, or package directory.
-    
-    Returns True if a .env file was found and loaded, False otherwise.
-    Note: This does NOT override existing environment variables.
-    """
+    """Load .env file from current directory or script directory only."""
     try:
         from dotenv import load_dotenv
     except ImportError:
-        return False  # python-dotenv not installed
-    
-    # Try current working directory first
-    env_path = Path.cwd() / ".env"
-    if env_path.exists():
-        load_dotenv(dotenv_path=env_path, override=False)
-        return True
-        
-    # Try parent directories (up to 5 levels)
-    cwd = Path.cwd()
-    for _ in range(5):
-        env_path = cwd / ".env"
-        if env_path.exists():
-            load_dotenv(dotenv_path=env_path, override=False)
+        return False
+
+    for candidate in [Path.cwd() / ".env", Path(__file__).resolve().parent / ".env"]:
+        if candidate.exists():
+            load_dotenv(dotenv_path=candidate, override=False)
             return True
-        cwd = cwd.parent
-        if cwd == cwd.parent:  # Reached root
-            break
-    
-    # Try the package's parent directory (scientific-writer project root)
-    script_dir = Path(__file__).resolve().parent
-    for _ in range(5):
-        env_path = script_dir / ".env"
-        if env_path.exists():
-            load_dotenv(dotenv_path=env_path, override=False)
-            return True
-        script_dir = script_dir.parent
-        if script_dir == script_dir.parent:
-            break
-            
+
     return False
 
 
 class ScientificSchematicGenerator:
     """Generate scientific schematics using AI with smart iterative refinement.
     
-    Uses Gemini 3 Pro for quality review to determine if regeneration is needed.
+    Uses Gemini 3.1 Pro Preview for quality review to determine if regeneration is needed.
     Multiple passes only occur if the generated schematic doesn't meet the
     quality threshold for the target document type.
     """
@@ -183,9 +156,9 @@ IMPORTANT - NO FIGURE NUMBERS:
                     "Get your API key from: https://openrouter.ai/keys"
                 )
             self.openrouter_api_key = self.api_key
-            # Nano Banana Pro - Google's advanced image generation model
-            # https://openrouter.ai/google/gemini-3-pro-image-preview
-            self.image_model = model or "google/gemini-3-pro-image-preview"
+            # Nano Banana 2 - Google's advanced image generation model
+            # https://openrouter.ai/google/gemini-3.1-flash-image-preview
+            self.image_model = model or "google/gemini-3.1-flash-image-preview"
         else:
             self.api_key = api_key or self.atlas_api_key
             if not self.api_key:
@@ -211,8 +184,8 @@ IMPORTANT - NO FIGURE NUMBERS:
 
         self.base_url = "https://openrouter.ai/api/v1"
         self.atlas_media_url = "https://api.atlascloud.ai/api/v1"
-        # Gemini 3 Pro for quality review - excellent vision and reasoning
-        self.review_model = "google/gemini-3-pro"
+        # Gemini 3.1 Pro Preview for quality review - excellent vision and reasoning
+        self.review_model = "google/gemini-3.1-pro-preview"
         
     def _log(self, message: str):
         """Log message if verbose mode is enabled."""
@@ -387,7 +360,7 @@ IMPORTANT - NO FIGURE NUMBERS:
         """
         Extract base64-encoded image from API response.
         
-        For Nano Banana Pro, images are returned in the 'images' field of the message,
+        For Nano Banana 2, images are returned in the 'images' field of the message,
         not in the 'content' field.
         
         Args:
@@ -404,7 +377,7 @@ IMPORTANT - NO FIGURE NUMBERS:
             
             message = choices[0].get("message", {})
             
-            # IMPORTANT: Nano Banana Pro returns images in the 'images' field
+            # IMPORTANT: Nano Banana 2 returns images in the 'images' field
             images = message.get("images", [])
             if images and len(images) > 0:
                 self._log(f"Found {len(images)} image(s) in 'images' field")
@@ -580,9 +553,9 @@ IMPORTANT - NO FIGURE NUMBERS:
                     iteration: int, doc_type: str = "default",
                     max_iterations: int = 2) -> Tuple[str, float, bool]:
         """
-        Review generated image using Gemini 3 Pro for quality analysis.
+        Review generated image using Gemini 3.1 Pro Preview for quality analysis.
         
-        Uses Gemini 3 Pro's superior vision and reasoning capabilities to
+        Uses Gemini 3.1 Pro Preview's superior vision and reasoning capabilities to
         evaluate the schematic quality and determine if regeneration is needed.
         
         Args:
@@ -600,12 +573,12 @@ IMPORTANT - NO FIGURE NUMBERS:
             threshold = self.QUALITY_THRESHOLDS.get(doc_type.lower(),
                                                      self.QUALITY_THRESHOLDS["default"])
             return (
-                "Image generated successfully (review skipped; set OPENROUTER_API_KEY to enable Gemini 3 Pro review)",
+                "Image generated successfully (review skipped; set OPENROUTER_API_KEY to enable Gemini 3.1 Pro Preview review)",
                 threshold,
                 False,
             )
 
-        # Use Gemini 3 Pro for review - excellent vision and analysis
+        # Use Gemini 3.1 Pro Preview for review - excellent vision and analysis
         image_data_url = self._image_to_base64(image_path)
         
         # Get quality threshold for this document type
@@ -681,7 +654,7 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
         ]
         
         try:
-            # Use Gemini 3 Pro for high-quality review
+            # Use Gemini 3.1 Pro Preview for high-quality review
             response = self._make_request(
                 model=self.review_model,
                 messages=messages
@@ -695,7 +668,7 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
             message = choices[0].get("message", {})
             content = message.get("content", "")
             
-            # Check reasoning field (Nano Banana Pro puts analysis here)
+            # Check reasoning field (Nano Banana 2 puts analysis here)
             reasoning = message.get("reasoning", "")
             if reasoning and not content:
                 content = reasoning
@@ -848,8 +821,8 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
                 f.write(image_data)
             print(f"✓ Saved: {iter_path}")
             
-            # Review image using Gemini 3 Pro
-            print(f"Reviewing image with Gemini 3 Pro...")
+            # Review image using Gemini 3.1 Pro Preview
+            print(f"Reviewing image with Gemini 3.1 Pro Preview...")
             critique, score, needs_improvement = self.review_image(
                 str(iter_path), user_prompt, i, doc_type, iterations
             )
@@ -971,7 +944,7 @@ Environment:
                        choices=["openrouter", "atlascloud"],
                        help="Image generation provider (default: openrouter)")
     parser.add_argument("--model",
-                       help="Image model ID. Defaults to Nano Banana Pro on OpenRouter; required for Atlas Cloud unless ATLASCLOUD_IMAGE_MODEL is set.")
+                       help="Image model ID. Defaults to Nano Banana 2 on OpenRouter; required for Atlas Cloud unless ATLASCLOUD_IMAGE_MODEL is set.")
     parser.add_argument("--api-key", help="Provider API key (or set OPENROUTER_API_KEY / ATLASCLOUD_API_KEY)")
     parser.add_argument("-v", "--verbose", action="store_true",
                        help="Verbose output")

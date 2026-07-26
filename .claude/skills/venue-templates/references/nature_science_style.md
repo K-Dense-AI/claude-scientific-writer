@@ -2,7 +2,9 @@
 
 Comprehensive writing guide for Nature, Science, and related high-impact multidisciplinary journals (Nature Communications, Science Advances, PNAS).
 
-**Last Updated**: 2024
+**Reviewed**: 2026-07-20
+
+Writing guidance is descriptive. Check the exact journal, contribution type, and current author instructions before applying numeric limits.
 
 ---
 
@@ -50,9 +52,9 @@ Nature and Science are the world's premier multidisciplinary scientific journals
 ### Style Requirements
 
 - **Flowing paragraphs** (NOT structured with labeled sections)
-- **150-200 words** for Nature; up to 250 for Nature Communications
+- **Nature Articles**: the summary paragraph is ideally no more than 200 words; other journals and contribution types vary
 - **No citations** in abstract
-- **No abbreviations** (or define at first use if essential)
+- **Avoid numbers, abbreviations, acronyms, and measurements unless essential** in a Nature summary paragraph
 - **Self-contained**: Understandable without reading the paper
 
 ### Abstract Structure (Implicit)

@@ -432,7 +432,7 @@ Indirect cost rate is based on our institution's federally negotiated rate agree
 ## Agency-Specific Notes
 
 **NIH**: 
-- Salary cap applies (~$221,900 for 2024)
+- Salary cap: Executive Level II (see [NIH Salary Cap Summary](https://grants.nih.gov/policy-and-compliance/policy-topics/nih-fiscal-policies/salary-cap-summary); e.g., $228,000 effective Jan 1, 2026)
 - Modular budgets (≤$250K direct) require less detail
 - Participant support costs excluded from F&A
 

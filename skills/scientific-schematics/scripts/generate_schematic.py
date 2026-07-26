@@ -6,7 +6,7 @@ Generate any scientific diagram by describing it in natural language.
 The selected image provider handles generation automatically with smart iterative refinement.
 
 Smart iteration: Only regenerates if quality is below threshold for your document type.
-Quality review: Uses Gemini 3 Pro for professional scientific evaluation.
+Quality review: Uses Gemini 3.1 Pro Preview for professional scientific evaluation.
 
 Usage:
     # Generate for journal paper (highest quality threshold)
@@ -36,7 +36,7 @@ How it works:
   Simply describe your diagram in natural language
   The selected image provider generates it automatically with:
   - Smart iteration (only regenerates if quality is below threshold)
-  - Quality review by Gemini 3 Pro
+  - Quality review by Gemini 3.1 Pro Preview
   - Document-type aware quality thresholds
   - Publication-ready output
 
@@ -91,7 +91,7 @@ Environment Variables:
                        choices=["openrouter", "atlascloud"],
                        help="Image generation provider (default: openrouter)")
     parser.add_argument("--model",
-                       help="Image model ID. Defaults to Nano Banana Pro on OpenRouter; required for Atlas Cloud unless ATLASCLOUD_IMAGE_MODEL is set.")
+                       help="Image model ID. Defaults to Nano Banana 2 on OpenRouter; required for Atlas Cloud unless ATLASCLOUD_IMAGE_MODEL is set.")
     parser.add_argument("--api-key",
                        help="Provider API key (or use OPENROUTER_API_KEY / ATLASCLOUD_API_KEY)")
     parser.add_argument("-v", "--verbose", action="store_true",
@@ -152,15 +152,15 @@ Environment Variables:
     if args.model:
         cmd.extend(["--model", args.model])
     
-    if api_key:
-        cmd.extend(["--api-key", api_key])
-    
     if args.verbose:
         cmd.append("-v")
     
-    # Execute
+    # Execute — pass API key via environment to avoid exposure in process listings
     try:
-        result = subprocess.run(cmd, check=False)
+        env = os.environ.copy()
+        if api_key:
+            env["OPENROUTER_API_KEY"] = api_key
+        result = subprocess.run(cmd, check=False, env=env)
         sys.exit(result.returncode)
     except Exception as e:
         print(f"Error executing AI generation: {e}")

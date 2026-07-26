@@ -488,7 +488,7 @@ NIH requires explicit discussion of:
 - List all personnel with roles, effort (% calendar months)
 - Typical: PI (2-3 months = 16-25%), postdoc (12 months), grad student, tech
 - Justify effort for each person
-- Note: Salary cap applies (~$221,900 for 2024)
+- Note: Salary cap is Executive Level II (updated annually; see [Salary Cap Summary](https://grants.nih.gov/policy-and-compliance/policy-topics/nih-fiscal-policies/salary-cap-summary)) — e.g., $228,000 effective January 1, 2026 ([NOT-OD-26-034](https://grants.nih.gov/grants/guide/notice-files/NOT-OD-26-034.html))
 
 **Consortium/Contractual Costs**:
 - F&A typically limited to 8% of total costs for subcontracts
@@ -515,10 +515,12 @@ NIH requires explicit discussion of:
 
 ### NIH Salary Cap
 
-**Annual Update**: NIH sets maximum salary for grants
-- 2024 Level: ~$221,900 (Executive Level II)
-- Applies to all personnel
-- Fringe benefits calculated on capped salary
+**Annual update**: NIH limits direct and indirect salary charged to grants at Executive Level II ([Salary Cap Summary](https://grants.nih.gov/policy-and-compliance/policy-topics/nih-fiscal-policies/salary-cap-summary)).
+
+- **FY 2026 awards** (issued Oct 1, 2025–Sep 30, 2026): $225,700 (Oct 1–Dec 31, 2025); $228,000 (Jan 1, 2026 onward) — [NOT-OD-26-034](https://grants.nih.gov/grants/guide/notice-files/NOT-OD-26-034.html)
+- **FY 2025 awards**: $221,900 (Oct 1–Dec 31, 2024); $225,700 (Jan 1–Sep 30, 2025) — [NOT-OD-25-085](https://grants.nih.gov/grants/guide/notice-files/NOT-OD-25-085.html)
+- **Scope (Oct 1, 2024 onward)**: Cap applies to both direct salaries and indirect salaries in uncapped cost pools — [NOT-OD-25-025](https://grants.nih.gov/grants/guide/notice-files/NOT-OD-25-025.html)
+- Fringe benefits are calculated on the capped salary
 
 ### Allowable Costs
 

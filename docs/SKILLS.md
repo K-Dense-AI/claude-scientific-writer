@@ -645,9 +645,78 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 
 ---
 
+### 12. Citation Management
+**Location**: `.claude/skills/citation-management/`
+
+**Capabilities**:
+- Search Google Scholar and PubMed for papers
+- Extract accurate citation metadata (authors, titles, journals, DOIs)
+- Convert DOIs to properly formatted BibTeX entries
+- Validate existing citations and detect metadata errors
+- Format and clean BibTeX files for consistent bibliographies
+
+**Scripts**:
+- `search_google_scholar.py`: Search Google Scholar for papers
+- `search_pubmed.py`: Search PubMed for biomedical literature
+- `doi_to_bibtex.py`: Convert DOIs to BibTeX entries
+- `extract_metadata.py`: Extract citation metadata from papers
+- `validate_citations.py`: Verify citation accuracy and completeness
+- `format_bibtex.py`: Normalize and format BibTeX files
+
+**When to Use**:
+- Finding papers and building a bibliography for a manuscript
+- Verifying that every reference in `references.bib` is real and correctly attributed
+- Converting a list of DOIs into a clean BibTeX file
+- Auditing reference lists before submission
+
+---
+
+### 13. Venue Templates
+**Location**: `.claude/skills/venue-templates/`
+
+**Capabilities**:
+- Query LaTeX templates for 50+ major journals and conferences
+- Access grant proposal templates (NSF, NIH, DOE, DARPA)
+- Retrieve poster templates for academic conferences
+- View formatting requirements and submission guidelines
+- Customize templates with author and project information
+- Validate document formatting against venue requirements
+
+**References**:
+- `journals_formatting.md`: Requirements for Nature, Science, PLOS, IEEE, ACM, Cell Press, and other major journals
+- `conferences_formatting.md`: ML, CS, biology conference paper formats (NeurIPS, ICML, ICLR, CVPR, CHI, ISMB, etc.)
+- `posters_guidelines.md`: Poster design, sizes, layout principles, and best practices
+- `grants_requirements.md`: Federal and private grant proposal formats (NSF, NIH, DOE, DARPA)
+
+**Scripts**:
+- `query_template.py`: Search and retrieve templates by venue name or keywords
+- `customize_template.py`: Customize templates with author information
+- `validate_format.py`: Check document compliance with venue requirements
+
+**Assets**:
+- `journals/`: LaTeX templates for Nature, Science, PLOS ONE, NeurIPS, and other major venues
+- `posters/`: Academic poster templates (beamerposter, tikzposter, baposter)
+- `grants/`: Grant proposal templates (NSF, NIH Specific Aims, DOE, DARPA)
+
+**Features**:
+- Comprehensive formatting guidelines for major publication venues
+- Ready-to-use LaTeX templates with proper structure
+- Helper scripts for template discovery and customization
+- Formatting validation tools
+- Integration with scientific writing workflow
+
+**Use Cases**:
+- **Journal submission**: Get proper formatting for Nature, Science, PLOS, IEEE, ACM journals
+- **Conference papers**: Templates for NeurIPS, ICML, CVPR, CHI, and other major conferences
+- **Research posters**: Professional poster templates for A0, A1, and US sizes
+- **Grant proposals**: NSF, NIH R01, DOE, DARPA proposal templates with requirements
+- **Format validation**: Check if your document meets venue specifications
+
+---
+
 ## Document Manipulation Skills
 
-### 12. MarkItDown - Universal File to Markdown Converter
+### 14. MarkItDown - Universal File to Markdown Converter
 **Location**: `.claude/skills/markitdown/`
 
 **Capabilities**:
@@ -684,7 +753,7 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 
 ---
 
-### 13. DOCX (Word Documents)
+### 15. DOCX (Word Documents)
 **Location**: `.claude/skills/document-skills/docx/`
 
 **Capabilities**:
@@ -705,7 +774,7 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 
 ---
 
-### 14. PDF Documents
+### 16. PDF Documents
 **Location**: `.claude/skills/document-skills/pdf/`
 
 **Capabilities**:
@@ -728,7 +797,7 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 
 ---
 
-### 15. PPTX (PowerPoint Presentations)
+### 17. PPTX (PowerPoint Presentations)
 **Location**: `.claude/skills/document-skills/pptx/`
 
 **Capabilities**:
@@ -751,7 +820,7 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 
 ---
 
-### 16. XLSX (Excel Spreadsheets)
+### 18. XLSX (Excel Spreadsheets)
 **Location**: `.claude/skills/document-skills/xlsx/`
 
 **Capabilities**:
@@ -762,6 +831,71 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 
 **Scripts**:
 - `recalc.py`: Formula recalculation utility
+
+---
+
+### 19. Research Lookup
+**Location**: `.claude/skills/research-lookup/`
+
+Compiles manuscript-ready scholarly evidence packets with Parallel Search and Extract,
+academic-domain filtering, source verification, and saved research artifacts.
+
+---
+
+### 20. Parallel Web
+**Location**: `.claude/skills/parallel-web/`
+
+Provides current web search, URL extraction, deep research, data enrichment, entity
+discovery, and monitoring through `parallel-cli`.
+
+---
+
+### 21. Generate Image
+**Location**: `.claude/skills/generate-image/`
+
+Generates or edits non-technical visual assets with OpenRouter image models. Technical
+flowcharts, pathways, and architectures remain the responsibility of
+`scientific-schematics`.
+
+---
+
+### 22. Infographics
+**Location**: `.claude/skills/infographics/`
+
+Creates standalone PNG infographics with iterative visual review, accessible palettes,
+and optional researched content. This route does not use LaTeX or PDF compilation.
+
+---
+
+### 23. Hypothesis Generation
+**Location**: `.claude/skills/hypothesis-generation/`
+
+Turns observations into competing, falsifiable hypotheses with mechanisms, predictions,
+and experiments that distinguish among alternatives.
+
+---
+
+### 24. Scientific Critical Thinking
+**Location**: `.claude/skills/scientific-critical-thinking/`
+
+Evaluates claims, experimental design, bias, confounding, statistical pitfalls, and
+evidence quality using established critical-appraisal frameworks.
+
+---
+
+### 25. Treatment Plans
+**Location**: `.claude/skills/treatment-plans/`
+
+Produces concise clinical treatment plans with SMART goals, evidence-based interventions,
+monitoring, safety considerations, and regulatory-aware formatting.
+
+---
+
+### 26. PPTX Posters
+**Location**: `.claude/skills/pptx-posters/`
+
+Creates research posters in editable PowerPoint format when PPTX is explicitly requested.
+LaTeX posters remain the default route for standard poster requests.
 
 ---
 
@@ -776,7 +910,7 @@ When you interact with the Scientific Writer CLI, Claude automatically:
 
 ## Skill Integration
 
-All skills are loaded from the `.claude/skills/` directory and are automatically available when you run the CLI. You don't need to manually select or activate them - Claude will use the appropriate skills based on your requests.
+Skills are loaded from `.claude/skills/` when the CLI runs. The bundled set is selected from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) and pinned in `skills.lock.json` for reproducible plugin and package builds. You don't need to manually activate them; Claude selects the appropriate skills based on your request.
 
 ## Example Usage
 
@@ -863,74 +997,17 @@ Claude will visualize the signaling pathway with properly styled proteins and ac
 ```
 Claude will create a system architecture diagram with labeled components and data flow.
 
-### 11. Venue Templates
-**Location**: `.claude/skills/venue-templates/`
-
-**Capabilities**:
-- Query LaTeX templates for 50+ major journals and conferences
-- Access grant proposal templates (NSF, NIH, DOE, DARPA)
-- Retrieve poster templates for academic conferences
-- View formatting requirements and submission guidelines
-- Customize templates with author and project information
-- Validate document formatting against venue requirements
-
-**References**:
-- `journals_formatting.md`: Requirements for Nature, Science, PLOS, IEEE, ACM, Cell Press, and other major journals
-- `conferences_formatting.md`: ML, CS, biology conference paper formats (NeurIPS, ICML, ICLR, CVPR, CHI, ISMB, etc.)
-- `posters_guidelines.md`: Poster design, sizes, layout principles, and best practices
-- `grants_requirements.md`: Federal and private grant proposal formats (NSF, NIH, DOE, DARPA)
-
-**Scripts**:
-- `query_template.py`: Search and retrieve templates by venue name or keywords
-- `customize_template.py`: Customize templates with author information
-- `validate_format.py`: Check document compliance with venue requirements
-
-**Assets**:
-- `journals/`: LaTeX templates for Nature, Science, PLOS ONE, NeurIPS, and other major venues
-- `posters/`: Academic poster templates (beamerposter, tikzposter, baposter)
-- `grants/`: Grant proposal templates (NSF, NIH Specific Aims, DOE, DARPA)
-
-**Features**:
-- Comprehensive formatting guidelines for major publication venues
-- Ready-to-use LaTeX templates with proper structure
-- Helper scripts for template discovery and customization
-- Formatting validation tools
-- Integration with scientific writing workflow
-
-**Use Cases**:
-- **Journal submission**: Get proper formatting for Nature, Science, PLOS, IEEE, ACM journals
-- **Conference papers**: Templates for NeurIPS, ICML, CVPR, CHI, and other major conferences
-- **Research posters**: Professional poster templates for A0, A1, and US sizes
-- **Grant proposals**: NSF, NIH R01, DOE, DARPA proposal templates with requirements
-- **Format validation**: Check if your document meets venue specifications
-
-**Example Usage**:
-
-### Query Template for a Journal
+### Using Venue Templates Skill
 ```
 > I need to submit to Nature
 ```
 Claude will provide the Nature article template and formatting requirements.
 
-### Get Conference Paper Template
 ```
 > Show me the NeurIPS paper template
 ```
 Claude will provide the NeurIPS conference paper template with anonymization guidelines.
 
-### Grant Proposal Template
-```
-> I need an NSF proposal template
-```
-Claude will provide the NSF proposal template with all required sections and formatting.
-
-### Conference Poster
-```
-> Create a research poster for ISMB conference
-```
-Claude will provide poster template and size specifications for the conference.
-
-### Format Validation
 ```
 > Check if my paper meets Nature's requirements
 ```
@@ -938,14 +1015,17 @@ Claude can guide you through using the validation script to check formatting com
 
 ---
 
-## Adding Custom Skills
+## Adding Local-Only Custom Skills
 
-To add your own skills:
+To add a private skill used only in your project:
 
 1. Create a new directory in `.claude/skills/`
 2. Add a `SKILL.md` file with your skill definition
 3. Optionally add `references/`, `scripts/`, and `assets/` subdirectories
 4. Restart the CLI
 
-The new skill will be automatically loaded and available.
+The new skill will be automatically loaded and preserved during bundled-skill refreshes,
+provided its directory name does not collide with a shipped skill.
+
+To ship a skill with Scientific Writer, contribute it to the canonical [Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) repository and then follow the pinning workflow in the [Skill Authoring Guide](SKILL_AUTHORING.md).
 

@@ -2,7 +2,7 @@
 
 **Scientific Writer is a deep research and writing tool** that combines AI-driven deep research with well-formatted written outputs. This API lets you programmatically generate publication-ready documents backed by real-time literature search and verified citations.
 
-Complete reference for the Scientific Writer v2.0 programmatic API. For a quick start, see the README. This page contains full details, examples, and best practices.
+Complete reference for the Scientific Writer programmatic API. For a quick start, see the README. This page contains full details, examples, and best practices.
 
 ## Installation
 
@@ -22,9 +22,11 @@ from scientific_writer import generate_paper
 
 async def main():
     async for update in generate_paper("Create a Nature paper on CRISPR"):
-        if update["type"] == "progress":
+        if update["type"] == "text":
+            print(update["content"], end="", flush=True)
+        elif update["type"] == "progress":
             print(f"[{update['stage']}] {update['message']}")
-        else:
+        elif update["type"] == "result":
             print(f"PDF: {update['files']['pdf_final']}")
 
 asyncio.run(main())
@@ -38,16 +40,23 @@ Asynchronous generator that creates a scientific paper and yields progress updat
 
 **Signature:**
 ```python
-from typing import AsyncGenerator, Dict, Any, Optional, List
+from typing import AsyncGenerator, Dict, Any, Optional, List, Literal
 
 async def generate_paper(
     query: str,
     output_dir: Optional[str] = None,
     api_key: Optional[str] = None,
-    model: str = "claude-opus-4-8",
+    model: Optional[str] = None,
+    effort_level: Literal["low", "medium", "high"] = "medium",
     data_files: Optional[List[str]] = None,
     cwd: Optional[str] = None,
     track_token_usage: bool = False,
+    auto_continue: bool = True,
+    permission_mode: str = "bypassPermissions",
+    max_turns: int = 500,
+    max_budget_usd: Optional[float] = None,
+    max_auto_continuations: int = 1,
+    skills: List[str] | Literal["all"] | None = "all",
 ) -> AsyncGenerator[Dict[str, Any], None]
 ```
 
@@ -56,18 +65,26 @@ async def generate_paper(
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
 | `query` | `str` | Yes | - | The paper generation request (e.g., "Create a Nature paper on CRISPR") |
-| `output_dir` | `str` | No | `None` | Custom output directory. Defaults to `cwd/writing_outputs` |
+| `output_dir` | `str` | No | `None` | Custom output root. Relative paths resolve against `cwd`; defaults to `cwd/writing_outputs` |
 | `api_key` | `str` | No | `None` | Anthropic API key. Defaults to `ANTHROPIC_API_KEY` env var |
-| `model` | `str` | No | `"claude-opus-4-8"` | Claude model to use |
+| `model` | `str` | No | `None` | Explicit Claude model to use. If provided, overrides `effort_level`; otherwise the model is resolved from `effort_level` |
+| `effort_level` | `"low" \| "medium" \| "high"` | No | `"medium"` | Native SDK reasoning effort and default model tier: `low` = Claude Haiku 4.5; `medium`/`high` = Claude Opus 4.8 |
 | `data_files` | `List[str]` | No | `None` | List of file paths to include in the paper |
-| `cwd` | `str` | No | `None` | Working directory. Defaults to package parent directory |
+| `cwd` | `str` | No | `None` | Working directory. Defaults to the current working directory |
 | `track_token_usage` | `bool` | No | `False` | If True, track and return token usage in the final result |
+| `auto_continue` | `bool` | No | `True` | Requests a bounded final completion-verification pass; can be overridden with `SCIENTIFIC_WRITER_AUTO_CONTINUE` |
+| `permission_mode` | `str` | No | `"bypassPermissions"` | SDK permission mode; autonomous compatibility default, configurable for safer integrations |
+| `max_turns` | `int` | No | `500` | Maximum SDK turns per request |
+| `max_budget_usd` | `float` | No | `None` | Optional SDK-enforced spend ceiling |
+| `max_auto_continuations` | `int` | No | `1` | Maximum completion-verification continuations |
+| `skills` | `List[str] \| "all" \| None` | No | `"all"` | Project skills exposed through the SDK |
 
 **Returns:**
 
 An async generator that yields:
-1. Progress updates (type="progress") during execution
-2. Final result (type="result") with comprehensive paper information
+1. Text updates (`type="text"`) as assistant text streams
+2. Progress updates (`type="progress"`) during execution
+3. Final result (`type="result"`) with comprehensive document information
 
 **Example:**
 ```python
@@ -80,15 +97,28 @@ async def example():
         output_dir="./my_papers",
         data_files=["results.csv", "figure.png"],
     ):
-        if update["type"] == "progress":
+        if update["type"] == "text":
+            print(update["content"], end="", flush=True)
+        elif update["type"] == "progress":
             print(f"[{update['stage']}] {update['message']}")
-        else:
+        elif update["type"] == "result":
             print(f"Done! PDF: {update['files']['pdf_final']}")
 
 asyncio.run(example())
 ```
 
 ## Data Models
+
+### `TextUpdate`
+
+Live assistant text emitted while a document is generated:
+
+```python
+{
+    "type": "text",
+    "content": str,
+}
+```
 
 ### `ProgressUpdate`
 
@@ -107,6 +137,7 @@ Progress information yielded during paper generation.
 
 **Stages:**
 - `initialization` - Setting up paper generation
+- `planning` - Planning structure and requirements
 - `research` - Conducting literature research
 - `writing` - Writing paper sections
 - `compilation` - Compiling LaTeX to PDF
@@ -134,9 +165,9 @@ Comprehensive final result with all paper information.
 ```
 
 **Status Values:**
-- `success` - Paper fully generated with PDF
-- `partial` - TeX created but PDF compilation failed
-- `failed` - Generation failed (see `errors` field)
+- `success` - At least one final document artifact was generated
+- `partial` - Draft artifacts exist, but no final artifact was produced
+- `failed` - No document artifact was produced (see `errors`)
 
 ### `PaperMetadata`
 
@@ -166,6 +197,10 @@ Paths to all generated paper files.
     "bibliography": Optional[str],   # BibTeX file path
     "figures": List[str],            # List of figure file paths
     "data": List[str],               # List of data file paths
+    "sources": List[str],            # Saved research and context files
+    "final_artifacts": List[str],     # Generic PDF/DOCX/PPTX/MD/PNG/etc. outputs
+    "draft_artifacts": List[str],     # Generic draft outputs
+    "artifacts": List[str],           # Complete recursive artifact inventory
     "progress_log": Optional[str],   # progress.md path
     "summary": Optional[str]         # SUMMARY.md path
 }
@@ -209,9 +244,11 @@ async def create_paper():
     query = "Create a Nature paper on quantum computing"
     
     async for update in generate_paper(query):
-        if update["type"] == "progress":
+        if update["type"] == "text":
+            print(update["content"], end="")
+        elif update["type"] == "progress":
             print(f"Progress: {update['message']}")
-        else:
+        elif update["type"] == "result":
             if update["status"] == "success":
                 print(f"Success! PDF: {update['files']['pdf_final']}")
             else:
@@ -229,6 +266,7 @@ async def track_progress():
             # Show stage-based progress
             stage_icons = {
                 "initialization": "🔧",
+                "planning": "📋",
                 "research": "🔍",
                 "writing": "✍️",
                 "compilation": "📦",
@@ -236,11 +274,14 @@ async def track_progress():
             }
             icon = stage_icons.get(update["stage"], "⏳")
             print(f"{icon} [{update['stage']:12}] {update['message']}")
-        else:
+        elif update["type"] == "result":
             print(f"\n✅ Complete! PDF: {update['files']['pdf_final']}")
 ```
 
 ### Custom Output Directory
+
+Every call creates one unique project directory beneath the resolved output root.
+Relative output paths are anchored to `cwd`, not the caller process directory.
 
 ```python
 async def custom_directory():
@@ -295,17 +336,18 @@ async def save_to_json():
 async def with_error_handling():
     try:
         async for update in generate_paper("Create a paper"):
-            if update["type"] == "progress":
+            if update["type"] == "text":
+                print(update["content"], end="")
+            elif update["type"] == "progress":
                 print(f"[{update['stage']}] {update['message']}")
-            else:
+            elif update["type"] == "result":
                 if update["status"] == "failed":
                     print("Generation failed!")
                     for error in update["errors"]:
                         print(f"  Error: {error}")
                 elif update["status"] == "partial":
                     print("Partial success")
-                    print(f"  TeX file: {update['files']['tex_final']}")
-                    print("  PDF compilation failed")
+                    print(f"  Drafts: {update['files']['draft_artifacts']}")
                 else:
                     print("Success!")
     except ValueError as e:
@@ -358,16 +400,18 @@ async def list_all_files():
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `ANTHROPIC_API_KEY` | Yes* | Your Anthropic API key for Scientific-Writer |
-| `OPENROUTER_API_KEY` | No | For real-time research lookup via Perplexity Sonar Pro Search |
+| `PARALLEL_API_KEY` | For research | Alternative to `parallel-cli login`; enables Parallel Search, Extract, Research, and optional explicit Chat |
+| `OPENROUTER_API_KEY` | No | Optional; used by the AI image generation skills (generate-image, scientific-schematics, scientific-slides, infographics, and markitdown AI features) |
+| `NCBI_API_KEY` / `NCBI_EMAIL` | No | Optional; higher-rate PubMed lookups in literature-review scripts |
 
 \* Can be overridden by passing `api_key` parameter to `generate_paper()`
 
 ### Research Lookup
 
-When `OPENROUTER_API_KEY` is set, the system gains access to real-time research capabilities:
+When `PARALLEL_API_KEY` is set, the system gains access to real-time research capabilities:
 
 - **Live internet search** during paper generation
-- **Recent publications** from 2024-2025
+- **Recent publications** and preprints
 - **Fact verification** with current data
 - **Citation discovery** for latest research
 
@@ -375,19 +419,18 @@ The research lookup is automatically invoked when needed - you don't need to exp
 
 ### Native Web Search
 
-In addition to research lookup, the system includes Claude's native **WebSearch** tool for:
+In addition to research lookup, the system includes Claude's native **WebSearch** tool as a fallback for:
 
 - **Current events** and general information
 - **Non-academic sources** (news, blogs, documentation)
 - **Real-time information** that may not be in academic databases
-- **Fact-checking** and verification from diverse sources
 
-Both tools work together: use research-lookup for scholarly/academic content, and WebSearch for broader web information.
+Parallel-based research lookup and web search are the primary tools; native WebSearch is only used as a last resort when they are unavailable.
 
 **Setup:**
 ```bash
 # Add to your .env file
-echo "OPENROUTER_API_KEY=your_key_here" >> .env
+echo "PARALLEL_API_KEY=your_key_here" >> .env
 ```
 
 **Example usage:**
@@ -405,15 +448,17 @@ The API handles errors gracefully:
 
 1. Configuration errors (missing API key): yields a result with `status="failed"`
 2. Generation errors: captured in the `errors` field of the result
-3. Partial failures: TeX created but PDF failed -> `status="partial"`
+3. Partial failures: drafts exist but no final artifact -> `status="partial"`
 
 ## Best Practices
 
 1. Always check update type:
    ```python
-   if update["type"] == "progress":
+   if update["type"] == "text":
+       # Handle streamed assistant text
+   elif update["type"] == "progress":
        # Handle progress
-   else:  # type == "result"
+   elif update["type"] == "result":
        # Handle final result
    ```
 
@@ -428,7 +473,7 @@ The API handles errors gracefully:
    if update["status"] == "failed":
        print(f"Errors: {update['errors']}")
    elif update["status"] == "partial":
-       print("TeX created but PDF failed")
+       print(f"Drafts only: {update['files']['draft_artifacts']}")
    else:
        print("Success!")
    ```
@@ -467,7 +512,7 @@ async for update in generate_paper(
         figures = update["files"]["figures"]
 ```
 
-**Note:** When using the API, original files are preserved (not deleted). In CLI mode, they are deleted after copying.
+**Note:** Original files are preserved in both API and CLI modes. CLI users can opt into inbox-style deletion with `--consume-inputs`.
 
 ### Intelligent Paper Detection (CLI Only)
 
@@ -488,7 +533,7 @@ The CLI automatically detects references to existing papers:
 # Explicitly starts a new paper
 ```
 
-This feature is CLI-specific because the API is stateless. Each `generate_paper()` call creates a new paper.
+This feature is CLI-specific because the API is stateless. Each `generate_paper()` call creates an invocation-owned project directory.
 
 ### Custom Output Organization
 
@@ -513,15 +558,48 @@ async for update in generate_paper(
 
 ### Model Selection
 
-Choose different Claude models (though Sonnet 4.5 is recommended):
+`effort_level` configures both the SDK's native reasoning effort and the default model tier:
+
+| Effort level | Model |
+|--------------|-------|
+| `low` | `claude-haiku-4-5` (fastest, most economical) |
+| `medium` (default) | `claude-opus-4-8` (balanced, premium) |
+| `high` | `claude-opus-4-8` with high SDK reasoning effort |
 
 ```python
+# Choose a model via effort level
 async for update in generate_paper(
     query="Create a paper",
-    model="claude-opus-4-8"  # Latest Opus 4.8
+    effort_level="high"
+):
+    pass
+
+# Or pass an explicit model, which overrides effort_level
+async for update in generate_paper(
+    query="Create a paper",
+    model="claude-opus-4-8"
 ):
     pass
 ```
+
+### Execution Controls
+
+Long-running autonomous jobs can be bounded explicitly:
+
+```python
+async for update in generate_paper(
+    query="Create a systematic review",
+    permission_mode="acceptEdits",
+    max_turns=120,
+    max_budget_usd=25.0,
+    max_auto_continuations=1,
+):
+    pass
+```
+
+The compatibility default is `permission_mode="bypassPermissions"` because document
+generation invokes local compilation and research commands. Use a stricter mode when
+your host integration can handle permission decisions.
 
 ### Token Usage Tracking
 
@@ -579,6 +657,7 @@ def format_stage(stage: str) -> str:
     """Format stage name with icon."""
     icons = {
         "initialization": "🔧",
+    "planning": "📋",
         "research": "🔍", 
         "writing": "✍️",
         "compilation": "📦",
@@ -595,6 +674,7 @@ async for update in generate_paper(query):
 ```python
 stage_emojis = {
     "initialization": "🔧",
+    "planning": "📋",
     "research": "🔍",
     "writing": "✍️",
     "compilation": "📦",

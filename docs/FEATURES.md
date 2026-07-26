@@ -2,7 +2,7 @@
 
 **Scientific Writer is a deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs of various forms. Before generating any document, it conducts comprehensive literature searches, verifies citations, and synthesizes information—ensuring your scientific writing is backed by real, verifiable sources.
 
-This guide provides a comprehensive overview of all features available in Scientific Writer v2.0.
+This guide provides a comprehensive overview of all features available in Scientific Writer.
 
 ## Table of Contents
 
@@ -168,7 +168,7 @@ Publication-quality diagrams and visualizations.
 
 ### Real-Time Research Lookup
 
-Powered by Perplexity Sonar Pro Search via OpenRouter API.
+Powered by Parallel Search, Extract, and Research through `parallel-cli`.
 
 **Features:**
 - Live internet search during paper generation
@@ -179,7 +179,7 @@ Powered by Perplexity Sonar Pro Search via OpenRouter API.
 **Setup:**
 ```bash
 # Add to .env file
-echo "OPENROUTER_API_KEY=your_key" >> .env
+echo "PARALLEL_API_KEY=your_key" >> .env
 ```
 
 **Automatic Usage:**
@@ -289,7 +289,7 @@ Finds specific papers by topic:
 Matches based on directory names (format: `YYYYMMDD_HHMMSS_topic`):
 
 ```bash
-# Finds 20241027_090109_acoustics_vinayak_agarwal/
+# Finds 20241027_090109_acoustics_underwater_noise/
 > update the acoustics paper
 
 # Finds 20251029_130950_transformers_ai_paper/
@@ -317,7 +317,7 @@ Simply drop files into the `data/` folder at the project root.
 **File Routing:**
 - **Images** (png, jpg, svg, etc.) → `figures/`
 - **Data files** (csv, json, txt, xlsx) → `data/`
-- **Original files** automatically deleted after copying
+- **Original files** preserved by default (`--consume-inputs` opts into deletion)
 
 **Supported Image Formats:**
 `.png`, `.jpg`, `.jpeg`, `.gif`, `.bmp`, `.tiff`, `.svg`, `.webp`, `.ico`
@@ -334,7 +334,7 @@ scientific-writer
 # 3. Files are automatically detected and processed
 > Create a paper analyzing the experimental results
 # ✓ Files copied to paper's data/ and figures/
-# ✓ Original files deleted from data/
+# ✓ Original files preserved in data/
 ```
 
 ### Programmatic Data Files
@@ -435,17 +435,29 @@ async def generate_paper(
     query: str,
     output_dir: Optional[str] = None,
     api_key: Optional[str] = None,
-    model: str = "claude-opus-4-8",
+    model: Optional[str] = None,
+    effort_level: Literal["low", "medium", "high"] = "medium",
     data_files: Optional[List[str]] = None,
     cwd: Optional[str] = None,
+    track_token_usage: bool = False,
+    auto_continue: bool = True,
+    permission_mode: str = "bypassPermissions",
+    max_turns: int = 500,
+    max_budget_usd: Optional[float] = None,
+    max_auto_continuations: int = 1,
+    skills: List[str] | Literal["all"] | None = "all",
 ) -> AsyncGenerator[Dict[str, Any], None]
 ```
+
+When `model` is omitted, it is resolved from `effort_level` (`low` = Claude Haiku 4.5, `medium`/`high` = Claude Opus 4.8). The same value configures the SDK's native reasoning effort. See the [API Reference](API.md#generate_paper) for execution, permission, budget, and skill controls.
 
 **Type-Safe Models:**
 ```python
 from scientific_writer import (
     ProgressUpdate,  # Progress information
+    TextUpdate,      # Streamed assistant text
     PaperResult,     # Final result with all paper info
+    DocumentResult,  # Document-neutral alias
     PaperMetadata,   # Paper metadata (title, date, word count)
     PaperFiles,      # All file paths (PDF, TeX, BibTeX, etc.)
 )

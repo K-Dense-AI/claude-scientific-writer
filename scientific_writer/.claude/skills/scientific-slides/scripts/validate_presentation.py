@@ -245,7 +245,7 @@ class PresentationValidator:
         try:
             # Try pdflatex
             result = subprocess.run(
-                ['pdflatex', '-interaction=nonstopmode', self.filepath.name],
+                ['pdflatex', '-no-shell-escape', '-interaction=nonstopmode', self.filepath.name],
                 cwd=self.filepath.parent,
                 capture_output=True,
                 timeout=60

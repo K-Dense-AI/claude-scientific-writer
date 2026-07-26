@@ -22,6 +22,7 @@ uv run scripts/bump_version.py major
 The script automatically updates version in:
 - `pyproject.toml`
 - `scientific_writer/__init__.py`
+- `.claude-plugin/marketplace.json`
 
 After bumping:
 1. Review changes with `git diff`
@@ -34,20 +35,14 @@ After bumping:
 
 ### Prerequisites
 
-Set up PyPI credentials using one of these methods:
+The recommended release path is the tag-triggered GitHub Actions workflow with PyPI
+Trusted Publishing. For the alternative local publisher, set a token in the environment:
 
-**Option 1: Environment Variable (Recommended)**
 ```bash
 export UV_PUBLISH_TOKEN="pypi-your-token-here"
 ```
 
-**Option 2: `.pypirc` file**
-Create `~/.pypirc`:
-```ini
-[pypi]
-username = __token__
-password = pypi-your-token-here
-```
+`uv publish` does not read `~/.pypirc`.
 
 ### Publish Package
 
@@ -73,12 +68,12 @@ uv run scripts/publish.py --skip-git-check
 
 The publish script:
 1. Verifies git working directory is clean (unless `--skip-git-check`)
-2. Optionally bumps version (if `--bump` specified)
-3. Validates package metadata
-4. Cleans old build artifacts
-5. Builds wheel and source distribution with `uv build`
-6. Creates git tag `vX.Y.Z` (unless `--skip-tag` or `--dry-run`)
-7. Publishes to PyPI with `uv publish` (unless `--dry-run`)
+2. Optionally bumps and commits the version and refreshed `uv.lock`
+3. Validates metadata, skills, lint, types, tests, spelling, and package structure
+4. Pushes an automatically created release commit before publication
+5. Cleans old build artifacts and builds the wheel/source distribution
+6. Publishes to PyPI with `uv publish` (unless `--dry-run`)
+7. Creates and pushes `vX.Y.Z` only after a successful upload
 
 ## Complete Workflow Example
 
@@ -96,9 +91,8 @@ git commit -m "Bump version to 2.0.1"
 # 4. Publish (this will create and push git tag)
 uv run scripts/publish.py
 
-# Or do it all at once:
+# Or, after updating and committing the changelog, bump and publish in one step:
 uv run scripts/publish.py --bump patch
-# (then manually update CHANGELOG.md and commit)
 ```
 
 ## Package Installation
@@ -143,7 +137,7 @@ uvx scientific-writer
 Install uv: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
 ### "PyPI credentials not found"
-Set `UV_PUBLISH_TOKEN` environment variable or create `~/.pypirc`
+Set the `UV_PUBLISH_TOKEN` environment variable, or use the Trusted Publishing workflow.
 
 ### "Working directory has uncommitted changes"
 Either commit/stash changes or use `--skip-git-check` flag

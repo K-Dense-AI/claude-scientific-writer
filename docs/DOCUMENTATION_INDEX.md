@@ -1,6 +1,6 @@
 # Complete Documentation Index
 
-**Scientific Writer v2.7.0** - Comprehensive documentation navigation guide.
+**Scientific Writer v2.17.1** - Comprehensive documentation navigation guide.
 
 ---
 
@@ -10,16 +10,16 @@
 
 | Document | Purpose | Audience | Last Updated |
 |----------|---------|----------|--------------|
-| [README.md](../README.md) | Main entry point, quick start, features overview | Everyone | v2.7.0 |
-| [docs/README.md](README.md) | Documentation hub with navigation guide | Everyone | v2.7.0 |
-| [CHANGELOG.md](../CHANGELOG.md) | Version history and release notes | Everyone | v2.7.0 |
+| [README.md](../README.md) | Main entry point, quick start, features overview | Everyone | v2.17.1 |
+| [docs/README.md](README.md) | Documentation hub with navigation guide | Everyone | v2.17.1 |
+| [CHANGELOG.md](../CHANGELOG.md) | Version history and release notes | Everyone | v2.17.1 |
 
 ### User Guides
 
 | Document | Content | When to Read |
 |----------|---------|--------------|
 | [FEATURES.md](FEATURES.md) | Complete feature guide (document generation, AI capabilities, file integration) | To understand what's possible |
-| [SKILLS.md](SKILLS.md) | All 19+ skills with examples | To learn available capabilities |
+| [SKILLS.md](SKILLS.md) | The 26 available skills with examples | To learn available capabilities |
 | [API.md](API.md) | Programmatic API reference with code examples | When using Python API |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues and solutions | When you encounter problems |
 
@@ -27,10 +27,11 @@
 
 | Document | Content | Audience |
 |----------|---------|----------|
+| [CONTRIBUTING.md](../CONTRIBUTING.md) | Dev setup, tests, lint, PR guidelines | Contributors |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Architecture, plugin development, contributing | Contributors, maintainers |
+| [SKILL_AUTHORING.md](SKILL_AUTHORING.md) | How to write and register a new skill | Skill authors |
 | [RELEASING.md](RELEASING.md) | Version management, PyPI publishing | Maintainers |
 | [example_api_usage.py](../example_api_usage.py) | Working Python examples | API users |
-| [TESTING_INSTRUCTIONS.md](../TESTING_INSTRUCTIONS.md) | Plugin testing guide | Plugin developers |
 
 ### System Documentation
 
@@ -65,7 +66,7 @@
 |--------------|----------------|----------------|----------|
 | **Research Papers** | [Quick Start](../README.md#quick-start) | [Features: Papers](FEATURES.md#scientific-papers) | [README Examples](../README.md#common-commands) |
 | **Grant Proposals** | [Grant Commands](../README.md#common-commands) | [Skills: Grants](SKILLS.md#5-research-grants) | [Features: Grants](FEATURES.md#grant-proposals) |
-| **Research Posters** | [Poster Commands](../README.md#common-commands) | [Skills: Posters](SKILLS.md#8-latex-research-posters) | [Features: Posters](FEATURES.md#research-posters) |
+| **Research Posters** | [Poster Commands](../README.md#common-commands) | [Skills: Posters](SKILLS.md#8-latex-research-posters-default) | [Features: Posters](FEATURES.md#research-posters) |
 | **Clinical Reports** | [Clinical Commands](../README.md#common-commands) | [Skills: Clinical](SKILLS.md#6-clinical-reports) | [Features: Clinical](FEATURES.md#document-generation) |
 | **Literature Reviews** | [Review Commands](../README.md#common-commands) | [Skills: Literature](SKILLS.md#2-literature-review) | [Features: Reviews](FEATURES.md#literature-reviews) |
 | **Presentations** | [Slides Examples](../README.md#common-commands) | [Skills: Slides](SKILLS.md#9-scientific-slides-and-presentations) | [CLAUDE.md: Presentations](../CLAUDE.md) |
@@ -74,10 +75,10 @@
 
 | Feature | Documentation | Skills Involved |
 |---------|---------------|-----------------|
-| **Research Lookup** | [Features: Research Lookup](FEATURES.md#real-time-research-lookup) | [research-lookup](SKILLS.md#research-lookup) |
+| **Research Lookup** | [Features: Research Lookup](FEATURES.md#real-time-research-lookup) | [research-lookup](SKILLS.md) |
 | **Peer Review** | [Features: Peer Review](FEATURES.md#peer-review-with-scholareval) | [peer-review](SKILLS.md#3-peer-review), [scholar-evaluation](SKILLS.md#4-scholar-evaluation) |
-| **Citation Management** | [Skills: Citations](SKILLS.md#citation-management) | [citation-management](SKILLS.md) |
-| **Document Conversion** | [Features: Conversion](FEATURES.md#document-conversion) | [markitdown](SKILLS.md#12-markitdown---universal-file-to-markdown-converter) |
+| **Citation Management** | [Skills: Citations](SKILLS.md#12-citation-management) | [citation-management](SKILLS.md#12-citation-management) |
+| **Document Conversion** | [Features: Conversion](FEATURES.md#document-conversion) | [markitdown](SKILLS.md#14-markitdown---universal-file-to-markdown-converter) |
 | **Scientific Schematics** | [Features: Schematics](FEATURES.md#scientific-schematics) | [scientific-schematics](SKILLS.md#10-scientific-schematics-and-diagrams) |
 
 ### I Want to Develop or Contribute
@@ -85,7 +86,6 @@
 **Plugin Development:**
 1. [Plugin Structure](DEVELOPMENT.md#plugin-structure)
 2. [Local Testing](DEVELOPMENT.md#testing-plugin-locally)
-3. [Testing Guide](../TESTING_INSTRUCTIONS.md)
 
 **Python Package Development:**
 1. [Architecture](DEVELOPMENT.md#architecture-overview)
@@ -94,7 +94,7 @@
 
 **Publishing:**
 1. [Version Management](RELEASING.md#bump-the-version-semver)
-2. [Publishing to PyPI](RELEASING.md#publish-to-pypi)
+2. [Publishing to PyPI](RELEASING.md#recommended-trusted-publishing-via-github-actions)
 3. [Verification](RELEASING.md#verify)
 
 ---
@@ -105,35 +105,6 @@
 - **PyPI Package**: https://pypi.org/project/scientific-writer/
 - **Community Slack**: [Join K-Dense Community](https://join.slack.com/t/k-densecommunity/shared_invite/zt-3iajtyls1-EwmkwIZk0g_o74311Tkf5g)
 - **Issue Tracker**: https://github.com/K-Dense-AI/claude-scientific-writer/issues
-
----
-
-## 📊 Documentation Health Check
-
-### Completeness
-
-- ✅ Installation guides (Plugin, CLI, API)
-- ✅ Usage examples (all document types)
-- ✅ API reference (complete with examples)
-- ✅ Skills documentation (19+ skills)
-- ✅ Troubleshooting guide
-- ✅ Development guide
-- ✅ Release process
-- ✅ Change log
-
-### Accuracy
-
-- ✅ Version numbers updated (v2.7.0)
-- ✅ Links verified
-- ✅ Examples tested
-- ✅ Prerequisites current
-
-### Coverage
-
-- ✅ All three usage modes documented (Plugin, CLI, API)
-- ✅ All major features covered
-- ✅ All skills documented
-- ✅ Common issues addressed
 
 ---
 
@@ -171,7 +142,6 @@ claude-scientific-writer/
 ├── README.md                    # Main entry point
 ├── CHANGELOG.md                 # Version history
 ├── CLAUDE.md                    # System instructions
-├── TESTING_INSTRUCTIONS.md      # Plugin testing
 ├── example_api_usage.py         # API examples
 ├── docs/
 │   ├── README.md                # Documentation hub
@@ -181,9 +151,11 @@ claude-scientific-writer/
 │   ├── SKILLS.md                # Skills reference
 │   ├── TROUBLESHOOTING.md       # Problem solving
 │   ├── DEVELOPMENT.md           # Developer guide
+│   ├── SKILL_AUTHORING.md       # Skill authoring guide
 │   ├── RELEASING.md             # Release process
 │   └── examples/                # Example outputs
-└── skills/                      # 19+ skill directories
+├── skills.lock.json             # Pinned upstream skill provenance
+└── skills/                      # 26 generated upstream skills
 ```
 
 ### Link Format
@@ -194,7 +166,7 @@ claude-scientific-writer/
 
 ### Version References
 
-- Always specify version when referencing features (e.g., "v2.7.0")
+- Always specify version when referencing features (e.g., "v2.17.1")
 - Use "Latest" for current version, "Previous" for older versions
 - Update version numbers during releases
 
@@ -239,7 +211,5 @@ Found an issue with the documentation? Please:
 
 ---
 
-**Last Updated**: January 22, 2025 (v2.7.0)
-
-**Documentation Status**: ✅ Complete and Current
+**Last Updated**: July 22, 2026 (v2.17.1)
 

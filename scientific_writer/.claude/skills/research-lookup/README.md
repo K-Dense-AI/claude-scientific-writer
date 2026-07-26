@@ -1,156 +1,106 @@
-# Research Lookup Skill
+# Research Lookup
 
-This skill provides real-time research information lookup using Perplexity's Sonar Pro Search model through OpenRouter.
+Parallel-first evidence compilation for scientific manuscripts. Academic retrieval
+targets 60 verified, unique references by default and produces a research packet with
+structured study evidence, claim provenance, contradictions, gaps, and section briefs.
+
+`SKILL.md` is the authoritative workflow and safety reference.
+
+## Routing
+
+| Request | Backend |
+|---|---|
+| Manuscript literature or many academic references | Parallel Search + Extract |
+| Fast current-information lookup | Parallel Search |
+| Explicit deep/exhaustive report | Parallel Research |
+| Explicit OpenAI-compatible synthesis | Parallel Chat |
+| Optional alternative/failure fallback | Perplexity through OpenRouter |
+
+A bare query uses Parallel Search. Parallel Chat remains available through
+`--force-backend chat`, but automatic routing never selects it. The legacy
+`--force-backend parallel` flag remains an alias for explicit Parallel Research.
 
 ## Setup
 
-1. **Get OpenRouter API Key:**
-   - Visit [openrouter.ai](https://openrouter.ai)
-   - Create account and generate API key
-   - Add credits to your account
-
-2. **Configure Environment:**
-   ```bash
-   export OPENROUTER_API_KEY="your_api_key_here"
-   ```
-
-3. **Test Setup:**
-   ```bash
-   python scripts/research_lookup.py --model-info
-   ```
-
-## Usage
-
-### Command Line Usage
-
 ```bash
-# Single research query
-python scripts/research_lookup.py "Recent advances in CRISPR gene editing 2024"
-
-# Multiple queries with delay
-python scripts/research_lookup.py --batch "CRISPR applications" "gene therapy trials" "ethical considerations"
-
-# Claude Code integration (called automatically)
-python lookup.py "your research query here"
+uv tool install "parallel-web-tools[cli]==0.7.1"
+parallel-cli login
+parallel-cli auth
 ```
 
-### Claude Code Integration
+CLI login may be replaced by `PARALLEL_API_KEY`. `OPENROUTER_API_KEY` is needed only
+for explicit Perplexity use or an enabled fallback. Explicit Chat requires
+`PARALLEL_API_KEY` in the process environment.
 
-The research lookup tool is automatically available in Claude Code when you:
+## Manuscript packet
 
-1. **Ask research questions:** "Research recent advances in quantum computing"
-2. **Request literature reviews:** "Find current studies on climate change impacts"
-3. **Need citations:** "What are the latest papers on transformer attention mechanisms?"
-4. **Want technical information:** "Standard protocols for flow cytometry"
+```bash
+python skills/research-lookup/scripts/research_lookup.py \
+  "Evidence for the manuscript research question" \
+  --academic \
+  --target-references 60 \
+  --context-file manuscript-context.json \
+  --packet-dir sources/manuscript-research \
+  --json
+```
 
-## Features
+The academic workflow runs bounded searches for primary studies, reviews and
+meta-analyses, seminal publications, methods/mechanisms, and contradictory evidence.
+It deduplicates candidates and verifies the strongest sources in batches with
+Parallel Extract.
 
-- **Academic Focus:** Prioritizes peer-reviewed papers and reputable sources
-- **Current Information:** Focuses on recent publications (2020-2024)
-- **Complete Citations:** Provides full bibliographic information with DOIs
-- **Multiple Formats:** Supports various query types and research needs
-- **High Search Context:** Always uses high search context for deeper, more comprehensive research
-- **Quality Prioritization:** Automatically prioritizes highly-cited papers from top venues
-- **Cost Effective:** Typically $0.01-0.05 per research query
+Packet artifacts include:
 
-## Paper Quality Prioritization
+- complete packet in JSON and Markdown
+- normalized references in JSON and BibTeX
+- evidence matrix
+- claim-to-source map
+- synthesis of consensus, conflicts, patterns, and gaps
+- Introduction, Methods-rationale, and Discussion briefs
+- coverage diagnostics and reproducible search ledger
 
-This skill **always prioritizes high-impact, influential papers** over obscure publications. Results are ranked by:
+The target is not padded. If 60 credible references cannot be verified, the packet
+reports the shortfall.
 
-### Citation-Based Ranking
+## Preserved compatibility
 
-| Paper Age | Citation Threshold | Classification |
-|-----------|-------------------|----------------|
-| 0-3 years | 20+ citations | Noteworthy |
-| 0-3 years | 100+ citations | Highly Influential |
-| 3-7 years | 100+ citations | Significant |
-| 3-7 years | 500+ citations | Landmark |
-| 7+ years | 500+ citations | Seminal |
-| 7+ years | 1000+ citations | Foundational |
+- reusable `ResearchLookup` class
+- `--batch`, `--json`, and `-o/--output`
+- explicit backend selection
+- per-query error isolation
+- DOI/URL citation extraction
+- human-readable and structured output
+- result fields such as `success`, `query`, `response`, `citations`, `sources`,
+  `timestamp`, `backend`, `model`, and `usage`
 
-### Venue Quality Tiers
+## Other modes
 
-Papers from higher-tier venues are always preferred:
+```bash
+# Fast bounded Search
+python skills/research-lookup/scripts/research_lookup.py \
+  "Latest official guidance" --no-academic
 
-- **Tier 1 (Highest Priority):** Nature, Science, Cell, NEJM, Lancet, JAMA, PNAS, Nature Medicine, Nature Biotechnology
-- **Tier 2 (High Priority):** High-impact journals (IF>10), top conferences (NeurIPS, ICML, ICLR for ML/AI)
-- **Tier 3 (Good):** Respected specialized journals (IF 5-10)
-- **Tier 4 (Use Sparingly):** Other peer-reviewed venues
+# Explicit Parallel Research
+python skills/research-lookup/scripts/research_lookup.py \
+  "Comprehensive review of topic" \
+  --force-backend research \
+  --processor pro
 
-### Author Reputation
+# Explicit Parallel Chat (never automatic)
+python skills/research-lookup/scripts/research_lookup.py \
+  "Synthesize the strongest evidence" \
+  --force-backend chat \
+  --chat-model core
 
-The skill prefers papers from:
-- Senior researchers with high h-index
-- Established research groups at recognized institutions
-- Authors with multiple publications in Tier-1 venues
-- Researchers with recognized expertise (awards, editorial positions)
+# Explicit Perplexity
+python skills/research-lookup/scripts/research_lookup.py \
+  "Find academic evidence" \
+  --force-backend perplexity
+```
 
-### Relevance Priority
+## Boundaries
 
-1. Papers directly addressing the research question
-2. Papers with applicable methods/data
-3. Tangentially related papers (only from top venues or highly cited)
-
-## Query Examples
-
-### Academic Research
-- "Recent systematic reviews on AI in medical diagnosis 2024"
-- "Meta-analysis of randomized controlled trials for depression treatment"
-- "Current state of quantum computing error correction research"
-
-### Technical Methods
-- "Standard protocols for immunohistochemistry in tissue samples"
-- "Best practices for machine learning model validation"
-- "Statistical methods for analyzing longitudinal data"
-
-### Statistical Data
-- "Global renewable energy adoption statistics 2024"
-- "Prevalence of diabetes in different populations"
-- "Market size for autonomous vehicles industry"
-
-## Response Format
-
-Each research result includes:
-- **Summary:** Brief overview of key findings
-- **Key Studies:** 3-5 most relevant recent papers
-- **Citations:** Complete bibliographic information
-- **Usage Stats:** Token usage for cost tracking
-- **Timestamp:** When the research was performed
-
-## Integration with Scientific Writing
-
-This skill enhances the scientific writing process by providing:
-
-1. **Literature Reviews:** Current research for introduction sections
-2. **Methods Validation:** Verify protocols against current standards
-3. **Results Context:** Compare findings with recent similar studies
-4. **Discussion Support:** Latest evidence for arguments
-5. **Citation Management:** Properly formatted references
-
-## Troubleshooting
-
-**"API key not found"**
-- Ensure `OPENROUTER_API_KEY` environment variable is set
-- Check that you have credits in your OpenRouter account
-
-**"Model not available"**
-- Verify your API key has access to Perplexity models
-- Check OpenRouter status page for service issues
-
-**"Rate limit exceeded"**
-- Add delays between requests using `--delay` option
-- Check your OpenRouter account limits
-
-**"No relevant results"**
-- Try more specific or broader queries
-- Include time frames (e.g., "2023-2024")
-- Use academic keywords and technical terms
-
-## Cost Management
-
-- Monitor usage through OpenRouter dashboard
-- Typical costs: $0.01-0.05 per research query
-- Batch processing available for multiple queries
-- Consider query specificity to optimize token usage
-
-This skill is designed for academic and research purposes, providing high-quality, cited information to support scientific writing and research activities.
+This skill compiles external evidence. It does not generate the user's unpublished
+Results or guarantee a PRISMA-complete systematic review. Use `literature-review` for
+formal database searching, screening, exclusion tracking, and risk-of-bias procedures;
+use `scientific-writing` to turn the packet into manuscript prose.

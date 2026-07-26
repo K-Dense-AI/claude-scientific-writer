@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: Ruff
+        entry: uv run --frozen ruff check .
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: mypy
+        name: Mypy
+        entry: uv run --frozen mypy
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: codespell
+        name: Codespell
+        entry: >-
+          uv run --frozen codespell README.md CHANGELOG.md CONTRIBUTING.md
+          example_api_usage.py CLAUDE.md pyproject.toml
+          .env.example scientific_writer scripts tests docs commands templates .github
+        language: system
+        pass_filenames: false

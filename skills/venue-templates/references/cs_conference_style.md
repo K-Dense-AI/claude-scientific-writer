@@ -2,7 +2,9 @@
 
 Comprehensive writing guide for ACL, EMNLP, NAACL (NLP), CHI, CSCW (HCI), SIGKDD, WWW, SIGIR (data mining/IR), and other major CS conferences.
 
-**Last Updated**: 2024
+**Reviewed**: 2026-07-20
+
+Page limits and required sections vary by year, track, ARR cycle, and committing venue. Treat numeric limits as writing context until checked against the current instructions.
 
 ---
 
@@ -89,7 +91,7 @@ prior approaches.
 ## NLP-Specific Requirements
 
 ### Datasets
-- Use **standard benchmarks**: GLUE, SQuAD, CoNLL, OntoNotes
+- Use **task-appropriate current evaluations**: established datasets such as SQuAD, CoNLL, or OntoNotes where they fit, plus current strong-model, human, robustness, safety, or multilingual evaluations as appropriate
 - Report **dataset statistics**: train/dev/test sizes
 - **Data preprocessing**: Document all steps
 
@@ -112,7 +114,7 @@ Table 3: Human Evaluation Results (100 samples, 3 annotators)
 Method        | Fluency | Coherence | Factuality | Overall
 ─────────────────────────────────────────────────────────────
 Baseline      |   3.8   |    3.2    |    3.5     |   3.5
-GPT-3.5       |   4.2   |    4.0    |    3.7     |   4.0
+Strong Baseline|   4.2   |    4.0    |    3.7     |   4.0
 Our Method    |   4.4   |    4.3    |    4.1     |   4.3
 ─────────────────────────────────────────────────────────────
 Inter-annotator κ = 0.72. Scale: 1-5 (higher is better).
@@ -122,8 +124,8 @@ Inter-annotator κ = 0.72. Scale: 1-5 (higher is better).
 
 - **ARR (ACL Rolling Review)**: Shared review system across ACL venues
 - **Responsible NLP checklist**: Ethics, limitations, risks
-- **Long (8 pages) vs. Short (4 pages)**: Different expectations
-- **Findings papers**: Lower-tier acceptance track
+- **Long vs. short papers**: Different expectations; verify current page-count exclusions for Limitations, ethics material, references, and appendices
+- **Findings papers**: Distinct publication track with its own selection and commitment process
 
 ---
 
@@ -420,7 +422,7 @@ All CS venues increasingly expect:
 | **Evaluation** | Benchmarks + human | User studies | Large-scale exp | Datasets |
 | **Theory weight** | Moderate | Low | Moderate | Moderate |
 | **Industry value** | High | Medium | Very high | High |
-| **Page limit** | 8 long / 4 short | 10 + refs | 9 + refs | 10 + refs |
+| **Typical paper length** | Long/short categories | Venue-defined | Track-defined | Track-defined |
 | **Review style** | ARR | Direct | Direct | Direct |
 
 ---

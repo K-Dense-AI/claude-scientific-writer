@@ -2,7 +2,9 @@
 
 Comprehensive writing guide for NEJM, Lancet, JAMA, BMJ, Annals of Internal Medicine, and other major medical journals.
 
-**Last Updated**: 2024
+**Reviewed**: 2026-07-20
+
+Article-type instructions and reporting guidelines change. Verify every numeric limit with the journal's current author center.
 
 ---
 
@@ -197,7 +199,7 @@ treated (NNT=40; 95% CI, 28 to 67)."
 - Why this matters clinically
 
 ```
-"Type 2 diabetes affects more than 450 million adults worldwide and is 
+"Type 2 diabetes affects hundreds of millions of adults worldwide and is
 a leading cause of cardiovascular disease, renal failure, and premature 
 death. Despite advances in glucose-lowering therapies, patients with 
 diabetes continue to face a two- to four-fold increased risk of 
@@ -369,8 +371,7 @@ longer periods.
 
 - **Word limit**: 2,700 words (excluding abstract, references)
 - **Abstract**: 250 words, structured
-- **References**: ~40-50 typical
-- **Figures/Tables**: 4-5 combined
+- **References and display items**: Check the current Original Article instructions in the NEJM Author Center; do not rely on cached generic counts
 - **Style**: Definitive, authoritative
 - **Emphasis**: Major clinical trials, transformative research
 
@@ -411,7 +412,7 @@ longer periods.
 
 ### CONSORT (RCTs)
 
-**25-item checklist** including:
+**CONSORT 2025 uses a 30-item checklist and flow diagram** covering:
 - Trial design, randomization, blinding
 - Participant flow (diagram required)
 - All outcomes with effect sizes and CIs
@@ -531,5 +532,5 @@ Standard presentation:
 - `venue_writing_styles.md` - Master style overview
 - `journals_formatting.md` - Technical formatting requirements
 - `reviewer_expectations.md` - What medical reviewers seek
-- Reporting guideline resources: consort-statement.org, strobe-statement.org
+- Reporting guideline resources: https://www.consort-spirit.org/ and https://www.strobe-statement.org/
 

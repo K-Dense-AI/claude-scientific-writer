@@ -22,8 +22,10 @@ Start here to get up and running quickly:
 Integrate Scientific Writer into your Python projects:
 
 1. **[API Reference](API.md)** - Full programmatic API documentation
-2. **[Development Guide](DEVELOPMENT.md)** - Contributing and development setup
-3. **[Releasing Guide](RELEASING.md)** - Versioning and publishing workflow
+2. **[Contributing Guide](../CONTRIBUTING.md)** - Dev setup, tests, and PR guidelines
+3. **[Development Guide](DEVELOPMENT.md)** - Architecture and plugin development
+4. **[Skill Authoring Guide](SKILL_AUTHORING.md)** - How to write and register a new skill
+5. **[Releasing Guide](RELEASING.md)** - Versioning and publishing workflow
 
 ### For Troubleshooting
 
@@ -37,8 +39,8 @@ Having issues? Check these resources:
 Scientific Writer can be used in three ways:
 
 1. **🌟 Claude Code Plugin (Recommended)** - Use directly in your IDE
-   - One-command setup: `/scientific-writer:init`
-   - All 19+ skills available immediately
+   - One-command setup: `/claude-scientific-writer:scientific-writer-init`
+   - All 26 selected skills available immediately
    - No CLI required
    - See: [Plugin Installation Guide](../README.md#-use-as-a-claude-code-plugin-recommended)
 
@@ -60,9 +62,9 @@ Scientific Writer can be used in three ways:
 |--------------|------------|
 | **Scientific Paper** | [README Quick Start](../README.md#quick-start) → [Features: Scientific Papers](FEATURES.md#scientific-papers) |
 | **Grant Proposal** | [Features: Grant Proposals](FEATURES.md#grant-proposals) → [Skills: Research Grants](SKILLS.md#5-research-grants) |
-| **Research Poster** | [Features: Research Posters](FEATURES.md#research-posters) → [Skills: LaTeX Posters](SKILLS.md#6-latex-research-posters) |
+| **Research Poster** | [Features: Research Posters](FEATURES.md#research-posters) → [Skills: LaTeX Posters](SKILLS.md#8-latex-research-posters-default) |
 | **Literature Review** | [Features: Literature Reviews](FEATURES.md#literature-reviews) → [Skills: Literature Review](SKILLS.md#2-literature-review) |
-| **Scientific Diagram** | [Features: Scientific Schematics](FEATURES.md#scientific-schematics) → [Skills: Scientific Schematics](SKILLS.md#6-scientific-schematics-and-diagrams) |
+| **Scientific Diagram** | [Features: Scientific Schematics](FEATURES.md#scientific-schematics) → [Skills: Scientific Schematics](SKILLS.md#10-scientific-schematics-and-diagrams) |
 
 ### I Want to...
 
@@ -72,7 +74,7 @@ Scientific Writer can be used in three ways:
 | **Understand research lookup** | [Features: Real-Time Research Lookup](FEATURES.md#real-time-research-lookup) → [API: Research Lookup](API.md#research-lookup) |
 | **Auto-detect existing papers** | [Features: Intelligent Paper Detection](FEATURES.md#intelligent-paper-detection) |
 | **Process data files** | [Features: Data & File Integration](FEATURES.md#data--file-integration) → [README: File Handling](../README.md#file-handling) |
-| **Convert documents** | [Features: Document Conversion](FEATURES.md#document-conversion) → [Skills: MarkItDown](SKILLS.md#7-markitdown---universal-file-to-markdown-converter) |
+| **Convert documents** | [Features: Document Conversion](FEATURES.md#document-conversion) → [Skills: MarkItDown](SKILLS.md#14-markitdown---universal-file-to-markdown-converter) |
 | **Get peer review** | [Features: Peer Review with ScholarEval](FEATURES.md#peer-review-with-scholareval) → [Skills: Scholar Evaluation](SKILLS.md#4-scholar-evaluation) |
 | **Fix an issue** | [Troubleshooting Guide](TROUBLESHOOTING.md) |
 | **Contribute code** | [Development Guide](DEVELOPMENT.md) |
@@ -160,8 +162,8 @@ When looking for specific information:
 - `generate_paper()` → [API.md](API.md)
 - `scientific-writer` → [README.md](../README.md)
 - `NSF`/`NIH`/`DOE`/`DARPA` → [SKILLS.md](SKILLS.md#5-research-grants)
-- `CONSORT`/`circuit`/`pathway` → [SKILLS.md](SKILLS.md#6-scientific-schematics-and-diagrams)
-- `MarkItDown` → [SKILLS.md](SKILLS.md#7-markitdown---universal-file-to-markdown-converter)
+- `CONSORT`/`circuit`/`pathway` → [SKILLS.md](SKILLS.md#10-scientific-schematics-and-diagrams)
+- `MarkItDown` → [SKILLS.md](SKILLS.md#14-markitdown---universal-file-to-markdown-converter)
 - `ScholarEval` → [SKILLS.md](SKILLS.md#4-scholar-evaluation)
 - `data files` → [FEATURES.md](FEATURES.md#automatic-data-handling)
 - `research lookup` → [FEATURES.md](FEATURES.md#real-time-research-lookup)
@@ -177,7 +179,7 @@ If you can't find what you're looking for:
 
 ## 🚀 Quick Links
 
-- [Installation](../README.md#install)
+- [Installation](../README.md#installation-options)
 - [CLI Quick Start](../README.md#use-the-cli)
 - [API Quick Start](../README.md#use-the-python-api)
 - [Common Commands](../README.md#common-commands)
@@ -186,5 +188,5 @@ If you can't find what you're looking for:
 
 ---
 
-**Last Updated**: January 22, 2025 (v2.7.0)
+**Last Updated**: July 22, 2026 (v2.17.1)
 

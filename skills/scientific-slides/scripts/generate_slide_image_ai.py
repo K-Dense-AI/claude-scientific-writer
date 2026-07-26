@@ -47,40 +47,17 @@ except ImportError:
 
 
 def _load_env_file():
-    """Load .env file from current directory, parent directories, or package directory."""
+    """Load .env file from current directory or script directory only."""
     try:
         from dotenv import load_dotenv
     except ImportError:
         return False
-    
-    # Try current working directory first
-    env_path = Path.cwd() / ".env"
-    if env_path.exists():
-        load_dotenv(dotenv_path=env_path, override=False)
-        return True
-        
-    # Try parent directories (up to 5 levels)
-    cwd = Path.cwd()
-    for _ in range(5):
-        env_path = cwd / ".env"
-        if env_path.exists():
-            load_dotenv(dotenv_path=env_path, override=False)
+
+    for candidate in [Path.cwd() / ".env", Path(__file__).resolve().parent / ".env"]:
+        if candidate.exists():
+            load_dotenv(dotenv_path=candidate, override=False)
             return True
-        cwd = cwd.parent
-        if cwd == cwd.parent:
-            break
-    
-    # Try the package's parent directory
-    script_dir = Path(__file__).resolve().parent
-    for _ in range(5):
-        env_path = script_dir / ".env"
-        if env_path.exists():
-            load_dotenv(dotenv_path=env_path, override=False)
-            return True
-        script_dir = script_dir.parent
-        if script_dir == script_dir.parent:
-            break
-            
+
     return False
 
 

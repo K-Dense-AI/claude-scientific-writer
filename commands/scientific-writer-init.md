@@ -4,11 +4,11 @@ description: Initialize the current project with Scientific Writer - a deep rese
 
 # Scientific Writer Project Setup
 
-When the user runs `/scientific-writer:init`, do the following:
+When the user runs `/claude-scientific-writer:scientific-writer-init`, do the following:
 
 ## ⚠️ CRITICAL RULE: NEVER READ THE TEMPLATE FILE
 
-**Throughout this entire process, you must NEVER use the read_file tool on the template file. The template file is 1362 lines long and reading it wastes time and tokens. Only use terminal commands (`cp`, `cat`, `mv`) to handle the file.**
+**Throughout this entire process, you must NEVER use the read_file tool on the template file. The template file is very long and reading it wastes time and tokens. Only use terminal commands (`cp`, `cat`, `mv`) to handle the file.**
 
 ## Step 1: Check for Existing CLAUDE.md
 
@@ -31,8 +31,8 @@ Find the path to the Scientific Writer template file. Use one of these methods:
 1. **Use glob_file_search** to find `CLAUDE.scientific-writer.md` in the templates directory
 2. **Use list_dir** to check if the file exists in known locations
 3. **Directly try these paths** (in order):
-   - `/Users/vinayak/Documents/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
-   - `~/.claude/plugins/*/claude-scientific-writer/templates/CLAUDE.scientific-writer.md`
+   - `~/.claude/plugins/*/claude-scientific-writer/templates/CLAUDE.scientific-writer.md` (installed plugin)
+   - `<path-to-claude-scientific-writer-checkout>/templates/CLAUDE.scientific-writer.md` (local development)
 
 Once you have the path, immediately proceed to Step 3. **Do NOT read or verify the file contents.**
 
@@ -84,7 +84,7 @@ After writing the file, provide a brief summary:
 📋 What's Included:
 - A deep research and writing tool that combines AI-driven research with well-formatted written outputs
 - Complete scientific writing workflow with real-time literature search and verified citations
-- 19+ specialized skills for academic writing:
+- 26 selected skills for academic writing:
   • research-lookup: Real-time literature search
   • peer-review: Systematic manuscript evaluation
   • citation-management: BibTeX and reference handling
@@ -92,7 +92,7 @@ After writing the file, provide a brief summary:
   • research-grants: NSF, NIH, DOE proposal support
   • scientific-slides: Research presentations
   • latex-posters: Conference poster generation
-  • And 12 more specialized skills...
+  • And 19 more specialized skills...
 
 📝 Document Types Supported:
 - Scientific papers (Nature, Science, NeurIPS, IEEE, etc.)
@@ -127,7 +127,7 @@ Happy writing! 🔬📄
 
 Remind the user:
 - The `CLAUDE.md` file can be opened and edited manually at any time
-- All 19 skills are now available for use in this project
+- All 26 selected skills are now available for use in this project
 - They can ask "What skills are available?" to see the full list
 - They can reference specific skills like "@research-lookup" in their prompts
 
@@ -137,7 +137,7 @@ If any errors occur during file creation:
 - Report the specific error to the user
 - Suggest manual steps (e.g., creating the file manually)
 - Provide the template paths to try:
-  - `/Users/vinayak/Documents/claude-scientific-writer/templates/CLAUDE.scientific-writer.md` (local dev)
   - `~/.claude/plugins/*/claude-scientific-writer/templates/CLAUDE.scientific-writer.md` (installed plugin)
+  - `<path-to-claude-scientific-writer-checkout>/templates/CLAUDE.scientific-writer.md` (local development)
 - If template still can't be found, offer to create a basic CLAUDE.md with minimal scientific writing instructions
 

@@ -36,7 +36,7 @@ Your context window will be automatically compacted as it approaches its limit, 
 - ✅ **Verify every citation** exists and is correctly attributed before adding it to `references.bib`.
 
 **Research-Lookup First Approach:**
-1. Before writing ANY section, perform extensive research-lookup to search for real papers (routes to Perplexity).
+1. Before writing ANY section, perform extensive research-lookup to search for real papers (routes to Parallel).
 2. Find 6-10 real, diverse papers per major section.
 3. Integrate ONLY the real papers found into the text, using their exact details.
 4. If more citations are needed to support specific claims, pause and perform more research-lookup first.
@@ -48,16 +48,16 @@ Your context window will be automatically compacted as it approaches its limit, 
 
 Parallel is the **primary tool for all web-related operations**. Do NOT use the built-in WebSearch tool except as a last-resort fallback.
 
-**Required Environment Variable:** `PARALLEL_API_KEY`
+**Authentication:** Use `parallel-cli login` or set `PARALLEL_API_KEY`.
 
 | Task | Tool | Command |
 |------|------|---------|
-| Web search (any) | `parallel-web` skill | `python scripts/parallel_web.py search "query" -o sources/search_<topic>.md` |
-| Extract URL content | `parallel-web` skill | `python scripts/parallel_web.py extract "url" -o sources/extract_<source>.md` |
-| Deep research | `parallel-web` skill | `python scripts/parallel_web.py research "query" --processor pro-fast -o sources/research_<topic>.md` |
-| Academic paper search | `research-lookup` skill | `python research_lookup.py "find papers on..." -o sources/papers_<topic>.md` (routes to Perplexity) |
-| DOI/metadata verification | `parallel-web` skill | `python scripts/parallel_web.py search -o sources/search_<topic>.md` or `extract` |
-| Current events/news | `parallel-web` skill | `python scripts/parallel_web.py search "news query" -o sources/search_<topic>.md` |
+| Web search (any) | `parallel-web` skill | `parallel-cli search "query" --mode basic --json -o sources/search_<topic>.json` |
+| Extract URL content | `parallel-web` skill | `parallel-cli extract "url" --json -o sources/extract_<source>.json` |
+| Deep research | `parallel-web` skill | `parallel-cli research run "query" --processor pro --text -o sources/research_<topic>` |
+| Academic paper search | `research-lookup` skill | `python skills/research-lookup/scripts/research_lookup.py "query" --academic --packet-dir sources/papers_<topic> --json` |
+| DOI/metadata verification | `parallel-web` skill | Use `parallel-cli search` followed by `parallel-cli extract` on the publisher URL |
+| Current events/news | `parallel-web` skill | `parallel-cli search "news query" --mode basic --json -o sources/search_<topic>.json` |
 
 ## CRITICAL: Save All Research Results to Sources Folder
 
@@ -69,10 +69,10 @@ This is non-negotiable. Research results are expensive to obtain and critical fo
 
 | Operation | Filename Pattern | Example |
 |-----------|-----------------|---------|
-| Web Search | `search_YYYYMMDD_HHMMSS_<topic>.md` | `sources/search_20250217_143000_quantum_computing.md` |
-| URL Extract | `extract_YYYYMMDD_HHMMSS_<source>.md` | `sources/extract_20250217_143500_nature_article.md` |
-| Deep Research | `research_YYYYMMDD_HHMMSS_<topic>.md` | `sources/research_20250217_144000_ev_battery_market.md` |
-| Academic Paper Search | `papers_YYYYMMDD_HHMMSS_<topic>.md` | `sources/papers_20250217_144500_crispr_offtarget.md` |
+| Web Search | `search_YYYYMMDD_HHMMSS_<topic>.json` | `sources/search_20250217_143000_quantum_computing.json` |
+| URL Extract | `extract_YYYYMMDD_HHMMSS_<source>.json` | `sources/extract_20250217_143500_nature_article.json` |
+| Deep Research | `research_YYYYMMDD_HHMMSS_<topic>.md/.json` | `sources/research_20250217_144000_ev_battery_market.md` |
+| Academic Paper Search | `papers_YYYYMMDD_HHMMSS_<topic>/` | `sources/papers_20250217_144500_crispr_offtarget/` |
 
 **Key Rules:**
 - **ALWAYS** use the `-o` flag to save results to `sources/` — never discard research output
@@ -202,8 +202,9 @@ After compiling any PDF:
 
 1. **Convert to images** (NEVER read PDF directly):
       ```bash
-   python scripts/pdf_to_images.py document.pdf review/page --dpi 150
+   python skills/scientific-slides/scripts/pdf_to_images.py document.pdf review/page --dpi 150
    ```
+   Skill scripts live under `skills/<skill-name>/scripts/`; in an initialized project the same tree may be at `.claude/skills/<skill-name>/scripts/` — use whichever prefix exists.
 
 2. **Inspect each page image** for: text overlaps, figure placement, margins, spacing
 
@@ -224,7 +225,7 @@ Documents without sufficient visual elements are incomplete. Generate figures li
 Every scientific writeup (research papers, literature reviews, reports) MUST include a graphical abstract as the first figure. Generate this using the scientific-schematics skill:
 
 ```bash
-python scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description of key finding/concept showing main workflow and conclusions]" -o figures/graphical_abstract.png
+python skills/scientific-schematics/scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description of key finding/concept showing main workflow and conclusions]" -o figures/graphical_abstract.png
 ```
 
 **Graphical Abstract Requirements:**
@@ -248,7 +249,7 @@ python scripts/generate_schematic.py "Graphical abstract for [paper title]: [bri
 - Any concept that benefits from schematic visualization
 
 ```bash
-python scripts/generate_schematic.py "diagram description" -o figures/output.png
+python skills/scientific-schematics/scripts/generate_schematic.py "diagram description" -o figures/output.png
 ```
 
 **Use generate-image skill EXTENSIVELY for visual content:**
@@ -263,7 +264,7 @@ python scripts/generate_schematic.py "diagram description" -o figures/output.png
 
 
 ```bash
-python scripts/generate_image.py "image description" -o figures/output.png
+python skills/generate-image/scripts/generate_image.py "image description" -o figures/output.png
 ```
 
 **MINIMUM Figure Requirements by Document Type:**
@@ -294,7 +295,7 @@ python scripts/generate_image.py "image description" -o figures/output.png
 
 ### Citation Metadata Verification (MANDATORY Web Search & Fetch)
 
-For each and every citation in `references.bib`, you MUST perform rigorous validation to eliminate any chance of error, hallucination, or fabrication. 
+For each and every citation in `references.bib`, you MUST perform rigorous validation to eliminate any chance of error, hallucination, or fabrication.
 
 **Required BibTeX fields (Must be accurate and complete):**
 - `@article`: author, title, journal, year, volume, issue/number, pages, DOI (or URL if no DOI)
@@ -302,8 +303,8 @@ For each and every citation in `references.bib`, you MUST perform rigorous valid
 - `@book`: author/editor, title, publisher, year, address
 
 **The Verification Process (Non-Negotiable):**
-1. **Mandatory Web Search**: For every cited paper, run `research_lookup.py` or `parallel_web.py search` using the paper's exact title and authors to locate its official publisher page (e.g., Nature, PubMed, IEEE, arXiv, Google Scholar).
-2. **Mandatory Web Fetch / Extract**: Extract the content of the publisher or repository page (using `parallel_web.py extract` on the URL found in step 1) to inspect and confirm:
+1. **Mandatory Web Search**: For every cited paper, run the `research-lookup` pipeline or `parallel-cli search` using the paper's exact title and authors to locate its official publisher page (e.g., Nature, PubMed, IEEE, arXiv, Google Scholar).
+2. **Mandatory Web Fetch / Extract**: Extract the content of the publisher or repository page using `parallel-cli extract` on the URL found in step 1 to inspect and confirm:
    - The paper actually exists under that exact title.
    - The author list is correctly ordered and complete.
    - The publication year, volume, issue, and page numbers are exactly as stated.
@@ -386,7 +387,7 @@ Request: "Create a NeurIPS paper on attention mechanisms"
 
 ## Key Principles
 
-- **Use Parallel for ALL web searches** - `parallel_web.py search/extract/research` replaces WebSearch; WebSearch is last-resort fallback only
+- **Use Parallel for ALL web searches** - `parallel-cli search/extract/research run` replaces WebSearch; WebSearch is last-resort fallback only
 - **SAVE ALL RESEARCH TO sources/** - every web search, URL extraction, deep research, and research-lookup result MUST be saved to `sources/` using the `-o` flag; check `sources/` before making new queries
 - **LaTeX is the default format**
 - **Consult venue-templates for writing style** - adapt tone, abstract format, and structure to target venue

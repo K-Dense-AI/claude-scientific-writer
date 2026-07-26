@@ -5,7 +5,7 @@ AI-powered infographic generation using Nano Banana Pro.
 This script uses a smart iterative refinement approach:
 1. (Optional) Research phase - gather facts and data using Perplexity Sonar
 2. Generate initial infographic with Nano Banana Pro
-3. AI quality review using Gemini 3 Pro for infographic critique
+3. AI quality review using Gemini 3.1 Pro for infographic critique
 4. Only regenerate if quality is below threshold for document type
 5. Repeat until quality meets standards (max iterations)
 
@@ -37,40 +37,17 @@ except ImportError:
 
 
 def _load_env_file():
-    """Load .env file from current directory, parent directories, or package directory."""
+    """Load .env file from current directory or script directory only."""
     try:
         from dotenv import load_dotenv
     except ImportError:
         return False
-    
-    # Try current working directory first
-    env_path = Path.cwd() / ".env"
-    if env_path.exists():
-        load_dotenv(dotenv_path=env_path, override=False)
-        return True
-        
-    # Try parent directories (up to 5 levels)
-    cwd = Path.cwd()
-    for _ in range(5):
-        env_path = cwd / ".env"
-        if env_path.exists():
-            load_dotenv(dotenv_path=env_path, override=False)
+
+    for candidate in [Path.cwd() / ".env", Path(__file__).resolve().parent / ".env"]:
+        if candidate.exists():
+            load_dotenv(dotenv_path=candidate, override=False)
             return True
-        cwd = cwd.parent
-        if cwd == cwd.parent:
-            break
-    
-    # Try the package's parent directory
-    script_dir = Path(__file__).resolve().parent
-    for _ in range(5):
-        env_path = script_dir / ".env"
-        if env_path.exists():
-            load_dotenv(dotenv_path=env_path, override=False)
-            return True
-        script_dir = script_dir.parent
-        if script_dir == script_dir.parent:
-            break
-            
+
     return False
 
 
@@ -272,14 +249,14 @@ PALETTE_PRESETS = {
 class InfographicGenerator:
     """Generate infographics using AI with smart iterative refinement.
     
-    Uses Gemini 3 Pro for quality review to determine if regeneration is needed.
+    Uses Gemini 3.1 Pro for quality review to determine if regeneration is needed.
     Multiple passes only occur if the generated infographic doesn't meet the
     quality threshold for the target document type.
     """
     
     # Quality thresholds by document type (score out of 10)
     QUALITY_THRESHOLDS = {
-        "marketing": 8.5,     # Marketing materials - must be compelling
+        "marketing": 8.0,     # Marketing materials - must be compelling
         "report": 8.0,        # Business reports - professional quality
         "presentation": 7.5,  # Slides/talks - clear and engaging
         "social": 7.0,        # Social media - eye-catching
@@ -358,8 +335,8 @@ IMPORTANT - NO META CONTENT:
         self.base_url = "https://openrouter.ai/api/v1"
         # Nano Banana Pro for image generation
         self.image_model = "google/gemini-3-pro-image-preview"
-        # Gemini 3 Pro for quality review
-        self.review_model = "google/gemini-3-pro"
+        # Gemini 3.1 Pro for quality review
+        self.review_model = "google/gemini-3.1-pro-preview"
         
     def _log(self, message: str):
         """Log message if verbose mode is enabled."""
@@ -701,7 +678,8 @@ Incorporate specific numbers, percentages, and dates from the research."""
                                   infographic_type: Optional[str] = None,
                                   style: Optional[str] = None,
                                   palette: Optional[str] = None,
-                                  background: str = "white") -> str:
+                                  background: str = "white",
+                                  context_image_count: int = 0) -> str:
         """Build the full generation prompt with all enhancements."""
         parts = [self.INFOGRAPHIC_GUIDELINES]
         
@@ -727,6 +705,13 @@ Incorporate specific numbers, percentages, and dates from the research."""
         # Add user request
         parts.append(f"\nUSER REQUEST: {user_prompt}")
         
+        if context_image_count:
+            plural = "image" if context_image_count == 1 else "images"
+            parts.append(
+                f"\nREFERENCE CONTEXT: {context_image_count} reference {plural} attached. "
+                "Use them as visual/content context for the infographic while following the user request."
+            )
+        
         # Add background
         parts.append(f"\nBackground: {background} background")
         
@@ -735,14 +720,28 @@ Incorporate specific numbers, percentages, and dates from the research."""
         
         return "\n".join(parts)
     
-    def generate_image(self, prompt: str) -> Optional[bytes]:
+    def generate_image(self, prompt: str, context_images: Optional[List[str]] = None) -> Optional[bytes]:
         """Generate an image using Nano Banana Pro."""
         self._last_error = None
+        context_images = context_images or []
+        
+        if context_images:
+            content: Any = [{"type": "text", "text": prompt}]
+            for image_path in context_images:
+                content.append({
+                    "type": "image_url",
+                    "image_url": {
+                        "url": self._image_to_base64(image_path)
+                    }
+                })
+            self._log(f"Added {len(context_images)} context image(s) to generation request")
+        else:
+            content = prompt
         
         messages = [
             {
                 "role": "user",
-                "content": prompt
+                "content": content
             }
         ]
         
@@ -786,9 +785,9 @@ Incorporate specific numbers, percentages, and dates from the research."""
     def review_image(self, image_path: str, original_prompt: str,
                     infographic_type: Optional[str],
                     iteration: int, doc_type: str = "default",
-                    max_iterations: int = 3) -> Tuple[str, float, bool]:
+                    max_iterations: int = 3) -> Tuple[str, Optional[float], bool]:
         """
-        Review generated infographic using Gemini 3 Pro for quality analysis.
+        Review generated infographic using Gemini 3.1 Pro for quality analysis.
         
         Evaluates the infographic on multiple criteria specific to good
         infographic design and determines if regeneration is needed.
@@ -930,15 +929,16 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
                     score, 
                     needs_improvement)
         except Exception as e:
-            self._log(f"Review skipped: {str(e)}")
-            return "Image generated successfully (review skipped)", 7.5, False
+            self._log(f"Review failed: {str(e)}")
+            return "Review failed", None, True
     
     def improve_prompt(self, original_prompt: str, critique: str, 
                       infographic_type: Optional[str],
                       style: Optional[str],
                       palette: Optional[str],
                       background: str,
-                      iteration: int) -> str:
+                      iteration: int,
+                      context_image_count: int = 0) -> str:
         """Improve the generation prompt based on critique."""
         
         parts = [self.INFOGRAPHIC_GUIDELINES]
@@ -964,6 +964,14 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
         
         # Add original request
         parts.append(f"\nUSER REQUEST: {original_prompt}")
+        
+        if context_image_count:
+            plural = "image" if context_image_count == 1 else "images"
+            parts.append(
+                f"\nREFERENCE CONTEXT: {context_image_count} reference {plural} attached. "
+                "Continue using them as visual/content context while addressing the review feedback."
+            )
+        
         parts.append(f"\nBackground: {background} background")
         
         # Add improvement instructions
@@ -987,7 +995,8 @@ Generate an improved version that:
                           background: str = "white",
                           iterations: int = 3,
                           doc_type: str = "default",
-                          research: bool = False) -> Dict[str, Any]:
+                          research: bool = False,
+                          context_images: Optional[List[str]] = None) -> Dict[str, Any]:
         """
         Generate infographic with smart iterative refinement.
         
@@ -1003,10 +1012,16 @@ Generate an improved version that:
             iterations: Maximum refinement iterations
             doc_type: Document type for quality threshold
             research: If True, research the topic first for better data
+            context_images: Optional image paths to attach as generation context
         """
         output_path = Path(output_path)
         output_dir = output_path.parent
         output_dir.mkdir(parents=True, exist_ok=True)
+        
+        context_images = [str(Path(image_path)) for image_path in (context_images or [])]
+        for image_path in context_images:
+            if not Path(image_path).is_file():
+                raise FileNotFoundError(f"Context image not found: {image_path}")
         
         base_name = output_path.stem
         extension = output_path.suffix or ".png"
@@ -1026,6 +1041,7 @@ Generate an improved version that:
             "quality_threshold": threshold,
             "research_enabled": research,
             "research_data": None,
+            "context_images": context_images,
             "iterations": [],
             "final_image": None,
             "final_score": 0.0,
@@ -1041,6 +1057,7 @@ Generate an improved version that:
         print(f"Type: {type_name}")
         print(f"Style: {style_name}")
         print(f"Research: {'Enabled' if research else 'Disabled'}")
+        print(f"Context Images: {len(context_images)}")
         print(f"Quality Threshold: {threshold}/10")
         print(f"Max Iterations: {iterations}")
         print(f"Output: {output_path}")
@@ -1073,7 +1090,7 @@ Generate an improved version that:
         
         # Build initial prompt (using enhanced prompt if research was done)
         current_prompt = self._build_generation_prompt(
-            enhanced_prompt, infographic_type, style, palette, background
+            enhanced_prompt, infographic_type, style, palette, background, len(context_images)
         )
         
         for i in range(1, iterations + 1):
@@ -1082,7 +1099,7 @@ Generate an improved version that:
             
             # Generate image
             print(f"Generating infographic with Nano Banana Pro...")
-            image_data = self.generate_image(current_prompt)
+            image_data = self.generate_image(current_prompt, context_images)
             
             if not image_data:
                 error_msg = getattr(self, '_last_error', 'Generation failed')
@@ -1100,12 +1117,15 @@ Generate an improved version that:
                 f.write(image_data)
             print(f"✓ Saved: {iter_path}")
             
-            # Review image using Gemini 3 Pro
-            print(f"Reviewing with Gemini 3 Pro...")
+            # Review image using Gemini 3.1 Pro
+            print(f"Reviewing with Gemini 3.1 Pro...")
             critique, score, needs_improvement = self.review_image(
                 str(iter_path), user_prompt, infographic_type, i, doc_type, iterations
             )
-            print(f"✓ Score: {score}/10 (threshold: {threshold}/10)")
+            if score is None:
+                print(f"✗ Review failed (threshold: {threshold}/10)")
+            else:
+                print(f"✓ Score: {score}/10 (threshold: {threshold}/10)")
             
             # Save iteration results
             iteration_result = {
@@ -1120,7 +1140,7 @@ Generate an improved version that:
             results["iterations"].append(iteration_result)
             
             # Check if quality is acceptable
-            if not needs_improvement:
+            if score is not None and score >= threshold and not needs_improvement:
                 print(f"\n✓ Quality meets threshold ({score} >= {threshold})")
                 print(f"  No further iterations needed!")
                 results["final_image"] = str(iter_path)
@@ -1139,10 +1159,14 @@ Generate an improved version that:
                 break
             
             # Quality below threshold - improve prompt
-            print(f"\n⚠ Quality below threshold ({score} < {threshold})")
+            if score is None:
+                print(f"\n⚠ Review failed; regenerating with review feedback if available")
+            else:
+                print(f"\n⚠ Quality below threshold ({score} < {threshold})")
             print(f"Improving prompt based on feedback...")
             current_prompt = self.improve_prompt(
-                user_prompt, critique, infographic_type, style, palette, background, i + 1
+                user_prompt, critique, infographic_type, style, palette, background, i + 1,
+                len(context_images)
             )
         
         # Copy final version to output path
@@ -1189,6 +1213,9 @@ Examples:
   # Generate with RESEARCH for accurate data (uses Perplexity Sonar)
   python generate_infographic_ai.py "Global AI market 2025" -o ai_market.png --type statistical --research
   
+  # Generate using reference images as visual/content context
+  python generate_infographic_ai.py "Create a branded hiring infographic" -o hiring.png --context-image logo.png --context-image brand_chart.png
+  
   # Verbose output
   python generate_infographic_ai.py "Process diagram" -o process.png --type process -v
 
@@ -1211,7 +1238,7 @@ Colorblind-Safe Palettes:
   wong, ibm, tol
 
 Document Types (quality thresholds):
-  marketing     8.5/10  - Marketing materials
+  marketing     8.0/10  - Marketing materials
   report        8.0/10  - Business reports
   presentation  7.5/10  - Slides/talks
   social        7.0/10  - Social media
@@ -1246,6 +1273,8 @@ Environment:
                        help="Verbose output")
     parser.add_argument("--research", "-r", action="store_true",
                        help="Research the topic first using Perplexity Sonar for accurate data")
+    parser.add_argument("--context-image", action="append", default=[],
+                       help="Reference image path to include as Nano Banana Pro context; repeat for multiple images")
     
     args = parser.parse_args()
     
@@ -1269,7 +1298,8 @@ Environment:
             background=args.background,
             iterations=args.iterations,
             doc_type=args.doc_type,
-            research=args.research
+            research=args.research,
+            context_images=args.context_image
         )
         
         if results["success"]:

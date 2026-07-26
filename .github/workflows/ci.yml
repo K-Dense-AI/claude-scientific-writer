@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Sync locked environment
+        run: uv sync --frozen --group dev
+      - name: Ruff
+        run: uv run --frozen ruff check .
+      - name: Mypy
+        run: uv run --frozen mypy
+      - name: Pytest
+        run: uv run --frozen pytest tests/ -q
+      - name: Codespell
+        if: matrix.python-version == '3.12'
+        run: >-
+          uv run --frozen codespell README.md CHANGELOG.md CONTRIBUTING.md
+          example_api_usage.py CLAUDE.md pyproject.toml
+          .env.example scientific_writer scripts tests docs commands templates .github
+
+  integrity:
+    name: Skill mirrors, consistency, package build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9.0.0
+        with:
+          python-version: "3.12"
+      - name: Sync locked environment
+        run: uv sync --frozen --group dev
+      - name: Skill mirrors in sync
+        run: uv run --frozen python scripts/sync_skills.py --check
+      - name: Repository consistency
+        run: uv run --frozen python scripts/check_consistency.py
+      - name: Package verification
+        run: uv run --frozen python scripts/verify_package.py
+      - name: Build wheel
+        run: uv build
+      - name: Wheel ships the .claude payload
+        run: |
+          python - <<'EOF'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from publish import verify_wheel_payload
+          verify_wheel_payload(Path("dist"))
+          EOF

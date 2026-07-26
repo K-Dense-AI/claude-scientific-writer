@@ -212,18 +212,18 @@ Environment Variables:
     if args.iterations != 3:
         cmd.extend(["--iterations", str(args.iterations)])
     
-    if api_key:
-        cmd.extend(["--api-key", api_key])
-    
     if args.verbose:
         cmd.append("-v")
     
     if args.research:
         cmd.append("--research")
     
-    # Execute
+    # Execute — pass API key via environment to avoid exposure in process listings
     try:
-        result = subprocess.run(cmd, check=False)
+        env = os.environ.copy()
+        if api_key:
+            env["OPENROUTER_API_KEY"] = api_key
+        result = subprocess.run(cmd, check=False, env=env)
         sys.exit(result.returncode)
     except Exception as e:
         print(f"Error executing AI generation: {e}")

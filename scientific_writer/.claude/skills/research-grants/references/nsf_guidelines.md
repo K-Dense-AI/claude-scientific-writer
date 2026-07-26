@@ -198,7 +198,7 @@ NSF uses two equally weighted criteria for all proposals:
 
 ### Biographical Sketch (3 pages max per person)
 
-**Required NSF Format** (as of 2023 PAPPG):
+**Required NSF Format** (as of [PAPPG 24-1](https://www.nsf.gov/policies/pappg), effective May 20, 2024):
 
 **Section A: Professional Preparation**
 - Undergraduate, graduate, postdoctoral institutions
@@ -231,7 +231,7 @@ NSF uses two equally weighted criteria for all proposals:
 
 ### Data Management and Sharing Plan (2 pages max)
 
-**Required for all proposals** (as of 2023 PAPPG)
+**Required for all proposals** (as of PAPPG 24-1)
 
 **Must address**:
 1. **Types of data**: What data will be generated?

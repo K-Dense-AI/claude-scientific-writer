@@ -1,10 +1,10 @@
 ---
 name: scientific-schematics
-description: Create publication-quality scientific diagrams using Nano Banana 2 or Atlas Cloud image generation with smart iterative refinement. Uses Gemini 3.1 Pro Preview for quality review when OpenRouter is configured. Only regenerates if quality is below threshold for your document type. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations.
+description: Create publication-quality scientific diagrams using Nano Banana 2 AI or optional Atlas Cloud image generation with smart iterative refinement. Uses Gemini 3.1 Pro Preview for quality review when OpenRouter is configured. Only regenerates if quality is below threshold for your document type. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations.
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-    skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}, {"name": "ATLASCLOUD_API_KEY", "prompt": "Atlas Cloud API key for optional Atlas Cloud image generation.", "required_for": "optional Atlas Cloud image generation"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}, {"name": "ATLASCLOUD_API_KEY", "required": false, "description": "Atlas Cloud API key for optional Atlas Cloud image generation."}]}}
 ---
 
 # Scientific Schematics and Diagrams
