@@ -1,0 +1,154 @@
+{
+  "schema_version": "2.0",
+  "document": {
+    "id": "REPLACE_ME_DOCUMENT_ID",
+    "title": "REPLACE_ME_TITLE",
+    "subject": "REPLACE_ME_SUBJECT",
+    "language": "REPLACE_ME_BCP47_LANGUAGE",
+    "authors": [
+      "REPLACE_ME_AUTHOR"
+    ],
+    "source_ids": [
+      "REPLACE_ME_CONTENT_SOURCE_ID"
+    ]
+  },
+  "canvas": {
+    "width_in": "REPLACE_ME_POWERPOINT_WIDTH",
+    "height_in": "REPLACE_ME_POWERPOINT_HEIGHT",
+    "background_color": "#FFFFFF"
+  },
+  "physical_output": {
+    "trim_width_in": "REPLACE_ME_TRIM_WIDTH",
+    "trim_height_in": "REPLACE_ME_TRIM_HEIGHT",
+    "bleed_in": "REPLACE_ME_BLEED",
+    "safe_margin_in": "REPLACE_ME_SAFE_MARGIN",
+    "orientation": "REPLACE_ME_ORIENTATION"
+  },
+  "requirements": {
+    "conference": {
+      "confirmed": false,
+      "source_id": "REPLACE_ME_CONFERENCE_SOURCE_ID",
+      "max_width_in": "REPLACE_ME_CONFERENCE_MAX_WIDTH",
+      "max_height_in": "REPLACE_ME_CONFERENCE_MAX_HEIGHT",
+      "orientation": "REPLACE_ME_CONFERENCE_ORIENTATION",
+      "required_delivery_format": "REPLACE_ME_DELIVERY_FORMAT",
+      "notes": "REPLACE_ME_CONFERENCE_NOTES"
+    },
+    "printer": {
+      "confirmed": false,
+      "source_id": "REPLACE_ME_PRINTER_SOURCE_ID",
+      "trim_width_in": "REPLACE_ME_PRINTER_TRIM_WIDTH",
+      "trim_height_in": "REPLACE_ME_PRINTER_TRIM_HEIGHT",
+      "bleed_in": "REPLACE_ME_PRINTER_BLEED",
+      "safe_margin_in": "REPLACE_ME_PRINTER_SAFE_MARGIN",
+      "accepted_color_mode": "REPLACE_ME_COLOR_MODE",
+      "scaling_allowed": false,
+      "notes": "REPLACE_ME_PRINTER_NOTES"
+    }
+  },
+  "quality": {
+    "minimum_font_pt_final": "REPLACE_ME_FINAL_FONT_THRESHOLD",
+    "font_guidance_basis": "heuristic",
+    "font_guidance_source_id": null,
+    "minimum_raster_dpi_final": "REPLACE_ME_FINAL_DPI_THRESHOLD",
+    "raster_dpi_basis": "heuristic",
+    "raster_dpi_source_id": null
+  },
+  "palette": {
+    "colors": {
+      "black": "#000000",
+      "white": "#FFFFFF"
+    },
+    "contrast_pairs": [
+      {
+        "id": "black_on_white",
+        "foreground_color_id": "black",
+        "background_color_id": "white",
+        "usage": "normal_text"
+      }
+    ],
+    "data_series_redundant_encoding": false
+  },
+  "sources": [
+    {
+      "id": "REPLACE_ME_CONFERENCE_SOURCE_ID",
+      "kind": "conference_rule",
+      "citation": "REPLACE_ME_CONFERENCE_CITATION",
+      "locator": "REPLACE_ME_CONFERENCE_LOCATOR",
+      "author_verified": false
+    },
+    {
+      "id": "REPLACE_ME_PRINTER_SOURCE_ID",
+      "kind": "printer_rule",
+      "citation": "REPLACE_ME_PRINTER_CITATION",
+      "locator": "REPLACE_ME_PRINTER_LOCATOR",
+      "author_verified": false
+    },
+    {
+      "id": "REPLACE_ME_CONTENT_SOURCE_ID",
+      "kind": "author_content",
+      "citation": "REPLACE_ME_CONTENT_CITATION",
+      "locator": "REPLACE_ME_CONTENT_LOCATOR",
+      "author_verified": false
+    }
+  ],
+  "assets": [],
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "reading_order": 1,
+      "x_in": "REPLACE_ME_X",
+      "y_in": "REPLACE_ME_Y",
+      "width_in": "REPLACE_ME_WIDTH",
+      "height_in": "REPLACE_ME_HEIGHT",
+      "source_ids": [
+        "REPLACE_ME_CONTENT_SOURCE_ID"
+      ],
+      "author_approved": false,
+      "allow_in_bleed": false,
+      "role": "title",
+      "text": "REPLACE_ME_TITLE",
+      "font_size_pt_design": "REPLACE_ME_DESIGN_FONT_SIZE",
+      "font_face": "REPLACE_ME_FONT",
+      "bold": true,
+      "align": "left",
+      "vertical_align": "middle",
+      "contrast_pair_id": "black_on_white",
+      "line_color_id": null,
+      "line_width_pt": 0,
+      "margin_in": "REPLACE_ME_MARGIN"
+    },
+    {
+      "id": "body",
+      "type": "text",
+      "reading_order": 2,
+      "x_in": "REPLACE_ME_X",
+      "y_in": "REPLACE_ME_Y",
+      "width_in": "REPLACE_ME_WIDTH",
+      "height_in": "REPLACE_ME_HEIGHT",
+      "source_ids": [
+        "REPLACE_ME_CONTENT_SOURCE_ID"
+      ],
+      "author_approved": false,
+      "allow_in_bleed": false,
+      "role": "body",
+      "text": "REPLACE_ME_AUTHOR_APPROVED_BODY_TEXT",
+      "font_size_pt_design": "REPLACE_ME_DESIGN_FONT_SIZE",
+      "font_face": "REPLACE_ME_FONT",
+      "bold": false,
+      "align": "left",
+      "vertical_align": "top",
+      "contrast_pair_id": "black_on_white",
+      "line_color_id": null,
+      "line_width_pt": 0,
+      "margin_in": "REPLACE_ME_MARGIN"
+    }
+  ],
+  "approval": {
+    "status": "draft",
+    "approved_by": null,
+    "approved_at": null,
+    "content_sha256": null
+  }
+}

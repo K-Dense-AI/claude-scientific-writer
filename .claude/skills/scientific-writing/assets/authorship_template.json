@@ -1,0 +1,56 @@
+{
+  "accountability": {
+    "all_authors_approved": false,
+    "guarantor_author_ids": []
+  },
+  "ai_use": {
+    "disclosed_in": [],
+    "human_verification_complete": false,
+    "journal_policy_checked": false,
+    "tools": [],
+    "used": false
+  },
+  "authors": [
+    {
+      "author_id": "A001",
+      "authorship_criteria": {
+        "accountable_for_work": false,
+        "drafted_or_critically_revised": false,
+        "final_approval": false,
+        "substantial_contribution": false
+      },
+      "credit_roles": [],
+      "is_human": true,
+      "name": "[[TODO:human-author-name]]"
+    }
+  ],
+  "contributors": [],
+  "corresponding_author_id": "",
+  "declarations": {
+    "ai_use": {
+      "content_sha256": "",
+      "status": "missing",
+      "verified_by": "",
+      "verified_on": ""
+    },
+    "author_contributions": {
+      "content_sha256": "",
+      "status": "missing",
+      "verified_by": "",
+      "verified_on": ""
+    },
+    "conflicts": {
+      "content_sha256": "",
+      "status": "missing",
+      "verified_by": "",
+      "verified_on": ""
+    },
+    "funding": {
+      "content_sha256": "",
+      "status": "missing",
+      "verified_by": "",
+      "verified_on": ""
+    }
+  },
+  "schema_version": "1.0"
+}

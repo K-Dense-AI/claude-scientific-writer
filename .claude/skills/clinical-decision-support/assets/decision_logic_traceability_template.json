@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "logic_id": "SYNTHETIC-RESEARCH-GOVERNANCE-001",
+    "title": "Synthetic Research Release Traceability",
+    "version": "0.1-draft",
+    "status": "draft",
+    "owner": "research governance owner",
+    "purpose": "Document evidence, validation, and human-review gates for an offline research artifact.",
+    "decision_role": "research_governance_only",
+    "data_level": "metadata_only",
+    "patient_care_use": false,
+    "executable_logic": false,
+    "change_summary": "Initial synthetic documentation example.",
+    "monitoring_plan": "Review source currency, validation status, subgroup evidence, and unresolved issues at each version.",
+    "retirement_criteria": "Retire when sources, validation evidence, ownership, or intended use are obsolete."
+  },
+  "intended_use": "Research/governance traceability only; not for patient care or live clinical use.",
+  "prohibited_uses": [
+    "No diagnosis, treatment recommendation, dosing, triage, urgency, alarm, or autonomous decision.",
+    "No care pathway, EHR rule, or executable clinical logic.",
+    "No claim of authorization or compliance."
+  ],
+  "limitations": [
+    "The matrix documents plain-language logic and does not execute it.",
+    "Source presence does not establish evidence quality.",
+    "Human review and independent validation remain required."
+  ],
+  "sources": [
+    {
+      "id": "SRC-GOV-001",
+      "citation": "Synthetic research governance procedure, version 1.",
+      "url": "not_applicable_for_local_synthetic_source",
+      "accessed": "2026-07-23"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "source_gate",
+      "type": "evidence_rule",
+      "dependency_ids": [],
+      "precondition": "An evidence record is proposed for the research artifact.",
+      "logic_statement": "Check for a stable citation, source version, and retrieval date.",
+      "output_kind": "flag_for_review",
+      "output_value": "missing_source_provenance when any required source field is absent",
+      "source_ids": [
+        "SRC-GOV-001"
+      ],
+      "rationale": "Reviewers need reproducible source provenance.",
+      "validation_tests": [
+        "Complete source fields produce no provenance flag.",
+        "Missing retrieval date produces missing_source_provenance."
+      ],
+      "owner": "evidence review owner",
+      "reviewer_role": "independent methodologist",
+      "status": "draft"
+    },
+    {
+      "id": "validation_gate",
+      "type": "validation_gate",
+      "dependency_ids": [
+        "source_gate"
+      ],
+      "precondition": "Source provenance is complete.",
+      "logic_statement": "Check whether independent external validation and subgroup uncertainty are documented.",
+      "output_kind": "release_hold",
+      "output_value": "true when required validation documentation is absent",
+      "source_ids": [
+        "SRC-GOV-001"
+      ],
+      "rationale": "Transportability claims require independent evidence and uncertainty.",
+      "validation_tests": [
+        "Missing external-validation evidence produces a release hold.",
+        "Complete validation evidence passes to human review."
+      ],
+      "owner": "validation owner",
+      "reviewer_role": "independent statistician",
+      "status": "draft"
+    },
+    {
+      "id": "human_review_gate",
+      "type": "human_review",
+      "dependency_ids": [
+        "validation_gate"
+      ],
+      "precondition": "Required documentation gates are complete.",
+      "logic_statement": "Require recorded review by the accountable method, domain, privacy, and governance roles.",
+      "output_kind": "documentation_status",
+      "output_value": "pending until all accountable review roles record a decision",
+      "source_ids": [
+        "SRC-GOV-001"
+      ],
+      "rationale": "Automated structural checks cannot approve a research artifact.",
+      "validation_tests": [
+        "Absent reviewer decision produces pending status.",
+        "Recorded reviewer decisions produce complete documentation status."
+      ],
+      "owner": "governance owner",
+      "reviewer_role": "authorized governance approver",
+      "status": "draft"
+    }
+  ],
+  "human_review": {
+    "required": true,
+    "completed": false,
+    "approval_boundary": "Only the accountable organization can approve a research artifact; this matrix never authorizes clinical use."
+  }
+}

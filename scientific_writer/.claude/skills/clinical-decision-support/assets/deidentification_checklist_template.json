@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "checklist_id": "REPLACE_WITH_CHECKLIST_ID",
+  "title": "De-identification Process Documentation Checklist",
+  "method": "undecided",
+  "intended_use": "Document qualified human review without supplying a dataset.",
+  "prohibited_uses": [
+    "Do not paste PHI, raw rows, notes, images, sequences, or example identifiers.",
+    "Do not claim de-identification, HIPAA compliance, or publication safety from this checklist."
+  ],
+  "limitations": [
+    "The script does not inspect or transform data.",
+    "The checklist cannot determine covered-entity status or legal obligations.",
+    "Residual linkage and differencing risks require contextual expert review."
+  ],
+  "data_boundary": {
+    "raw_data_supplied": false,
+    "metadata_only": true,
+    "data_context": "REPLACE_WITH_HIGH_LEVEL_DATA_CONTEXT_WITHOUT_SENSITIVE_VALUES",
+    "recipient_context": "REPLACE_WITH_RECIPIENT_AND_ACCESS_CONTEXT",
+    "release_context": "REPLACE_WITH_RELEASE, ACCESS, AND PRIOR-RELEASE_CONTEXT"
+  },
+  "source_ids": [
+    "HHS-DEID",
+    "CFR-164514"
+  ],
+  "sources": [
+    {
+      "id": "HHS-DEID",
+      "citation": "HHS OCR. Guidance Regarding Methods for De-identification of Protected Health Information.",
+      "url": "https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html",
+      "accessed": "2026-07-23"
+    },
+    {
+      "id": "CFR-164514",
+      "citation": "45 CFR 164.514, Other requirements relating to uses and disclosures of protected health information.",
+      "url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-E/section-164.514",
+      "accessed": "2026-07-23"
+    }
+  ],
+  "identifier_categories": [
+    {
+      "id": "names",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "geography",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "dates_and_ages",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "telephone_numbers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "fax_numbers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "email_addresses",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "social_security_numbers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "medical_record_numbers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "health_plan_numbers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "account_numbers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "certificate_license_numbers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "vehicle_identifiers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "device_identifiers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "web_urls",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "ip_addresses",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "biometric_identifiers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "full_face_images",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    },
+    {
+      "id": "other_unique_identifiers",
+      "status": "unresolved",
+      "evidence": "REQUIRES_HUMAN_DOCUMENTATION_WITHOUT_VALUES"
+    }
+  ],
+  "safe_harbor_review": {
+    "actual_knowledge": "REQUIRES_HUMAN_REVIEW",
+    "free_text": "REQUIRES_HUMAN_REVIEW",
+    "derived_fields": "REQUIRES_HUMAN_REVIEW",
+    "date_age_zip_rules": "REQUIRES_HUMAN_REVIEW",
+    "reviewer_role": "REPLACE_WITH_QUALIFIED_ROLE",
+    "review_date": "YYYY-MM-DD",
+    "completed": false
+  },
+  "expert_determination_review": {
+    "expert_qualification_reference": "REQUIRES_QUALIFIED_EXPERT_IF_SELECTED",
+    "method_document_reference": "REQUIRES_QUALIFIED_EXPERT_IF_SELECTED",
+    "risk_threshold_rationale": "REQUIRES_QUALIFIED_EXPERT_IF_SELECTED",
+    "residual_risk": "REQUIRES_QUALIFIED_EXPERT_IF_SELECTED",
+    "validity_period": "REQUIRES_QUALIFIED_EXPERT_IF_SELECTED",
+    "change_triggers": "REQUIRES_QUALIFIED_EXPERT_IF_SELECTED",
+    "review_date": "YYYY-MM-DD",
+    "completed": false
+  },
+  "residual_risk_review": {
+    "linkage": "REQUIRES_HUMAN_REVIEW",
+    "differencing": "REQUIRES_HUMAN_REVIEW",
+    "rare_combinations": "REQUIRES_HUMAN_REVIEW",
+    "longitudinal_patterns": "REQUIRES_HUMAN_REVIEW",
+    "geography": "REQUIRES_HUMAN_REVIEW",
+    "genomics": "REQUIRES_HUMAN_REVIEW",
+    "prior_releases": "REQUIRES_HUMAN_REVIEW",
+    "completed": false
+  },
+  "human_review": {
+    "required": true,
+    "role": "qualified privacy reviewer or de-identification expert",
+    "completed": false,
+    "approval_boundary": "Completion documents a process only and does not establish de-identification or HIPAA compliance."
+  },
+  "governance": {
+    "version": "0.1-draft",
+    "owner": "REPLACE_WITH_PRIVACY_GOVERNANCE_OWNER_ROLE",
+    "change_summary": "Initial unresolved template.",
+    "auditability": "Retain method documentation, assumptions, approvals, release context, and change triggers without sensitive values.",
+    "monitoring": "Reassess when data, recipients, linkage sources, prior releases, or release conditions change."
+  },
+  "compliance_claims": false
+}

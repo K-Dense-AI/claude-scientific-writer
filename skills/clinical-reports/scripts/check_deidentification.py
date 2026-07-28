@@ -1,346 +1,298 @@
 #!/usr/bin/env python3
-"""
-Check clinical reports for HIPAA identifiers that need removal.
+"""Validate de-identification process documentation without scanning patient text."""
 
-Scans text for 18 HIPAA identifiers and flags potential privacy violations.
-
-Usage:
-    python check_deidentification.py <input_file>
-    python check_deidentification.py <input_file> --output violations.json
-"""
+from __future__ import annotations
 
 import argparse
-import json
-import re
-from pathlib import Path
-from typing import Dict, List
+import sys
+from typing import Any
 
+sys.dont_write_bytecode = True
 
-# 18 HIPAA Identifiers patterns
-HIPAA_IDENTIFIERS = {
-    "1_names": {
-        "description": "Names (patient, family, providers)",
-        "patterns": [
-            r"\b(Dr\.|Mr\.|Mrs\.|Ms\.)\s+[A-Z][a-z]+",
-            r"\b[A-Z][a-z]+,\s+[A-Z][a-z]+\b",  # Last, First
-        ],
-        "severity": "HIGH"
-    },
-    "2_geographic": {
-        "description": "Geographic subdivisions smaller than state",
-        "patterns": [
-            r"\b\d+\s+[A-Z][a-z]+\s+(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln|Drive|Dr)\b",
-            r"\b[A-Z][a-z]+,\s+[A-Z]{2}\s+\d{5}\b",  # City, ST ZIP
-        ],
-        "severity": "HIGH"
-    },
-    "3_dates": {
-        "description": "Dates (except year)",
-        "patterns": [
-            r"\b(0?[1-9]|1[0-2])/(0?[1-9]|[12][0-9]|3[01])/\d{4}\b",
-            r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},\s+\d{4}\b",
-            r"\b\d{1,2}\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\b",
-        ],
-        "severity": "HIGH"
-    },
-    "4_telephone": {
-        "description": "Telephone numbers",
-        "patterns": [
-            r"\b\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b",
-            r"\b1-\d{3}-\d{3}-\d{4}\b",
-        ],
-        "severity": "HIGH"
-    },
-    "5_fax": {
-        "description": "Fax numbers",
-        "patterns": [
-            r"(?i)fax[:]\s*\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}",
-        ],
-        "severity": "HIGH"
-    },
-    "6_email": {
-        "description": "Email addresses",
-        "patterns": [
-            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",
-        ],
-        "severity": "HIGH"
-    },
-    "7_ssn": {
-        "description": "Social Security numbers",
-        "patterns": [
-            r"\b\d{3}-\d{2}-\d{4}\b",
-            r"\b\d{9}\b",
-        ],
-        "severity": "CRITICAL"
-    },
-    "8_mrn": {
-        "description": "Medical record numbers",
-        "patterns": [
-            r"(?i)(mrn|medical\s+record\s+(number|#))[:]\s*\d+",
-            r"(?i)patient\s+id[:]\s*\d+",
-        ],
-        "severity": "HIGH"
-    },
-    "9_health_plan": {
-        "description": "Health plan beneficiary numbers",
-        "patterns": [
-            r"(?i)(insurance|policy)\s+(number|#|id)[:]\s*[A-Z0-9]+",
-        ],
-        "severity": "HIGH"
-    },
-    "10_account": {
-        "description": "Account numbers",
-        "patterns": [
-            r"(?i)account\s+(number|#)[:]\s*\d+",
-        ],
-        "severity": "MEDIUM"
-    },
-    "11_license": {
-        "description": "Certificate/license numbers",
-        "patterns": [
-            r"(?i)(driver[']?s\s+license|DL)[:]\s*[A-Z0-9]+",
-        ],
-        "severity": "MEDIUM"
-    },
-    "12_vehicle": {
-        "description": "Vehicle identifiers",
-        "patterns": [
-            r"(?i)(license\s+plate|VIN)[:]\s*[A-Z0-9]+",
-        ],
-        "severity": "MEDIUM"
-    },
-    "13_device": {
-        "description": "Device identifiers and serial numbers",
-        "patterns": [
-            r"(?i)(serial|device)\s+(number|#)[:]\s*[A-Z0-9-]+",
-        ],
-        "severity": "MEDIUM"
-    },
-    "14_url": {
-        "description": "Web URLs",
-        "patterns": [
-            r"https?://[^\s]+",
-            r"www\.[^\s]+",
-        ],
-        "severity": "MEDIUM"
-    },
-    "15_ip": {
-        "description": "IP addresses",
-        "patterns": [
-            r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b",
-        ],
-        "severity": "HIGH"
-    },
-    "16_biometric": {
-        "description": "Biometric identifiers",
-        "patterns": [
-            r"(?i)(fingerprint|voiceprint|retinal\s+scan)",
-        ],
-        "severity": "CRITICAL"
-    },
-    "17_photos": {
-        "description": "Full-face photographs",
-        "patterns": [
-            r"(?i)(photograph|photo|image).*face",
-            r"\.(jpg|jpeg|png|gif)\b",
-        ],
-        "severity": "HIGH"
-    },
-    "18_unique": {
-        "description": "Any other unique identifying characteristic",
-        "patterns": [
-            r"(?i)(tattoo|birthmark|scar).*unique",
-        ],
-        "severity": "MEDIUM"
-    },
+from _common import (  # noqa: E402
+    ValidationError,
+    error_report,
+    load_json_object,
+    require_bool,
+    require_data_class,
+    require_exact_keys,
+    require_string,
+    write_json_report,
+)
+
+TOOL = "check_deidentification"
+SAFE_HARBOR_KEYS = (
+    "names",
+    "geographic_subdivisions",
+    "dates_and_ages",
+    "telephone_numbers",
+    "fax_numbers",
+    "email_addresses",
+    "social_security_numbers",
+    "medical_record_numbers",
+    "health_plan_numbers",
+    "account_numbers",
+    "certificate_and_license_numbers",
+    "vehicle_identifiers",
+    "device_identifiers",
+    "urls",
+    "ip_addresses",
+    "biometric_identifiers",
+    "full_face_images",
+    "other_unique_characteristics_or_codes",
+)
+RESIDUAL_KEYS = (
+    "free_text",
+    "small_cells_and_rare_cases",
+    "images_and_metadata",
+    "linked_data_and_quasi_identifiers",
+)
+METHODS = {
+    "safe_harbor",
+    "expert_determination",
+    "not_applicable_synthetic_or_aggregate",
+}
+CLEAR_STATUSES = {"cleared_by_authorized_reviewer", "not_present_by_design"}
+RESIDUAL_CLEAR_STATUSES = {
+    "reviewed_no_unresolved_issue",
+    "not_applicable_with_rationale",
+}
+TOP_LEVEL_FIELDS = {
+    "schema_version",
+    "artifact_kind",
+    "process_status",
+    "safety_notice",
+    "data_scope",
+    "authorized_purpose",
+    "authorization_verified",
+    "local_only_handling_confirmed",
+    "minimum_necessary_reviewed",
+    "method",
+    "safe_harbor_identifiers",
+    "actual_knowledge_review",
+    "expert_determination",
+    "synthetic_or_aggregate_rationale",
+    "residual_risk_review",
+    "review",
 }
 
 
-def check_identifiers(text: str) -> Dict:
-    """Check text for HIPAA identifiers."""
-    violations = {}
-    total_issues = 0
-    
-    for identifier_id, config in HIPAA_IDENTIFIERS.items():
-        matches = []
-        for pattern in config["patterns"]:
-            found = re.findall(pattern, text, re.IGNORECASE)
-            matches.extend(found)
-        
-        if matches:
-            # Remove duplicates, limit to first 5 examples
-            unique_matches = list(set(matches))[:5]
-            violations[identifier_id] = {
-                "description": config["description"],
-                "severity": config["severity"],
-                "count": len(matches),
-                "examples": unique_matches
-            }
-            total_issues += len(matches)
-    
-    return {
-        "total_violations": len(violations),
-        "total_instances": total_issues,
-        "violations": violations
-    }
-
-
-def check_age_compliance(text: str) -> Dict:
-    """Check if ages >89 are properly aggregated."""
-    age_pattern = r"\b(\d{2,3})\s*(?:year|yr)s?[\s-]?old\b"
-    ages = [int(age) for age in re.findall(age_pattern, text, re.IGNORECASE)]
-    
-    violations = [age for age in ages if age > 89]
-    
-    return {
-        "ages_over_89": len(violations),
-        "examples": violations[:5] if violations else [],
-        "compliant": len(violations) == 0
-    }
-
-
-def generate_report(filename: str) -> Dict:
-    """Generate de-identification compliance report."""
-    filepath = Path(filename)
-    
-    if not filepath.exists():
-        raise FileNotFoundError(f"File not found: {filename}")
-    
-    with open(filepath, 'r', encoding='utf-8') as f:
-        text = f.read()
-    
-    identifier_check = check_identifiers(text)
-    age_check = check_age_compliance(text)
-    
-    # Determine overall compliance
-    critical_violations = sum(
-        1 for v in identifier_check["violations"].values()
-        if v["severity"] == "CRITICAL"
-    )
-    high_violations = sum(
-        1 for v in identifier_check["violations"].values()
-        if v["severity"] == "HIGH"
-    )
-    
-    if critical_violations > 0 or high_violations >= 3:
-        status = "NON_COMPLIANT"
-    elif high_violations > 0 or not age_check["compliant"]:
-        status = "NEEDS_REVIEW"
-    else:
-        status = "COMPLIANT"
-    
-    report = {
-        "filename": str(filename),
-        "status": status,
-        "identifier_violations": identifier_check,
-        "age_compliance": age_check,
-        "recommendation": get_recommendation(status, identifier_check, age_check)
-    }
-    
-    return report
-
-
-def get_recommendation(status: str, identifiers: Dict, ages: Dict) -> str:
-    """Generate recommendation based on findings."""
-    if status == "COMPLIANT":
-        return "Document appears compliant. Perform final manual review before publication."
-    
-    recommendations = []
-    
-    if identifiers["total_violations"] > 0:
-        recommendations.append(
-            f"Remove or redact {identifiers['total_instances']} identified HIPAA identifiers."
-        )
-    
-    if not ages["compliant"]:
-        recommendations.append(
-            f"Aggregate {ages['ages_over_89']} age(s) >89 years to '90 or older' or '>89 years'."
-        )
-    
-    return " ".join(recommendations)
-
-
-def print_report(report: Dict):
-    """Print human-readable report."""
-    print("=" * 70)
-    print("HIPAA DE-IDENTIFICATION CHECK")
-    print(f"File: {report['filename']}")
-    print("=" * 70)
-    print()
-    
-    print(f"Overall Status: {report['status']}")
-    print()
-    
-    if report["identifier_violations"]["total_violations"] == 0:
-        print("✓ No HIPAA identifiers detected")
-    else:
-        print(f"⚠  Found {report['identifier_violations']['total_violations']} types of violations")
-        print(f"   Total instances: {report['identifier_violations']['total_instances']}")
-        print()
-        
-        print("Violations by type:")
-        print("-" * 70)
-        
-        for id_type, details in sorted(
-            report["identifier_violations"]["violations"].items(),
-            key=lambda x: {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2}[x[1]["severity"]]
-        ):
-            severity_symbol = "⚠⚠⚠" if details["severity"] == "CRITICAL" else "⚠⚠" if details["severity"] == "HIGH" else "⚠"
-            print(f"{severity_symbol} [{details['severity']:8}] {details['description']}")
-            print(f"   Count: {details['count']}")
-            print(f"   Examples:")
-            for example in details["examples"]:
-                print(f"     - {example}")
-            print()
-    
-    age_check = report["age_compliance"]
-    if age_check["compliant"]:
-        print("✓ Age reporting compliant (no ages >89 or properly aggregated)")
-    else:
-        print(f"⚠  Age compliance issue: {age_check['ages_over_89']} age(s) >89 detected")
-        print(f"   Ages must be aggregated to '90 or older' or '>89 years'")
-        print(f"   Ages found: {age_check['examples']}")
-    
-    print()
-    print("Recommendation:")
-    print(report["recommendation"])
-    print("=" * 70)
-
-
-def main():
-    """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description="Check clinical reports for HIPAA identifiers"
-    )
-    parser.add_argument("input_file", help="Path to clinical report file")
-    parser.add_argument("--output", "-o", help="Output JSON report to file")
-    parser.add_argument("--json", action="store_true", help="Output JSON to stdout")
-    
-    args = parser.parse_args()
-    
+def _required_true(
+    data: dict[str, Any],
+    field: str,
+    errors: list[str],
+) -> None:
     try:
-        report = generate_report(args.input_file)
-        
-        if args.json:
-            print(json.dumps(report, indent=2))
+        if not require_bool(data.get(field), field):
+            errors.append(f"{field} must be true")
+    except ValidationError as exc:
+        errors.append(str(exc))
+
+
+def validate_process(data: dict[str, Any]) -> dict[str, Any]:
+    """Validate recorded process gates without asserting de-identification."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    try:
+        require_exact_keys(data, TOP_LEVEL_FIELDS, "checklist")
+        if data.get("schema_version") != "2.0":
+            raise ValidationError("schema_version must be 2.0")
+        if data.get("process_status") != "BLOCKED_NOT_ASSESSED":
+            raise ValidationError("process_status must remain BLOCKED_NOT_ASSESSED")
+        require_string(data.get("safety_notice"), "safety_notice", max_length=1000)
+        require_exact_keys(
+            data.get("safe_harbor_identifiers"),
+            SAFE_HARBOR_KEYS,
+            "safe_harbor_identifiers",
+        )
+        require_exact_keys(
+            data.get("actual_knowledge_review"),
+            {"completed_by_authorized_privacy_reviewer", "record_reference"},
+            "actual_knowledge_review",
+        )
+        require_exact_keys(
+            data.get("expert_determination"),
+            {
+                "completed_by_qualified_expert",
+                "expert_documentation_reference",
+                "anticipated_recipient_and_conditions_documented",
+            },
+            "expert_determination",
+        )
+        require_exact_keys(
+            data.get("synthetic_or_aggregate_rationale"),
+            {"origin_verified", "record_reference"},
+            "synthetic_or_aggregate_rationale",
+        )
+        require_exact_keys(
+            data.get("residual_risk_review"),
+            RESIDUAL_KEYS,
+            "residual_risk_review",
+        )
+        require_exact_keys(
+            data.get("review"),
+            {
+                "privacy_legal_review",
+                "institutional_release_review",
+                "release_authorized",
+            },
+            "review",
+        )
+    except ValidationError as exc:
+        errors.append(str(exc))
+    if data.get("artifact_kind") != "deidentification_process_checklist":
+        errors.append("artifact_kind must be deidentification_process_checklist")
+    try:
+        data_scope = require_data_class(data.get("data_scope"))
+        require_string(data.get("authorized_purpose"), "authorized_purpose")
+    except ValidationError as exc:
+        errors.append(str(exc))
+        data_scope = ""
+
+    for field in (
+        "authorization_verified",
+        "local_only_handling_confirmed",
+        "minimum_necessary_reviewed",
+    ):
+        _required_true(data, field, errors)
+
+    method = data.get("method")
+    if method not in METHODS:
+        errors.append(f"method must be one of {sorted(METHODS)}")
+    elif method == "safe_harbor":
+        statuses = data.get("safe_harbor_identifiers")
+        if not isinstance(statuses, dict):
+            errors.append("safe_harbor_identifiers must be an object")
         else:
-            print_report(report)
-        
-        if args.output:
-            with open(args.output, 'w') as f:
-                json.dump(report, f, indent=2)
-            print(f"\nJSON report saved to: {args.output}")
-        
-        # Exit with non-zero if violations found
-        exit_code = 0 if report["status"] == "COMPLIANT" else 1
-        return exit_code
-        
-    except Exception as e:
-        print(f"Error: {e}")
-        return 1
+            missing = sorted(set(SAFE_HARBOR_KEYS) - set(statuses))
+            extra = sorted(set(statuses) - set(SAFE_HARBOR_KEYS))
+            if missing:
+                errors.append(f"missing Safe Harbor categories: {missing}")
+            if extra:
+                errors.append(f"unexpected Safe Harbor categories: {extra}")
+            for key in SAFE_HARBOR_KEYS:
+                if statuses.get(key) not in CLEAR_STATUSES:
+                    errors.append(f"safe_harbor_identifiers.{key} is not cleared")
+        actual = data.get("actual_knowledge_review")
+        if not isinstance(actual, dict):
+            errors.append("actual_knowledge_review must be an object")
+        else:
+            try:
+                if not require_bool(
+                    actual.get("completed_by_authorized_privacy_reviewer"),
+                    "actual_knowledge_review.completed_by_authorized_privacy_reviewer",
+                ):
+                    errors.append("authorized actual-knowledge review is required")
+                require_string(
+                    actual.get("record_reference"),
+                    "actual_knowledge_review.record_reference",
+                )
+            except ValidationError as exc:
+                errors.append(str(exc))
+    elif method == "expert_determination":
+        expert = data.get("expert_determination")
+        if not isinstance(expert, dict):
+            errors.append("expert_determination must be an object")
+        else:
+            try:
+                if not require_bool(
+                    expert.get("completed_by_qualified_expert"),
+                    "expert_determination.completed_by_qualified_expert",
+                ):
+                    errors.append("qualified Expert Determination is required")
+                require_string(
+                    expert.get("expert_documentation_reference"),
+                    "expert_determination.expert_documentation_reference",
+                )
+                if not require_bool(
+                    expert.get("anticipated_recipient_and_conditions_documented"),
+                    "expert_determination.anticipated_recipient_and_conditions_documented",
+                ):
+                    errors.append("anticipated recipient and conditions must be documented")
+            except ValidationError as exc:
+                errors.append(str(exc))
+    elif method == "not_applicable_synthetic_or_aggregate":
+        if data_scope not in {"synthetic", "aggregate"}:
+            errors.append(
+                "not_applicable_synthetic_or_aggregate requires synthetic or aggregate scope"
+            )
+        rationale = data.get("synthetic_or_aggregate_rationale")
+        if not isinstance(rationale, dict):
+            errors.append("synthetic_or_aggregate_rationale must be an object")
+        else:
+            try:
+                if not require_bool(
+                    rationale.get("origin_verified"),
+                    "synthetic_or_aggregate_rationale.origin_verified",
+                ):
+                    errors.append("synthetic or aggregate origin must be verified")
+                require_string(
+                    rationale.get("record_reference"),
+                    "synthetic_or_aggregate_rationale.record_reference",
+                )
+            except ValidationError as exc:
+                errors.append(str(exc))
+
+    residual = data.get("residual_risk_review")
+    if not isinstance(residual, dict):
+        errors.append("residual_risk_review must be an object")
+    else:
+        for key in RESIDUAL_KEYS:
+            if residual.get(key) not in RESIDUAL_CLEAR_STATUSES:
+                errors.append(f"residual_risk_review.{key} is unresolved")
+
+    review = data.get("review")
+    if not isinstance(review, dict):
+        errors.append("review must be an object")
+    else:
+        for field in ("privacy_legal_review", "institutional_release_review"):
+            if review.get(field) != "completed":
+                warnings.append(f"review.{field} remains required")
+        if review.get("release_authorized") is not False:
+            errors.append("review.release_authorized must remain false")
+
+    return {
+        "tool": TOOL,
+        "status": "BLOCKED" if errors else "PROCESS_DOCUMENTED_REVIEW_REQUIRED",
+        "method": method,
+        "errors": errors,
+        "warnings": warnings,
+        "limitations": [
+            "No patient text or files were scanned.",
+            "Does not establish de-identification, no-actual-knowledge, Expert Determination, or HIPAA compliance.",
+        ],
+        "review_required": True,
+        "authorizes_release_or_submission": False,
+    }
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Check bounded JSON de-identification process documentation. "
+            "Never labels data HIPAA-compliant or guaranteed de-identified."
+        )
+    )
+    parser.add_argument("input_file", help="Local process checklist (.json)")
+    parser.add_argument("-o", "--output", help="Optional local JSON report")
+    parser.add_argument("--overwrite", action="store_true")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        _, data = load_json_object(args.input_file)
+        report = validate_process(data)
+    except (OSError, ValidationError) as exc:
+        report = error_report(TOOL, exc)
+    try:
+        write_json_report(report, args.output, overwrite=args.overwrite)
+    except (OSError, ValidationError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    return 0 if report["status"] == "PROCESS_DOCUMENTED_REVIEW_REQUIRED" else 1
 
 
 if __name__ == "__main__":
-    import sys
-    sys.exit(main())
-
+    raise SystemExit(main())

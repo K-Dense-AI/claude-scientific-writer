@@ -1,0 +1,83 @@
+{
+  "schema_version": "2.0",
+  "document_type": "intended_use_handoff_record",
+  "document_id": "INTENDED-USE-HANDOFF-TEMPLATE",
+  "subject_ref": "SYNTHETIC-CASE-001",
+  "data_classification": "synthetic",
+  "status": "DRAFT_NOT_FOR_CLINICAL_USE",
+  "notice": "DRAFT — NOT MEDICAL ADVICE — DOCUMENTATION-ONLY — AUTHORIZED CLINICIAN SIGN-OFF REQUIRED",
+  "created_at": null,
+  "intended_use": {
+    "purpose": "format_and_validate_clinician_supplied_plan_documentation",
+    "intended_users": [],
+    "intended_setting": "",
+    "output_role": "documentation_only",
+    "prohibited_uses": [
+      "diagnosis_or_assessment",
+      "therapy_selection_or_recommendation",
+      "medication_or_dose_decision",
+      "start_stop_hold_resume_titrate_or_taper_decision",
+      "interaction_allergy_or_contraindication_check",
+      "triage_or_urgency_determination",
+      "emergency_advice_or_safety_plan",
+      "prognosis_or_outcome_prediction",
+      "patient_specific_recommendation",
+      "replacement_of_authorized_professional_review"
+    ]
+  },
+  "privacy_process": {
+    "data_classification": "synthetic",
+    "local_authorization_confirmed": false,
+    "authorized_environment_reference": "",
+    "minimum_necessary_confirmed": false,
+    "no_external_tools_confirmed": false,
+    "no_prompt_log_example_copy_confirmed": false,
+    "privacy_review_status": "pending",
+    "privacy_reviewer_role": "",
+    "reviewed_at": null,
+    "retention_policy_reference": "",
+    "data_disposition_status": "pending"
+  },
+  "local_governance": {
+    "institution_or_organization_reference": "",
+    "clinical_owner_role": "",
+    "policy_references": [],
+    "records_owner_role": "",
+    "change_control_owner_role": ""
+  },
+  "emergency_routing": {
+    "statement": "If a concern may be urgent or emergent, stop this documentation workflow and use the institution's current clinical escalation or emergency process; this package does not determine urgency or provide emergency instructions.",
+    "local_process_reference": "",
+    "verified_by_role": ""
+  },
+  "reporting_routes": {
+    "local_patient_safety_route": "",
+    "product_event_route": "",
+    "privacy_incident_route": "",
+    "responsible_role": ""
+  },
+  "handoff": {
+    "sender_role": "",
+    "recipient_role": "",
+    "sent_at": null,
+    "acknowledgment_status": "pending",
+    "unresolved_items_routed": false
+  },
+  "clinician_signoff": {
+    "status": "pending",
+    "signer_role": "",
+    "credential_authority_reference": "",
+    "signed_at": null,
+    "attestation": "The signer attests only that this package accurately transcribes clinician-supplied and verified decisions for authorized documentation handoff; it is not stand-alone medical advice."
+  },
+  "release_gate": {
+    "status": "blocked",
+    "released_by_role": "",
+    "released_at": null,
+    "blocker_codes": [
+      "CLINICIAN_SIGNOFF_PENDING",
+      "PRIVACY_PROCESS_PENDING",
+      "LOCAL_GOVERNANCE_PENDING"
+    ]
+  }
+}

@@ -3,7 +3,18 @@ name: research-lookup
 description: "Compile current scholarly evidence for a scientific manuscript or research brief. Use when the user explicitly asks to gather literature, references, background evidence, competing findings, or a manuscript research packet. Uses Parallel Search by default, Parallel Extract for source verification, Parallel Research for explicitly deep/exhaustive work, optional explicit Parallel Chat, and optional Perplexity only when requested or allowed as a failure fallback."
 license: MIT license
 compatibility: Requires network access to api.parallel.ai through parallel-cli 0.7.1+ for Search, Extract, and Research; explicit Chat uses api.parallel.ai with PARALLEL_API_KEY; optional Perplexity requests use openrouter.ai and require OPENROUTER_API_KEY.
-metadata: {"version": "1.4", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "PARALLEL_API_KEY", "envVars": [{"name": "PARALLEL_API_KEY", "required": false, "description": "Parallel API key; CLI login may be used instead."}, {"name": "OPENROUTER_API_KEY", "required": false, "description": "Optional OpenRouter key for explicit Perplexity use."}]}}
+metadata:
+  version: "1.4"
+  skill-author: K-Dense Inc.
+  openclaw:
+    primaryEnv: PARALLEL_API_KEY
+    envVars:
+    - name: PARALLEL_API_KEY
+      required: false
+      description: Parallel API key; CLI login may be used instead.
+    - name: OPENROUTER_API_KEY
+      required: false
+      description: Optional OpenRouter key for explicit Perplexity use.
 ---
 
 # Research Lookup

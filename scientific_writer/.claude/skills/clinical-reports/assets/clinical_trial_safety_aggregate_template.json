@@ -1,0 +1,49 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "clinical_trial_safety_aggregate_draft",
+  "draft_status": "BLOCKED_INCOMPLETE_NOT_AN_INDIVIDUAL_CASE_SAFETY_REPORT",
+  "safety_notice": "Aggregate display only. Do not use for individual-case assessment, reportability, transmission, causality, expectedness, seriousness, filing, or submission.",
+  "data_classification": "aggregate",
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "local_only_handling_confirmed": false,
+  "analysis_metadata": {
+    "protocol_reference": null,
+    "sap_reference": null,
+    "data_cut_reference": null,
+    "analysis_set": null,
+    "counting_rule": null,
+    "threshold_rule": null,
+    "meddra_version": null,
+    "meddra_language": null,
+    "coding_source_reference": null
+  },
+  "input_csv": "adverse_event_aggregate_input_template.csv",
+  "required_columns": [
+    "analysis_set",
+    "treatment_group",
+    "meddra_version",
+    "system_organ_class",
+    "preferred_term",
+    "subjects_affected",
+    "event_count",
+    "denominator"
+  ],
+  "prohibited_content": [
+    "patient identifiers",
+    "subject identifiers",
+    "case identifiers",
+    "verbatim terms",
+    "narratives",
+    "exact event dates",
+    "contact information"
+  ],
+  "provenance_manifest": null,
+  "review": {
+    "safety_coding_review": "pending",
+    "statistical_review": "pending",
+    "privacy_review": "pending",
+    "regulatory_review": "pending",
+    "submission_authorized": false
+  }
+}

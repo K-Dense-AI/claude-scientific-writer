@@ -1,0 +1,5 @@
+competitor_id,competitor_name,feature_id,feature_name,status,evidence_source_ids,as_of_date,geography,product_scope,notes
+COMP-A,Synthetic Competitor A,FEATURE-1,Synthetic feature one,yes,S-003,2026-07-23,Exampleland,Synthetic widget service,Fixture only
+COMP-A,Synthetic Competitor A,FEATURE-2,Synthetic feature two,partial,S-003,2026-07-23,Exampleland,Synthetic widget service,Fixture only
+COMP-B,Synthetic Competitor B,FEATURE-1,Synthetic feature one,no,S-003,2026-07-23,Exampleland,Synthetic widget service,Fixture only
+COMP-B,Synthetic Competitor B,FEATURE-2,Synthetic feature two,unknown,,2026-07-23,Exampleland,Synthetic widget service,No public evidence in synthetic fixture

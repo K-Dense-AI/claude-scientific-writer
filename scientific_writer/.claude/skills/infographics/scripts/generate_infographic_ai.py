@@ -5,7 +5,7 @@ AI-powered infographic generation using Nano Banana Pro.
 This script uses a smart iterative refinement approach:
 1. (Optional) Research phase - gather facts and data using Perplexity Sonar
 2. Generate initial infographic with Nano Banana Pro
-3. AI quality review using Gemini 3.1 Pro for infographic critique
+3. AI quality review using Gemini 3.6 Flash for infographic critique
 4. Only regenerate if quality is below threshold for document type
 5. Repeat until quality meets standards (max iterations)
 
@@ -249,7 +249,7 @@ PALETTE_PRESETS = {
 class InfographicGenerator:
     """Generate infographics using AI with smart iterative refinement.
     
-    Uses Gemini 3.1 Pro for quality review to determine if regeneration is needed.
+    Uses Gemini 3.6 Flash for quality review to determine if regeneration is needed.
     Multiple passes only occur if the generated infographic doesn't meet the
     quality threshold for the target document type.
     """
@@ -334,9 +334,9 @@ IMPORTANT - NO META CONTENT:
         self._last_error = None
         self.base_url = "https://openrouter.ai/api/v1"
         # Nano Banana Pro for image generation
-        self.image_model = "google/gemini-3-pro-image-preview"
-        # Gemini 3.1 Pro for quality review
-        self.review_model = "google/gemini-3.1-pro-preview"
+        self.image_model = "google/gemini-3.6-flash"
+        # Gemini 3.6 Flash for quality review
+        self.review_model = "google/gemini-3.6-flash"
         
     def _log(self, message: str):
         """Log message if verbose mode is enabled."""
@@ -787,7 +787,7 @@ Incorporate specific numbers, percentages, and dates from the research."""
                     iteration: int, doc_type: str = "default",
                     max_iterations: int = 3) -> Tuple[str, Optional[float], bool]:
         """
-        Review generated infographic using Gemini 3.1 Pro for quality analysis.
+        Review generated infographic using Gemini 3.6 Flash for quality analysis.
         
         Evaluates the infographic on multiple criteria specific to good
         infographic design and determines if regeneration is needed.
@@ -1117,8 +1117,8 @@ Generate an improved version that:
                 f.write(image_data)
             print(f"✓ Saved: {iter_path}")
             
-            # Review image using Gemini 3.1 Pro
-            print(f"Reviewing with Gemini 3.1 Pro...")
+            # Review image using Gemini 3.6 Flash
+            print(f"Reviewing with Gemini 3.6 Flash...")
             critique, score, needs_improvement = self.review_image(
                 str(iter_path), user_prompt, infographic_type, i, doc_type, iterations
             )

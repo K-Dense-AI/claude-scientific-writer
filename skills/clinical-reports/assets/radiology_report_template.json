@@ -1,0 +1,34 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "radiology_report_scaffold",
+  "draft_status": "BLOCKED_INCOMPLETE_DRAFT_NOT_FOR_CLINICAL_USE_OR_SIGNATURE",
+  "safety_notice": "This scaffold cannot interpret images or author findings, impressions, urgency, or recommendations. A qualified radiologist must author and sign the report in an authorized clinical system.",
+  "data_classification": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "guidance": {
+    "base": "ACR Practice Parameter for Communication of Diagnostic Imaging Findings",
+    "revision": "2025",
+    "modality_specific_source": null,
+    "local_policy_version": null
+  },
+  "report_status": null,
+  "source_system_record": null,
+  "fields": {
+    "examination": {"status": "missing", "source_fact_ids": []},
+    "clinical_indication": {"status": "missing", "source_fact_ids": []},
+    "technique_and_limitations": {"status": "missing", "source_fact_ids": []},
+    "comparison": {"status": "missing", "source_fact_ids": []},
+    "findings_authored_by_radiologist": {"status": "missing", "source_fact_ids": []},
+    "impression_authored_by_radiologist": {"status": "missing", "source_fact_ids": []},
+    "nonroutine_communication_record": {"status": "missing", "source_fact_ids": []},
+    "correction_or_addendum_linkage": {"status": "missing", "source_fact_ids": []}
+  },
+  "provenance_manifest": null,
+  "review": {
+    "qualified_radiologist_review": "pending",
+    "privacy_review": "pending",
+    "final_report_created_in_authorized_system": false,
+    "signature_present": false
+  }
+}

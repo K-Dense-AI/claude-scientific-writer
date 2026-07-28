@@ -1,428 +1,149 @@
-# Market Research Report Formatting Guide
+# Market Report Formatting Guide
 
-Quick reference for using the `market_research.sty` style package.
+Use formatting to expose evidence quality and uncertainty, not to make estimates
+look more certain. The bundled LaTeX files are optional; Markdown, HTML, DOCX, or
+another user-requested format is equally acceptable.
 
-## Color Palette
+## Information hierarchy
 
-### Primary Colors
-| Color Name | RGB | Hex | Usage |
-|------------|-----|-----|-------|
-| `primaryblue` | (0, 51, 102) | `#003366` | Headers, titles, links |
-| `secondaryblue` | (51, 102, 153) | `#336699` | Subsections, secondary elements |
-| `lightblue` | (173, 216, 230) | `#ADD8E6` | Key insight box backgrounds |
-| `accentblue` | (0, 120, 215) | `#0078D7` | Accent highlights, opportunity boxes |
+Use the following order within each analytical section:
 
-### Secondary Colors
-| Color Name | RGB | Hex | Usage |
-|------------|-----|-----|-------|
-| `accentgreen` | (0, 128, 96) | `#008060` | Market data boxes, positive indicators |
-| `lightgreen` | (200, 230, 201) | `#C8E6C9` | Market data box backgrounds |
-| `warningorange` | (255, 140, 0) | `#FF8C00` | Risk boxes, warnings |
-| `alertred` | (198, 40, 40) | `#C62828` | Critical risks |
-| `recommendpurple` | (103, 58, 183) | `#673AB7` | Recommendation boxes |
+1. finding or question;
+2. evidence and exact claim IDs;
+3. calculation or interpretation;
+4. assumptions and uncertainty;
+5. implication or decision threshold.
 
-### Neutral Colors
-| Color Name | RGB | Hex | Usage |
-|------------|-----|-----|-------|
-| `darkgray` | (66, 66, 66) | `#424242` | Body text |
-| `mediumgray` | (117, 117, 117) | `#757575` | Secondary text |
-| `lightgray` | (240, 240, 240) | `#F0F0F0` | Backgrounds, callout boxes |
-| `tablealt` | (245, 247, 250) | `#F5F7FA` | Alternating table rows |
+Keep these statement types visually and verbally distinct:
 
----
+- **Observed fact** — directly represented by cited evidence.
+- **Estimate** — a source's or analyst's uncertain estimate.
+- **Calculation** — deterministic result from listed inputs and formula.
+- **Scenario** — conditional result, not a prediction or confidence interval.
+- **Recommendation** — judgment based on findings and stated objectives.
 
-## Box Environments
+## Required labels for quantitative content
 
-### Key Insight Box (Blue)
-For major findings, insights, and important discoveries.
+Every quantitative table, figure, callout, or headline metric should show:
 
-```latex
-\begin{keyinsightbox}[Custom Title]
-The market is projected to grow at 15.3% CAGR through 2030, driven by
-increasing enterprise adoption and favorable regulatory conditions.
-\end{keyinsightbox}
-```
+- geography and coverage;
+- period or as-of date;
+- currency and base year when monetary;
+- nominal, real, current-price, constant-price, or chained basis;
+- stock, flow, count, share, rate, price, or index;
+- unit and denominator;
+- taxonomy and version when classifications define scope;
+- historical versus forecast status;
+- source IDs and calculation ID;
+- revision status and material limitations.
 
-### Market Data Box (Green)
-For market statistics, metrics, and data highlights.
+Do not combine differently defined values in one visual scale. Normalize them
+first and retain the conversion record.
 
-```latex
-\begin{marketdatabox}[Market Snapshot]
-\begin{itemize}
-    \item \textbf{Market Size (2024):} \marketsize{45.2 billion}
-    \item \textbf{Projected Size (2030):} \marketsize{98.7 billion}
-    \item \textbf{CAGR:} \growthrate{15.3}
-\end{itemize}
-\end{marketdatabox}
-```
+## Color and accessibility
 
-### Risk Box (Orange/Warning)
-For risk factors, warnings, and cautions.
+The style uses a restrained, colorblind-aware palette:
+
+- navy: structure and observed evidence;
+- teal: calculated values;
+- amber: assumptions or uncertainty;
+- red: limitations or unresolved conflicts;
+- gray: context and unavailable evidence.
+
+Never rely on color alone. Add labels, symbols, line styles, or direct
+annotations. Check grayscale legibility and reading order.
+
+## LaTeX usage
+
+Place `market_research.sty` next to the report and use:
 
 ```latex
-\begin{riskbox}[Market Risk]
-Regulatory changes in the European Union could impact 40% of market
-participants within the next 18 months.
-\end{riskbox}
+\documentclass[11pt]{report}
+\usepackage{market_research}
 ```
 
-### Critical Risk Box (Red)
-For high-severity or critical risks.
+The package provides:
 
 ```latex
-\begin{criticalriskbox}[Critical: Supply Chain Disruption]
-A major supply chain disruption could result in 6-12 month delays
-and 30% cost increases.
-\end{criticalriskbox}
+\begin{evidencebox}[Observed evidence]
+Claim C-014 maps to sources S-003 and S-011.
+\end{evidencebox}
+
+\begin{calculationbox}[Calculation CALC-007]
+Top-down and bottom-up estimates differ by 12.4\% of their midpoint.
+\end{calculationbox}
+
+\begin{assumptionbox}[Scenario assumptions]
+The upside case assumes faster adoption; it is not assigned a probability.
+\end{assumptionbox}
+
+\begin{limitationbox}[Material limitation]
+The source series was revised after the original retrieval date.
+\end{limitationbox}
 ```
 
-### Recommendation Box (Purple)
-For strategic recommendations and action items.
+The compatibility aliases `keyinsightbox`, `marketdatabox`, `riskbox`,
+`recommendationbox`, and `calloutbox` remain available for existing reports,
+but prefer the evidence-specific environments above.
 
-```latex
-\begin{recommendationbox}[Strategic Recommendation]
-\begin{enumerate}
-    \item Prioritize market entry in Asia-Pacific region
-    \item Develop strategic partnerships with local distributors
-    \item Invest in localization of product offerings
-\end{enumerate}
-\end{recommendationbox}
-```
+## Tables
 
-### Callout Box (Gray)
-For definitions, notes, and supplementary information.
+Put units in column headers and scope in the caption. Do not mix percentages and
+currency on a single unlabelled axis.
 
-```latex
-\begin{calloutbox}[Definition: TAM]
-Total Addressable Market (TAM) represents the total revenue opportunity
-available if 100% market share was achieved.
-\end{calloutbox}
-```
-
-### Executive Summary Box
-Special styling for executive summary highlights.
-
-```latex
-\begin{executivesummarybox}[Executive Summary]
-Key findings and highlights of the report...
-\end{executivesummarybox}
-```
-
-### Opportunity Box (Teal/Accent Blue)
-For opportunities and positive findings.
-
-```latex
-\begin{opportunitybox}[Growth Opportunity]
-The Asia-Pacific market represents a \$15 billion opportunity
-growing at 22% CAGR.
-\end{opportunitybox}
-```
-
-### Framework Boxes
-For strategic analysis frameworks.
-
-```latex
-% SWOT Analysis
-\begin{swotbox}[SWOT Analysis Summary]
-Content...
-\end{swotbox}
-
-% Porter's Five Forces
-\begin{porterbox}[Porter's Five Forces Analysis]
-Content...
-\end{porterbox}
-```
-
----
-
-## Pull Quotes
-
-For highlighting important statistics or quotes.
-
-```latex
-\begin{pullquote}
-"The convergence of AI and healthcare represents a \$199 billion
-opportunity by 2034."
-\end{pullquote}
-```
-
----
-
-## Stat Boxes
-
-For highlighting key statistics (use in rows of 3).
-
-```latex
-\begin{center}
-\statbox{\$45.2B}{Market Size 2024}
-\statbox{15.3\%}{CAGR 2024-2030}
-\statbox{23\%}{Market Leader Share}
-\end{center}
-```
-
----
-
-## Custom Commands
-
-### Highlighting Text
-```latex
-\highlight{Important text}  % Blue bold
-```
-
-### Market Size Formatting
-```latex
-\marketsize{45.2 billion}   % Outputs: $45.2 billion in green
-```
-
-### Growth Rate Formatting
-```latex
-\growthrate{15.3}           % Outputs: 15.3% in green
-```
-
-### Risk Indicators
-```latex
-\riskhigh{}     % Outputs: HIGH in red
-\riskmedium{}   % Outputs: MEDIUM in orange
-\risklow{}      % Outputs: LOW in green
-```
-
-### Rating Stars (1-5)
-```latex
-\rating{4}      % Outputs: ★★★★☆
-```
-
-### Trend Indicators
-```latex
-\trendup{}      % Green up triangle
-\trenddown{}    % Red down triangle
-\trendflat{}    % Gray right arrow
-```
-
----
-
-## Table Formatting
-
-### Standard Table with Alternating Rows
 ```latex
 \begin{table}[htbp]
 \centering
-\caption{Market Size by Region}
-\begin{tabular}{@{}lrrr@{}}
+\caption{Conditional market-size scenarios, Exampleland, nominal 2025 USD/year}
+\begin{tabular}{@{}lrrrl@{}}
 \toprule
-\textbf{Region} & \textbf{Size} & \textbf{Share} & \textbf{CAGR} \\
+Scenario & TAM & SAM & SOM & Evidence \\
 \midrule
-North America & \$18.2B & 40.3\% & 12.5\% \\
-\rowcolor{tablealt} Europe & \$12.1B & 26.8\% & 14.2\% \\
-Asia-Pacific & \$10.5B & 23.2\% & 18.7\% \\
-\rowcolor{tablealt} Rest of World & \$4.4B & 9.7\% & 11.3\% \\
-\midrule
-\textbf{Total} & \textbf{\$45.2B} & \textbf{100\%} & \textbf{15.3\%} \\
-\bottomrule
-\end{tabular}
-\label{tab:regional}
-\end{table}
-```
-
-### Table with Trend Indicators
-```latex
-\begin{tabular}{@{}lrrl@{}}
-\toprule
-\textbf{Company} & \textbf{Revenue} & \textbf{Share} & \textbf{Trend} \\
-\midrule
-Company A & \$5.2B & 15.3\% & \trendup{} +12\% \\
-Company B & \$4.8B & 14.1\% & \trenddown{} -3\% \\
-Company C & \$4.2B & 12.4\% & \trendflat{} +1\% \\
-\bottomrule
-\end{tabular}
-```
-
----
-
-## Figure Formatting
-
-### Standard Figure
-```latex
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.9\textwidth]{../figures/market_growth.png}
-\caption{Market Growth Trajectory (2020-2030)}
-\label{fig:growth}
-\end{figure}
-```
-
-### Figure with Source Attribution
-```latex
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.85\textwidth]{../figures/market_share.png}
-\caption{Market Share Distribution (2024)}
-\figuresource{Company annual reports, industry analysis}
-\label{fig:market_share}
-\end{figure}
-```
-
----
-
-## List Formatting
-
-### Bullet Lists
-```latex
-\begin{itemize}
-    \item First item with automatic blue bullet
-    \item Second item
-    \item Third item
-\end{itemize}
-```
-
-### Numbered Lists
-```latex
-\begin{enumerate}
-    \item First item with blue number
-    \item Second item
-    \item Third item
-\end{enumerate}
-```
-
-### Nested Lists
-```latex
-\begin{itemize}
-    \item Main point
-    \begin{itemize}
-        \item Sub-point A
-        \item Sub-point B
-    \end{itemize}
-    \item Another main point
-\end{itemize}
-```
-
----
-
-## Title Page
-
-### Using the Custom Title Command
-```latex
-\makemarketreporttitle
-    {Market Title}              % Report title
-    {Subtitle Here}             % Subtitle
-    {../figures/cover.png}      % Hero image (leave empty for no image)
-    {January 2025}              % Date
-    {Market Intelligence Team}  % Author/prepared by
-```
-
-### Manual Title Page
-See the template for full manual title page code.
-
----
-
-## Appendix Sections
-
-```latex
-\appendix
-
-\chapter{Methodology}
-
-\appendixsection{Data Sources}
-Content that appears in table of contents...
-```
-
----
-
-## Common Patterns
-
-### Market Snapshot Section
-```latex
-\begin{marketdatabox}[Market Snapshot]
-\begin{itemize}
-    \item \textbf{Current Market Size:} \marketsize{45.2 billion}
-    \item \textbf{Projected Size (2030):} \marketsize{98.7 billion}
-    \item \textbf{CAGR:} \growthrate{15.3}
-    \item \textbf{Largest Segment:} Enterprise (42\% share)
-    \item \textbf{Fastest Growing Region:} APAC (\growthrate{22.1} CAGR)
-\end{itemize}
-\end{marketdatabox}
-```
-
-### Risk Register Summary
-```latex
-\begin{table}[htbp]
-\centering
-\caption{Risk Assessment Summary}
-\begin{tabular}{@{}llccl@{}}
-\toprule
-\textbf{Risk} & \textbf{Category} & \textbf{Prob.} & \textbf{Impact} & \textbf{Rating} \\
-\midrule
-Market disruption & Market & High & High & \riskhigh{} \\
-\rowcolor{tablealt} Regulatory change & Regulatory & Med & High & \riskhigh{} \\
-New entrant & Competitive & Med & Med & \riskmedium{} \\
-\rowcolor{tablealt} Tech obsolescence & Technology & Low & High & \riskmedium{} \\
-Currency fluctuation & Financial & Med & Low & \risklow{} \\
+Downside & [value] & [value] & [value] & S-001; S-004 \\
+Base     & [value] & [value] & [value] & S-001; S-004 \\
+Upside   & [value] & [value] & [value] & S-001; S-004 \\
 \bottomrule
 \end{tabular}
 \end{table}
 ```
 
-### Competitive Comparison Table
+Use `unknown` rather than a zero when evidence is missing. Explain suppression,
+rounding, residual categories, and totals that do not add because of chain
+weighting or independent seasonal adjustment.
+
+## Optional figures
+
+Figures are optional and should be created only when they improve
+understanding. A figure caption must identify:
+
 ```latex
-\begin{table}[htbp]
-\centering
-\caption{Competitive Comparison}
-\begin{tabular}{@{}lccccc@{}}
-\toprule
-\textbf{Factor} & \textbf{Co. A} & \textbf{Co. B} & \textbf{Co. C} & \textbf{Co. D} \\
-\midrule
-Market Share & \rating{5} & \rating{4} & \rating{3} & \rating{2} \\
-\rowcolor{tablealt} Product Quality & \rating{4} & \rating{5} & \rating{3} & \rating{4} \\
-Price Competitiveness & \rating{3} & \rating{3} & \rating{5} & \rating{4} \\
-\rowcolor{tablealt} Innovation & \rating{5} & \rating{4} & \rating{2} & \rating{3} \\
-Customer Service & \rating{4} & \rating{4} & \rating{4} & \rating{5} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\caption{Scenario range by year. Nominal 2025 USD/year; Exampleland;
+historical through 2025 and conditional scenarios thereafter.
+Sources: S-001, S-004. Calculation: CALC-FCST-002.}
 ```
 
----
+Never use decorative imagery as evidence. Never infer market share from logo
+size, search rank, or an unlabelled generated graphic.
 
-## Troubleshooting
+## Citations
 
-### Box Overflow
-If box content overflows the page, break into multiple boxes or use page breaks:
-```latex
-\newpage
-\begin{keyinsightbox}[Continued...]
+Use stable source IDs in the report body and a complete evidence ledger in the
+appendix. A suggested compact notation is:
+
+```text
+The published count increased after the latest revision [C-014; S-003].
 ```
 
-### Figure Placement
-Use `[htbp]` for flexible placement, or `[H]` (requires `float` package) for exact placement:
-```latex
-\begin{figure}[H]  % Requires \usepackage{float}
-```
+The bibliography entry alone is not enough: the claims ledger must map each
+claim to the exact source record, retrieval date, and applicable calculation or
+assumption IDs.
 
-### Table Too Wide
-Use `\resizebox` or `adjustbox`:
-```latex
-\resizebox{\textwidth}{!}{
-\begin{tabular}{...}
-...
-\end{tabular}
-}
-```
+## Final checks
 
-### Color Not Appearing
-Ensure `xcolor` package is loaded with `[table]` option (already included in style file).
-
----
-
-## Compilation
-
-Compile with XeLaTeX for best results:
-```bash
-xelatex report.tex
-bibtex report
-xelatex report.tex
-xelatex report.tex
-```
-
-Or use latexmk:
-```bash
-latexmk -xelatex report.tex
-```
+- No placeholder numbers or unsupported precision remain.
+- Forecasts and TAM/SAM/SOM are visibly labeled as scenarios.
+- Observed and forecast periods are visually separated.
+- All monetary content states currency, base year, and price basis.
+- Every table and optional figure has source and calculation IDs.
+- Unknowns, conflicts, revisions, and limitations are visible.
+- Layout does not imply endorsement, legal advice, or investment advice.

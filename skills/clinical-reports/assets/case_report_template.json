@@ -1,0 +1,43 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "case_report_draft",
+  "draft_status": "BLOCKED_INCOMPLETE_DRAFT_NOT_FOR_CLINICAL_USE_OR_SUBMISSION",
+  "safety_notice": "Populate only from verified authorized synthetic or de-identified source facts. Do not infer clinical content. Qualified clinical, privacy, legal, authorship, and journal review is required.",
+  "data_classification": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "provenance_manifest": null,
+  "guidance": {
+    "name": "CARE",
+    "checklist_version": "2013",
+    "explanation_version": "2017",
+    "target_journal_instructions_checked": false
+  },
+  "care_items": {
+    "title": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "key_words": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "abstract": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "introduction": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "patient_information": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "clinical_findings": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "timeline": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "diagnostic_assessment": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "therapeutic_intervention": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "follow_up_and_outcomes": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "discussion": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "patient_perspective": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "informed_consent": {"status": "missing", "source_fact_ids": [], "rationale": null}
+  },
+  "privacy": {
+    "deidentification_process_record": null,
+    "publication_consent_record": null,
+    "image_or_media_included": false,
+    "reidentification_risk_reviewed": false
+  },
+  "review": {
+    "qualified_clinical_review": "pending",
+    "privacy_legal_review": "pending",
+    "accountable_author_review": "pending",
+    "submission_authorized": false
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "profile_id": "REPLACE_WITH_PROFILE_ID",
+  "title": "Human-Judged GRADE Evidence Profile",
+  "data_level": "published_aggregate_evidence",
+  "human_judgments_required": true,
+  "auto_grade": false,
+  "intended_use": "Research evidence synthesis and panel documentation only.",
+  "prohibited_uses": [
+    "No automatic evidence grade or recommendation strength.",
+    "No patient-specific diagnosis, treatment recommendation, dosing, triage, alarm, or autonomous decision.",
+    "No claim of clinical, regulatory, legal, or HIPAA compliance."
+  ],
+  "limitations": [
+    "No certainty judgment is inferred from text or study design.",
+    "Certainty is outcome-specific.",
+    "Recommendation development requires a separate human Evidence-to-Decision process."
+  ],
+  "human_review": {
+    "required": true,
+    "roles": [
+      "systematic-review methodologist",
+      "domain expert",
+      "GRADE panel chair"
+    ],
+    "completed": false
+  },
+  "governance": {
+    "version": "0.1-draft",
+    "owner": "REPLACE_WITH_EVIDENCE_PROFILE_OWNER_ROLE",
+    "change_summary": "Initial unresolved template.",
+    "auditability": "Retain searches, selection decisions, source versions, domain judgments, disagreements, and approvals.",
+    "update_plan": "Define surveillance, update triggers, supersession, and retirement."
+  },
+  "question": {
+    "population": "REPLACE_WITH_DEFINED_POPULATION",
+    "intervention_or_exposure": "REPLACE_WITH_INTERVENTION_OR_EXPOSURE",
+    "comparator": "REPLACE_WITH_COMPARATOR",
+    "setting": "REPLACE_WITH_SETTING",
+    "outcomes": [
+      "REPLACE_WITH_IMPORTANT_OUTCOME_AND_TIME_HORIZON"
+    ]
+  },
+  "sources": [
+    {
+      "id": "SRC-001",
+      "citation": "REPLACE_WITH_FULL_CITATION",
+      "url": "REPLACE_WITH_CANONICAL_URL",
+      "accessed": "YYYY-MM-DD"
+    }
+  ],
+  "outcomes": [
+    {
+      "name": "REPLACE_WITH_OUTCOME",
+      "importance": "critical",
+      "effect_measure": "REPLACE_WITH_EFFECT_MEASURE",
+      "effect_estimate": "REPLACE_WITH_ABSOLUTE_AND_RELATIVE_EFFECTS",
+      "uncertainty_interval": "REPLACE_WITH_INTERVAL",
+      "participants": "REPLACE_WITH_NUMBER_AND_ANALYSIS_POPULATION",
+      "studies": "REPLACE_WITH_NUMBER_AND_DESIGNS",
+      "time_horizon": "REPLACE_WITH_TIME_HORIZON",
+      "domains": {
+        "risk_of_bias": {
+          "judgment": "unassessed",
+          "rationale": "REQUIRES_HUMAN_JUDGMENT",
+          "reviewer_role": "REPLACE_WITH_REVIEWER_ROLE",
+          "source_ids": [
+            "SRC-001"
+          ]
+        },
+        "inconsistency": {
+          "judgment": "unassessed",
+          "rationale": "REQUIRES_HUMAN_JUDGMENT",
+          "reviewer_role": "REPLACE_WITH_REVIEWER_ROLE",
+          "source_ids": [
+            "SRC-001"
+          ]
+        },
+        "indirectness": {
+          "judgment": "unassessed",
+          "rationale": "REQUIRES_HUMAN_JUDGMENT",
+          "reviewer_role": "REPLACE_WITH_REVIEWER_ROLE",
+          "source_ids": [
+            "SRC-001"
+          ]
+        },
+        "imprecision": {
+          "judgment": "unassessed",
+          "rationale": "REQUIRES_HUMAN_JUDGMENT",
+          "reviewer_role": "REPLACE_WITH_REVIEWER_ROLE",
+          "source_ids": [
+            "SRC-001"
+          ]
+        },
+        "publication_bias": {
+          "judgment": "unassessed",
+          "rationale": "REQUIRES_HUMAN_JUDGMENT",
+          "reviewer_role": "REPLACE_WITH_REVIEWER_ROLE",
+          "source_ids": [
+            "SRC-001"
+          ]
+        }
+      },
+      "upgrading": {
+        "large_effect": {
+          "judgment": "unassessed",
+          "rationale": "REQUIRES_HUMAN_JUDGMENT",
+          "source_ids": []
+        },
+        "dose_response": {
+          "judgment": "unassessed",
+          "rationale": "REQUIRES_HUMAN_JUDGMENT",
+          "source_ids": []
+        },
+        "residual_confounding": {
+          "judgment": "unassessed",
+          "rationale": "REQUIRES_HUMAN_JUDGMENT",
+          "source_ids": []
+        }
+      },
+      "certainty": {
+        "human_judgment": false,
+        "level": "unassessed",
+        "rationale": "REQUIRES_HUMAN_PANEL_JUDGMENT",
+        "reviewer_role": "REPLACE_WITH_PANEL_ROLE",
+        "judgment_date": "YYYY-MM-DD",
+        "source_ids": [
+          "SRC-001"
+        ]
+      }
+    }
+  ],
+  "profile_review": {
+    "prepared_by_role": "REPLACE_WITH_ROLE",
+    "reviewed_by_role": "REPLACE_WITH_ROLE",
+    "review_date": "YYYY-MM-DD",
+    "completed": false
+  }
+}

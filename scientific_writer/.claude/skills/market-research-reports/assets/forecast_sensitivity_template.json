@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "series_id": "synthetic-annual-market-spend",
+    "description": "Synthetic annual end-customer spend",
+    "geography": "Exampleland",
+    "currency": "USD",
+    "base_year": "2025",
+    "price_basis": "nominal",
+    "unit": "USD per year",
+    "measure_type": "flow",
+    "as_of_date": "2026-07-23",
+    "source_ids": [
+      "S-001",
+      "S-002"
+    ]
+  },
+  "start_year": 2025,
+  "start_value": 100000000,
+  "horizon_years": 5,
+  "scenarios": [
+    {
+      "scenario_id": "downside",
+      "label": "Downside",
+      "annual_growth_rates": [
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.02
+      ],
+      "source_ids": [
+        "S-001",
+        "S-002"
+      ],
+      "assumptions": [
+        "Demand grows slowly",
+        "No change to the market denominator"
+      ]
+    },
+    {
+      "scenario_id": "base",
+      "label": "Base",
+      "annual_growth_rates": [
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05
+      ],
+      "source_ids": [
+        "S-001",
+        "S-002"
+      ],
+      "assumptions": [
+        "Demand follows the documented synthetic baseline",
+        "Price basis remains nominal 2025 USD"
+      ]
+    },
+    {
+      "scenario_id": "upside",
+      "label": "Upside",
+      "annual_growth_rates": [
+        0.08,
+        0.08,
+        0.08,
+        0.08,
+        0.08
+      ],
+      "source_ids": [
+        "S-001",
+        "S-002"
+      ],
+      "assumptions": [
+        "Adoption accelerates",
+        "No probability is assigned to this scenario"
+      ]
+    }
+  ],
+  "sensitivity": {
+    "base_scenario_id": "base",
+    "growth_rate_shifts": [
+      -0.02,
+      -0.01,
+      0,
+      0.01,
+      0.02
+    ]
+  }
+}

@@ -4,7 +4,7 @@ AI-powered scientific schematic generation using Nano Banana 2.
 
 This script uses a smart iterative refinement approach:
 1. Generate initial image with Nano Banana 2
-2. AI quality review using Gemini 3.1 Pro Preview for scientific critique
+2. AI quality review using Gemini 3.6 Flash for scientific critique
 3. Only regenerate if quality is below threshold for document type
 4. Repeat until quality meets standards (max iterations)
 
@@ -52,7 +52,7 @@ def _load_env_file():
 class ScientificSchematicGenerator:
     """Generate scientific schematics using AI with smart iterative refinement.
     
-    Uses Gemini 3.1 Pro Preview for quality review to determine if regeneration is needed.
+    Uses Gemini 3.6 Flash for quality review to determine if regeneration is needed.
     Multiple passes only occur if the generated schematic doesn't meet the
     quality threshold for the target document type.
     """
@@ -145,10 +145,10 @@ IMPORTANT - NO FIGURE NUMBERS:
         self._last_error = None  # Track last error for better reporting
         self.base_url = "https://openrouter.ai/api/v1"
         # Nano Banana 2 - Google's advanced image generation model
-        # https://openrouter.ai/google/gemini-3-pro-image-preview
+        # https://openrouter.ai/google/gemini-3.6-flash
         self.image_model = "google/gemini-3.1-flash-image-preview"
-        # Gemini 3.1 Pro Preview for quality review - excellent vision and reasoning
-        self.review_model = "google/gemini-3.1-pro-preview"
+        # Gemini 3.6 Flash for quality review - excellent vision and reasoning
+        self.review_model = "google/gemini-3.6-flash"
         
     def _log(self, message: str):
         """Log message if verbose mode is enabled."""
@@ -400,9 +400,9 @@ IMPORTANT - NO FIGURE NUMBERS:
                     iteration: int, doc_type: str = "default",
                     max_iterations: int = 2) -> Tuple[str, float, bool]:
         """
-        Review generated image using Gemini 3.1 Pro Preview for quality analysis.
+        Review generated image using Gemini 3.6 Flash for quality analysis.
         
-        Uses Gemini 3.1 Pro Preview's superior vision and reasoning capabilities to
+        Uses Gemini 3.6 Flash's superior vision and reasoning capabilities to
         evaluate the schematic quality and determine if regeneration is needed.
         
         Args:
@@ -415,7 +415,7 @@ IMPORTANT - NO FIGURE NUMBERS:
         Returns:
             Tuple of (critique text, quality score 0-10, needs_improvement bool)
         """
-        # Use Gemini 3.1 Pro Preview for review - excellent vision and analysis
+        # Use Gemini 3.6 Flash for review - excellent vision and analysis
         image_data_url = self._image_to_base64(image_path)
         
         # Get quality threshold for this document type
@@ -491,7 +491,7 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
         ]
         
         try:
-            # Use Gemini 3.1 Pro Preview for high-quality review
+            # Use Gemini 3.6 Flash for high-quality review
             response = self._make_request(
                 model=self.review_model,
                 messages=messages
@@ -656,8 +656,8 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
                 f.write(image_data)
             print(f"✓ Saved: {iter_path}")
             
-            # Review image using Gemini 3.1 Pro Preview
-            print(f"Reviewing image with Gemini 3.1 Pro Preview...")
+            # Review image using Gemini 3.6 Flash
+            print(f"Reviewing image with Gemini 3.6 Flash...")
             critique, score, needs_improvement = self.review_image(
                 str(iter_path), user_prompt, i, doc_type, iterations
             )

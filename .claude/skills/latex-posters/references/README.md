@@ -145,6 +145,28 @@ Templates support all standard sizes:
    - Figure integration and captions
    - From paper to poster adaptation
 
+5. **`ai_graphics_for_posters.md`**
+   - Hard limits on elements, words, white space, and font sizes
+   - Per-graphic-type content limits with worked before/after prompts
+   - The mandatory pre- and post-generation review gates
+   - Patterns that always fail, and how to split them
+
+6. **`latex_poster_reference.md`**
+   - Package selection, layout, and standard poster sizes
+   - Figure and image integration, QR codes
+   - Color schemes and typography
+
+7. **`compilation_and_quality_control.md`**
+   - Compilation engines and bibliography handling
+   - Page-size verification and overflow detection
+   - Reduced-scale test prints, font embedding, image DPI, file size
+   - Log-warning triage
+
+8. **`poster_patterns_and_presentation.md`**
+   - Reusable content patterns per poster section
+   - Accessibility and inclusive design
+   - Presentation-day guidance
+
 ### Tools and Assets
 
 **Scripts** (in `scripts/`):

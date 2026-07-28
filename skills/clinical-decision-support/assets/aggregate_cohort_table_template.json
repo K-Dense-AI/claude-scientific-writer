@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "table_id": "SYNTHETIC-COHORT-TABLE-001",
+    "title": "Synthetic Aggregate Cohort Summary",
+    "purpose": "Demonstrate descriptive aggregate table generation with disclosure controls.",
+    "population": "Synthetic cohort only; no real persons or records.",
+    "data_cut_date": "2026-07-23",
+    "data_level": "synthetic",
+    "raw_rows_supplied": false,
+    "patient_care_use": false,
+    "disclosure_policy": "Synthetic demonstration using an operational minimum cell size and complementary suppression.",
+    "human_review": "A data steward and statistician must review any non-synthetic release."
+  },
+  "intended_use": "Research description only; not for patient care or live clinical use.",
+  "prohibited_uses": [
+    "No diagnosis, treatment recommendation, dosing, triage, alarm, or autonomous decision.",
+    "No row-level or person-level output.",
+    "No claim that suppression establishes de-identification or HIPAA compliance."
+  ],
+  "limitations": [
+    "All values are synthetic.",
+    "Cell thresholds do not address every linkage or differencing risk.",
+    "Descriptive differences do not establish causality or clinical importance."
+  ],
+  "human_review": {
+    "required": true,
+    "roles": [
+      "statistician",
+      "data steward",
+      "privacy reviewer"
+    ],
+    "completed": false
+  },
+  "governance": {
+    "version": "synthetic-v1",
+    "owner": "research data governance owner",
+    "change_summary": "Initial synthetic aggregate template.",
+    "auditability": "Retain aggregate provenance, disclosure settings, code version, and reviewer decisions.",
+    "monitoring": "Review new releases for differencing, rare combinations, and changed denominators."
+  },
+  "groups": [
+    {
+      "id": "A",
+      "label": "Synthetic Group A",
+      "n": 120
+    },
+    {
+      "id": "B",
+      "label": "Synthetic Group B",
+      "n": 120
+    }
+  ],
+  "rows": [
+    {
+      "label": "Aggregate characteristics",
+      "type": "header"
+    },
+    {
+      "label": "Synthetic measure, units",
+      "type": "continuous",
+      "values": {
+        "A": {
+          "n": 120,
+          "missing": 0,
+          "summary": "median 52; quartiles 44 to 61"
+        },
+        "B": {
+          "n": 120,
+          "missing": 0,
+          "summary": "median 50; quartiles 42 to 60"
+        }
+      }
+    },
+    {
+      "label": "Synthetic category",
+      "type": "header"
+    },
+    {
+      "label": "Synthetic category",
+      "level": "Category 1",
+      "type": "categorical",
+      "values": {
+        "A": {
+          "count": 54,
+          "denominator": 120,
+          "missing": 0
+        },
+        "B": {
+          "count": 63,
+          "denominator": 120,
+          "missing": 0
+        }
+      }
+    },
+    {
+      "label": "Synthetic category",
+      "level": "Rare synthetic category",
+      "type": "categorical",
+      "values": {
+        "A": {
+          "count": 7,
+          "denominator": 120,
+          "missing": 0
+        },
+        "B": {
+          "count": 15,
+          "denominator": 120,
+          "missing": 0
+        }
+      }
+    }
+  ]
+}

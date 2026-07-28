@@ -1,0 +1,51 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "clinical_study_report_draft",
+  "draft_status": "BLOCKED_INCOMPLETE_DRAFT_NOT_FOR_FILING_OR_SUBMISSION",
+  "safety_notice": "Populate only from verified aggregate trial outputs and authorized source-fact manifests. Do not invent analyses, efficacy, safety, conclusions, or appendices. Qualified medical, statistical, safety, privacy, quality, and regulatory review is required.",
+  "data_classification": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "guidance": {
+    "base": "ICH E3",
+    "base_version": "Step 4 1995-11-30",
+    "qa_version": "R1 2012-07-06",
+    "gcp_version_considered": "ICH E6(R3) consolidated 2026-06-16",
+    "regional_adoption_verified": false
+  },
+  "study_metadata": {
+    "protocol_reference": null,
+    "sap_reference": null,
+    "data_cut_reference": null,
+    "analysis_output_reference": null,
+    "coding_dictionary_versions": []
+  },
+  "sections": {
+    "title_page": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "synopsis": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "table_of_contents": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "abbreviations_and_definitions": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "ethics": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "investigators_and_administration": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "introduction": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "study_objectives": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "investigational_plan": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "study_patients": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "efficacy_evaluation": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "safety_evaluation": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "discussion_and_conclusions": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "tables_figures_graphs_not_in_text": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "reference_list": {"status": "missing", "source_fact_ids": [], "rationale": null},
+    "appendices": {"status": "missing", "source_fact_ids": [], "rationale": null}
+  },
+  "provenance_manifest": null,
+  "review": {
+    "medical_review": "pending",
+    "statistical_review": "pending",
+    "safety_review": "pending",
+    "privacy_legal_review": "pending",
+    "quality_review": "pending",
+    "regulatory_review": "pending",
+    "submission_authorized": false
+  }
+}

@@ -1,358 +1,192 @@
-# Research Poster Quality Checklist
+# PPTX poster release checklist
 
-Use this comprehensive checklist before printing or presenting your research poster.
+Use this checklist for the final generated package and every exported/printed
+derivative. A script pass is necessary but not sufficient.
 
-## Pre-Compilation Checks
+## 1. Requirements and approval
 
-### Content Completeness
-- [ ] Title is concise and descriptive (10-15 words)
-- [ ] All author names spelled correctly
-- [ ] Affiliations complete and accurate
-- [ ] Contact email address included
-- [ ] All sections present: Introduction, Methods, Results, Conclusions
-- [ ] References cited (5-10 key citations)
-- [ ] Acknowledgments included (funding, collaborators)
-- [ ] No placeholder text remaining (TODO, Lorem ipsum, etc.)
+- [ ] The organizer's current poster rule is recorded with an exact source ID.
+- [ ] The printer's current trim, bleed, safe-margin, scaling, file-format, and
+      color requirements are recorded with an exact source ID.
+- [ ] The selected physical trim size and orientation comply with those records.
+- [ ] No generic "standard poster size" was substituted for organizer/printer rules.
+- [ ] Every claim, number, citation, author name, affiliation, logo, figure, and
+      asset license has an exact source ID.
+- [ ] Every source record is marked author-verified.
+- [ ] Every element and asset is marked author-approved.
+- [ ] No placeholder, sample claim, invented citation, or inferred result remains.
+- [ ] The approving author reviewed the canonical content hash after the final edit.
 
-### Visual Content
-- [ ] All figures prepared and high resolution (300+ DPI)
-- [ ] Figure captions written and descriptive
-- [ ] Logos available (university, funding agencies)
-- [ ] QR codes generated and tested
-- [ ] Icons/graphics sourced (if used)
+Run:
 
-### LaTeX Configuration
-- [ ] Correct paper size specified (A0, A1, 36×48", etc.)
-- [ ] Correct orientation (portrait/landscape)
-- [ ] Minimal margins configured (5-15mm)
-- [ ] Font sizes appropriate (title 72pt+, body 24pt+)
-- [ ] Color scheme defined
-- [ ] All packages installed and working
-
-## Compilation Checks
-
-### Successful Compilation
-- [ ] PDF compiles without errors
-- [ ] No critical warnings in .log file
-- [ ] All citations resolved (no [?] marks)
-- [ ] All cross-references working
-- [ ] Bibliography generated correctly (if using BibTeX)
-
-### Warning Review
-Run in terminal: `grep -i "warning\|overfull\|underfull" poster.log`
-
-- [ ] No overfull hbox warnings (text too wide)
-- [ ] No underfull hbox warnings (excessive spacing)
-- [ ] No missing figure warnings
-- [ ] No missing font warnings
-- [ ] No undefined reference warnings
-
-## PDF Quality Checks
-
-### Automated Checks
-
-Run: `./scripts/review_poster.sh poster.pdf` or manually verify:
-
-#### Page Specifications
 ```bash
-pdfinfo poster.pdf | grep "Page size"
+python -B scripts/validate_manifest.py poster.json
 ```
-- [ ] Page size matches requirements exactly
-- [ ] Single page document (not multi-page)
-- [ ] Correct orientation
 
-#### Font Embedding
+## 2. Safe local generation
+
+- [ ] Generation used the exact versions in `generation_dependencies.json`.
+- [ ] All optional image paths are manifest-relative local PNG/JPEG files.
+- [ ] Every asset hash matches.
+- [ ] Every asset has exact provenance and a license/permission statement.
+- [ ] No template file, remote image, URL download, API key, environment file,
+      image-generation service, or network service was used.
+- [ ] The output path was new; no existing file was replaced.
+- [ ] The generated file is `.pptx`, never `.pptm`.
+
+Run:
+
 ```bash
-pdffonts poster.pdf
+uv run --with "python-pptx==1.0.2" --with "Pillow==12.3.0" \
+  --with "lxml==6.1.1" \
+  python -B scripts/generate_poster.py poster.json --output poster.pptx
 ```
-- [ ] All fonts show "yes" in "emb" column
-- [ ] No bitmap fonts (should be Type 1 or TrueType)
 
-#### Image Quality
+## 3. PPTX package security
+
+- [ ] ZIP member names have no traversal, absolute paths, symlinks, duplicates,
+      encryption, oversized entries, or excessive expansion ratios.
+- [ ] The package has the standard macro-free PresentationML content type.
+- [ ] The package matches the strict generated one-slide part profile.
+- [ ] No VBA, ActiveX, OLE, embedded package, executable/binary payload, external
+      link part, or custom UI is present.
+- [ ] No relationship has `TargetMode="External"`.
+- [ ] No remotely linked image is present.
+- [ ] Internal relationship targets resolve to existing package parts.
+- [ ] The presentation was inspected as ZIP/XML and was not opened or executed by
+      the inspection script.
+
+Run:
+
 ```bash
-pdfimages -list poster.pdf
+python -B scripts/inspect_pptx.py poster.pptx
 ```
-- [ ] All images at least 300 DPI
-- [ ] No JPEG artifacts in figures
-- [ ] Vector graphics used where possible
 
-#### File Size
+Treat any package finding as a release blocker. Do not "fix" an untrusted package
+by opening it in PowerPoint.
+
+## 4. Dimensions, scale, bleed, and margins
+
+- [ ] PowerPoint canvas width and height are each in the current 1–56 inch range.
+- [ ] Final physical trim dimensions are recorded separately from canvas dimensions.
+- [ ] Final artboard dimensions include twice the confirmed bleed on each axis.
+- [ ] Canvas and final artboard have the same aspect ratio.
+- [ ] Uniform print scale is explicit; no nonuniform stretching is allowed.
+- [ ] Printer permission is recorded if final output is scaled from the PPTX canvas.
+- [ ] All non-bleed content stays inside the confirmed safe margin from the trim edge.
+- [ ] Full-bleed imagery reaches the artboard edge and does not move text into bleed.
+- [ ] A physical or contract proof confirms trim and bleed behavior.
+
+Run:
+
 ```bash
-ls -lh poster.pdf
+python -B scripts/plan_export.py poster.json
 ```
-- [ ] Reasonable size (2-50 MB typical)
-- [ ] Not too large for email (<50 MB) if sharing digitally
-- [ ] Not suspiciously small (<1 MB - may indicate low quality)
 
-## Visual Inspection (100% Zoom)
+## 5. Layout and typography
 
-### Layout and Spacing
-- [ ] Content fills entire page (no excessive white margins)
-- [ ] Consistent spacing between columns (1-2cm)
-- [ ] Consistent spacing between blocks (1-2cm)
-- [ ] All elements aligned to grid
-- [ ] No overlapping text or figures
-- [ ] White space evenly distributed (30-40% total)
-- [ ] Visual balance across poster (no heavy/empty areas)
+- [ ] No shape is out of bounds.
+- [ ] Every reported bounding-box overlap is either removed or documented as
+      intentional after visual inspection.
+- [ ] No text box visibly overflows, clips, wraps unexpectedly, or uses silent
+      auto-shrink.
+- [ ] Font sizes were assessed at final physical output, not only on the PPTX canvas.
+- [ ] The manifest labels its minimum-font value as a project heuristic or ties it
+      to an exact organizer/printer/source requirement.
+- [ ] Required fonts are available on the export workstation and printer workflow.
+- [ ] Font embedding rights and the chosen embed/not-embed workflow were reviewed;
+      the generator itself did not embed fonts.
+- [ ] Font substitution, equations, symbols, and scientific glyphs were checked.
+- [ ] Visual hierarchy and reading path remain clear at reduced-scale proof size.
 
-### Typography
-- [ ] Title readable and prominent (72-120pt)
-- [ ] Section headers clear (48-72pt)
-- [ ] Body text large enough (24-36pt minimum, 30pt+ recommended)
-- [ ] Captions readable (18-24pt)
-- [ ] No text running off edges
-- [ ] Consistent font usage throughout
-- [ ] Line spacing adequate (1.2-1.5×)
-- [ ] No awkward hyphenation or word breaks
-- [ ] All special characters render correctly (Greek, math symbols)
+Run:
 
-### Visual Elements
-- [ ] All figures display correctly
-- [ ] No pixelated or blurry images
-- [ ] Figure resolution high (zoom to 200% to verify)
-- [ ] Figure labels large and clear
-- [ ] Graph axes labeled with units
-- [ ] Color schemes consistent across figures
-- [ ] Legends readable and well-positioned
-- [ ] Logos crisp and professional
-- [ ] QR codes sharp and high-contrast (minimum 2×2cm)
-- [ ] No visual artifacts or rendering errors
+```bash
+python -B scripts/check_layout.py poster.pptx --manifest poster.json
+```
 
-### Colors
-- [ ] Colors render as intended (not washed out)
-- [ ] High contrast between text and background (≥4.5:1)
-- [ ] Color scheme harmonious
-- [ ] Colors appropriate for printing (not too bright/neon)
-- [ ] Institutional colors used correctly
-- [ ] Color-blind friendly palette (avoid red-green only)
+The checker cannot determine rendered overflow or font substitution; inspect those
+in PowerPoint and in the exported PDF.
 
-### Content
-- [ ] Title complete and correctly positioned
-- [ ] All author names and affiliations visible
-- [ ] All sections present and labeled
-- [ ] Results section has figures/data
-- [ ] Conclusions clearly stated
-- [ ] References formatted consistently
-- [ ] Contact information clearly visible
-- [ ] No missing content
+## 6. Raster images and assets
 
-## Reduced-Scale Print Test (CRITICAL)
+- [ ] Effective DPI is calculated from pixel dimensions divided by final placed
+      inches, not from file metadata.
+- [ ] Every placement meets the manifest's source-labeled or heuristic DPI threshold.
+- [ ] No image is stretched out of aspect ratio.
+- [ ] The final PDF and printer proof show no resampling artifacts.
+- [ ] Asset IDs, hashes, source IDs, provenance, permissions/licenses, and alt text are
+      in the inventory.
+- [ ] EXIF, XMP, comments, and embedded text/application metadata were stripped in
+      an author-reviewed offline workflow before hashing and approval.
+- [ ] Logos and images are authorized for this use.
 
-### Test Print Preparation
-Print poster at 25% scale:
-- A0 poster → Print on A4 paper
-- 36×48" poster → Print on Letter paper
-- A1 poster → Print on A5 paper
+Run:
 
-### Readability from Distance
+```bash
+python -B scripts/inventory_images.py poster.json \
+  --output poster.assets.json
+```
 
-**From 6 feet (2 meters):**
-- [ ] Title clearly readable
-- [ ] Authors identifiable
-- [ ] Main figures visible
+## 7. Color and graphical accessibility
 
-**From 4 feet (1.2 meters):**
-- [ ] Section headers readable
-- [ ] Figure captions readable
-- [ ] Key results visible
+- [ ] Normal text pairs meet WCAG 2.2 SC 1.4.3 at 4.5:1.
+- [ ] Large text pairs meet 3:1 only when final text is at least 18 pt, or at least
+      14 pt and bold.
+- [ ] Essential graphical objects meet the 3:1 non-text contrast screen where
+      WCAG 2.2 SC 1.4.11 is being used as the design target.
+- [ ] Information is never encoded by color alone.
+- [ ] Categories also use direct labels, shapes, markers, patterns, or line styles.
+- [ ] Palette selection is appropriate to data type: qualitative, sequential, or
+      diverging.
+- [ ] A grayscale/color-vision simulation is reviewed as a screen, not treated as
+      proof of accessibility.
+- [ ] A color proof confirms the printer's conversion and substrate behavior.
 
-**From 2 feet (0.6 meters):**
-- [ ] Body text readable
-- [ ] References readable
-- [ ] All details clear
+Run:
 
-### Print Quality
-- [ ] Colors accurate (match screen expectations)
-- [ ] No banding or color shifts
-- [ ] Sharp edges (not blurry)
-- [ ] Consistent print density
-- [ ] No printer artifacts
+```bash
+python -B scripts/check_palette.py poster.json
+```
 
-## Content Proofreading
+## 8. PowerPoint accessibility
 
-### Text Accuracy
-- [ ] Spell-checked all text
-- [ ] Grammar checked
-- [ ] All author names spelled correctly
-- [ ] All affiliations accurate
-- [ ] Email address correct
-- [ ] No typos in title or headers
+- [ ] Every picture has concise, accurate alt text that conveys purpose.
+- [ ] Complex figures have an approved source-bound native long description when alt
+      text and adjacent prose are insufficient.
+- [ ] Important text is native text, not only pixels inside an image.
+- [ ] The visible title is the native slide-title placeholder and text language is
+      correct.
+- [ ] The Reading Order pane matches the intended logical sequence.
+- [ ] The PowerPoint Accessibility Checker has no unresolved errors.
+- [ ] A keyboard and screen-reader pass confirms the actual reading order.
+- [ ] Text links have meaningful visible labels.
+- [ ] Every QR code has the exact destination URL in visible fallback text.
+- [ ] Each final printed QR code was tested with multiple devices.
+- [ ] Language, author names, acronyms, captions, and table alternatives are correct.
 
-### Scientific Accuracy
-- [ ] All numbers and statistics verified
-- [ ] Units included and correct
-- [ ] Statistical significance correctly indicated
-- [ ] Sample sizes (n=) reported
-- [ ] Figure numbering consistent
-- [ ] Citations accurate and complete
-- [ ] Methodology accurately described
-- [ ] Results match figures/data
-- [ ] Conclusions supported by data
+Automated XML inspection cannot certify these manual checks.
 
-### Consistency
-- [ ] Terminology consistent throughout
-- [ ] Abbreviations defined at first use
-- [ ] Consistent notation (italics for genes, etc.)
-- [ ] Consistent units (don't mix metric/imperial)
-- [ ] Consistent decimal places
-- [ ] Consistent citation format
+## 9. Export and print
 
-## Accessibility Checks
+- [ ] Export uses PowerPoint's Standard/high print quality, not Minimum size.
+- [ ] No audio, video, linked media, OLE, ActiveX, embedded file, or external
+      relationship was introduced after generation.
+- [ ] Exported PDF page size equals the final artboard expected by the printer.
+- [ ] Exported PDF is checked independently for tags, reading order, alt text,
+      links, fonts, clipping, image quality, and page dimensions.
+- [ ] RGB is distinguished from any printer-required CMYK conversion.
+- [ ] If CMYK is required, the printer-approved conversion/profile and proof are
+      complete; the native PowerPoint export is not represented as CMYK-compliant.
+- [ ] Conference file format, naming, file-size, and submission rules are met.
+- [ ] Printer deadline, substrate, mounting, delivery, and backup requirements are met.
 
-### Color Contrast
-Test at: https://webaim.org/resources/contrastchecker/
+## 10. Final sign-off
 
-- [ ] Title-background contrast ≥ 7:1
-- [ ] Body text-background contrast ≥ 4.5:1
-- [ ] All text meets WCAG AA standard minimum
-
-### Color Blindness
-Test with simulator: https://www.color-blindness.com/coblis-color-blindness-simulator/
-
-- [ ] Information not lost with deuteranopia (red-green)
-- [ ] Key distinctions visible with protanopia
-- [ ] Patterns/shapes used in addition to color
-- [ ] No critical info conveyed by color alone
-
-### Visual Clarity
-- [ ] Clear visual hierarchy (size, weight, position)
-- [ ] Logical reading order
-- [ ] Grouping of related elements obvious
-- [ ] Important info emphasized appropriately
-
-## Peer Review
-
-### 30-Second Test
-Show poster to colleague for 30 seconds, then ask:
-- [ ] They can identify the research topic
-- [ ] They can state the main finding
-- [ ] They remember the key figure
-
-### 5-Minute Review
-Ask colleague to read poster (5 minutes), then ask:
-- [ ] They understand the research question
-- [ ] They can explain the approach
-- [ ] They can summarize the conclusions
-- [ ] They identify what makes it novel/important
-
-### Feedback
-- [ ] Noted any confusing elements
-- [ ] Identified any unclear figures
-- [ ] Checked for jargon that needs definition
-- [ ] Verified logical flow
-
-## Pre-Printing Final Checks
-
-### Technical Specifications
-- [ ] PDF size exactly matches conference requirements
-- [ ] Orientation correct (portrait vs landscape)
-- [ ] All fonts embedded (verified with pdffonts)
-- [ ] Color space correct (RGB for screen, CMYK if printer requires)
-- [ ] Resolution adequate (300+ DPI for all images)
-- [ ] Bleed area added if required (typically 3-5mm)
-- [ ] Crop marks visible if required
-- [ ] File naming convention followed
-
-### Printer Communication
-- [ ] Confirmed paper type (matte vs glossy)
-- [ ] Confirmed poster size
-- [ ] Provided color profile if required
-- [ ] Verified delivery deadline
-- [ ] Confirmed shipping/pickup arrangements
-- [ ] Discussed backup plan if issues arise
-
-### Backup and Storage
-- [ ] PDF saved with clear filename: `LastName_Conference_Poster.pdf`
-- [ ] Source .tex file backed up
-- [ ] All figure files backed up
-- [ ] Copy saved to cloud storage
-- [ ] Copy saved on USB drive for conference
-- [ ] Digital version ready to email if requested
-
-## Digital Presentation Checks
-
-If presenting digitally or sharing online:
-
-### File Optimization
-- [ ] PDF compressed if >10MB (for email)
-- [ ] Test opens in Adobe Reader
-- [ ] Test opens in Preview (Mac)
-- [ ] Test opens in browser PDF viewers
-- [ ] Test on mobile devices
-
-### Interactive Elements
-- [ ] All QR codes tested and functional
-- [ ] QR codes link to correct URLs
-- [ ] Hyperlinks work (if included)
-- [ ] Links open in new tabs/windows appropriately
-
-### Alternative Formats
-- [ ] PNG version created for social media (if needed)
-- [ ] Thumbnail image created
-- [ ] Poster description/abstract prepared
-- [ ] Hashtags and social media text ready
-
-## Conference-Specific
-
-### Requirements Verification
-- [ ] Poster size matches conference specifications exactly
-- [ ] Orientation matches requirements
-- [ ] File format correct (usually PDF)
-- [ ] Submission deadline met
-- [ ] File naming convention followed
-- [ ] Abstract/description submitted if required
-
-### Physical Preparation
-- [ ] Poster printed and inspected
-- [ ] Backup printed copy prepared
-- [ ] Push pins/mounting materials ready
-- [ ] Poster tube or flat portfolio for transport
-- [ ] Business cards/handouts prepared
-- [ ] Digital backup on laptop/phone
-
-### Presentation Preparation
-- [ ] 30-second elevator pitch prepared
-- [ ] 2-minute summary prepared
-- [ ] 5-minute detailed explanation prepared
-- [ ] Anticipated questions considered
-- [ ] Follow-up materials ready (QR code to paper, etc.)
-
-## Final Sign-Off
-
-Date: ________________
-
-Poster Title: _______________________________________________
-
-Conference: _______________________________________________
-
-Reviewed by: _______________________________________________
-
-All critical items checked: [ ]
-
-Ready for printing: [ ]
-
-Ready for presentation: [ ]
-
-Notes/Issues to address:
-_________________________________________________________
-_________________________________________________________
-_________________________________________________________
-
----
-
-## Quick Reference: Common Issues
-
-| Issue | Quick Fix |
-|-------|-----------|
-| Large white margins | Reduce margin in documentclass: `margin=5mm` |
-| Text too small | Increase scale: `scale=1.5` in beamerposter |
-| Blurry figures | Use vector graphics (PDF) or higher resolution (600+ DPI) |
-| Colors wrong | Check RGB vs CMYK, test print before final |
-| Fonts not embedded | Compile with: `pdflatex -dEmbedAllFonts=true` |
-| Content cut off | Check total width: columns + spacing + margins = pagewidth |
-| QR codes don't scan | Increase size (min 2×2cm), ensure high contrast |
-| File too large | Compress: `gs -sDEVICE=pdfwrite -dPDFSETTINGS=/printer ...` |
-
-## Checklist Version
-Version 1.0 - For use with LaTeX poster packages (beamerposter, tikzposter, baposter)
-
+- [ ] Presenting/corresponding author approved all scientific content and citations.
+- [ ] Accessibility reviewer completed manual checks.
+- [ ] Printer or production contact approved dimensions, bleed, scale, and color.
+- [ ] The exact approved manifest, PPTX hash, asset inventory, audit reports, exported
+      PDF, and proof are retained together.
+- [ ] A final change triggers a new content hash, new author approval, regeneration,
+      re-export, and all checks again.

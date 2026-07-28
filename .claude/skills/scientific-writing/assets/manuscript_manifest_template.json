@@ -1,0 +1,37 @@
+{
+  "confidentiality_review": {
+    "completed": false,
+    "external_services_authorized": false,
+    "policy_checked": false,
+    "verified_by": "",
+    "verified_on": ""
+  },
+  "document_id": "draft-manuscript",
+  "draft_status": "draft",
+  "human_verification": {
+    "completed": false,
+    "verified_by": "",
+    "verified_on": ""
+  },
+  "registries": {
+    "authorship_manifest": "authorship.json",
+    "claim_evidence": "claims.csv",
+    "consistency_manifest": "consistency_manifest.json",
+    "reporting_coverage": "reporting_coverage.json",
+    "source_manifest": "source_manifest.json"
+  },
+  "reporting_guidelines": [],
+  "required_statements": {
+    "ai_disclosure": "missing",
+    "author_contributions": "missing",
+    "code_availability": "missing",
+    "conflicts": "missing",
+    "consent": "missing",
+    "data_availability": "missing",
+    "ethics": "missing",
+    "funding": "missing"
+  },
+  "schema_version": "1.0",
+  "study_design": "[[TODO:study-design]]",
+  "submission_ready": false
+}

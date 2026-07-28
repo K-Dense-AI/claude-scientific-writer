@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "report_id": "synthetic-widget-services",
+  "title": "Synthetic Widget Services Market",
+  "subtitle": "Evidence-first market assessment and scenario analysis",
+  "prepared_for": "Synthetic Example Organization",
+  "prepared_by": "Research Team",
+  "classification": "internal",
+  "market_definition": "Annual end-customer spend on synthetic widget services in Exampleland",
+  "inclusions": [
+    "Recurring synthetic widget service fees",
+    "Usage-based synthetic widget service fees"
+  ],
+  "exclusions": [
+    "Hardware purchases",
+    "Unrelated professional services"
+  ],
+  "geography": "Exampleland",
+  "currency": "USD",
+  "base_year": 2025,
+  "price_basis": "nominal",
+  "taxonomy": "EXAMPLE-INDUSTRY",
+  "taxonomy_version": "2026",
+  "historical_period": "2021-2025",
+  "forecast_period": "2026-2030",
+  "retrieval_cutoff": "2026-07-23"
+}

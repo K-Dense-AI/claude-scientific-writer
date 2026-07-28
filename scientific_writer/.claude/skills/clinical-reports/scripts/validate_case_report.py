@@ -1,334 +1,278 @@
 #!/usr/bin/env python3
-"""
-Validate case reports against CARE (CAse REport) guidelines.
+"""Validate a structured CARE coverage manifest without reading patient narrative."""
 
-This script checks a clinical case report for compliance with CARE guidelines
-and provides a checklist of required elements.
-
-Usage:
-    python validate_case_report.py <input_file.md|.txt>
-    python validate_case_report.py <input_file> --output report.json
-"""
+from __future__ import annotations
 
 import argparse
-import json
-import re
-from pathlib import Path
-from typing import Dict, List, Tuple
+import sys
+from typing import Any
+
+sys.dont_write_bytecode = True
+
+from _common import (  # noqa: E402
+    ValidationError,
+    error_report,
+    load_json_object,
+    require_bool,
+    require_data_class,
+    require_exact_keys,
+    require_identifier,
+    require_string,
+    write_json_report,
+)
+
+TOOL = "validate_case_report"
+CARE_ITEMS = (
+    "title",
+    "key_words",
+    "abstract",
+    "introduction",
+    "patient_information",
+    "clinical_findings",
+    "timeline",
+    "diagnostic_assessment",
+    "therapeutic_intervention",
+    "follow_up_and_outcomes",
+    "discussion",
+    "patient_perspective",
+    "informed_consent",
+)
+ALLOWED_ITEM_STATUSES = {
+    "verified_present",
+    "not_applicable_with_rationale",
+    "missing",
+    "conflict",
+}
+NA_ALLOWED = {"patient_perspective"}
+TOP_LEVEL_FIELDS = {
+    "schema_version",
+    "artifact_kind",
+    "draft_status",
+    "safety_notice",
+    "data_classification",
+    "authorized_purpose",
+    "authorization_verified",
+    "provenance_manifest",
+    "guidance",
+    "care_items",
+    "privacy",
+    "review",
+}
+EXPECTED_DRAFT_STATUS = (
+    "BLOCKED_INCOMPLETE_DRAFT_NOT_FOR_CLINICAL_USE_OR_SUBMISSION"
+)
 
 
-class CareValidator:
-    """Validator for CARE guideline compliance."""
-    
-    # CARE checklist items with regex patterns
-    CARE_REQUIREMENTS = {
-        "title": {
-            "name": "Title contains 'case report'",
-            "pattern": r"(?i)(case\s+report|case\s+study)",
-            "section": "Title",
-            "required": True
-        },
-        "keywords": {
-            "name": "Keywords provided (2-5)",
-            "pattern": r"(?i)keywords?[:]\s*(.+)",
-            "section": "Keywords",
-            "required": True
-        },
-        "abstract": {
-            "name": "Abstract present",
-            "pattern": r"(?i)##?\s*abstract",
-            "section": "Abstract",
-            "required": True
-        },
-        "introduction": {
-            "name": "Introduction explaining novelty",
-            "pattern": r"(?i)##?\s*introduction",
-            "section": "Introduction",
-            "required": True
-        },
-        "patient_info": {
-            "name": "Patient demographics present",
-            "pattern": r"(?i)(patient\s+information|demographics?)",
-            "section": "Patient Information",
-            "required": True
-        },
-        "clinical_findings": {
-            "name": "Clinical findings documented",
-            "pattern": r"(?i)(clinical\s+findings?|physical\s+exam)",
-            "section": "Clinical Findings",
-            "required": True
-        },
-        "timeline": {
-            "name": "Timeline of events",
-            "pattern": r"(?i)(timeline|chronology)",
-            "section": "Timeline",
-            "required": True
-        },
-        "diagnostic": {
-            "name": "Diagnostic assessment",
-            "pattern": r"(?i)diagnostic\s+(assessment|evaluation|workup)",
-            "section": "Diagnostic Assessment",
-            "required": True
-        },
-        "therapeutic": {
-            "name": "Therapeutic interventions",
-            "pattern": r"(?i)(therapeutic\s+intervention|treatment)",
-            "section": "Therapeutic Interventions",
-            "required": True
-        },
-        "followup": {
-            "name": "Follow-up and outcomes",
-            "pattern": r"(?i)(follow[\-\s]?up|outcomes?)",
-            "section": "Follow-up and Outcomes",
-            "required": True
-        },
-        "discussion": {
-            "name": "Discussion with literature review",
-            "pattern": r"(?i)##?\s*discussion",
-            "section": "Discussion",
-            "required": True
-        },
-        "consent": {
-            "name": "Informed consent statement",
-            "pattern": r"(?i)(informed\s+consent|written\s+consent|consent.*obtained)",
-            "section": "Informed Consent",
-            "required": True
-        },
-    }
-    
-    # HIPAA identifiers to check for
-    HIPAA_PATTERNS = {
-        "dates": r"\b(0?[1-9]|1[0-2])/(0?[1-9]|[12][0-9]|3[01])/\d{4}\b",
-        "phone": r"\b\d{3}[-.]?\d{3}[-.]?\d{4}\b",
-        "email": r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",
-        "ssn": r"\b\d{3}-\d{2}-\d{4}\b",
-        "mrn": r"(?i)(mrn|medical\s+record)[:]\s*\d+",
-        "zip_full": r"\b\d{5}-\d{4}\b",
-    }
-    
-    def __init__(self, filename: str):
-        """Initialize validator with input file."""
-        self.filename = Path(filename)
-        self.content = self._read_file()
-        self.results = {}
-        
-    def _read_file(self) -> str:
-        """Read input file content."""
-        try:
-            with open(self.filename, 'r', encoding='utf-8') as f:
-                return f.read()
-        except FileNotFoundError:
-            raise FileNotFoundError(f"File not found: {self.filename}")
-        except Exception as e:
-            raise Exception(f"Error reading file: {e}")
-    
-    def validate_care_compliance(self) -> Dict[str, Dict]:
-        """Validate compliance with CARE guidelines."""
-        results = {}
-        
-        for key, item in self.CARE_REQUIREMENTS.items():
-            pattern = item["pattern"]
-            found = bool(re.search(pattern, self.content))
-            
-            results[key] = {
-                "name": item["name"],
-                "section": item["section"],
-                "required": item["required"],
-                "found": found,
-                "status": "PASS" if found else "FAIL" if item["required"] else "WARNING"
-            }
-        
-        self.results["care_compliance"] = results
-        return results
-    
-    def check_deidentification(self) -> Dict[str, List[str]]:
-        """Check for potential HIPAA identifier violations."""
-        violations = {}
-        
-        for identifier, pattern in self.HIPAA_PATTERNS.items():
-            matches = re.findall(pattern, self.content)
-            if matches:
-                violations[identifier] = matches[:5]  # Limit to first 5 examples
-        
-        self.results["hipaa_violations"] = violations
-        return violations
-    
-    def check_word_count(self) -> Dict[str, int]:
-        """Check word count and provide limits guidance."""
-        words = len(re.findall(r'\b\w+\b', self.content))
-        
-        word_count = {
-            "total_words": words,
-            "typical_min": 1500,
-            "typical_max": 3000,
-            "status": "ACCEPTABLE" if 1500 <= words <= 3500 else "CHECK"
-        }
-        
-        self.results["word_count"] = word_count
-        return word_count
-    
-    def check_references(self) -> Dict[str, any]:
-        """Check for presence of references."""
-        ref_patterns = [
-            r"##?\s*references",
-            r"\[\d+\]",
-            r"\d+\.\s+[A-Z][a-z]+.*\d{4}",  # Numbered references
-        ]
-        
-        has_refs = any(re.search(p, self.content, re.IGNORECASE) for p in ref_patterns)
-        ref_count = len(re.findall(r"\[\d+\]", self.content))
-        
-        references = {
-            "has_references": has_refs,
-            "estimated_count": ref_count,
-            "recommended_min": 10,
-            "status": "ACCEPTABLE" if ref_count >= 10 else "LOW"
-        }
-        
-        self.results["references"] = references
-        return references
-    
-    def generate_report(self) -> Dict:
-        """Generate comprehensive validation report."""
-        if not self.results:
-            self.validate_care_compliance()
-            self.check_deidentification()
-            self.check_word_count()
-            self.check_references()
-        
-        # Calculate overall compliance
-        care = self.results["care_compliance"]
-        total_required = sum(1 for v in care.values() if v["required"])
-        passed = sum(1 for v in care.values() if v["required"] and v["found"])
-        compliance_rate = (passed / total_required * 100) if total_required > 0 else 0
-        
-        report = {
-            "filename": str(self.filename),
-            "compliance_rate": round(compliance_rate, 1),
-            "care_compliance": care,
-            "hipaa_violations": self.results["hipaa_violations"],
-            "word_count": self.results["word_count"],
-            "references": self.results["references"],
-            "overall_status": "PASS" if compliance_rate >= 90 and not self.results["hipaa_violations"] else "NEEDS_REVISION"
-        }
-        
-        return report
-    
-    def print_report(self):
-        """Print human-readable validation report."""
-        report = self.generate_report()
-        
-        print("=" * 70)
-        print(f"CARE Guideline Validation Report")
-        print(f"File: {report['filename']}")
-        print("=" * 70)
-        print()
-        
-        print(f"Overall Compliance: {report['compliance_rate']}%")
-        print(f"Status: {report['overall_status']}")
-        print()
-        
-        print("CARE Checklist:")
-        print("-" * 70)
-        for key, item in report["care_compliance"].items():
-            status_symbol = "✓" if item["found"] else "✗"
-            print(f"{status_symbol} [{item['status']:8}] {item['name']}")
-        print()
-        
-        if report["hipaa_violations"]:
-            print("HIPAA DE-IDENTIFICATION WARNINGS:")
-            print("-" * 70)
-            for identifier, examples in report["hipaa_violations"].items():
-                print(f"⚠  {identifier.upper()}: {len(examples)} instance(s) found")
-                for ex in examples[:3]:
-                    print(f"   Example: {ex}")
-            print()
-        else:
-            print("✓ No obvious HIPAA identifiers detected")
-            print()
-        
-        wc = report["word_count"]
-        print(f"Word Count: {wc['total_words']} words")
-        print(f"  Typical range: {wc['typical_min']}-{wc['typical_max']} words")
-        print(f"  Status: {wc['status']}")
-        print()
-        
-        refs = report["references"]
-        print(f"References: {refs['estimated_count']} citation(s) detected")
-        print(f"  Recommended minimum: {refs['recommended_min']}")
-        print(f"  Status: {refs['status']}")
-        print()
-        
-        print("=" * 70)
-        
-        # Recommendations
-        issues = []
-        if report['compliance_rate'] < 100:
-            missing = [v["name"] for v in report["care_compliance"].values() if v["required"] and not v["found"]]
-            issues.append(f"Missing required sections: {', '.join(missing)}")
-        
-        if report["hipaa_violations"]:
-            issues.append("HIPAA identifiers detected - review de-identification")
-        
-        if refs["status"] == "LOW":
-            issues.append("Low reference count - consider adding more citations")
-        
-        if issues:
-            print("RECOMMENDATIONS:")
-            for i, issue in enumerate(issues, 1):
-                print(f"{i}. {issue}")
-        else:
-            print("✓ Case report meets CARE guidelines!")
-        
-        print("=" * 70)
+def _fact_ids(item: dict[str, Any], field: str) -> list[str]:
+    value = item.get("source_fact_ids")
+    if not isinstance(value, list):
+        raise ValidationError(f"{field}.source_fact_ids must be an array")
+    return [require_identifier(fact_id, f"{field}.source_fact_ids") for fact_id in value]
 
 
-def main():
-    """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description="Validate clinical case reports against CARE guidelines"
-    )
-    parser.add_argument(
-        "input_file",
-        help="Path to case report file (Markdown or text)"
-    )
-    parser.add_argument(
-        "--output",
-        "-o",
-        help="Output JSON report to file"
-    )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        help="Output JSON to stdout instead of human-readable report"
-    )
-    
-    args = parser.parse_args()
-    
+def validate_case_manifest(data: dict[str, Any]) -> dict[str, Any]:
+    """Return fail-closed structural findings for a CARE manifest."""
+    errors: list[str] = []
+    warnings: list[str] = []
+
     try:
-        validator = CareValidator(args.input_file)
-        report = validator.generate_report()
-        
-        if args.json:
-            print(json.dumps(report, indent=2))
-        else:
-            validator.print_report()
-        
-        if args.output:
-            with open(args.output, 'w') as f:
-                json.dumps(report, f, indent=2)
-            print(f"\nJSON report saved to: {args.output}")
-        
-        # Exit with non-zero if validation failed
-        exit_code = 0 if report["overall_status"] == "PASS" else 1
-        return exit_code
-        
-    except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
-        return 1
+        require_exact_keys(data, TOP_LEVEL_FIELDS, "manifest")
+        if data.get("schema_version") != "2.0":
+            raise ValidationError("schema_version must be 2.0")
+        if data.get("artifact_kind") != "case_report_draft":
+            raise ValidationError("artifact_kind must be case_report_draft")
+        if data.get("draft_status") != EXPECTED_DRAFT_STATUS:
+            raise ValidationError(
+                "draft_status must preserve the blocked non-clinical-use warning"
+            )
+        require_string(data.get("safety_notice"), "safety_notice", max_length=1000)
+        require_data_class(data.get("data_classification"))
+        if not require_bool(data.get("authorization_verified"), "authorization_verified"):
+            errors.append("authorization_verified must be true")
+        require_string(data.get("authorized_purpose"), "authorized_purpose")
+        require_string(data.get("provenance_manifest"), "provenance_manifest")
+    except ValidationError as exc:
+        errors.append(str(exc))
+
+    guidance = data.get("guidance")
+    try:
+        guidance = require_exact_keys(
+            guidance,
+            {
+                "name",
+                "checklist_version",
+                "explanation_version",
+                "target_journal_instructions_checked",
+            },
+            "guidance",
+        )
+        if guidance.get("name") != "CARE":
+            errors.append("guidance.name must be CARE")
+        if guidance.get("checklist_version") != "2013":
+            errors.append("guidance.checklist_version must be 2013")
+        if guidance.get("explanation_version") != "2017":
+            errors.append("guidance.explanation_version must be 2017")
+        if guidance.get("target_journal_instructions_checked") is not True:
+            warnings.append("target journal instructions remain to be checked")
+    except ValidationError as exc:
+        errors.append(str(exc))
+
+    items = data.get("care_items")
+    if not isinstance(items, dict):
+        errors.append("care_items must be an object")
+        items = {}
+    missing_keys = sorted(set(CARE_ITEMS) - set(items))
+    extra_keys = sorted(set(items) - set(CARE_ITEMS))
+    if missing_keys:
+        errors.append(f"missing CARE item keys: {missing_keys}")
+    if extra_keys:
+        errors.append(f"unexpected CARE item keys: {extra_keys}")
+
+    coverage: dict[str, str] = {}
+    for key in CARE_ITEMS:
+        item = items.get(key)
+        if not isinstance(item, dict):
+            errors.append(f"care_items.{key} must be an object")
+            continue
+        try:
+            item = require_exact_keys(
+                item,
+                {"status", "source_fact_ids", "rationale"},
+                f"care_items.{key}",
+            )
+        except ValidationError as exc:
+            errors.append(str(exc))
+            continue
+        status = item.get("status")
+        coverage[key] = str(status)
+        if status not in ALLOWED_ITEM_STATUSES:
+            errors.append(f"care_items.{key}.status is invalid")
+            continue
+        try:
+            facts = _fact_ids(item, f"care_items.{key}")
+        except ValidationError as exc:
+            errors.append(str(exc))
+            facts = []
+        if status == "verified_present" and not facts:
+            errors.append(f"care_items.{key} requires at least one verified source fact")
+        elif status == "not_applicable_with_rationale":
+            if key not in NA_ALLOWED:
+                errors.append(f"care_items.{key} cannot be marked not applicable")
+            try:
+                require_string(
+                    item.get("rationale"),
+                    f"care_items.{key}.rationale",
+                    max_length=500,
+                )
+            except ValidationError as exc:
+                errors.append(str(exc))
+        elif status in {"missing", "conflict"}:
+            errors.append(f"care_items.{key} is {status}")
+
+    privacy = data.get("privacy")
+    try:
+        privacy = require_exact_keys(
+            privacy,
+            {
+                "deidentification_process_record",
+                "publication_consent_record",
+                "image_or_media_included",
+                "reidentification_risk_reviewed",
+            },
+            "privacy",
+        )
+        for field in ("deidentification_process_record", "publication_consent_record"):
+            try:
+                require_string(privacy.get(field), f"privacy.{field}")
+            except ValidationError as exc:
+                errors.append(str(exc))
+        try:
+            if not require_bool(
+                privacy.get("reidentification_risk_reviewed"),
+                "privacy.reidentification_risk_reviewed",
+            ):
+                errors.append("privacy.reidentification_risk_reviewed must be true")
+        except ValidationError as exc:
+            errors.append(str(exc))
+        try:
+            require_bool(privacy.get("image_or_media_included"), "privacy.image_or_media_included")
+        except ValidationError as exc:
+            errors.append(str(exc))
+    except ValidationError as exc:
+        errors.append(str(exc))
+
+    review = data.get("review")
+    try:
+        review = require_exact_keys(
+            review,
+            {
+                "qualified_clinical_review",
+                "privacy_legal_review",
+                "accountable_author_review",
+                "submission_authorized",
+            },
+            "review",
+        )
+        for field in (
+            "qualified_clinical_review",
+            "privacy_legal_review",
+            "accountable_author_review",
+        ):
+            if review.get(field) != "completed":
+                warnings.append(f"review.{field} remains required")
+        if review.get("submission_authorized") is not False:
+            errors.append("submission_authorized must remain false in this draft manifest")
+    except ValidationError as exc:
+        errors.append(str(exc))
+
+    status = "BLOCKED" if errors else "STRUCTURE_COMPLETE_REVIEW_REQUIRED"
+    return {
+        "tool": TOOL,
+        "status": status,
+        "guidance": "CARE 2013 with 2017 explanation",
+        "coverage": coverage,
+        "errors": errors,
+        "warnings": warnings,
+        "limitations": [
+            "Structure and provenance metadata only; no clinical-content validation.",
+            "Does not establish consent, de-identification, CARE adherence, or journal readiness.",
+        ],
+        "review_required": True,
+        "authorizes_clinical_use_or_submission": False,
+    }
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Check a bounded JSON CARE coverage manifest. "
+            "Does not read patient narrative or claim compliance."
+        )
+    )
+    parser.add_argument("input_file", help="Local case-report manifest (.json)")
+    parser.add_argument("-o", "--output", help="Optional local JSON report path")
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Allow replacing an existing output file",
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        _, data = load_json_object(args.input_file)
+        report = validate_case_manifest(data)
+    except (OSError, ValidationError) as exc:
+        report = error_report(TOOL, exc)
+    try:
+        write_json_report(report, args.output, overwrite=args.overwrite)
+    except (OSError, ValidationError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    return 0 if report["status"] == "STRUCTURE_COMPLETE_REVIEW_REQUIRED" else 1
 
 
 if __name__ == "__main__":
-    import sys
-    sys.exit(main())
-
+    raise SystemExit(main())

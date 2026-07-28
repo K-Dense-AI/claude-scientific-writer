@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "sources": [
+    {
+      "authors": [],
+      "confidentiality": "public",
+      "evidence_id": "E001",
+      "identifiers": {
+        "doi": "",
+        "isbn": "",
+        "pmcid": "",
+        "pmid": "",
+        "url": ""
+      },
+      "locator": "[[TODO:page-table-figure-section-or-record-location]]",
+      "source_type": "other",
+      "title": "[[TODO:verified-source-title]]",
+      "verification": {
+        "source_opened": false,
+        "status": "unverified",
+        "verified_by": "",
+        "verified_on": ""
+      },
+      "year": null
+    }
+  ]
+}

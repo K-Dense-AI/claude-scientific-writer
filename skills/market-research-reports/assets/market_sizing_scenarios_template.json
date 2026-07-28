@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "market_id": "synthetic-widget-services",
+    "market_definition": "Annual end-customer spend on the synthetic service in Exampleland",
+    "geography": "Exampleland",
+    "currency": "USD",
+    "base_year": 2025,
+    "price_basis": "nominal",
+    "unit": "USD per year",
+    "taxonomy": "EXAMPLE-INDUSTRY",
+    "taxonomy_version": "2026",
+    "denominator_id": "annual-end-customer-spend",
+    "as_of_date": "2026-07-23"
+  },
+  "top_down": {
+    "components": [
+      {
+        "component_id": "enterprise-spend",
+        "coverage_key": "enterprise-customers",
+        "denominator_id": "annual-end-customer-spend",
+        "value": 60000000,
+        "source_ids": [
+          "S-001",
+          "S-002"
+        ],
+        "assumption_ids": [
+          "A-PRICE-001"
+        ]
+      },
+      {
+        "component_id": "small-business-spend",
+        "coverage_key": "small-business-customers",
+        "denominator_id": "annual-end-customer-spend",
+        "value": 40000000,
+        "source_ids": [
+          "S-001",
+          "S-002"
+        ],
+        "assumption_ids": [
+          "A-PRICE-002"
+        ]
+      }
+    ]
+  },
+  "bottom_up": {
+    "components": [
+      {
+        "component_id": "enterprise-build",
+        "coverage_key": "enterprise-customers",
+        "denominator_id": "annual-end-customer-spend",
+        "customer_count": 1000,
+        "annual_quantity_per_customer": 10,
+        "price_per_unit": 6000,
+        "addressable_fraction": 0.8,
+        "source_ids": [
+          "S-001",
+          "S-002"
+        ],
+        "assumption_ids": [
+          "A-PRICE-001",
+          "A-ADDRESSABLE-001"
+        ]
+      },
+      {
+        "component_id": "small-business-build",
+        "coverage_key": "small-business-customers",
+        "denominator_id": "annual-end-customer-spend",
+        "customer_count": 10000,
+        "annual_quantity_per_customer": 2,
+        "price_per_unit": 2000,
+        "addressable_fraction": 0.9,
+        "source_ids": [
+          "S-001",
+          "S-002"
+        ],
+        "assumption_ids": [
+          "A-PRICE-002",
+          "A-ADDRESSABLE-002"
+        ]
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "scenario_id": "downside",
+      "label": "Downside",
+      "serviceable_fraction": 0.35,
+      "obtainable_share": 0.02,
+      "source_ids": [
+        "S-001",
+        "S-002"
+      ],
+      "assumptions": [
+        "Narrow channel reach",
+        "Slow customer adoption"
+      ]
+    },
+    {
+      "scenario_id": "base",
+      "label": "Base",
+      "serviceable_fraction": 0.5,
+      "obtainable_share": 0.05,
+      "source_ids": [
+        "S-001",
+        "S-002"
+      ],
+      "assumptions": [
+        "Planned channel reach",
+        "Observed synthetic adoption benchmark"
+      ]
+    },
+    {
+      "scenario_id": "upside",
+      "label": "Upside",
+      "serviceable_fraction": 0.65,
+      "obtainable_share": 0.08,
+      "source_ids": [
+        "S-001",
+        "S-002"
+      ],
+      "assumptions": [
+        "Broader channel reach",
+        "Faster adoption without denominator expansion"
+      ]
+    }
+  ],
+  "reconciliation_tolerance_percent": 20
+}

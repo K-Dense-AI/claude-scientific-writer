@@ -1,0 +1,27 @@
+{
+  "schema_version": "2.0",
+  "document_type": "transition_reconciliation_record",
+  "document_id": "TRANSITION-RECONCILIATION-TEMPLATE",
+  "subject_ref": "SYNTHETIC-CASE-001",
+  "data_classification": "synthetic",
+  "status": "DRAFT_NOT_FOR_CLINICAL_USE",
+  "notice": "DRAFT — NOT MEDICAL ADVICE — DOCUMENTATION-ONLY — AUTHORIZED CLINICIAN SIGN-OFF REQUIRED",
+  "created_at": null,
+  "transition": {
+    "from_setting_as_documented": "",
+    "to_setting_as_documented": "",
+    "handoff_date": null,
+    "responsible_sender_role": "",
+    "responsible_receiver_role": ""
+  },
+  "medication_reconciliation": {
+    "status": "pending_authorized_review",
+    "source_list_fact_ids": [],
+    "destination_list_fact_ids": [],
+    "discrepancy_status": "not_assessed",
+    "completed_by_role": "",
+    "completed_at": null
+  },
+  "handoff_items": [],
+  "unresolved_items": []
+}

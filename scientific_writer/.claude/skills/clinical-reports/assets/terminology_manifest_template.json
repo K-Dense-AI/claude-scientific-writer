@@ -1,0 +1,11 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "terminology_manifest",
+  "manifest_status": "BLOCKED_INCOMPLETE",
+  "safety_notice": "Record only codes already selected and verified by qualified reviewers. Syntax or local-dictionary matching does not validate clinical meaning.",
+  "data_classification": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "provenance_manifest": null,
+  "entries": []
+}

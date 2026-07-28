@@ -1,0 +1,4 @@
+claim_id,claim_text,claim_type,source_ids,calculation_id,assumption_ids,location,as_of_date,geography,currency,base_year,price_basis,measure_type,unit,taxonomy,taxonomy_version,revision_status,confidence,notes
+C-001,The synthetic fixture contains 11000 in-scope establishments.,quantitative_fact,S-001,,,Section 2,2026-07-23,Exampleland,,,not-applicable,count,establishments,EXAMPLE-INDUSTRY,2026,final,high,Synthetic example only
+C-002,Top-down synthetic TAM is 100000000 USD per year.,calculation,S-001;S-002,CALC-TAM-001,A-PRICE-001,Section 3,2026-07-23,Exampleland,USD,2025,nominal,flow,USD per year,EXAMPLE-INDUSTRY,2026,final,medium,Conditional calculation from synthetic inputs
+C-003,The upside scenario reaches 146932807.68 USD per year in 2030.,forecast,S-001;S-002,CALC-FCST-001,A-GROWTH-UPSIDE,Section 6,2026-07-23,Exampleland,USD,2025,nominal,flow,USD per year,EXAMPLE-INDUSTRY,2026,current,low,Scenario output rather than a confidence interval

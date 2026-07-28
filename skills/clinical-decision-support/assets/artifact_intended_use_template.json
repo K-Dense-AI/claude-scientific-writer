@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "artifact": {
+    "id": "REPLACE_WITH_ARTIFACT_ID",
+    "title": "Research Evaluation Artifact",
+    "type": "model_biomarker_evaluation",
+    "version": "0.1-draft",
+    "status": "draft",
+    "owner": "REPLACE_WITH_GOVERNANCE_OWNER_ROLE",
+    "date": "YYYY-MM-DD",
+    "change_summary": "Initial research-only draft."
+  },
+  "intended_use": {
+    "purpose": "Document an aggregate research evaluation and its limitations.",
+    "intended_users": [
+      "research methodologist",
+      "governance reviewer"
+    ],
+    "population_scope": "aggregate_or_synthetic_only",
+    "decision_role": "research_evaluation_governance_only",
+    "boundary_statement": "Not for patient care or live clinical use."
+  },
+  "prohibited_uses": [
+    "No patient-specific output.",
+    "No diagnosis or prognosis for a person.",
+    "No treatment recommendation, treatment selection, or care plan.",
+    "No dosing or medication instruction.",
+    "No triage or urgency assignment.",
+    "No autonomous decision.",
+    "No alarm or alert.",
+    "No bedside or point-of-care use.",
+    "No live clinical use or deployment.",
+    "No claim of regulatory compliance, authorization, or approval.",
+    "No claim of HIPAA compliance or de-identification."
+  ],
+  "data_governance": {
+    "data_level": "synthetic",
+    "phi_supplied": false,
+    "raw_rows_supplied": false,
+    "provenance": "Synthetic aggregate template; replace with approved aggregate provenance.",
+    "data_cut_date": "YYYY-MM-DD",
+    "disclosure_policy": "Organization-approved policy; minimum cell size and complementary suppression selected before release."
+  },
+  "limitations": [
+    "Aggregate summaries cannot support person-level inference.",
+    "External validity depends on the evaluated population and setting.",
+    "Passing structural checks does not establish clinical validity, utility, safety, fairness, authorization, or compliance."
+  ],
+  "human_review": {
+    "required": true,
+    "roles": [
+      "methodologist",
+      "domain expert",
+      "privacy or governance reviewer"
+    ],
+    "completed": false,
+    "approval_boundary": "Release requires documented approval by the accountable organization; no approval permits patient-care use."
+  },
+  "validation": {
+    "external_validation": "REPLACE_WITH_STATUS_AND_EVIDENCE",
+    "calibration": "REPLACE_WITH_STATUS_AND_EVIDENCE",
+    "subgroup_fairness": "REPLACE_WITH_STATUS_AND_EVIDENCE",
+    "uncertainty": "REPLACE_WITH_INTERVAL_METHOD_AND_LIMITATIONS",
+    "human_factors": "REPLACE_WITH_STATUS; live clinical evaluation is outside this skill."
+  },
+  "lifecycle": {
+    "monitoring_plan": "Define aggregate performance, calibration, subgroup, drift, incident, and review cadence.",
+    "change_control": "Record version, rationale, validation, approval, and rollback for every change.",
+    "audit_plan": "Retain sources, data/code versions, commands, reviewers, decisions, and unresolved issues without sensitive data.",
+    "retirement_criteria": "Define evidence, performance, safety, governance, or obsolescence triggers."
+  },
+  "compliance_claims": false,
+  "sources": [
+    {
+      "id": "SRC-001",
+      "citation": "REPLACE_WITH_FULL_AUTHORITATIVE_CITATION",
+      "url": "REPLACE_WITH_CANONICAL_URL",
+      "accessed": "YYYY-MM-DD"
+    }
+  ]
+}

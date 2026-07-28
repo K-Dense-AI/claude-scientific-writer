@@ -1,0 +1,56 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "deidentification_process_checklist",
+  "process_status": "BLOCKED_NOT_ASSESSED",
+  "safety_notice": "This checklist cannot guarantee de-identification or HIPAA compliance. Safe Harbor requires all regulatory conditions, including no actual knowledge of identifiability. Expert Determination requires an appropriately qualified expert.",
+  "data_scope": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "local_only_handling_confirmed": false,
+  "minimum_necessary_reviewed": false,
+  "method": "not_selected",
+  "safe_harbor_identifiers": {
+    "names": "not_assessed",
+    "geographic_subdivisions": "not_assessed",
+    "dates_and_ages": "not_assessed",
+    "telephone_numbers": "not_assessed",
+    "fax_numbers": "not_assessed",
+    "email_addresses": "not_assessed",
+    "social_security_numbers": "not_assessed",
+    "medical_record_numbers": "not_assessed",
+    "health_plan_numbers": "not_assessed",
+    "account_numbers": "not_assessed",
+    "certificate_and_license_numbers": "not_assessed",
+    "vehicle_identifiers": "not_assessed",
+    "device_identifiers": "not_assessed",
+    "urls": "not_assessed",
+    "ip_addresses": "not_assessed",
+    "biometric_identifiers": "not_assessed",
+    "full_face_images": "not_assessed",
+    "other_unique_characteristics_or_codes": "not_assessed"
+  },
+  "actual_knowledge_review": {
+    "completed_by_authorized_privacy_reviewer": false,
+    "record_reference": null
+  },
+  "expert_determination": {
+    "completed_by_qualified_expert": false,
+    "expert_documentation_reference": null,
+    "anticipated_recipient_and_conditions_documented": false
+  },
+  "synthetic_or_aggregate_rationale": {
+    "origin_verified": false,
+    "record_reference": null
+  },
+  "residual_risk_review": {
+    "free_text": "not_assessed",
+    "small_cells_and_rare_cases": "not_assessed",
+    "images_and_metadata": "not_assessed",
+    "linked_data_and_quasi_identifiers": "not_assessed"
+  },
+  "review": {
+    "privacy_legal_review": "pending",
+    "institutional_release_review": "pending",
+    "release_authorized": false
+  }
+}

@@ -10,7 +10,7 @@ Supports attaching reference images for context (e.g., "create a slide about thi
 
 Uses smart iterative refinement:
 1. Generate initial image with Nano Banana Pro
-2. Quality review using Gemini 3 Pro
+2. Quality review using Gemini 3.6 Flash
 3. Only regenerate if quality is below threshold
 4. Repeat until quality meets standards (max iterations)
 
@@ -171,9 +171,9 @@ STYLE:
         self._last_error = None
         self.base_url = "https://openrouter.ai/api/v1"
         # Nano Banana Pro for image generation
-        self.image_model = "google/gemini-3-pro-image-preview"
-        # Gemini 3 Pro for quality review
-        self.review_model = "google/gemini-3-pro"
+        self.image_model = "google/gemini-3.6-flash"
+        # Gemini 3.6 Flash for quality review
+        self.review_model = "google/gemini-3.6-flash"
         
     def _log(self, message: str):
         """Log message if verbose mode is enabled."""
@@ -381,7 +381,7 @@ STYLE:
     def review_image(self, image_path: str, original_prompt: str, 
                     iteration: int, visual_only: bool = False,
                     max_iterations: int = 2) -> Tuple[str, float, bool]:
-        """Review generated image using Gemini 3 Pro."""
+        """Review generated image using Gemini 3.6 Flash."""
         image_data_url = self._image_to_base64(image_path)
         threshold = self.QUALITY_THRESHOLD
         
@@ -597,7 +597,7 @@ Generate a high-quality {'visual/figure' if visual_only else 'presentation slide
                 f.write(image_data)
             print(f"✓ Generated image (iteration {i})")
             
-            print(f"Reviewing image with Gemini 3 Pro...")
+            print(f"Reviewing image with Gemini 3.6 Flash...")
             critique, score, needs_improvement = self.review_image(
                 str(temp_path), user_prompt, i, visual_only, iterations
             )

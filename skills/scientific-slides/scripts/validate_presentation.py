@@ -16,12 +16,17 @@ import subprocess
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 
-# Try to import PyPDF2 for PDF analysis
+# PDF page and geometry analysis. pypdf is the maintained continuation of
+# PyPDF2 and exposes the same PdfReader API, so accept whichever is installed.
 try:
-    import PyPDF2
-    HAS_PYPDF2 = True
+    from pypdf import PdfReader
+    HAS_PDF_READER = True
 except ImportError:
-    HAS_PYPDF2 = False
+    try:
+        from PyPDF2 import PdfReader
+        HAS_PDF_READER = True
+    except ImportError:
+        HAS_PDF_READER = False
 
 # Try to import python-pptx for PowerPoint analysis
 try:
@@ -97,15 +102,15 @@ class PresentationValidator:
     
     def _validate_pdf(self):
         """Validate PDF presentation."""
-        if not HAS_PYPDF2:
+        if not HAS_PDF_READER:
             self.warnings.append(
-                "PyPDF2 not installed. Install with: pip install PyPDF2"
+                "pypdf not installed. Install with: pip install pypdf"
             )
             return
-        
+
         try:
             with open(self.filepath, 'rb') as f:
-                reader = PyPDF2.PdfReader(f)
+                reader = PdfReader(f)
                 num_pages = len(reader.pages)
                 
                 self.info.append(f"Number of slides: {num_pages}")

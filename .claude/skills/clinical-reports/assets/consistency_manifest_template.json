@@ -1,0 +1,15 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "consistency_manifest",
+  "manifest_status": "BLOCKED_INCOMPLETE",
+  "safety_notice": "Structured arithmetic and format checks only. Do not include identifiers or free-text patient records. The checker does not choose an authoritative source or change values.",
+  "data_classification": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "provenance_manifest": null,
+  "dates": [],
+  "date_ranges": [],
+  "quantities": [],
+  "proportions": [],
+  "totals": []
+}

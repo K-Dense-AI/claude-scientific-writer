@@ -1,0 +1,2 @@
+claim_id,section,claim_kind,claim_text_sha256,evidence_ids,verification_status,uncertainty,analysis_intent
+C001,[[TODO:section]],factual,[[TODO:sha256-of-normalized-claim]],E001,unverified,not_estimated,not_applicable

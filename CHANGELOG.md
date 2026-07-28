@@ -6,6 +6,18 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.18.0] - 2026-07-28
+
+### Changed
+
+- **Vendored skills refreshed to upstream `v2.60.0`** — the writing-skill subset is now pinned to `K-Dense-AI/scientific-agent-skills` release `v2.60.0` at commit `223f5a30f892`, up from `v2.54.0`. `skills.lock.json` and all plugin/package snapshots (`skills/`, `.claude/skills/`, `scientific_writer/.claude/skills/`) were regenerated with refreshed provenance and content hashes. Scientific Writer continues to ship the same 26 selected skills.
+- **Duplicate schematic scripts consolidated** — upstream removed the per-skill `generate_schematic.py` and `generate_schematic_ai.py` copies from `clinical-decision-support`, `clinical-reports`, `citation-management`, and `treatment-plans`; diagram generation is now centralized in `scientific-schematics`. The script paths referenced by `CLAUDE.md` are unaffected.
+- **Skill scope statements tightened** — `clinical-decision-support`, `clinical-reports`, and `treatment-plans` are now explicitly scoped to research, formatting, and validation of clinician-supplied decisions rather than clinical decision-making, and `scientific-writing`, `peer-review`, and `scholar-evaluation` gained evidence-provenance and traceability framing. Several skills also folded their `assets/` templates and `references/` guides into their `SKILL.md`.
+- **Image and diagram backends updated** — `generate-image` now targets the OpenRouter Image API (Gemini, FLUX, Seedream, Recraft, GPT-Image) with reference-image editing and compositing, while `scientific-schematics` and `infographics` now run quality review through Gemini 3.6 Flash.
+- **`pptx-posters` rebuilt as PowerPoint-native** — posters are now generated and audited as macro-free `.pptx` with pinned `python-pptx`/`Pillow`/`lxml` versions and local package-security, printer, and accessibility checks, replacing the previous HTML/CSS export path.
+
+---
+
 ## [2.17.1] - 2026-07-22
 
 ### Fixed

@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "plan_id": "SYNTHETIC-SURVIVAL-PLAN-001",
+    "title": "Synthetic Aggregate Time-to-Event Analysis Plan",
+    "version": "0.1-draft",
+    "status": "draft",
+    "purpose": "Demonstrate estimand-led planning without time-to-event records.",
+    "data_cut_date": "2026-07-23",
+    "data_level": "plan_only",
+    "raw_rows_supplied": false,
+    "patient_care_use": false,
+    "human_review_required": true
+  },
+  "intended_use": "Research analysis planning only; not for patient care or live clinical use.",
+  "prohibited_uses": [
+    "No individual prognosis or classification.",
+    "No diagnosis, treatment recommendation, dosing, triage, alarm, or autonomous decision.",
+    "No claim of statistical approval, clinical validity, authorization, or compliance."
+  ],
+  "limitations": [
+    "The validator does not inspect data or fit a model.",
+    "Methods require review against the actual design and estimand.",
+    "Synthetic placeholders must be replaced before an approved research analysis."
+  ],
+  "estimand": {
+    "population": "Synthetic eligible research cohort",
+    "condition_or_comparison": "Synthetic exposure A versus synthetic exposure B",
+    "endpoint_variable": "Time from defined synthetic index to defined synthetic event",
+    "population_summary": "Hazard contrast plus restricted mean survival time difference at the prespecified horizon",
+    "time_horizon": "24 synthetic time units",
+    "rationale": "The hazard contrast addresses relative event rate; restricted mean survival time supports interpretation if proportional hazards is doubtful.",
+    "intercurrent_events": [
+      {
+        "event": "Synthetic exposure discontinuation",
+        "strategy": "Treatment-policy strategy in the primary estimand",
+        "rationale": "Preserves the prespecified research question."
+      },
+      {
+        "event": "Synthetic competing event",
+        "strategy": "Competing-event strategy with cumulative incidence",
+        "rationale": "The competing event precludes the primary event."
+      }
+    ]
+  },
+  "endpoint": {
+    "time_zero": "Synthetic index date defined before analysis",
+    "event_definition": "Prespecified synthetic event with blinded aggregate adjudication",
+    "time_scale": "Synthetic months",
+    "ascertainment": "Prespecified uniform synthetic schedule",
+    "follow_up_end": "Earliest of event, loss to follow-up, or administrative data cut",
+    "delayed_entry": "Assess and use left-truncation methods if eligibility begins after time zero",
+    "same_time_rules": "Apply prespecified deterministic ordering and document ties",
+    "censoring_rules": [
+      "Administrative censoring at the fixed data cut",
+      "Censor loss to follow-up at last verified observation with informative-censoring sensitivity analysis"
+    ],
+    "competing_events": [
+      "Synthetic competing event"
+    ]
+  },
+  "analysis": {
+    "primary_method": "cox_proportional_hazards",
+    "effect_measure": "Hazard ratio with 95% confidence interval; restricted mean survival time difference at 24 units if proportional hazards is not supported",
+    "analysis_population": "Prespecified synthetic analysis population",
+    "covariate_strategy": "Prespecified covariates based on subject-matter rationale; no univariable p-value selection",
+    "missing_data": "Describe patterns; use justified multiple-imputation or model-based approach with sensitivity analysis",
+    "multiplicity": "Prespecify primary endpoint and control or transparently label secondary and exploratory analyses",
+    "uncertainty": "Two-sided 95% confidence intervals and assumption-focused sensitivity analyses",
+    "software_and_version": "Record locked statistical software, packages, code, and versions before execution",
+    "model_diagnostics": "Functional forms, influential observations, residual checks, convergence, and calibration where predictive",
+    "proportional_hazards_assessment": "Prespecified graphical assessment and time-interaction/residual-based assessment",
+    "non_proportional_hazards_strategy": "Report time-varying effects and restricted mean survival time at the prespecified horizon",
+    "competing_risk_method": "cumulative_incidence"
+  },
+  "bias_controls": {
+    "informative_censoring": "Compare follow-up patterns and run a justified sensitivity analysis.",
+    "immortal_time": "Align eligibility, assignment, and time zero; model time-varying exposure if required.",
+    "time_dependent_confounding": "Specify whether g-methods are required for the causal estimand.",
+    "outcome_misclassification": "Document ascertainment validity and conduct plausible sensitivity analyses.",
+    "informative_visits": "Assess observation schedules and potential outcome-dependent measurement."
+  },
+  "sensitivity_analyses": [
+    "Alternative censoring assumptions tied to plausible loss-to-follow-up mechanisms",
+    "Alternative effect summary when proportional hazards is not supported",
+    "Competing-risk analysis aligned with the absolute-incidence question"
+  ],
+  "subgroups": {
+    "prespecification": "List scientifically justified subgroups before results.",
+    "interaction_testing": "Use formal interaction estimates with uncertainty.",
+    "multiplicity": "Control or label exploratory subgroup analyses.",
+    "precision_and_disclosure": "Report aggregate sizes/events and suppress unstable or disclosive outputs."
+  },
+  "validation": {
+    "internal_validation": "Use design-appropriate resampling if a prediction model is involved.",
+    "external_validation": "Plan independent temporal or geographic validation before transportability claims.",
+    "calibration": "Evaluate calibration at prespecified horizons for prediction models.",
+    "subgroup_performance": "Report performance and uncertainty across prespecified groups."
+  },
+  "human_review": {
+    "roles": [
+      "survival-analysis statistician",
+      "epidemiologist",
+      "domain expert"
+    ],
+    "completed": false,
+    "approval_boundary": "An accountable research organization must approve the final plan; approval never permits patient-care use."
+  },
+  "governance": {
+    "owner": "research analysis governance owner",
+    "change_control": "Version the estimand, endpoint, data cut, code, software, deviations, and sensitivity analyses.",
+    "auditability": "Retain the approved plan, amendments, execution logs, aggregate outputs, and reviewer decisions.",
+    "monitoring": "Review assumption violations, missingness, censoring, subgroup precision, and external validation.",
+    "retirement": "Supersede or retire the plan when the question, data source, endpoint, or method changes materially."
+  },
+  "source_ids": [
+    "ICH-E9R1",
+    "RMST"
+  ],
+  "sources": [
+    {
+      "id": "ICH-E9R1",
+      "citation": "ICH E9(R1), Addendum on Estimands and Sensitivity Analysis in Clinical Trials, 2019.",
+      "url": "https://database.ich.org/sites/default/files/E9-R1_Step4_Guideline_2019_1203.pdf",
+      "accessed": "2026-07-23"
+    },
+    {
+      "id": "RMST",
+      "citation": "Royston P, Parmar MKB. Restricted mean survival time. BMC Medical Research Methodology. 2013;13:152.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24314264/",
+      "accessed": "2026-07-23"
+    }
+  ]
+}

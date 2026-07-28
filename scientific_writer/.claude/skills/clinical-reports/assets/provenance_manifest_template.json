@@ -1,0 +1,17 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "provenance_manifest",
+  "manifest_status": "BLOCKED_INCOMPLETE",
+  "safety_notice": "Record local source locators, field paths, hashes, and verification metadata only. Do not copy PHI or patient narratives into this manifest.",
+  "data_classification": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "facts": [],
+  "claims": [],
+  "review": {
+    "source_owner_review": "pending",
+    "quality_review": "pending",
+    "privacy_review": "pending",
+    "release_authorized": false
+  }
+}

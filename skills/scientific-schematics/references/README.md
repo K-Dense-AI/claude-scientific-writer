@@ -305,7 +305,7 @@ Typical costs per diagram:
 
 ## Examples Gallery
 
-See the full SKILL.md for extensive examples including:
+See `iterative_refinement.md` for worked examples including:
 - CONSORT flowcharts
 - Neural network architectures (Transformers, CNNs, RNNs)
 - Biological pathways
@@ -313,10 +313,13 @@ See the full SKILL.md for extensive examples including:
 - System architectures
 - Block diagrams
 
+That file also documents the generate-review-refine loop, the Python API, the
+command-line options, and prompt engineering guidance.
+
 ## Support
 
 For issues or questions:
-1. Check SKILL.md for detailed documentation
+1. Check SKILL.md, then `iterative_refinement.md` for detailed documentation
 2. Run test_ai_generation.py to verify setup
 3. Use verbose mode (-v) to see detailed errors
 4. Review the review_log.json for quality feedback

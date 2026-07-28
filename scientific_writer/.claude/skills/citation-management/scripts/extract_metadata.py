@@ -424,8 +424,10 @@ class MetadataExtractor:
         else:
             last_name = 'Unknown'
         
-        # Get year
-        year = metadata.get('year', '').strip()
+        # Get year. It arrives verbatim from the CrossRef/PubMed/arXiv record,
+        # so keep only digits — the key is used as a filename and as a shell
+        # argument, and a publisher controls the contents of its own record.
+        year = re.sub(r'[^0-9]', '', metadata.get('year', ''))
         if not year:
             year = 'XXXX'
         

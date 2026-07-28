@@ -1,414 +1,258 @@
 ---
 name: pptx-posters
-description: Create research posters using HTML/CSS that can be exported to PDF or PPTX. Use this skill ONLY when the user explicitly requests PowerPoint/PPTX poster format. For standard research posters, use latex-posters instead. This skill provides modern web-based poster design with responsive layouts and easy visual integration.
-allowed-tools: Read Write Edit Bash
-license: MIT license
-required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
-metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
+description: Create and audit editable scientific posters in macro-free PowerPoint (.pptx) from author-approved local content and assets. Use when the requested deliverable is a PowerPoint research/conference poster and exact physical, printer, accessibility, provenance, and package-security checks are required.
+license: MIT
+compatibility: Requires Python 3.10+, uv, and exact generation pins python-pptx 1.0.2, Pillow 12.3.0, and lxml 6.1.1. Validation and PPTX ZIP/XML inspection are local and network-free; final PowerPoint, accessibility, PDF, printer, and author review are manual.
+allowed-tools: Read Write Bash Glob Grep Python
+metadata:
+  version: "2.1"
+  skill-author: K-Dense Inc.
 ---
 
-# PPTX Research Posters (HTML-Based)
+# PPTX posters
 
-## Overview
+## Scope
 
-**⚠️ USE THIS SKILL ONLY WHEN USER EXPLICITLY REQUESTS PPTX/POWERPOINT POSTER FORMAT.**
+Use this skill only when the requested source/deliverable is an editable PowerPoint
+poster. Do not route an unspecified poster request here merely because PowerPoint is
+available.
 
-For standard research posters, use the **latex-posters** skill instead, which provides better typographic control and is the default for academic conferences.
+Version 2.0 generates a real one-slide `.pptx` from strict local JSON. It does not use
+HTML conversion, external templates, schematic/image-generation services, API keys,
+environment files, network requests, or mandatory figure styles.
 
-This skill creates research posters using HTML/CSS, which can then be exported to PDF or converted to PowerPoint format. The web-based approach offers:
-- Modern, responsive layouts
-- Easy integration of AI-generated visuals
-- Quick iteration and preview in browser
-- Export to PDF via browser print function
-- Conversion to PPTX if specifically needed
+## Hard gates
 
-## When to Use This Skill
+Stop instead of guessing when any gate is unmet:
 
-**ONLY use this skill when:**
-- User explicitly requests "PPTX poster", "PowerPoint poster", or "PPT poster"
-- User specifically asks for HTML-based poster
-- User needs to edit poster in PowerPoint after creation
-- LaTeX is not available or user requests non-LaTeX solution
+1. The author has not supplied exact poster content and source records.
+2. Any claim, number, citation, author, affiliation, funding statement, figure,
+   license, or QR target is unresolved.
+3. Current conference and printer requirements are not confirmed.
+4. Author approval is not bound to the current manifest content hash.
+5. An asset is remote, outside the manifest directory, unhashed, or unapproved.
+6. An input is `.pptm`, contains macros/external relationships/OLE/embedded files,
+   or is an untrusted template.
+7. The requested workflow needs PowerPoint to be opened or executed automatically.
+8. A script reports a package, layout, DPI, contrast, or output-plan blocker.
 
-**DO NOT use this skill when:**
-- User asks for a "poster" without specifying format → Use latex-posters
-- User asks for "research poster" or "conference poster" → Use latex-posters
-- User mentions LaTeX, tikzposter, beamerposter, or baposter → Use latex-posters
+Never fabricate missing material or leave a plausible placeholder. Drafts fail closed.
 
-## AI-Powered Visual Element Generation
+## Install exact generation dependencies
 
-**STANDARD WORKFLOW: Generate ALL major visual elements using AI before creating the HTML poster.**
-
-This is the recommended approach for creating visually compelling posters:
-1. Plan all visual elements needed (hero image, intro, methods, results, conclusions)
-2. Generate each element using scientific-schematics or Nano Banana Pro
-3. Assemble generated images in the HTML template
-4. Add text content around the visuals
-
-**Target: 60-70% of poster area should be AI-generated visuals, 30-40% text.**
-
----
-
-### CRITICAL: Poster-Size Font Requirements
-
-**⚠️ ALL text within AI-generated visualizations MUST be poster-readable.**
-
-When generating graphics for posters, you MUST include font size specifications in EVERY prompt. Poster graphics are viewed from 4-6 feet away, so text must be LARGE.
-
-**MANDATORY prompt requirements for EVERY poster graphic:**
-
-```
-POSTER FORMAT REQUIREMENTS (STRICTLY ENFORCE):
-- ABSOLUTE MAXIMUM 3-4 elements per graphic (3 is ideal)
-- ABSOLUTE MAXIMUM 10 words total in the entire graphic
-- NO complex workflows with 5+ steps (split into 2-3 simple graphics instead)
-- NO multi-level nested diagrams (flatten to single level)
-- NO case studies with multiple sub-sections (one key point per case)
-- ALL text GIANT BOLD (80pt+ for labels, 120pt+ for key numbers)
-- High contrast ONLY (dark on white OR white on dark, NO gradients with text)
-- MANDATORY 50% white space minimum (half the graphic should be empty)
-- Thick lines only (5px+ minimum), large icons (200px+ minimum)
-- ONE SINGLE MESSAGE per graphic (not 3 related messages)
-```
-
-**⚠️ BEFORE GENERATING: Review your prompt and count elements**
-- If your description has 5+ items → STOP. Split into multiple graphics
-- If your workflow has 5+ stages → STOP. Show only 3-4 high-level steps
-- If your comparison has 4+ methods → STOP. Show only top 3 or Our vs Best Baseline
-
-**Example - WRONG (7-stage workflow):**
-```bash
-# ❌ Creates tiny unreadable text
-python scripts/generate_schematic.py "Drug discovery workflow: Stage 1 Target ID, Stage 2 Synthesis, Stage 3 Screening, Stage 4 Lead Opt, Stage 5 Validation, Stage 6 Clinical Trial, Stage 7 FDA Approval with metrics." -o figures/workflow.png
-```
-
-**Example - CORRECT (3 mega-stages):**
-```bash
-# ✅ Same content, simplified to readable poster format
-python scripts/generate_schematic.py "POSTER FORMAT for A0. ULTRA-SIMPLE 3-box workflow: 'DISCOVER' → 'VALIDATE' → 'APPROVE'. Each word in GIANT bold (120pt+). Thick arrows (10px). 60% white space. ONLY these 3 words. NO substeps. Readable from 12 feet." -o figures/workflow_simple.png
-```
-
----
-
-### CRITICAL: Preventing Content Overflow
-
-**⚠️ POSTERS MUST NOT HAVE TEXT OR CONTENT CUT OFF AT EDGES.**
-
-**Prevention Rules:**
-
-**1. Limit Content Sections (MAXIMUM 5-6 sections):**
-```
-✅ GOOD - 5 sections with room to breathe:
-   - Title/Header
-   - Introduction/Problem
-   - Methods
-   - Results (1-2 key findings)
-   - Conclusions
-
-❌ BAD - 8+ sections crammed together
-```
-
-**2. Word Count Limits:**
-- **Per section**: 50-100 words maximum
-- **Total poster**: 300-800 words MAXIMUM
-- **If you have more content**: Cut it or make a handout
-
----
-
-## Core Capabilities
-
-### 1. HTML/CSS Poster Design
-
-The HTML template (`assets/poster_html_template.html`) provides:
-- Fixed poster dimensions (36×48 inches = 2592×3456 pt)
-- Professional header with gradient styling
-- Three-column content layout
-- Block-based sections with modern styling
-- Footer with references and contact info
-
-### 2. Poster Structure
-
-**Standard Layout:**
-```
-┌─────────────────────────────────────────┐
-│  HEADER: Title, Authors, Hero Image     │
-├─────────────┬─────────────┬─────────────┤
-│ Introduction│   Results   │  Discussion │
-│             │             │             │
-│   Methods   │   (charts)  │ Conclusions │
-│             │             │             │
-│  (diagram)  │   (data)    │   (summary) │
-├─────────────┴─────────────┴─────────────┤
-│  FOOTER: References & Contact Info      │
-└─────────────────────────────────────────┘
-```
-
-### 3. Visual Integration
-
-Each section should prominently feature AI-generated visuals:
-
-**Hero Image (Header):**
-```html
-<img src="figures/hero.png" class="hero-image">
-```
-
-**Section Graphics:**
-```html
-<div class="block">
-  <h2 class="block-title">Methods</h2>
-  <div class="block-content">
-    <img src="figures/workflow.png" class="block-image">
-    <ul>
-      <li>Brief methodology point</li>
-    </ul>
-  </div>
-</div>
-```
-
-### 4. Generating Visual Elements
-
-**Before creating the HTML, generate all visual elements:**
+From the skill directory:
 
 ```bash
-# Create figures directory
-mkdir -p figures
-
-# Hero image - SIMPLE, impactful
-python scripts/generate_schematic.py "POSTER FORMAT for A0. Hero banner: '[TOPIC]' in HUGE text (120pt+). Dark blue gradient background. ONE iconic visual. Minimal text. Readable from 15 feet." -o figures/hero.png
-
-# Introduction visual - ONLY 3 elements
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE visual with ONLY 3 icons: [icon1] → [icon2] → [icon3]. ONE word labels (80pt+). 50% white space. Readable from 8 feet." -o figures/intro.png
-
-# Methods flowchart - ONLY 4 steps
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE flowchart with ONLY 4 boxes: STEP1 → STEP2 → STEP3 → STEP4. GIANT labels (100pt+). Thick arrows. 50% white space. NO sub-steps." -o figures/workflow.png
-
-# Results visualization - ONLY 3 bars
-python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE bar chart with ONLY 3 bars: BASELINE (70%), EXISTING (85%), OURS (95%). GIANT percentages ON bars (120pt+). NO axis, NO legend. 50% white space." -o figures/results.png
-
-# Conclusions - EXACTLY 3 key findings
-python scripts/generate_schematic.py "POSTER FORMAT for A0. EXACTLY 3 cards: '95%' (150pt) 'ACCURACY' (60pt), '2X' (150pt) 'FASTER' (60pt), checkmark 'READY' (60pt). 50% white space. NO other text." -o figures/conclusions.png
+uv venv
+uv pip install "python-pptx==1.0.2" "Pillow==12.3.0" "lxml==6.1.1"
 ```
 
----
+Generation requires exactly:
 
-## Workflow for PPTX Poster Creation
+```text
+python-pptx==1.0.2
+Pillow==12.3.0
+lxml==6.1.1
+```
 
-### Stage 1: Planning
+All CLIs use lazy optional imports, so `python -B scripts/<tool>.py --help` works
+without these packages. Use `-B` to avoid bytecode artifacts.
 
-1. **Confirm PPTX is explicitly requested**
-2. **Determine poster requirements:**
-   - Size: 36×48 inches (most common) or A0
-   - Orientation: Portrait (most common)
-3. **Develop content outline:**
-   - Identify 1-3 core messages
-   - Plan 3-5 visual elements
-   - Draft minimal text (300-800 words total)
+## Establish requirements before layout
 
-### Stage 2: Generate Visual Elements (AI-Powered)
+Record these separately:
 
-**CRITICAL: Generate SIMPLE figures with MINIMAL content.**
+- physical trim width/height and orientation;
+- bleed on each edge;
+- safe margin inside trim;
+- PowerPoint canvas width/height;
+- uniform physical-artboard/canvas print scale;
+- conference maximum dimensions and delivery format;
+- printer trim, bleed, margin, scaling, color-mode, and proof requirements;
+- final-output font and raster-DPI thresholds, each labeled as a heuristic or tied to
+  an exact source.
+- required font faces, workstation availability, embedding permission, and the
+  substitution/proof workflow.
+
+There is no universal poster size. Microsoft currently limits each custom PowerPoint
+dimension to 1–56 inches and uses one size for all slides. If the physical artboard
+is larger, use a proportional canvas only when the printer confirms scaling.
+
+Read `references/poster_layout_design.md`.
+
+## Build the manifest
+
+Copy `assets/poster_manifest_template.json` into the project. The template is
+deliberately invalid until every replacement token, false confirmation, and draft
+approval is resolved.
+
+Follow `references/manifest_spec.md` and `references/poster_content_guide.md`.
+
+The manifest requires:
+
+- exact source IDs for document metadata, every element, and every asset;
+- `author_verified: true` on every source;
+- `author_approved: true` on every element and asset;
+- local PNG/JPEG paths and lowercase SHA-256 hashes;
+- exact provenance and license/permission for every optional image;
+- approved alt text and, when needed, a source-bound native long description;
+- explicit reading order and design rectangles;
+- visible exact fallback URL/text for every local QR image;
+- confirmed conference/printer rules;
+- declared sRGB contrast pairs and redundant data encoding;
+- approval bound to canonical manifest content.
+
+To obtain the content hash after all non-approval fields pass:
 
 ```bash
-mkdir -p figures
-
-# Generate each element with POSTER FORMAT specifications
-# (See examples in Section 4 above)
+python -B scripts/validate_manifest.py poster.json \
+  --print-content-hash
 ```
 
-### Stage 3: Create HTML Poster
+Give that exact manifest and hash to the author. Then set `approval.status` to
+`approved`, record approver and offset-aware timestamp, and copy the hash. Any
+non-approval edit invalidates approval.
 
-1. **Copy the template:**
-   ```bash
-   cp skills/pptx-posters/assets/poster_html_template.html poster.html
-   ```
+Validate the approved manifest and local assets:
 
-2. **Update content:**
-   - Replace placeholder title and authors
-   - Insert AI-generated images
-   - Add minimal supporting text
-   - Update references and contact info
-
-3. **Preview in browser:**
-   ```bash
-   open poster.html  # macOS
-   # or
-   xdg-open poster.html  # Linux
-   ```
-
-### Stage 4: Export to PDF
-
-**Browser Print Method:**
-1. Open poster.html in Chrome or Firefox
-2. Print (Cmd/Ctrl + P)
-3. Select "Save as PDF"
-4. Set paper size to match poster dimensions
-5. Remove margins
-6. Enable "Background graphics"
-
-**Command Line (if Chrome available):**
 ```bash
-# Chrome headless PDF export
-google-chrome --headless --print-to-pdf=poster.pdf \
-  --print-to-pdf-no-header \
-  --no-margins \
-  poster.html
+python -B scripts/validate_manifest.py poster.json
 ```
 
-### Stage 5: Convert to PPTX (If Required)
+## Audit assets and palette before generation
 
-**Option 1: PDF to PPTX conversion**
 ```bash
-# Using LibreOffice
-libreoffice --headless --convert-to pptx poster.pdf
+python -B scripts/inventory_images.py poster.json \
+  --output poster.assets.json
 
-# Or use online converters for simple cases
+python -B scripts/check_palette.py poster.json \
+  --output poster.palette.json
+
+python -B scripts/plan_export.py poster.json \
+  --output poster.export-plan.json
 ```
 
-**Option 2: Direct PPTX creation with python-pptx**
-```python
-from pptx import Presentation
-from pptx.util import Inches, Pt
+Effective DPI is pixels divided by final placed inches, not image metadata DPI.
+The inventory fully decodes bounded images and blocks EXIF/XMP/comments and embedded
+text/application metadata;
+strip those offline, then rehash and reapprove the asset.
+Contrast uses WCAG 2.2 sRGB mathematics; applying those values to a physical poster is
+a design target, not a standalone conformance claim. Keep color-redundant labels,
+markers, shapes, patterns, or line styles.
 
-prs = Presentation()
-prs.slide_width = Inches(48)
-prs.slide_height = Inches(36)
+If the printer requires CMYK, the plan blocks print-readiness until a
+printer-approved conversion/profile and proof exist. Do not claim that a native
+PowerPoint PDF is CMYK-compliant.
 
-slide = prs.slides.add_slide(prs.slide_layouts[6])  # Blank
+Read `references/poster_design_principles.md`.
 
-# Add images from figures/
-slide.shapes.add_picture("figures/hero.png", Inches(0), Inches(0), width=Inches(48))
-# ... add other elements
+## Generate the PPTX
 
-prs.save("poster.pptx")
+Use a new output path:
+
+```bash
+python -B scripts/generate_poster.py poster.json \
+  --output poster.pptx \
+  --report poster.generation.json
 ```
 
----
+Generation:
 
-## HTML Template Structure
+- creates a new blank presentation; it never loads a user template;
+- sets the approved canvas before adding content;
+- uses one native title placeholder, native text boxes, and local pictures;
+- preserves image aspect ratio with `contain` fitting;
+- disables text auto-shrink;
+- adds elements in approved reading order;
+- writes approved picture alt descriptions and explicit text language to PresentationML;
+- does not embed fonts, audio, video, OLE, ActiveX, links, or other media;
+- removes default printer-settings binary data and normalizes package timestamps;
+- inspects the package before and after the alt-text patch;
+- refuses overlaps, out-of-bounds shapes, low final font size/DPI, unsafe packages,
+  and existing destinations.
 
-The provided template (`assets/poster_html_template.html`) includes:
+It renders exact manifest text. It does not compose, summarize, research, or correct
+scientific content.
 
-### CSS Variables for Customization
+## Run final technical audits
 
-```css
-/* Poster dimensions */
-body {
-  width: 2592pt;   /* 36 inches */
-  height: 3456pt;  /* 48 inches */
-}
+```bash
+python -B scripts/inspect_pptx.py poster.pptx \
+  --output poster.package.json
 
-/* Color scheme - customize these */
-.header {
-  background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #3182ce 100%);
-}
-
-/* Typography */
-.poster-title { font-size: 108pt; }
-.authors { font-size: 48pt; }
-.block-title { font-size: 52pt; }
-.block-content { font-size: 34pt; }
+python -B scripts/check_layout.py poster.pptx \
+  --manifest poster.json \
+  --output poster.layout.json
 ```
 
-### Key Classes
+The package inspector reads bounded ZIP metadata and selected XML only. It never
+extracts members or opens/executes the presentation. It rejects:
 
-| Class | Purpose | Font Size |
-|-------|---------|-----------|
-| `.poster-title` | Main title | 108pt |
-| `.authors` | Author names | 48pt |
-| `.affiliations` | Institutions | 38pt |
-| `.block-title` | Section headers | 52pt |
-| `.block-content` | Body text | 34pt |
-| `.key-finding` | Highlight box | 36pt |
+- every non-`.pptx` extension, including `.pptm`;
+- packages outside the bounded one-slide generator profile;
+- macro/VBA, ActiveX, custom UI, OLE, embedded, executable, and binary parts;
+- every external relationship, including remote linked images and hyperlinks;
+- unsafe/duplicate ZIP paths, symlinks, encryption, oversized expansion, and
+  excessive compression ratios;
+- malformed or entity-bearing inspected XML;
+- missing internal relationship targets.
 
----
+Read `references/pptx_security.md`.
 
-## Quality Checklist
+## Manual PowerPoint and accessibility gate
 
-### Step 0: Pre-Generation Review (MANDATORY)
+Automation cannot certify accessibility, text rendering, or scientific accuracy.
+In a fully patched PowerPoint:
 
-**For EACH planned graphic, verify:**
-- [ ] Can describe in 3-4 items or less? (NOT 5+)
-- [ ] Is it a simple workflow (3-4 steps, NOT 7+)?
-- [ ] Can describe all text in 10 words or less?
-- [ ] Does it convey ONE message (not multiple)?
+1. Open only the generated and technically clean file.
+2. Run Review > Check Accessibility.
+3. Inspect the Reading Order pane and object names.
+4. Review every alt text and native long description.
+5. Test keyboard and screen-reader navigation.
+6. Confirm fonts are installed/licensed; check embedding choices, substitution, glyphs,
+   equations, overflow, contrast, and all edges.
+7. Verify that color is never the only encoding.
+8. Test every QR code and its visible fallback URL/text.
+9. Obtain author sign-off on all content and citations.
 
-**Reject these patterns:**
-- ❌ "7-stage workflow" → Simplify to "3 mega-stages"
-- ❌ "Multiple case studies" → One case per graphic
-- ❌ "Timeline 2015-2024 annual" → "ONLY 3 key years"
-- ❌ "Compare 6 methods" → "ONLY 2: ours vs best"
+Microsoft's 18 pt slide recommendation is not a universal poster minimum. Evaluate
+font size at final physical output using the manifest's labeled basis and proofs.
 
-### Step 2b: Post-Generation Review (MANDATORY)
+## Export and print
 
-**For EACH generated figure at 25% zoom:**
+Use the approved export plan. When PDF is required, export from the reviewed
+PowerPoint using Standard/high print quality rather than Minimum size.
 
-**✅ PASS criteria (ALL must be true):**
-- [ ] Can read ALL text clearly
-- [ ] Count: 3-4 elements or fewer
-- [ ] White space: 50%+ empty
-- [ ] Understand in 2 seconds
-- [ ] NOT a complex 5+ stage workflow
-- [ ] NOT multiple nested sections
+Independently verify the PDF:
 
-**❌ FAIL criteria (regenerate if ANY true):**
-- [ ] Text small/hard to read → Regenerate with "150pt+"
-- [ ] More than 4 elements → Regenerate "ONLY 3 elements"
-- [ ] Less than 50% white space → Regenerate "60% white space"
-- [ ] Complex multi-stage → SPLIT into 2-3 graphics
-- [ ] Multiple cases cramped → SPLIT into separate graphics
+- page/artboard dimensions, orientation, trim, and bleed;
+- one-page output if required;
+- fonts, clipping, glyphs, equations, and image resampling;
+- tags, reading order, alt text, language, and links;
+- RGB/CMYK conversion and physical color proof;
+- conference naming, file-size, and upload rules.
 
-### After Export
+Print a reduced-scale proof and obtain the printer's required proof. Re-run all checks
+after any change.
 
-- [ ] NO content cut off at ANY of the 4 edges (check carefully)
-- [ ] All images display correctly
-- [ ] Colors render as expected
-- [ ] Text readable at 25% scale
-- [ ] Graphics look SIMPLE (not like complex 7-stage workflows)
+Use `assets/poster_quality_checklist.md` for release sign-off.
 
----
+## Bundled CLIs
 
-## Common Pitfalls to Avoid
-
-**AI-Generated Graphics Mistakes:**
-- ❌ Too many elements (10+ items) → Keep to 3-5 max
-- ❌ Text too small → Specify "GIANT (100pt+)" in prompts
-- ❌ No white space → Add "50% white space" to every prompt
-- ❌ Complex flowcharts (8+ steps) → Limit to 4-5 steps
-
-**HTML/Export Mistakes:**
-- ❌ Content exceeding poster dimensions → Check overflow in browser
-- ❌ Missing background graphics in PDF → Enable in print settings
-- ❌ Wrong paper size in PDF → Match poster dimensions exactly
-- ❌ Low-resolution images → Use 300 DPI minimum
-
-**Content Mistakes:**
-- ❌ Too much text (over 1000 words) → Cut to 300-800 words
-- ❌ Too many sections (7+) → Consolidate to 5-6
-- ❌ No clear visual hierarchy → Make key findings prominent
-
----
-
-## Integration with Other Skills
-
-This skill works with:
-- **Scientific Schematics**: Generate all poster diagrams and flowcharts
-- **Generate Image / Nano Banana Pro**: Create stylized graphics and hero images
-- **LaTeX Posters**: DEFAULT skill for poster creation (use this instead unless PPTX explicitly requested)
-
----
-
-## Template Assets
-
-Available in `assets/` directory:
-
-- `poster_html_template.html`: Main HTML poster template (36×48 inches)
-- `poster_quality_checklist.md`: Pre-submission validation checklist
+- `validate_manifest.py` — strict content/provenance/approval validator.
+- `generate_poster.py` — exact-pinned local PPTX generator.
+- `inspect_pptx.py` — non-executing ZIP/XML security inspector.
+- `check_layout.py` — bounds, overlap, reading-order, and final-font checker.
+- `inventory_images.py` — asset hash/metadata/effective-DPI manifest.
+- `check_palette.py` — WCAG contrast and heuristic palette report.
+- `plan_export.py` — dimensions, scale, fonts, color, media, export, and print preflight.
 
 ## References
 
-Available in `references/` directory:
-
-- `poster_content_guide.md`: Content organization and writing guidelines
-- `poster_design_principles.md`: Typography, color theory, and visual hierarchy
-- `poster_layout_design.md`: Layout principles and grid systems
-
+- `references/manifest_spec.md`
+- `references/poster_content_guide.md`
+- `references/poster_design_principles.md`
+- `references/poster_layout_design.md`
+- `references/pptx_security.md`
+- `references/security_validation.md`
+- `references/source_ledger.md`

@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "evaluation_id": "SYNTHETIC-MODEL-EVAL-001",
+    "title": "Synthetic Aggregate Model Evaluation",
+    "evaluation_target": "Locked binary research model",
+    "target_version": "synthetic-v1",
+    "purpose": "Demonstrate aggregate performance and calibration reporting.",
+    "population": "Synthetic validation cohort; no real persons or records.",
+    "setting": "Synthetic offline evaluation",
+    "outcome": "Synthetic binary outcome",
+    "outcome_horizon": "Synthetic fixed horizon",
+    "threshold": "0.50, prespecified for this synthetic example",
+    "threshold_pre_specified": true,
+    "threshold_source_id": "SRC-PROTOCOL",
+    "validation_dataset": "Independent synthetic aggregate dataset",
+    "external_validation": true,
+    "data_cut_date": "2026-07-23",
+    "data_level": "synthetic",
+    "person_level_output": false,
+    "human_review_required": true
+  },
+  "intended_use": "Research evaluation only; not for patient care or live clinical use.",
+  "prohibited_uses": [
+    "No person-level prediction or classification.",
+    "No diagnosis, treatment recommendation, dosing, triage, alarm, or autonomous decision.",
+    "No claim of clinical validity, utility, safety, fairness, authorization, or compliance."
+  ],
+  "limitations": [
+    "All counts are synthetic.",
+    "Aggregate bins cannot estimate calibration slope.",
+    "Subgroup differences are descriptive and do not determine fairness."
+  ],
+  "human_review": {
+    "required": true,
+    "roles": [
+      "prediction-model methodologist",
+      "domain expert",
+      "fairness and governance reviewer"
+    ],
+    "completed": false
+  },
+  "governance": {
+    "owner": "research model governance owner",
+    "version_and_change_control": "Lock model, threshold, data, code, and report versions; independently validate every change.",
+    "monitoring": "Define aggregate calibration, discrimination, subgroup, drift, failure, and incident review.",
+    "auditability": "Retain provenance, commands, versions, reviewer decisions, and unresolved findings without sensitive data.",
+    "human_factors": "Document intended users and offline usability evidence; live evaluation is outside this skill.",
+    "rollback_and_retirement": "Define rollback, suspension, and retirement triggers before release."
+  },
+  "sources": [
+    {
+      "id": "SRC-PROTOCOL",
+      "citation": "Synthetic locked evaluation protocol, version 1.",
+      "url": "not_applicable_for_local_synthetic_source",
+      "accessed": "2026-07-23"
+    }
+  ],
+  "groups": [
+    {
+      "name": "Synthetic Group A",
+      "n": 120,
+      "confusion": {
+        "tp": 36,
+        "fp": 18,
+        "tn": 50,
+        "fn": 16
+      },
+      "calibration_bins": [
+        {
+          "n": 40,
+          "mean_predicted_probability": 0.2,
+          "observed_events": 12
+        },
+        {
+          "n": 40,
+          "mean_predicted_probability": 0.5,
+          "observed_events": 17
+        },
+        {
+          "n": 40,
+          "mean_predicted_probability": 0.75,
+          "observed_events": 23
+        }
+      ]
+    },
+    {
+      "name": "Synthetic Group B",
+      "n": 120,
+      "confusion": {
+        "tp": 28,
+        "fp": 22,
+        "tn": 56,
+        "fn": 14
+      },
+      "calibration_bins": [
+        {
+          "n": 40,
+          "mean_predicted_probability": 0.2,
+          "observed_events": 11
+        },
+        {
+          "n": 40,
+          "mean_predicted_probability": 0.45,
+          "observed_events": 14
+        },
+        {
+          "n": 40,
+          "mean_predicted_probability": 0.7,
+          "observed_events": 17
+        }
+      ]
+    }
+  ]
+}

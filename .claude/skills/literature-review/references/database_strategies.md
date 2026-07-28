@@ -2,21 +2,19 @@
 
 This document provides comprehensive guidance for searching multiple literature databases systematically and effectively.
 
-## Available Databases
-
-Access every database below with the parallel-web skill: `parallel-cli search --include-domains "<site>"` to find records, then `parallel-cli extract "<url>"` to pull full content. The domain to target is noted per database.
+## Available Databases and Skills
 
 ### Biomedical & Life Sciences
 
 #### PubMed / PubMed Central
-- **Access**: `parallel-cli` on `pubmed.ncbi.nlm.nih.gov,ncbi.nlm.nih.gov`
+- **Access**: Use `gget` skill or WebFetch tool
 - **Coverage**: 35M+ citations in biomedical literature
 - **Best for**: Clinical studies, biomedical research, genetics, molecular biology
 - **Search tips**: Use MeSH terms, Boolean operators (AND, OR, NOT), field tags [Title], [Author]
 - **Example**: `"CRISPR"[Title] AND "gene editing"[Title/Abstract] AND 2020:2024[Publication Date]`
 
 #### bioRxiv / medRxiv
-- **Access**: `parallel-cli` on `biorxiv.org,medrxiv.org`
+- **Access**: Use `gget` skill or direct API
 - **Coverage**: Preprints in biology and medicine
 - **Best for**: Latest unpublished research, cutting-edge findings
 - **Note**: Not peer-reviewed; verify findings with caution
@@ -25,21 +23,21 @@ Access every database below with the parallel-web skill: `parallel-cli search --
 ### General Scientific Literature
 
 #### arXiv
-- **Access**: `parallel-cli` on `arxiv.org`
+- **Access**: Direct API access
 - **Coverage**: Preprints in physics, mathematics, computer science, quantitative biology
 - **Best for**: Computational methods, bioinformatics algorithms, theoretical work
 - **Categories**: q-bio (Quantitative Biology), cs.LG (Machine Learning), stat.ML (Statistics)
 - **Search format**: `cat:q-bio.QM AND title:"single cell"`
 
 #### Semantic Scholar
-- **Access**: `parallel-cli` on `semanticscholar.org`
+- **Access**: Direct API (requires API key)
 - **Coverage**: 200M+ papers across all fields
 - **Best for**: Cross-disciplinary searches, citation graphs, paper recommendations
 - **Features**: Influential citations, paper summaries, related papers
 - **Rate limits**: 100 requests/5 minutes with API key
 
 #### Google Scholar
-- **Access**: `parallel-cli` on `scholar.google.com`
+- **Access**: Web scraping (use cautiously) or manual search
 - **Coverage**: Comprehensive across all fields
 - **Best for**: Finding highly cited papers, conference proceedings, theses
 - **Limitations**: No official API, rate limiting
@@ -48,35 +46,35 @@ Access every database below with the parallel-web skill: `parallel-cli search --
 ### Specialized Databases
 
 #### ChEMBL / PubChem
-- **Access**: `parallel-cli` on `ebi.ac.uk,pubchem.ncbi.nlm.nih.gov`
+- **Access**: Use `gget` skill or `bioservices` skill
 - **Coverage**: Chemical compounds, bioactivity data, drug molecules
 - **Best for**: Drug discovery, chemical biology, medicinal chemistry
 - **ChEMBL**: 2M+ compounds, bioactivity data
 - **PubChem**: 110M+ compounds, assay data
 
 #### UniProt
-- **Access**: `parallel-cli` on `uniprot.org`
+- **Access**: Use `gget` skill or `bioservices` skill
 - **Coverage**: Protein sequence and functional information
 - **Best for**: Protein research, sequence analysis, functional annotations
 - **Search by**: Protein name, gene name, organism, function
 
 #### KEGG (Kyoto Encyclopedia of Genes and Genomes)
-- **Access**: `parallel-cli` on `genome.jp,kegg.jp`
+- **Access**: Use `bioservices` skill
 - **Coverage**: Pathways, diseases, drugs, genes
 - **Best for**: Pathway analysis, systems biology, metabolic research
 
 #### COSMIC (Catalogue of Somatic Mutations in Cancer)
-- **Access**: `parallel-cli` on `cancer.sanger.ac.uk`
+- **Access**: Use `gget` skill or direct download
 - **Coverage**: Cancer genomics, somatic mutations
 - **Best for**: Cancer research, mutation analysis
 
 #### AlphaFold Database
-- **Access**: `parallel-cli` on `alphafold.ebi.ac.uk`
+- **Access**: Use `gget` skill with `alphafold` command
 - **Coverage**: 200M+ protein structure predictions
 - **Best for**: Structural biology, protein modeling
 
 #### PDB (Protein Data Bank)
-- **Access**: `parallel-cli` on `rcsb.org`
+- **Access**: Use `gget` or direct API
 - **Coverage**: Experimental 3D structures of proteins, nucleic acids
 - **Best for**: Structural biology, drug design, molecular modeling
 
@@ -413,26 +411,21 @@ Many databases suggest related articles:
 
 ## Example Multi-Database Search Workflow
 
-```bash
-# Example workflow using parallel-cli (parallel-web skill)
+```python
+# Example workflow using available skills
 
-# 1. Search PubMed
-parallel-cli search "CRISPR AND sickle cell disease" \
-  --include-domains "pubmed.ncbi.nlm.nih.gov,ncbi.nlm.nih.gov" \
-  --json --max-results 25 -o sources/pubmed.json
+# 1. Search PubMed via gget
+search_term = "CRISPR AND sickle cell disease"
+# Use gget search pubmed search_term
 
-# 2. Search bioRxiv / medRxiv
-parallel-cli search "CRISPR sickle cell disease" \
-  --include-domains "biorxiv.org,medrxiv.org" \
-  --json --max-results 25 -o sources/preprints.json
+# 2. Search bioRxiv
+# Use gget search biorxiv search_term
 
 # 3. Search arXiv for computational papers
-parallel-cli search 'CRISPR sickle cell quantitative biology' \
-  --include-domains "arxiv.org" --json --max-results 25 -o sources/arxiv.json
+# Search arXiv with: cat:q-bio AND "CRISPR" AND "sickle cell"
 
-# 4. Search Semantic Scholar
-parallel-cli search "CRISPR sickle cell disease" \
-  --include-domains "semanticscholar.org" --json --max-results 25 -o sources/s2.json
+# 4. Search Semantic Scholar via API
+# Use semantic scholar API with search query
 
 # 5. Aggregate and deduplicate results
 # python search_databases.py combined_results.json --deduplicate --format markdown --output review_papers.md

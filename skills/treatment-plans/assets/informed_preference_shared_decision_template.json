@@ -1,0 +1,11 @@
+{
+  "schema_version": "2.0",
+  "document_type": "informed_preference_shared_decision_record",
+  "document_id": "SHARED-DECISION-TEMPLATE",
+  "subject_ref": "SYNTHETIC-CASE-001",
+  "data_classification": "synthetic",
+  "status": "DRAFT_NOT_FOR_CLINICAL_USE",
+  "notice": "DRAFT — NOT MEDICAL ADVICE — DOCUMENTATION-ONLY — AUTHORIZED CLINICIAN SIGN-OFF REQUIRED",
+  "created_at": null,
+  "entries": []
+}

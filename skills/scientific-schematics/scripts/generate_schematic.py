@@ -6,7 +6,7 @@ Generate any scientific diagram by describing it in natural language.
 Nano Banana 2 handles everything automatically with smart iterative refinement.
 
 Smart iteration: Only regenerates if quality is below threshold for your document type.
-Quality review: Uses Gemini 3.1 Pro Preview for professional scientific evaluation.
+Quality review: Uses Gemini 3.6 Flash for professional scientific evaluation.
 
 Usage:
     # Generate for journal paper (highest quality threshold)
@@ -25,6 +25,28 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Variables forwarded to the generation subprocess. The child needs the
+# OpenRouter credential; the rest keep networking, TLS, and locale working.
+# Copying the whole parent environment instead would hand the child every
+# unrelated secret that happens to be exported in the calling shell.
+FORWARDED_ENV_VARS = (
+    "PATH", "HOME", "LANG", "LC_ALL", "TMPDIR", "PYTHONPATH",
+    "HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY",
+    "http_proxy", "https_proxy", "no_proxy",
+    "SSL_CERT_FILE", "SSL_CERT_DIR", "REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE",
+    # Windows needs these for sockets, temp files, and interpreter startup.
+    "SYSTEMROOT", "WINDIR", "COMSPEC", "PATHEXT",
+    "APPDATA", "LOCALAPPDATA", "USERPROFILE", "TEMP", "TMP",
+)
+
+
+def build_subprocess_env(api_key):
+    """Return a minimal environment for the AI generation subprocess."""
+    env = {name: os.environ[name] for name in FORWARDED_ENV_VARS if name in os.environ}
+    if api_key:
+        env["OPENROUTER_API_KEY"] = api_key
+    return env
+
 
 def main():
     """Command-line interface."""
@@ -36,7 +58,7 @@ How it works:
   Simply describe your diagram in natural language
   Nano Banana 2 generates it automatically with:
   - Smart iteration (only regenerates if quality is below threshold)
-  - Quality review by Gemini 3.1 Pro Preview
+  - Quality review by Gemini 3.6 Flash
   - Document-type aware quality thresholds
   - Publication-ready output
 
@@ -124,10 +146,7 @@ Environment Variables:
     
     # Execute — pass API key via environment to avoid exposure in process listings
     try:
-        env = os.environ.copy()
-        if api_key:
-            env["OPENROUTER_API_KEY"] = api_key
-        result = subprocess.run(cmd, check=False, env=env)
+        result = subprocess.run(cmd, check=False, env=build_subprocess_env(api_key))
         sys.exit(result.returncode)
     except Exception as e:
         print(f"Error executing AI generation: {e}")

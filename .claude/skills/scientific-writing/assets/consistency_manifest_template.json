@@ -1,0 +1,43 @@
+{
+  "methods": [
+    {
+      "analysis_intent": "confirmatory",
+      "method_id": "M001",
+      "name": "[[TODO:verified-method-name]]",
+      "outcome_ids": [
+        "O001"
+      ],
+      "protocol_status": "prespecified"
+    }
+  ],
+  "numeric_facts": [
+    {
+      "analysis_set": "[[TODO:analysis-set]]",
+      "concept": "[[TODO:fact-concept]]",
+      "denominator": null,
+      "evidence_ids": [
+        "E001"
+      ],
+      "fact_id": "N001",
+      "numerator": null,
+      "sample_size": null,
+      "section": "[[TODO:section]]",
+      "unit": "[[TODO:unit]]",
+      "value": null
+    }
+  ],
+  "results": [
+    {
+      "analysis_intent": "confirmatory",
+      "evidence_ids": [
+        "E001"
+      ],
+      "method_id": "M001",
+      "outcome_id": "O001",
+      "reported_sections": [],
+      "result_id": "R001",
+      "sample_size": null
+    }
+  ],
+  "schema_version": "1.0"
+}

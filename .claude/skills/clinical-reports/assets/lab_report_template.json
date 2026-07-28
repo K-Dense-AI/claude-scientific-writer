@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "laboratory_report_scaffold",
+  "draft_status": "BLOCKED_INCOMPLETE_DRAFT_NOT_FOR_CLINICAL_USE_OR_RELEASE",
+  "safety_notice": "Copy only released, verified laboratory source facts. Do not calculate, convert, interpret, flag, suppress, set reference intervals, set critical thresholds, notify, correct, release, or sign.",
+  "data_classification": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "guidance": {
+    "base": "42 CFR 493.1291",
+    "scope_verified_by_laboratory": false,
+    "specialty_requirements": null,
+    "state_accreditor_and_local_policy_versions": null
+  },
+  "report_status": null,
+  "source_system_record": null,
+  "fields": {
+    "performing_laboratory": {"status": "missing", "source_fact_ids": []},
+    "specimen": {"status": "missing", "source_fact_ids": []},
+    "test_and_method": {"status": "missing", "source_fact_ids": []},
+    "released_result": {"status": "missing", "source_fact_ids": []},
+    "released_units": {"status": "missing", "source_fact_ids": []},
+    "released_reference_interval": {"status": "missing", "source_fact_ids": []},
+    "released_flags_or_comments": {"status": "missing", "source_fact_ids": []},
+    "referral_laboratory_information": {"status": "missing", "source_fact_ids": []},
+    "original_and_corrected_report_linkage": {"status": "missing", "source_fact_ids": []},
+    "documented_notification_record": {"status": "missing", "source_fact_ids": []}
+  },
+  "provenance_manifest": null,
+  "review": {
+    "authorized_laboratory_review": "pending",
+    "privacy_review": "pending",
+    "released_from_authorized_system": false,
+    "signature_present": false
+  }
+}

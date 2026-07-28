@@ -1,0 +1,13 @@
+{
+  "schema_version": "2.0",
+  "document_type": "goals_monitoring_checkpoint_record",
+  "document_id": "GOALS-MONITORING-TEMPLATE",
+  "subject_ref": "SYNTHETIC-CASE-001",
+  "data_classification": "synthetic",
+  "status": "DRAFT_NOT_FOR_CLINICAL_USE",
+  "notice": "DRAFT — NOT MEDICAL ADVICE — DOCUMENTATION-ONLY — AUTHORIZED CLINICIAN SIGN-OFF REQUIRED",
+  "created_at": null,
+  "goals": [],
+  "monitoring_items": [],
+  "checkpoints": []
+}

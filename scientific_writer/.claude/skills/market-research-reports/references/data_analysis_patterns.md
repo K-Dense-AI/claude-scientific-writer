@@ -1,548 +1,290 @@
 # Data Analysis Patterns for Market Research
 
-Templates and frameworks for conducting rigorous market analysis.
+## Measurement contract
 
----
+Define the quantity before collecting numbers:
 
-## Market Sizing Frameworks
+- product/service inclusion and exclusion;
+- buyer, user, payer, and transaction type;
+- geography and treatment of imports/exports;
+- historical period, forecast horizon, and as-of date;
+- revenue, expenditure, gross output, value added, units, capacity, users, or
+  another measure;
+- stock versus flow;
+- gross versus net, taxes included/excluded, and channel level;
+- currency, exchange-rate convention, base year, and nominal/real basis;
+- industry and product taxonomy with version;
+- denominator ID used in every share or rate.
 
-### TAM/SAM/SOM Analysis
+If two estimates do not share this contract, they are not directly comparable.
 
-**Total Addressable Market (TAM)** represents the total revenue opportunity if 100% market share was achieved.
+## TAM, SAM, and SOM
 
-#### Top-Down Approach
-```
-TAM = Total Industry Revenue (from market research reports)
+Treat all three as conditional scenario constructs.
 
-Example:
-- Global AI Software Market (2024): $184 billion
-- Source: Gartner, IDC, or similar
-```
+### Definitions
 
-#### Bottom-Up Approach
-```
-TAM = Number of Potential Customers × Average Revenue per Customer
+- **TAM**: value or volume of all in-scope demand under the stated market
+  definition and time basis.
+- **SAM**: subset of TAM serviceable under explicit product, geography,
+  regulatory, channel, capacity, and customer constraints.
+- **SOM**: subset of SAM obtainable within a stated time horizon under explicit
+  competitive, operational, sales, retention, and capacity assumptions.
 
-Example:
-- Number of enterprises globally: 400 million
-- Target segment (large enterprises): 50,000
-- Average annual spend on solution: $500,000
-- TAM = 50,000 × $500,000 = $25 billion
-```
+Never present SOM as a guaranteed share or TAM as an objective universal truth.
 
-**Serviceable Addressable Market (SAM)** represents the portion of TAM that can be served given product/service capabilities.
+### Top-down method
 
-```
-SAM = TAM × Applicable Segment %
+Use disjoint components:
 
-Example:
-- TAM: $25 billion
-- Geographic constraint (North America only): 40%
-- Product fit (enterprise only): 60%
-- SAM = $25B × 40% × 60% = $6 billion
-```
-
-**Serviceable Obtainable Market (SOM)** represents realistic market share capture.
-
-```
-SOM = SAM × Achievable Market Share %
-
-Example:
-- SAM: $6 billion
-- Conservative market share (5%): $300 million
-- Base case market share (10%): $600 million
-- Optimistic market share (15%): $900 million
+```text
+TAM_top = sum(value_i * in_scope_fraction_i)
 ```
 
-### Growth Rate Calculation
+Each component needs a unique coverage key, source IDs, period, unit, and
+denominator. Do not apply a broad percentage to an unrelated aggregate merely
+because the resulting number looks plausible.
 
-#### CAGR (Compound Annual Growth Rate)
-```
-CAGR = (End Value / Start Value)^(1/n) - 1
+### Bottom-up method
 
-Where n = number of years
+For a recurring-use market:
 
-Example:
-- 2020 market size: $10 billion
-- 2024 market size: $18 billion
-- n = 4 years
-- CAGR = (18/10)^(1/4) - 1 = 15.8%
-```
+```text
+component_i =
+    customer_count_i
+  * addressable_fraction_i
+  * annual_quantity_per_customer_i
+  * price_per_unit_i
 
-#### Year-over-Year Growth
-```
-YoY Growth = (Current Year - Previous Year) / Previous Year × 100
-
-Example:
-- 2023: $15 billion
-- 2024: $18 billion
-- YoY Growth = (18-15)/15 × 100 = 20%
+TAM_bottom = sum(component_i)
 ```
 
----
-
-## Porter's Five Forces Analysis
-
-### Framework Template
-
-For each force, assess: **HIGH**, **MEDIUM**, or **LOW**
-
-#### 1. Threat of New Entrants
-
-**Factors to evaluate:**
-| Factor | Assessment | Notes |
-|--------|------------|-------|
-| Capital requirements | High/Med/Low | $ required to enter |
-| Economies of scale | Strong/Moderate/Weak | Incumbent advantages |
-| Brand loyalty | High/Med/Low | Customer switching cost |
-| Access to distribution | Easy/Moderate/Difficult | Channel availability |
-| Regulatory barriers | High/Med/Low | Licensing, certifications |
-| Proprietary technology | Critical/Important/Minor | IP and know-how |
-| Expected retaliation | Aggressive/Moderate/Passive | Incumbent response |
-
-**Overall Assessment:** [HIGH/MEDIUM/LOW]
-
-**Key Insights:** [Summary of implications]
-
-#### 2. Bargaining Power of Suppliers
-
-**Factors to evaluate:**
-| Factor | Assessment | Notes |
-|--------|------------|-------|
-| Supplier concentration | High/Med/Low | Number of suppliers |
-| Switching costs | High/Med/Low | Cost to change suppliers |
-| Supplier differentiation | High/Med/Low | Uniqueness of inputs |
-| Forward integration threat | High/Med/Low | Can suppliers compete? |
-| Importance to supplier | Critical/Important/Minor | Your share of their revenue |
-| Substitute inputs | Many/Some/Few | Alternatives available |
-
-**Overall Assessment:** [HIGH/MEDIUM/LOW]
-
-#### 3. Bargaining Power of Buyers
-
-**Factors to evaluate:**
-| Factor | Assessment | Notes |
-|--------|------------|-------|
-| Buyer concentration | High/Med/Low | Few large vs. many small |
-| Purchase volume | Large/Medium/Small | Relative importance |
-| Switching costs | Low/Med/High | Cost to change vendors |
-| Price sensitivity | High/Med/Low | Focus on price vs. value |
-| Backward integration threat | High/Med/Low | Can buyers self-supply? |
-| Information availability | Full/Partial/Limited | Market transparency |
-
-**Overall Assessment:** [HIGH/MEDIUM/LOW]
-
-#### 4. Threat of Substitutes
-
-**Factors to evaluate:**
-| Factor | Assessment | Notes |
-|--------|------------|-------|
-| Substitute availability | Many/Some/Few | Number of alternatives |
-| Price-performance ratio | Better/Same/Worse | Value comparison |
-| Switching costs | Low/Med/High | Friction to substitute |
-| Buyer propensity to switch | High/Med/Low | Willingness to change |
-| Perceived differentiation | Low/Med/High | Unique value |
-
-**Overall Assessment:** [HIGH/MEDIUM/LOW]
-
-#### 5. Competitive Rivalry
-
-**Factors to evaluate:**
-| Factor | Assessment | Notes |
-|--------|------------|-------|
-| Number of competitors | Many/Several/Few | Market fragmentation |
-| Industry growth | Slow/Moderate/Fast | Growth rate impact |
-| Fixed costs | High/Med/Low | Pressure to fill capacity |
-| Product differentiation | Low/Med/High | Commoditization level |
-| Exit barriers | High/Med/Low | Difficulty leaving market |
-| Strategic stakes | High/Med/Low | Importance to competitors |
-
-**Overall Assessment:** [HIGH/MEDIUM/LOW]
-
-### Five Forces Summary Table
-
-| Force | Rating | Key Drivers | Implications |
-|-------|--------|-------------|--------------|
-| New Entrants | [H/M/L] | [Top factors] | [Strategic impact] |
-| Supplier Power | [H/M/L] | [Top factors] | [Strategic impact] |
-| Buyer Power | [H/M/L] | [Top factors] | [Strategic impact] |
-| Substitutes | [H/M/L] | [Top factors] | [Strategic impact] |
-| Rivalry | [H/M/L] | [Top factors] | [Strategic impact] |
-
-**Overall Industry Attractiveness:** [ATTRACTIVE / MODERATE / UNATTRACTIVE]
-
----
-
-## PESTLE Analysis
-
-### Framework Template
-
-#### Political Factors
-
-| Factor | Current State | Trend | Impact | Time Horizon |
-|--------|---------------|-------|--------|--------------|
-| Government stability | | ↑ ↓ → | H/M/L | Short/Med/Long |
-| Trade policies | | ↑ ↓ → | H/M/L | |
-| Tax regulations | | ↑ ↓ → | H/M/L | |
-| Government support | | ↑ ↓ → | H/M/L | |
-| Political relations | | ↑ ↓ → | H/M/L | |
-
-**Key Political Implications:** [Summary]
-
-#### Economic Factors
-
-| Factor | Current State | Trend | Impact | Time Horizon |
-|--------|---------------|-------|--------|--------------|
-| GDP growth | X.X% | ↑ ↓ → | H/M/L | |
-| Interest rates | X.X% | ↑ ↓ → | H/M/L | |
-| Inflation | X.X% | ↑ ↓ → | H/M/L | |
-| Exchange rates | | ↑ ↓ → | H/M/L | |
-| Consumer spending | | ↑ ↓ → | H/M/L | |
-| Unemployment | X.X% | ↑ ↓ → | H/M/L | |
-
-**Key Economic Implications:** [Summary]
-
-#### Social Factors
-
-| Factor | Current State | Trend | Impact | Time Horizon |
-|--------|---------------|-------|--------|--------------|
-| Demographics | | ↑ ↓ → | H/M/L | |
-| Cultural attitudes | | ↑ ↓ → | H/M/L | |
-| Consumer behavior | | ↑ ↓ → | H/M/L | |
-| Education levels | | ↑ ↓ → | H/M/L | |
-| Health consciousness | | ↑ ↓ → | H/M/L | |
-| Work-life balance | | ↑ ↓ → | H/M/L | |
-
-**Key Social Implications:** [Summary]
-
-#### Technological Factors
-
-| Factor | Current State | Trend | Impact | Time Horizon |
-|--------|---------------|-------|--------|--------------|
-| R&D activity | | ↑ ↓ → | H/M/L | |
-| Technology adoption | | ↑ ↓ → | H/M/L | |
-| Automation | | ↑ ↓ → | H/M/L | |
-| Digital infrastructure | | ↑ ↓ → | H/M/L | |
-| Innovation rate | | ↑ ↓ → | H/M/L | |
-| Disruptive tech | | ↑ ↓ → | H/M/L | |
-
-**Key Technological Implications:** [Summary]
-
-#### Legal Factors
-
-| Factor | Current State | Trend | Impact | Time Horizon |
-|--------|---------------|-------|--------|--------------|
-| Industry regulations | | ↑ ↓ → | H/M/L | |
-| Data protection | | ↑ ↓ → | H/M/L | |
-| Employment law | | ↑ ↓ → | H/M/L | |
-| Consumer protection | | ↑ ↓ → | H/M/L | |
-| IP rights | | ↑ ↓ → | H/M/L | |
-| Antitrust | | ↑ ↓ → | H/M/L | |
-
-**Key Legal Implications:** [Summary]
-
-#### Environmental Factors
-
-| Factor | Current State | Trend | Impact | Time Horizon |
-|--------|---------------|-------|--------|--------------|
-| Climate change | | ↑ ↓ → | H/M/L | |
-| Sustainability reqs | | ↑ ↓ → | H/M/L | |
-| Resource availability | | ↑ ↓ → | H/M/L | |
-| Waste management | | ↑ ↓ → | H/M/L | |
-| Carbon regulations | | ↑ ↓ → | H/M/L | |
-| Environmental awareness | | ↑ ↓ → | H/M/L | |
-
-**Key Environmental Implications:** [Summary]
-
----
-
-## SWOT Analysis
-
-### Framework Template
-
-#### Strengths (Internal, Positive)
-| Strength | Evidence | Strategic Value |
-|----------|----------|-----------------|
-| [Strength 1] | [Data/proof] | High/Med/Low |
-| [Strength 2] | [Data/proof] | High/Med/Low |
-| [Strength 3] | [Data/proof] | High/Med/Low |
-
-**Core Strengths Summary:** [2-3 sentence synthesis]
-
-#### Weaknesses (Internal, Negative)
-| Weakness | Evidence | Severity |
-|----------|----------|----------|
-| [Weakness 1] | [Data/proof] | Critical/Moderate/Minor |
-| [Weakness 2] | [Data/proof] | Critical/Moderate/Minor |
-| [Weakness 3] | [Data/proof] | Critical/Moderate/Minor |
-
-**Key Vulnerabilities Summary:** [2-3 sentence synthesis]
-
-#### Opportunities (External, Positive)
-| Opportunity | Size/Potential | Timeframe |
-|-------------|----------------|-----------|
-| [Opportunity 1] | $X / High/Med/Low | Short/Med/Long |
-| [Opportunity 2] | $X / High/Med/Low | Short/Med/Long |
-| [Opportunity 3] | $X / High/Med/Low | Short/Med/Long |
-
-**Priority Opportunities Summary:** [2-3 sentence synthesis]
-
-#### Threats (External, Negative)
-| Threat | Likelihood | Impact |
-|--------|------------|--------|
-| [Threat 1] | High/Med/Low | High/Med/Low |
-| [Threat 2] | High/Med/Low | High/Med/Low |
-| [Threat 3] | High/Med/Low | High/Med/Low |
-
-**Critical Threats Summary:** [2-3 sentence synthesis]
-
-### SWOT Strategy Matrix
-
-| | **Strengths** | **Weaknesses** |
-|---|---------------|----------------|
-| **Opportunities** | **SO Strategies** (use strengths to capture opportunities) | **WO Strategies** (overcome weaknesses to capture opportunities) |
-| **Threats** | **ST Strategies** (use strengths to mitigate threats) | **WT Strategies** (minimize weaknesses and avoid threats) |
-
----
-
-## BCG Growth-Share Matrix
-
-### Framework Template
-
-**Axes:**
-- X-axis: Relative Market Share (High → Low, logarithmic scale)
-- Y-axis: Market Growth Rate (High → Low, typically 10% as midpoint)
-
-### Quadrant Definitions
-
-| Quadrant | Growth | Share | Characteristics | Strategy |
-|----------|--------|-------|-----------------|----------|
-| **Stars** | High | High | Market leaders in growing markets | Invest to maintain position |
-| **Cash Cows** | Low | High | Market leaders in mature markets | Harvest for cash flow |
-| **Question Marks** | High | Low | Small share in growing markets | Invest selectively or divest |
-| **Dogs** | Low | Low | Small share in mature markets | Divest or minimize investment |
-
-### Product/Business Unit Analysis
-
-| Product/BU | Market Growth | Relative Share | Quadrant | Recommended Strategy |
-|------------|---------------|----------------|----------|---------------------|
-| [Product A] | X.X% | X.X | Star/Cow/QM/Dog | [Strategy] |
-| [Product B] | X.X% | X.X | Star/Cow/QM/Dog | [Strategy] |
-| [Product C] | X.X% | X.X | Star/Cow/QM/Dog | [Strategy] |
-
-### Portfolio Balance Assessment
-
-| Quadrant | Number of Products | Revenue % | Investment Priority |
-|----------|-------------------|-----------|---------------------|
-| Stars | X | X% | High |
-| Cash Cows | X | X% | Maintain |
-| Question Marks | X | X% | Selective |
-| Dogs | X | X% | Low/Divest |
-
----
-
-## Value Chain Analysis
-
-### Framework Template
-
-#### Primary Activities
-
-| Activity | Description | Value Created | Cost | Competitive Position |
-|----------|-------------|---------------|------|---------------------|
-| **Inbound Logistics** | Receiving, storing, inventory | | $X | Strong/Average/Weak |
-| **Operations** | Manufacturing, assembly | | $X | Strong/Average/Weak |
-| **Outbound Logistics** | Distribution, delivery | | $X | Strong/Average/Weak |
-| **Marketing & Sales** | Promotion, sales force | | $X | Strong/Average/Weak |
-| **Service** | Installation, support, repair | | $X | Strong/Average/Weak |
-
-#### Support Activities
-
-| Activity | Description | Value Created | Cost | Competitive Position |
-|----------|-------------|---------------|------|---------------------|
-| **Infrastructure** | Management, finance, legal | | $X | Strong/Average/Weak |
-| **HR Management** | Recruiting, training, comp | | $X | Strong/Average/Weak |
-| **Technology Dev** | R&D, process improvement | | $X | Strong/Average/Weak |
-| **Procurement** | Purchasing, supplier mgmt | | $X | Strong/Average/Weak |
-
-### Value Chain Margin Analysis
-
-```
-Total Revenue:           $XXX
-- Inbound Logistics:     ($XX)
-- Operations:            ($XX)
-- Outbound Logistics:    ($XX)
-- Marketing & Sales:     ($XX)
-- Service:               ($XX)
-- Support Activities:    ($XX)
-= Margin:                $XX (X%)
+Alternative physical-capacity models may use installed base, utilization,
+replacement cycle, throughput, or transactions. Keep dimensions explicit so
+the resulting unit can be checked.
+
+### SAM and SOM
+
+```text
+SAM_s = TAM * serviceable_fraction_s
+SOM_s = SAM_s * obtainable_share_s
 ```
 
-### Competitive Comparison
+The fractions belong to scenario `s`. At minimum, use distinct downside and
+upside cases; a base case is usually useful. For each case, list assumptions,
+evidence, constraints, and horizon. Do not assign probabilities without a
+validated probabilistic model.
 
-| Activity | Company | Industry Avg | Best-in-Class | Gap |
-|----------|---------|--------------|---------------|-----|
-| [Activity] | X% | Y% | Z% | +/-X% |
+### Preventing double counting
 
----
+Common failures:
 
-## Competitive Positioning Analysis
+- adding manufacturer revenue to distributor or end-customer spend;
+- adding domestic production, imports, and sales without subtracting exports,
+  inventories, or overlapping channels;
+- summing parent and subsidiary revenue;
+- adding product bundles and their included components;
+- combining gross output and value added;
+- counting the same establishment in multiple segment labels;
+- adding annual transactions to installed-base stock;
+- applying overlapping geography or customer filters independently.
 
-### Framework Template
+Controls:
 
-#### Positioning Dimensions
+1. assign a unique coverage key to every component;
+2. use mutually exclusive, collectively understood segments;
+3. define a single denominator ID;
+4. draw money and product flows through the value chain;
+5. reconcile supply, use, trade, inventory, and channel margins;
+6. show an ``unallocated/unknown'' residual rather than forcing totals;
+7. test the sum against an independent control total.
 
-Common positioning dimension pairs:
-- Price vs. Quality
-- Market Focus (Niche vs. Broad)
-- Solution Type (Product vs. Platform)
-- Geographic Scope (Regional vs. Global)
-- Customer Focus (Enterprise vs. SMB vs. Consumer)
-- Innovation Level (Leader vs. Follower)
+Supply-use tables distinguish products from industries and the origin/use of
+goods and services. Use the
+[OECD Supply and Use Tables](https://www.oecd.org/en/data/datasets/supply-and-use-tables.html)
+and national accounts methodology when the value chain spans intermediate and
+final demand.
 
-#### Competitor Mapping
+### Reconciliation
 
-| Competitor | Dimension 1 Score (1-10) | Dimension 2 Score (1-10) | Market Share | Notes |
-|------------|-------------------------|-------------------------|--------------|-------|
-| Company A | X | X | X% | [Position description] |
-| Company B | X | X | X% | [Position description] |
-| Company C | X | X | X% | [Position description] |
+Keep methods separate:
 
-#### Strategic Group Identification
-
-| Strategic Group | Companies | Characteristics | Market Share |
-|-----------------|-----------|-----------------|--------------|
-| Group 1: [Name] | A, B, C | [Description] | X% |
-| Group 2: [Name] | D, E | [Description] | X% |
-| Group 3: [Name] | F, G, H | [Description] | X% |
-
----
-
-## Risk Assessment Framework
-
-### Risk Identification
-
-#### Risk Categories
-1. **Market Risks**: Demand changes, price pressure, market shifts
-2. **Competitive Risks**: New entrants, competitor moves, disruption
-3. **Regulatory Risks**: New regulations, compliance requirements
-4. **Technology Risks**: Obsolescence, security, integration
-5. **Operational Risks**: Supply chain, quality, capacity
-6. **Financial Risks**: Currency, interest rates, credit
-7. **Reputational Risks**: Brand damage, social media, ethics
-
-### Risk Assessment Matrix
-
-| Risk ID | Risk Description | Category | Probability | Impact | Score | Priority |
-|---------|------------------|----------|-------------|--------|-------|----------|
-| R1 | [Description] | Market | 1-5 | 1-5 | P×I | H/M/L |
-| R2 | [Description] | Competitive | 1-5 | 1-5 | P×I | H/M/L |
-
-**Scoring Guide:**
-- Probability: 1=Very Unlikely, 2=Unlikely, 3=Possible, 4=Likely, 5=Very Likely
-- Impact: 1=Minimal, 2=Minor, 3=Moderate, 4=Major, 5=Severe
-- Priority: Score 15-25=High, 8-14=Medium, 1-7=Low
-
-### Risk Mitigation Planning
-
-| Risk ID | Risk | Mitigation Strategy | Owner | Timeline | Cost |
-|---------|------|---------------------|-------|----------|------|
-| R1 | [Risk] | [Prevention + Response] | [Name] | [Date] | $X |
-
----
-
-## Financial Analysis Patterns
-
-### Revenue Projection Model
-
-```
-Year N Revenue = Year N-1 Revenue × (1 + Growth Rate)
-
-Or bottom-up:
-Revenue = Customers × Revenue per Customer × Retention Rate
-        + New Customers × Revenue per Customer × (1 - Churn Rate)
+```text
+absolute_gap = abs(TAM_top - TAM_bottom)
+midpoint = (TAM_top + TAM_bottom) / 2
+gap_percent = absolute_gap / midpoint
 ```
 
-### Scenario Analysis Template
+Investigate gaps in this order:
 
-| Metric | Conservative | Base Case | Optimistic |
-|--------|--------------|-----------|------------|
-| Market Growth | X% | Y% | Z% |
-| Market Share | X% | Y% | Z% |
-| Pricing | $X | $Y | $Z |
-| Gross Margin | X% | Y% | Z% |
-| **Revenue Y5** | $X | $Y | $Z |
-| **EBITDA Y5** | $X | $Y | $Z |
+1. definition and denominator;
+2. geography, period, currency, and price basis;
+3. taxonomy and segment concordance;
+4. gross/net, taxes, channel margins, imports/exports;
+5. missing or duplicate coverage;
+6. source revision and sample limitations;
+7. price, volume, penetration, and utilization assumptions.
 
-### Key Financial Metrics
+Do not average the methods until their scopes are demonstrably compatible. If
+uncertainty remains, report both or retain a range.
 
-| Metric | Formula | Target |
-|--------|---------|--------|
-| Gross Margin | (Revenue - COGS) / Revenue | X% |
-| EBITDA Margin | EBITDA / Revenue | X% |
-| Customer Acquisition Cost | Sales & Marketing / New Customers | $X |
-| Lifetime Value | ARPU × Gross Margin × Lifetime | $X |
-| LTV/CAC Ratio | LTV / CAC | >3x |
-| Payback Period | CAC / (ARPU × Gross Margin × 12) | <X months |
+## Growth and forecasts
 
----
+### Historical growth
 
-## Data Collection Checklist
+```text
+YoY_t = value_t / value_(t-1) - 1
+CAGR = (end / start)^(1 / periods) - 1
+```
 
-### Market Size Data
-- [ ] Current market size (with year and source)
-- [ ] Historical market size (5-10 years)
-- [ ] Market growth projections (5-10 years)
-- [ ] CAGR (historical and projected)
-- [ ] Regional breakdown
-- [ ] Segment breakdown
+CAGR compresses the path. Always show start/end values and period count. It is
+undefined when the start is nonpositive and can hide volatility, breaks, and
+revisions.
 
-### Competitive Data
-- [ ] Market share by company (top 10)
-- [ ] Revenue by competitor
-- [ ] Growth rates by competitor
-- [ ] Strategic moves (M&A, partnerships, launches)
-- [ ] Pricing information
-- [ ] Product/service offerings
+### Scenario forecast
 
-### Customer Data
-- [ ] Customer segments and sizes
-- [ ] Segment growth rates
-- [ ] Average deal size by segment
-- [ ] Customer acquisition cost
-- [ ] Customer lifetime value
-- [ ] Churn rates
+```text
+value_(t+1,s) = value_(t,s) * (1 + growth_rate_(t,s))
+```
 
-### Industry Data
-- [ ] Key industry trends
-- [ ] Regulatory developments
-- [ ] Technology trends
-- [ ] Economic indicators
-- [ ] Demographic trends
+Build rate paths from named drivers rather than copying a paid headline
+forecast. Separate:
 
----
+- historical observed period;
+- nowcast or estimate period;
+- conditional forecast period.
 
-## Research Sources
+For each scenario, state demand, price, supply, regulation, competition,
+capacity, and timing assumptions. Use different paths, not merely different
+labels.
 
-### Primary Research
-- Customer interviews
-- Expert interviews
-- Surveys
-- Focus groups
+### Sensitivity
 
-### Secondary Research
-- Market research reports (Gartner, Forrester, IDC, McKinsey)
-- Industry associations
-- Government statistics
-- Company annual reports
-- SEC filings (10-K, 10-Q)
-- Earnings call transcripts
-- Trade publications
-- Academic journals
-- News articles
+One-way sensitivity varies one input while holding others fixed. Report:
 
-### Data Validation
-- Cross-reference multiple sources
-- Check date currency (prefer <2 years old)
-- Verify methodology
-- Note confidence levels
-- Document assumptions
+- tested range and rationale;
+- resulting endpoints;
+- switching value where the decision changes;
+- nonlinearities or constraints;
+- interactions omitted by one-way analysis.
+
+Scenario analysis explores coherent joint states. It is not a confidence
+interval. Statistical prediction intervals require a specified model, error
+process, diagnostics, and coverage interpretation.
+
+The 2023
+[OMB Circular A-4](https://www.whitehouse.gov/wp-content/uploads/2023/11/CircularA-4.pdf)
+provides primary guidance on characterizing uncertainty, sensitivity, and
+transparent assumptions. The
+[UK Green Book 2026](https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government/the-green-book-2026)
+provides additional public-sector appraisal guidance. Adapt principles
+proportionately; do not imply that a market report is a regulatory appraisal.
+
+## Units, currencies, and price bases
+
+### Nominal and real
+
+- **Nominal/current-price** values reflect prices in each period.
+- **Real/constant-price** values remove price change using an identified
+  deflator and base/reference year.
+- Never combine nominal and real values in one total or growth rate.
+- Match nominal values to nominal assumptions and real values to real
+  assumptions.
+
+Record:
+
+```text
+real_value_base_year = nominal_value_t * price_index_base / price_index_t
+```
+
+Identify the index, geography, category, vintage, and whether it is appropriate
+for the market. A broad CPI may be unsuitable for a specialized B2B input.
+
+### Chained measures
+
+Chained-dollar components may not add to published aggregates. BEA's
+[chained-dollar guidance](https://www.bea.gov/resources/methodologies/chained-dollar-indexes)
+explains why. Use published contributions to growth or current-dollar
+composition rather than forcing additivity.
+
+### Currency conversion
+
+Record:
+
+- source and target currency;
+- spot, period-average, or period-end convention;
+- rate date/period and source;
+- order of currency conversion and deflation;
+- effects of high inflation or multiple exchange-rate regimes.
+
+Do not mix converted flows using period-end rates with balances using averages
+without explanation.
+
+### Stock and flow
+
+A stock is measured at a point in time; a flow over an interval. Installed
+base, employees on a date, and capacity are stocks. Revenue, transactions, and
+shipments during a year are flows. A stock-to-flow conversion requires an
+explicit turnover, utilization, or replacement-cycle assumption.
+
+## Shares and concentration
+
+```text
+share_i = in_scope_measure_i / same_scope_total
+HHI = sum((100 * share_i)^2)
+CR4 = sum(four_largest_shares)
+```
+
+Before computing:
+
+- define product and geographic scope;
+- use one share metric and denominator;
+- include the same period and channel level;
+- account for unknown/residual firms;
+- disclose whether values are revenue, units, capacity, or active users;
+- avoid false precision when company and total estimates use different methods.
+
+The [2023 U.S. Merger Guidelines](https://www.ftc.gov/system/files/ftc_gov/pdf/2023_merger_guidelines_final_12.18.2023.pdf)
+describe HHI as one indicator in case-specific merger analysis. The
+[2024 EU Market Definition Notice](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:C_202401645)
+addresses product/geographic scope, non-price parameters, dynamic and digital
+markets, alternate share metrics, and evidence. A market report's HHI is
+descriptive and is not a legal conclusion.
+
+## Survey and interview synthesis
+
+### Survey estimate
+
+For a probability sample, report the design-based or model-based estimator,
+weights, design effect, and appropriate uncertainty. Do not infer population
+precision from sample size alone.
+
+For a non-probability sample, disclose recruitment and model assumptions. Use
+careful labels such as ``among respondents'' unless a validated adjustment
+supports broader inference.
+
+### Interview themes
+
+Use a structured coding frame:
+
+```text
+theme_id | definition | inclusion rule | exclusion rule |
+supporting excerpts | disconfirming excerpts | roles represented
+```
+
+Report a theme as qualitative evidence. Do not translate mention counts into
+market prevalence.
+
+## Confidence labels
+
+Confidence is an analyst assessment, not a substitute for uncertainty:
+
+- **High**: directly observed, well-defined primary evidence with compatible
+  scope and low material revision risk.
+- **Medium**: triangulated evidence with manageable assumptions or limitations.
+- **Low**: sparse, conflicting, indirect, modeled, or scope-mismatched evidence.
+- **Not assessed**: opinion or recommendation where an evidence-confidence
+  label is inappropriate.
+
+Always state the reasons. Multiple low-quality sources do not automatically
+produce high confidence.

@@ -1,369 +1,260 @@
 #!/usr/bin/env python3
-"""
-Treatment Timeline Generator
-Generates visual treatment timelines from treatment plan files.
-"""
+"""Create a schedule from explicitly supplied dates only."""
 
-import sys
-import re
+from __future__ import annotations
+
 import argparse
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import List, Dict, Tuple
+import sys
+from datetime import date
 
-# Try to import matplotlib, but make it optional
-try:
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
-    from matplotlib.patches import Rectangle
-    HAS_MATPLOTLIB = True
-except ImportError:
-    HAS_MATPLOTLIB = False
-
-
-def extract_timeline_info(content: str) -> Dict[str, List[Tuple[str, str]]]:
-    """
-    Extract timeline and schedule information from treatment plan.
-    Returns dict with phases, appointments, milestones.
-    """
-    timeline_data = {
-        'phases': [],
-        'appointments': [],
-        'milestones': []
-    }
-    
-    # Extract treatment phases
-    # Look for patterns like "Week 1-4: Description" or "Months 1-3: Description"
-    phase_patterns = [
-        r'(Week[s]?\s*\d+[-–]\d+|Month[s]?\s*\d+[-–]\d+)[:\s]+([^\n]+)',
-        r'(POD\s*\d+[-–]\d+)[:\s]+([^\n]+)',
-        r'(\d+[-–]\d+\s*week[s]?)[:\s]+([^\n]+)'
-    ]
-    
-    for pattern in phase_patterns:
-        matches = re.findall(pattern, content, re.IGNORECASE)
-        for timeframe, description in matches:
-            timeline_data['phases'].append((timeframe.strip(), description.strip()))
-    
-    # Extract appointments
-    # Look for patterns like "Week 2: Visit" or "Month 3: Follow-up"
-    apt_patterns = [
-        r'(Week\s*\d+|Month\s*\d+|POD\s*\d+)[:\s]+(Visit|Appointment|Follow-up|Check-up|Consultation)([^\n]*)',
-        r'(Every\s+\d+\s+\w+)[:\s]+(Visit|Appointment|therapy|session)([^\n]*)'
-    ]
-    
-    for pattern in apt_patterns:
-        matches = re.findall(pattern, content, re.IGNORECASE)
-        for timeframe, visit_type, details in matches:
-            timeline_data['appointments'].append((timeframe.strip(), f"{visit_type}{details}".strip()))
-    
-    # Extract milestones/assessments
-    # Look for "reassessment", "goal evaluation", "milestone" mentions
-    milestone_patterns = [
-        r'(Week\s*\d+|Month\s*\d+)[:\s]+(reassess|evaluation|assessment|milestone)([^\n]*)',
-        r'(\w+\s*\d+)[:\s]+(HbA1c|labs?|imaging|test)([^\n]*)'
-    ]
-    
-    for pattern in milestone_patterns:
-        matches = re.findall(pattern, content, re.IGNORECASE)
-        for timeframe, event_type, details in matches:
-            timeline_data['milestones'].append((timeframe.strip(), f"{event_type}{details}".strip()))
-    
-    return timeline_data
+from _common import (
+    NOTICE,
+    SCHEMA_VERSION,
+    Issue,
+    ValidationError,
+    atomic_write_json,
+    error_report,
+    load_package,
+    parse_iso_datetime,
+    print_report,
+    report_payload,
+    safe_output_file,
+    validate_package_structure,
+)
 
 
-def parse_timeframe_to_days(timeframe: str) -> Tuple[int, int]:
-    """
-    Parse timeframe string to start and end days.
-    Examples: "Week 1-4" -> (0, 28), "Month 3" -> (60, 90)
-    """
-    timeframe = timeframe.lower()
-    
-    # Week patterns
-    if 'week' in timeframe:
-        weeks = re.findall(r'\d+', timeframe)
-        if len(weeks) == 2:
-            start_week = int(weeks[0])
-            end_week = int(weeks[1])
-            return ((start_week - 1) * 7, end_week * 7)
-        elif len(weeks) == 1:
-            week = int(weeks[0])
-            return ((week - 1) * 7, week * 7)
-    
-    # Month patterns
-    if 'month' in timeframe:
-        months = re.findall(r'\d+', timeframe)
-        if len(months) == 2:
-            start_month = int(months[0])
-            end_month = int(months[1])
-            return ((start_month - 1) * 30, end_month * 30)
-        elif len(months) == 1:
-            month = int(months[0])
-            return ((month - 1) * 30, month * 30)
-    
-    # POD (post-operative day) patterns
-    if 'pod' in timeframe:
-        days = re.findall(r'\d+', timeframe)
-        if len(days) == 2:
-            return (int(days[0]), int(days[1]))
-        elif len(days) == 1:
-            day = int(days[0])
-            return (day, day + 1)
-    
-    # Default fallback
-    return (0, 7)
-
-
-def create_text_timeline(timeline_data: Dict, output_file: Path = None):
-    """Create a text-based timeline representation."""
-    
-    lines = []
-    lines.append("="*70)
-    lines.append("TREATMENT TIMELINE")
-    lines.append("="*70)
-    
-    # Treatment phases
-    if timeline_data['phases']:
-        lines.append("\nTREATMENT PHASES:")
-        lines.append("-"*70)
-        for timeframe, description in timeline_data['phases']:
-            lines.append(f"{timeframe:20s} | {description}")
-    
-    # Appointments
-    if timeline_data['appointments']:
-        lines.append("\nSCHEDULED APPOINTMENTS:")
-        lines.append("-"*70)
-        for timeframe, details in timeline_data['appointments']:
-            lines.append(f"{timeframe:20s} | {details}")
-    
-    # Milestones
-    if timeline_data['milestones']:
-        lines.append("\nMILESTONES & ASSESSMENTS:")
-        lines.append("-"*70)
-        for timeframe, event in timeline_data['milestones']:
-            lines.append(f"{timeframe:20s} | {event}")
-    
-    lines.append("\n" + "="*70)
-    
-    # Output
-    output_text = "\n".join(lines)
-    
-    if output_file:
-        with open(output_file, 'w') as f:
-            f.write(output_text)
-        print(f"\nText timeline saved to: {output_file}")
-    else:
-        print(output_text)
-    
-    return output_text
-
-
-def create_visual_timeline(timeline_data: Dict, output_file: Path, start_date: str = None):
-    """Create a visual Gantt-chart style timeline (requires matplotlib)."""
-    
-    if not HAS_MATPLOTLIB:
-        print("Error: matplotlib not installed. Install with: pip install matplotlib", file=sys.stderr)
-        print("Generating text timeline instead...", file=sys.stderr)
-        text_output = output_file.with_suffix('.txt')
-        create_text_timeline(timeline_data, text_output)
-        return
-    
-    # Parse start date
-    if start_date:
-        try:
-            start = datetime.strptime(start_date, '%Y-%m-%d')
-        except ValueError:
-            print(f"Invalid date format: {start_date}. Using today.", file=sys.stderr)
-            start = datetime.now()
-    else:
-        start = datetime.now()
-    
-    # Prepare data for plotting
-    phases = []
-    for timeframe, description in timeline_data['phases']:
-        start_day, end_day = parse_timeframe_to_days(timeframe)
-        phases.append({
-            'name': f"{timeframe}: {description[:40]}",
-            'start': start + timedelta(days=start_day),
-            'end': start + timedelta(days=end_day),
-            'type': 'phase'
-        })
-    
-    # Add appointments as events
-    events = []
-    for timeframe, details in timeline_data['appointments']:
-        start_day, _ = parse_timeframe_to_days(timeframe)
-        events.append({
-            'name': f"{timeframe}: {details[:40]}",
-            'date': start + timedelta(days=start_day),
-            'type': 'appointment'
-        })
-    
-    # Add milestones
-    for timeframe, event in timeline_data['milestones']:
-        start_day, _ = parse_timeframe_to_days(timeframe)
-        events.append({
-            'name': f"{timeframe}: {event[:40]}",
-            'date': start + timedelta(days=start_day),
-            'type': 'milestone'
-        })
-    
-    # Create figure
-    fig, ax = plt.subplots(figsize=(12, 8))
-    
-    # Plot phases as horizontal bars
-    y_position = len(phases) + len(events)
-    
-    for i, phase in enumerate(phases):
-        duration = (phase['end'] - phase['start']).days
-        ax.barh(y_position - i, duration, left=mdates.date2num(phase['start']),
-                height=0.6, color='steelblue', alpha=0.7, edgecolor='black')
-        ax.text(mdates.date2num(phase['start']) + duration/2, y_position - i,
-                phase['name'], va='center', ha='center', fontsize=9, color='white', weight='bold')
-    
-    # Plot events as markers
-    event_y = y_position - len(phases) - 1
-    
-    for i, event in enumerate(events):
-        marker = 'o' if event['type'] == 'appointment' else 's'
-        color = 'green' if event['type'] == 'appointment' else 'orange'
-        ax.plot(mdates.date2num(event['date']), event_y - i, marker=marker,
-                markersize=10, color=color, markeredgecolor='black')
-        ax.text(mdates.date2num(event['date']) + 2, event_y - i, event['name'],
-                va='center', ha='left', fontsize=8)
-    
-    # Format x-axis as dates
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
-    ax.xaxis.set_major_locator(mdates.MonthLocator())
-    plt.xticks(rotation=45, ha='right')
-    
-    # Labels and title
-    ax.set_xlabel('Date', fontsize=12, weight='bold')
-    ax.set_title('Treatment Plan Timeline', fontsize=14, weight='bold', pad=20)
-    ax.set_yticks([])
-    ax.grid(axis='x', alpha=0.3, linestyle='--')
-    
-    # Legend
-    from matplotlib.lines import Line2D
-    legend_elements = [
-        Rectangle((0, 0), 1, 1, fc='steelblue', alpha=0.7, edgecolor='black', label='Treatment Phase'),
-        Line2D([0], [0], marker='o', color='w', markerfacecolor='green', markersize=10,
-               markeredgecolor='black', label='Appointment'),
-        Line2D([0], [0], marker='s', color='w', markerfacecolor='orange', markersize=10,
-               markeredgecolor='black', label='Milestone/Assessment')
-    ]
-    ax.legend(handles=legend_elements, loc='upper right', framealpha=0.9)
-    
-    plt.tight_layout()
-    
-    # Save
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    print(f"\nVisual timeline saved to: {output_file}")
-    
-    # Close plot
-    plt.close()
-
-
-def main():
-    parser = argparse.ArgumentParser(
-        description='Generate treatment timeline visualization',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Generate text timeline
-  python timeline_generator.py --plan my_plan.tex
-
-  # Generate visual timeline (requires matplotlib)
-  python timeline_generator.py --plan my_plan.tex --output timeline.png --visual
-
-  # Specify start date for visual timeline
-  python timeline_generator.py --plan my_plan.tex --output timeline.pdf --visual --start 2025-02-01
-
-Output formats:
-  Text: .txt
-  Visual: .png, .pdf, .svg (requires matplotlib)
-
-Note: Visual timeline generation requires matplotlib.
-  Install with: pip install matplotlib
-        """
-    )
-    
-    parser.add_argument(
-        '--plan',
-        type=Path,
-        required=True,
-        help='Treatment plan file to analyze (.tex format)'
-    )
-    
-    parser.add_argument(
-        '--output',
-        type=Path,
-        help='Output file (default: timeline.txt or timeline.png if --visual)'
-    )
-    
-    parser.add_argument(
-        '--visual',
-        action='store_true',
-        help='Generate visual timeline (requires matplotlib)'
-    )
-    
-    parser.add_argument(
-        '--start',
-        help='Start date for timeline (YYYY-MM-DD format, default: today)'
-    )
-    
-    args = parser.parse_args()
-    
-    # Check plan file exists
-    if not args.plan.exists():
-        print(f"Error: File not found: {args.plan}", file=sys.stderr)
-        sys.exit(1)
-    
-    # Read plan
+def _date_bound(value: str | None, code: str) -> date | None:
+    if value is None:
+        return None
     try:
-        with open(args.plan, 'r', encoding='utf-8') as f:
-            content = f.read()
-    except Exception as e:
-        print(f"Error reading file: {e}", file=sys.stderr)
-        sys.exit(1)
-    
-    # Extract timeline information
-    print("Extracting timeline information from treatment plan...")
-    timeline_data = extract_timeline_info(content)
-    
-    # Check if any timeline info found
-    total_items = (len(timeline_data['phases']) +
-                   len(timeline_data['appointments']) +
-                   len(timeline_data['milestones']))
-    
-    if total_items == 0:
-        print("\nWarning: No timeline information detected in treatment plan.", file=sys.stderr)
-        print("The plan may not contain structured timeline/schedule sections.", file=sys.stderr)
-        print("\nTip: Include sections with timeframes like:", file=sys.stderr)
-        print("  - Week 1-4: Initial phase", file=sys.stderr)
-        print("  - Month 3: Follow-up visit", file=sys.stderr)
-        sys.exit(1)
-    
-    print(f"Found {len(timeline_data['phases'])} phase(s), "
-          f"{len(timeline_data['appointments'])} appointment(s), "
-          f"{len(timeline_data['milestones'])} milestone(s)")
-    
-    # Determine output file
-    if not args.output:
-        if args.visual:
-            args.output = Path('timeline.png')
-        else:
-            args.output = Path('timeline.txt')
-    
-    # Generate timeline
-    if args.visual:
-        create_visual_timeline(timeline_data, args.output, args.start)
-    else:
-        create_text_timeline(timeline_data, args.output)
-    
-    print(f"\nTimeline generation complete!")
+        return date.fromisoformat(value)
+    except ValueError as exc:
+        raise ValidationError(code) from exc
 
 
-if __name__ == '__main__':
-    main()
+def build_schedule(
+    documents: dict[str, dict],
+    *,
+    from_date: str | None = None,
+    through_date: str | None = None,
+) -> tuple[dict, dict]:
+    issues = validate_package_structure(documents)
+    if issues:
+        return (
+            report_payload(
+                "explicit_date_schedule",
+                issues,
+                counts={"structural_issues": len(issues)},
+            ),
+            {},
+        )
 
+    lower = _date_bound(from_date, "FROM_DATE_INVALID")
+    upper = _date_bound(through_date, "THROUGH_DATE_INVALID")
+    if lower and upper and lower > upper:
+        raise ValidationError("DATE_FILTER_ORDER_INVALID")
+
+    events: list[dict] = []
+
+    def add_event(
+        value: str | None,
+        *,
+        event_type: str,
+        document_type: str,
+        record_index: int | None,
+        date_field: str,
+    ) -> None:
+        if value is None:
+            return
+        event_date = value[:10]
+        parsed = date.fromisoformat(event_date)
+        if lower and parsed < lower:
+            return
+        if upper and parsed > upper:
+            return
+        events.append(
+            {
+                "date": event_date,
+                "event_type": event_type,
+                "source_document_type": document_type,
+                "record_index": record_index,
+                "date_field": date_field,
+            }
+        )
+
+    interventions = documents[
+        "clinician_authored_intervention_record"
+    ]["interventions"]
+    for index, record in enumerate(interventions):
+        add_event(
+            record["start_date"],
+            event_type="intervention_start_as_supplied",
+            document_type="clinician_authored_intervention_record",
+            record_index=index,
+            date_field="start_date",
+        )
+        add_event(
+            record["end_date"],
+            event_type="intervention_end_as_supplied",
+            document_type="clinician_authored_intervention_record",
+            record_index=index,
+            date_field="end_date",
+        )
+
+    planning = documents["goals_monitoring_checkpoint_record"]
+    for index, record in enumerate(planning["goals"]):
+        add_event(
+            record["target_date"],
+            event_type="goal_target_date_as_supplied",
+            document_type="goals_monitoring_checkpoint_record",
+            record_index=index,
+            date_field="goals.target_date",
+        )
+        if record["target_date"] is None:
+            issues.append(
+                Issue(
+                    "GOAL_HAS_NO_EXPLICIT_TARGET_DATE",
+                    (
+                        "goals_monitoring_checkpoint_record:"
+                        f"$.goals[{index}].target_date"
+                    ),
+                    "warning",
+                )
+            )
+    for index, record in enumerate(planning["monitoring_items"]):
+        add_event(
+            record["next_due_date"],
+            event_type="monitoring_due_date_as_supplied",
+            document_type="goals_monitoring_checkpoint_record",
+            record_index=index,
+            date_field="monitoring_items.next_due_date",
+        )
+        if record["frequency_as_supplied"] and record["next_due_date"] is None:
+            issues.append(
+                Issue(
+                    "FREQUENCY_TEXT_NOT_EXPANDED_WITHOUT_EXPLICIT_DATE",
+                    (
+                        "goals_monitoring_checkpoint_record:"
+                        f"$.monitoring_items[{index}].next_due_date"
+                    ),
+                    "warning",
+                )
+            )
+    for index, record in enumerate(planning["checkpoints"]):
+        add_event(
+            record["checkpoint_date"],
+            event_type="checkpoint_date_as_supplied",
+            document_type="goals_monitoring_checkpoint_record",
+            record_index=index,
+            date_field="checkpoints.checkpoint_date",
+        )
+
+    transition = documents["transition_reconciliation_record"][
+        "transition"
+    ]
+    add_event(
+        transition["handoff_date"],
+        event_type="transition_handoff_date_as_supplied",
+        document_type="transition_reconciliation_record",
+        record_index=None,
+        date_field="transition.handoff_date",
+    )
+
+    intended = documents["intended_use_handoff_record"]
+    for field, event_type in (
+        ("sent_at", "documentation_handoff_sent_as_supplied"),
+    ):
+        timestamp = intended["handoff"][field]
+        if timestamp is not None and parse_iso_datetime(timestamp) is not None:
+            add_event(
+                timestamp,
+                event_type=event_type,
+                document_type="intended_use_handoff_record",
+                record_index=None,
+                date_field=f"handoff.{field}",
+            )
+
+    events.sort(
+        key=lambda item: (
+            item["date"],
+            item["event_type"],
+            item["source_document_type"],
+            -1 if item["record_index"] is None else item["record_index"],
+        )
+    )
+    if not events:
+        issues.append(Issue("NO_EXPLICIT_DATES_IN_FILTER", "$"))
+
+    schedule = {
+        "schema_version": SCHEMA_VERSION,
+        "document_type": "explicit_date_schedule",
+        "status": "DRAFT_NOT_FOR_CLINICAL_USE",
+        "notice": NOTICE,
+        "dates_inferred": False,
+        "recurrences_generated": False,
+        "clinical_intervals_generated": False,
+        "filters": {
+            "from_date": from_date,
+            "through_date": through_date,
+        },
+        "events": events,
+    }
+    issues.sort(key=lambda item: (item.path, item.code))
+    report = report_payload(
+        "explicit_date_schedule",
+        issues,
+        counts={"events": len(events)},
+        extra={
+            "dates_inferred": False,
+            "recurrences_generated": False,
+            "clinical_content_interpreted": False,
+        },
+    )
+    return report, schedule
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Write a local JSON schedule containing only dates explicitly "
+            "supplied by authorized clinicians. Frequencies are never expanded."
+        )
+    )
+    parser.add_argument("package", help="Complete local package directory")
+    parser.add_argument(
+        "--output",
+        required=True,
+        help="New local .json output; existing files are rejected",
+    )
+    parser.add_argument(
+        "--from-date",
+        help="Optional inclusive YYYY-MM-DD filter; no default is inferred",
+    )
+    parser.add_argument(
+        "--through-date",
+        help="Optional inclusive YYYY-MM-DD filter; no default is inferred",
+    )
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    try:
+        documents, _ = load_package(args.package)
+        report, schedule = build_schedule(
+            documents,
+            from_date=args.from_date,
+            through_date=args.through_date,
+        )
+        if report["status"] == "pass":
+            output = safe_output_file(args.output)
+            atomic_write_json(output, schedule)
+            report["output_filename"] = output.name
+    except ValidationError as exc:
+        report = error_report("explicit_date_schedule", exc)
+    print_report(report)
+    return 1 if report["status"] == "fail" else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,318 +1,572 @@
 #!/usr/bin/env python3
-"""
-Check Treatment Plan Completeness
-Validates that all required sections are present in a treatment plan.
-"""
+"""Check documentation gates without assessing clinical adequacy."""
 
-import sys
-import re
+from __future__ import annotations
+
 import argparse
-from pathlib import Path
-from typing import List, Tuple
+import sys
 
-# Required sections for all treatment plans
-REQUIRED_SECTIONS = [
-    r'\\section\*\{.*Patient Information',
-    r'\\section\*\{.*Diagnosis.*Assessment',
-    r'\\section\*\{.*Goals',
-    r'\\section\*\{.*Interventions',
-    r'\\section\*\{.*Timeline.*Schedule',
-    r'\\section\*\{.*Monitoring',
-    r'\\section\*\{.*Outcomes',
-    r'\\section\*\{.*Follow[- ]?up',
-    r'\\section\*\{.*Education',
-    r'\\section\*\{.*Risk.*Safety',
-]
-
-# Section descriptions for user-friendly output
-SECTION_DESCRIPTIONS = {
-    0: 'Patient Information (de-identified)',
-    1: 'Diagnosis and Assessment',
-    2: 'Treatment Goals (SMART format)',
-    3: 'Interventions (pharmacological, non-pharmacological, procedural)',
-    4: 'Timeline and Schedule',
-    5: 'Monitoring Parameters',
-    6: 'Expected Outcomes',
-    7: 'Follow-up Plan',
-    8: 'Patient Education',
-    9: 'Risk Mitigation and Safety'
-}
+from _common import (
+    Issue,
+    ValidationError,
+    error_report,
+    load_package,
+    print_report,
+    report_payload,
+    validate_package_structure,
+)
 
 
-def read_file(filepath: Path) -> str:
-    """Read and return file contents."""
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            return f.read()
-    except FileNotFoundError:
-        print(f"Error: File not found: {filepath}", file=sys.stderr)
-        sys.exit(1)
-    except Exception as e:
-        print(f"Error reading file: {e}", file=sys.stderr)
-        sys.exit(1)
+def _required_text(value: object, path: str, issues: list[Issue]) -> None:
+    if not isinstance(value, str) or not value.strip():
+        issues.append(Issue("REQUIRED_VALUE_MISSING", path))
 
 
-def check_sections(content: str) -> Tuple[List[bool], List[str]]:
-    """
-    Check which required sections are present.
-    Returns tuple of (checklist, missing_sections).
-    """
-    checklist = []
-    missing = []
-    
-    for i, pattern in enumerate(REQUIRED_SECTIONS):
-        if re.search(pattern, content, re.IGNORECASE):
-            checklist.append(True)
-        else:
-            checklist.append(False)
-            missing.append(SECTION_DESCRIPTIONS[i])
-    
-    return checklist, missing
+def _required_time(value: object, path: str, issues: list[Issue]) -> None:
+    if value is None:
+        issues.append(Issue("REQUIRED_TIME_MISSING", path))
 
 
-def check_smart_goals(content: str) -> Tuple[bool, List[str]]:
-    """
-    Check if SMART goal criteria are mentioned.
-    Returns (has_smart, missing_criteria).
-    """
-    smart_criteria = {
-        'Specific': r'\bspecific\b',
-        'Measurable': r'\bmeasurable\b',
-        'Achievable': r'\bachievable\b',
-        'Relevant': r'\brelevant\b',
-        'Time-bound': r'\btime[- ]?bound\b'
-    }
-    
-    missing = []
-    for criterion, pattern in smart_criteria.items():
-        if not re.search(pattern, content, re.IGNORECASE):
-            missing.append(criterion)
-    
-    has_smart = len(missing) == 0
-    return has_smart, missing
+def check_completeness(documents: dict[str, dict]) -> dict:
+    issues = validate_package_structure(documents)
+    if issues:
+        return report_payload(
+            "documentation_completeness",
+            issues,
+            counts={"structural_issues": len(issues)},
+        )
+
+    for document_type, document in documents.items():
+        if "TEMPLATE" in document["document_id"]:
+            issues.append(
+                Issue(
+                    "TEMPLATE_DOCUMENT_ID_UNRESOLVED",
+                    f"{document_type}:$.document_id",
+                )
+            )
+        _required_time(
+            document["created_at"], f"{document_type}:$.created_at", issues
+        )
+
+    facts = documents["source_fact_manifest"]["facts"]
+    if not facts:
+        issues.append(Issue("SOURCE_FACTS_REQUIRED", "source_fact_manifest:$.facts"))
+    for index, fact in enumerate(facts):
+        base = f"source_fact_manifest:$.facts[{index}]"
+        verification = fact["verification"]
+        if verification["status"] != "verified":
+            issues.append(
+                Issue(
+                    "SOURCE_FACT_VERIFICATION_PENDING",
+                    f"{base}.verification.status",
+                )
+            )
+        _required_text(
+            verification["verified_by_role"],
+            f"{base}.verification.verified_by_role",
+            issues,
+        )
+        _required_time(
+            verification["verified_at"],
+            f"{base}.verification.verified_at",
+            issues,
+        )
+
+    interventions = documents[
+        "clinician_authored_intervention_record"
+    ]["interventions"]
+    if not interventions:
+        issues.append(
+            Issue(
+                "CLINICIAN_AUTHORED_INTERVENTION_REQUIRED",
+                "clinician_authored_intervention_record:$.interventions",
+            )
+        )
+    for index, intervention in enumerate(interventions):
+        base = (
+            "clinician_authored_intervention_record:"
+            f"$.interventions[{index}]"
+        )
+        if (
+            intervention["clinical_decision_status"]
+            != "supplied_and_verified_by_authorized_clinician"
+        ):
+            issues.append(
+                Issue(
+                    "INTERVENTION_AUTHORIZED_VERIFICATION_PENDING",
+                    f"{base}.clinical_decision_status",
+                )
+            )
+        verification = intervention["verification"]
+        if verification["status"] != "verified":
+            issues.append(
+                Issue(
+                    "INTERVENTION_VERIFICATION_PENDING",
+                    f"{base}.verification.status",
+                )
+            )
+        _required_text(
+            verification["verified_by_role"],
+            f"{base}.verification.verified_by_role",
+            issues,
+        )
+        _required_time(
+            verification["verified_at"],
+            f"{base}.verification.verified_at",
+            issues,
+        )
+
+    planning = documents["goals_monitoring_checkpoint_record"]
+    for field, code in (
+        ("goals", "GOAL_RECORD_REQUIRED"),
+        ("monitoring_items", "MONITORING_RECORD_REQUIRED"),
+        ("checkpoints", "CHECKPOINT_RECORD_REQUIRED"),
+    ):
+        if not planning[field]:
+            issues.append(
+                Issue(
+                    code,
+                    f"goals_monitoring_checkpoint_record:$.{field}",
+                )
+            )
+
+    decisions = documents[
+        "informed_preference_shared_decision_record"
+    ]["entries"]
+    if not decisions:
+        issues.append(
+            Issue(
+                "SHARED_DECISION_RECORD_REQUIRED",
+                "informed_preference_shared_decision_record:$.entries",
+            )
+        )
+    for index, decision in enumerate(decisions):
+        base = (
+            "informed_preference_shared_decision_record:"
+            f"$.entries[{index}]"
+        )
+        if decision["decision_status"] != "documented_by_authorized_clinician":
+            issues.append(
+                Issue(
+                    "SHARED_DECISION_DOCUMENTATION_PENDING",
+                    f"{base}.decision_status",
+                )
+            )
+        if not decision["benefits_harms_uncertainty_documented"]:
+            issues.append(
+                Issue(
+                    "SHARED_DECISION_ELEMENTS_NOT_DOCUMENTED",
+                    f"{base}.benefits_harms_uncertainty_documented",
+                )
+            )
+        _required_text(
+            decision["preference_as_documented"],
+            f"{base}.preference_as_documented",
+            issues,
+        )
+        _required_text(
+            decision["outcome_as_documented"],
+            f"{base}.outcome_as_documented",
+            issues,
+        )
+        _required_text(
+            decision["documented_by_role"],
+            f"{base}.documented_by_role",
+            issues,
+        )
+        _required_time(
+            decision["documented_at"],
+            f"{base}.documented_at",
+            issues,
+        )
+        if decision["acknowledgment_status"] == "pending":
+            issues.append(
+                Issue(
+                    "SHARED_DECISION_ACKNOWLEDGMENT_PENDING",
+                    f"{base}.acknowledgment_status",
+                )
+            )
+
+    transition_document = documents["transition_reconciliation_record"]
+    transition = transition_document["transition"]
+    for field in (
+        "from_setting_as_documented",
+        "to_setting_as_documented",
+        "responsible_sender_role",
+        "responsible_receiver_role",
+    ):
+        _required_text(
+            transition[field],
+            f"transition_reconciliation_record:$.transition.{field}",
+            issues,
+        )
+    _required_time(
+        transition["handoff_date"],
+        "transition_reconciliation_record:$.transition.handoff_date",
+        issues,
+    )
+
+    reconciliation = transition_document["medication_reconciliation"]
+    if reconciliation["status"] == "pending_authorized_review":
+        issues.append(
+            Issue(
+                "MEDICATION_RECONCILIATION_PENDING",
+                (
+                    "transition_reconciliation_record:"
+                    "$.medication_reconciliation.status"
+                ),
+            )
+        )
+    if reconciliation["status"] == "completed_by_authorized_clinician":
+        if not reconciliation["source_list_fact_ids"]:
+            issues.append(
+                Issue(
+                    "RECONCILIATION_SOURCE_LIST_FACTS_REQUIRED",
+                    (
+                        "transition_reconciliation_record:"
+                        "$.medication_reconciliation.source_list_fact_ids"
+                    ),
+                )
+            )
+        if not reconciliation["destination_list_fact_ids"]:
+            issues.append(
+                Issue(
+                    "RECONCILIATION_DESTINATION_LIST_FACTS_REQUIRED",
+                    (
+                        "transition_reconciliation_record:"
+                        "$.medication_reconciliation.destination_list_fact_ids"
+                    ),
+                )
+            )
+        if reconciliation["discrepancy_status"] == "not_assessed":
+            issues.append(
+                Issue(
+                    "RECONCILIATION_DISCREPANCY_STATUS_PENDING",
+                    (
+                        "transition_reconciliation_record:"
+                        "$.medication_reconciliation.discrepancy_status"
+                    ),
+                )
+            )
+    if reconciliation["status"] != "pending_authorized_review":
+        _required_text(
+            reconciliation["completed_by_role"],
+            (
+                "transition_reconciliation_record:"
+                "$.medication_reconciliation.completed_by_role"
+            ),
+            issues,
+        )
+        _required_time(
+            reconciliation["completed_at"],
+            (
+                "transition_reconciliation_record:"
+                "$.medication_reconciliation.completed_at"
+            ),
+            issues,
+        )
+
+    if not transition_document["handoff_items"]:
+        issues.append(
+            Issue(
+                "HANDOFF_ITEM_REQUIRED",
+                "transition_reconciliation_record:$.handoff_items",
+            )
+        )
+    for index, item in enumerate(transition_document["handoff_items"]):
+        if item["acknowledgment_status"] == "pending":
+            issues.append(
+                Issue(
+                    "HANDOFF_ITEM_ACKNOWLEDGMENT_PENDING",
+                    (
+                        "transition_reconciliation_record:"
+                        f"$.handoff_items[{index}].acknowledgment_status"
+                    ),
+                )
+            )
+    for index, item in enumerate(transition_document["unresolved_items"]):
+        if item["status"] == "open_unrouted":
+            issues.append(
+                Issue(
+                    "UNRESOLVED_ITEM_NOT_ROUTED",
+                    (
+                        "transition_reconciliation_record:"
+                        f"$.unresolved_items[{index}].status"
+                    ),
+                )
+            )
+        if item["status"] != "resolved_by_authorized_professional":
+            _required_text(
+                item["routed_to_local_role"],
+                (
+                    "transition_reconciliation_record:"
+                    f"$.unresolved_items[{index}].routed_to_local_role"
+                ),
+                issues,
+            )
+
+    handoff_document = documents["intended_use_handoff_record"]
+    intended = handoff_document["intended_use"]
+    if not intended["intended_users"]:
+        issues.append(
+            Issue(
+                "INTENDED_USER_REQUIRED",
+                "intended_use_handoff_record:$.intended_use.intended_users",
+            )
+        )
+    _required_text(
+        intended["intended_setting"],
+        "intended_use_handoff_record:$.intended_use.intended_setting",
+        issues,
+    )
+
+    privacy = handoff_document["privacy_process"]
+    for field in (
+        "local_authorization_confirmed",
+        "minimum_necessary_confirmed",
+        "no_external_tools_confirmed",
+        "no_prompt_log_example_copy_confirmed",
+    ):
+        if not privacy[field]:
+            issues.append(
+                Issue(
+                    "PRIVACY_PROCESS_ATTESTATION_PENDING",
+                    f"intended_use_handoff_record:$.privacy_process.{field}",
+                )
+            )
+    _required_text(
+        privacy["authorized_environment_reference"],
+        (
+            "intended_use_handoff_record:"
+            "$.privacy_process.authorized_environment_reference"
+        ),
+        issues,
+    )
+    _required_text(
+        privacy["retention_policy_reference"],
+        (
+            "intended_use_handoff_record:"
+            "$.privacy_process.retention_policy_reference"
+        ),
+        issues,
+    )
+    classification = handoff_document["data_classification"]
+    expected_review = (
+        {"not_applicable_synthetic", "completed_by_qualified_reviewer"}
+        if classification == "synthetic"
+        else {"completed_by_qualified_reviewer"}
+    )
+    if privacy["privacy_review_status"] not in expected_review:
+        issues.append(
+            Issue(
+                "QUALIFIED_PRIVACY_REVIEW_PENDING",
+                (
+                    "intended_use_handoff_record:"
+                    "$.privacy_process.privacy_review_status"
+                ),
+            )
+        )
+    if privacy["privacy_review_status"] == "completed_by_qualified_reviewer":
+        _required_text(
+            privacy["privacy_reviewer_role"],
+            (
+                "intended_use_handoff_record:"
+                "$.privacy_process.privacy_reviewer_role"
+            ),
+            issues,
+        )
+        _required_time(
+            privacy["reviewed_at"],
+            "intended_use_handoff_record:$.privacy_process.reviewed_at",
+            issues,
+        )
+    if privacy["data_disposition_status"] == "pending":
+        issues.append(
+            Issue(
+                "DATA_DISPOSITION_PENDING",
+                (
+                    "intended_use_handoff_record:"
+                    "$.privacy_process.data_disposition_status"
+                ),
+            )
+        )
+
+    governance = handoff_document["local_governance"]
+    for field in (
+        "institution_or_organization_reference",
+        "clinical_owner_role",
+        "records_owner_role",
+        "change_control_owner_role",
+    ):
+        _required_text(
+            governance[field],
+            f"intended_use_handoff_record:$.local_governance.{field}",
+            issues,
+        )
+    if not governance["policy_references"]:
+        issues.append(
+            Issue(
+                "LOCAL_POLICY_REFERENCE_REQUIRED",
+                (
+                    "intended_use_handoff_record:"
+                    "$.local_governance.policy_references"
+                ),
+            )
+        )
+
+    emergency = handoff_document["emergency_routing"]
+    _required_text(
+        emergency["local_process_reference"],
+        (
+            "intended_use_handoff_record:"
+            "$.emergency_routing.local_process_reference"
+        ),
+        issues,
+    )
+    _required_text(
+        emergency["verified_by_role"],
+        (
+            "intended_use_handoff_record:"
+            "$.emergency_routing.verified_by_role"
+        ),
+        issues,
+    )
+
+    routes = handoff_document["reporting_routes"]
+    for field in (
+        "local_patient_safety_route",
+        "product_event_route",
+        "privacy_incident_route",
+        "responsible_role",
+    ):
+        _required_text(
+            routes[field],
+            f"intended_use_handoff_record:$.reporting_routes.{field}",
+            issues,
+        )
+
+    handoff = handoff_document["handoff"]
+    for field in ("sender_role", "recipient_role"):
+        _required_text(
+            handoff[field],
+            f"intended_use_handoff_record:$.handoff.{field}",
+            issues,
+        )
+    _required_time(
+        handoff["sent_at"],
+        "intended_use_handoff_record:$.handoff.sent_at",
+        issues,
+    )
+    if handoff["acknowledgment_status"] != "acknowledged":
+        issues.append(
+            Issue(
+                "PACKAGE_HANDOFF_ACKNOWLEDGMENT_PENDING",
+                "intended_use_handoff_record:$.handoff.acknowledgment_status",
+            )
+        )
+    if transition_document["unresolved_items"] and not handoff[
+        "unresolved_items_routed"
+    ]:
+        issues.append(
+            Issue(
+                "UNRESOLVED_ITEM_ROUTING_ATTESTATION_PENDING",
+                (
+                    "intended_use_handoff_record:"
+                    "$.handoff.unresolved_items_routed"
+                ),
+            )
+        )
+
+    signoff = handoff_document["clinician_signoff"]
+    if signoff["status"] != "signed":
+        issues.append(
+            Issue(
+                "CLINICIAN_SIGNOFF_PENDING",
+                "intended_use_handoff_record:$.clinician_signoff.status",
+            )
+        )
+    for field in ("signer_role", "credential_authority_reference"):
+        _required_text(
+            signoff[field],
+            f"intended_use_handoff_record:$.clinician_signoff.{field}",
+            issues,
+        )
+    _required_time(
+        signoff["signed_at"],
+        "intended_use_handoff_record:$.clinician_signoff.signed_at",
+        issues,
+    )
+
+    release = handoff_document["release_gate"]
+    if release["status"] != "released_for_authorized_documentation_handoff":
+        issues.append(
+            Issue(
+                "DOCUMENTATION_HANDOFF_RELEASE_BLOCKED",
+                "intended_use_handoff_record:$.release_gate.status",
+            )
+        )
+    _required_text(
+        release["released_by_role"],
+        "intended_use_handoff_record:$.release_gate.released_by_role",
+        issues,
+    )
+    _required_time(
+        release["released_at"],
+        "intended_use_handoff_record:$.release_gate.released_at",
+        issues,
+    )
+    if release["blocker_codes"]:
+        issues.append(
+            Issue(
+                "RELEASE_BLOCKER_CODES_REMAIN",
+                "intended_use_handoff_record:$.release_gate.blocker_codes",
+            )
+        )
+
+    issues.sort(key=lambda item: (item.path, item.code))
+    return report_payload(
+        "documentation_completeness",
+        issues,
+        counts={
+            "source_facts": len(facts),
+            "interventions": len(interventions),
+            "goals": len(planning["goals"]),
+            "monitoring_items": len(planning["monitoring_items"]),
+            "checkpoints": len(planning["checkpoints"]),
+            "shared_decision_entries": len(decisions),
+            "handoff_items": len(transition_document["handoff_items"]),
+            "unresolved_items": len(
+                transition_document["unresolved_items"]
+            ),
+        },
+        extra={
+            "ready_for_authorized_documentation_handoff": not issues,
+            "clinical_completeness_determined": False,
+        },
+    )
 
 
-def check_hipaa_notice(content: str) -> bool:
-    """Check if HIPAA de-identification notice is present."""
-    pattern = r'HIPAA|de-identif|protected health information|PHI'
-    return bool(re.search(pattern, content, re.IGNORECASE))
-
-
-def check_provider_signature(content: str) -> bool:
-    """Check if provider signature section is present."""
-    pattern = r'\\section\*\{.*Signature|Provider Signature|Signature'
-    return bool(re.search(pattern, content, re.IGNORECASE))
-
-
-def check_placeholders_remaining(content: str) -> Tuple[int, List[str]]:
-    """
-    Check for uncustomized placeholders [like this].
-    Returns (count, sample_placeholders).
-    """
-    placeholders = re.findall(r'\[([^\]]+)\]', content)
-    
-    # Filter out LaTeX commands and references
-    filtered = []
-    for p in placeholders:
-        # Skip if it's a LaTeX command, number, or citation
-        if not (p.startswith('\\') or p.isdigit() or 'cite' in p.lower() or 'ref' in p.lower()):
-            filtered.append(p)
-    
-    count = len(filtered)
-    samples = filtered[:5]  # Return up to 5 examples
-    
-    return count, samples
-
-
-def display_results(filepath: Path, checklist: List[bool], missing: List[str], 
-                   smart_complete: bool, smart_missing: List[str],
-                   has_hipaa: bool, has_signature: bool,
-                   placeholder_count: int, placeholder_samples: List[str]):
-    """Display completeness check results."""
-    
-    total_sections = len(REQUIRED_SECTIONS)
-    present_count = sum(checklist)
-    completeness_pct = (present_count / total_sections) * 100
-    
-    print("\n" + "="*70)
-    print("TREATMENT PLAN COMPLETENESS CHECK")
-    print("="*70)
-    print(f"\nFile: {filepath}")
-    print(f"File size: {filepath.stat().st_size:,} bytes")
-    
-    # Overall completeness
-    print("\n" + "-"*70)
-    print("OVERALL COMPLETENESS")
-    print("-"*70)
-    print(f"Required sections present: {present_count}/{total_sections} ({completeness_pct:.0f}%)")
-    
-    if completeness_pct == 100:
-        print("✓ All required sections present")
-    else:
-        print(f"✗ {len(missing)} section(s) missing")
-    
-    # Section details
-    print("\n" + "-"*70)
-    print("SECTION CHECKLIST")
-    print("-"*70)
-    
-    for i, (present, desc) in enumerate(zip(checklist, SECTION_DESCRIPTIONS.values())):
-        status = "✓" if present else "✗"
-        print(f"{status} {desc}")
-    
-    # Missing sections
-    if missing:
-        print("\n" + "-"*70)
-        print("MISSING SECTIONS")
-        print("-"*70)
-        for section in missing:
-            print(f"  • {section}")
-    
-    # SMART goals
-    print("\n" + "-"*70)
-    print("SMART GOALS CHECK")
-    print("-"*70)
-    
-    if smart_complete:
-        print("✓ All SMART criteria mentioned in document")
-    else:
-        print(f"✗ {len(smart_missing)} SMART criterion/criteria not found:")
-        for criterion in smart_missing:
-            print(f"  • {criterion}")
-        print("\nNote: Goals should be Specific, Measurable, Achievable, Relevant, Time-bound")
-    
-    # HIPAA notice
-    print("\n" + "-"*70)
-    print("PRIVACY AND COMPLIANCE")
-    print("-"*70)
-    
-    if has_hipaa:
-        print("✓ HIPAA/de-identification notice present")
-    else:
-        print("✗ HIPAA de-identification notice not found")
-        print("  Recommendation: Include HIPAA Safe Harbor de-identification guidance")
-    
-    if has_signature:
-        print("✓ Provider signature section present")
-    else:
-        print("✗ Provider signature section not found")
-    
-    # Placeholders
-    print("\n" + "-"*70)
-    print("CUSTOMIZATION STATUS")
-    print("-"*70)
-    
-    if placeholder_count == 0:
-        print("✓ No uncustomized placeholders detected")
-    else:
-        print(f"⚠ {placeholder_count} placeholder(s) may need customization")
-        print("\nExamples:")
-        for sample in placeholder_samples:
-            print(f"  • [{sample}]")
-        print("\nRecommendation: Replace all [bracketed placeholders] with patient-specific information")
-    
-    # Summary
-    print("\n" + "="*70)
-    print("SUMMARY")
-    print("="*70)
-    
-    # Calculate overall score
-    score_components = [
-        completeness_pct / 100,  # Section completeness (0-1)
-        1.0 if smart_complete else 0.6,  # SMART goals (full or partial credit)
-        1.0 if has_hipaa else 0.0,  # HIPAA notice (binary)
-        1.0 if has_signature else 0.0,  # Signature (binary)
-        1.0 if placeholder_count == 0 else 0.5  # Customization (full or partial)
-    ]
-    
-    overall_score = (sum(score_components) / len(score_components)) * 100
-    
-    print(f"\nOverall completeness score: {overall_score:.0f}%")
-    
-    if overall_score >= 90:
-        print("Status: ✓ EXCELLENT - Treatment plan is comprehensive")
-    elif overall_score >= 75:
-        print("Status: ✓ GOOD - Minor improvements needed")
-    elif overall_score >= 60:
-        print("Status: ⚠ FAIR - Several sections need attention")
-    else:
-        print("Status: ✗ INCOMPLETE - Significant work needed")
-    
-    print("\n" + "="*70)
-    
-    # Return exit code based on completeness
-    return 0 if completeness_pct >= 80 else 1
-
-
-def main():
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description='Check treatment plan completeness',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Check a treatment plan file
-  python check_completeness.py my_treatment_plan.tex
-
-  # Check and exit with error code if incomplete (for CI/CD)
-  python check_completeness.py plan.tex && echo "Complete"
-
-This script checks for:
-  - All required sections (10 core sections)
-  - SMART goal criteria
-  - HIPAA de-identification notice
-  - Provider signature section
-  - Uncustomized placeholders
-
-Exit codes:
-  0 - All required sections present (≥80% complete)
-  1 - Missing required sections (<80% complete)
-  2 - File error or invalid arguments
-        """
+        description=(
+            "Check required documentation, review, routing, sign-off, and "
+            "handoff declarations. No clinical adequacy is assessed."
+        )
     )
-    
-    parser.add_argument(
-        'file',
-        type=Path,
-        help='Treatment plan file to check (.tex format)'
-    )
-    
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Show detailed output'
-    )
-    
-    args = parser.parse_args()
-    
-    # Check file exists and is .tex
-    if not args.file.exists():
-        print(f"Error: File not found: {args.file}", file=sys.stderr)
-        sys.exit(2)
-    
-    if args.file.suffix.lower() not in ['.tex', '.txt']:
-        print(f"Warning: Expected .tex file, got {args.file.suffix}", file=sys.stderr)
-    
-    # Read file
-    content = read_file(args.file)
-    
-    # Perform checks
-    checklist, missing = check_sections(content)
-    smart_complete, smart_missing = check_smart_goals(content)
-    has_hipaa = check_hipaa_notice(content)
-    has_signature = check_provider_signature(content)
-    placeholder_count, placeholder_samples = check_placeholders_remaining(content)
-    
-    # Display results
-    exit_code = display_results(
-        args.file, checklist, missing,
-        smart_complete, smart_missing,
-        has_hipaa, has_signature,
-        placeholder_count, placeholder_samples
-    )
-    
-    sys.exit(exit_code)
+    parser.add_argument("package", help="Complete local package directory")
+    return parser
 
 
-if __name__ == '__main__':
-    main()
+def main() -> int:
+    args = build_parser().parse_args()
+    try:
+        documents, _ = load_package(args.package)
+        report = check_completeness(documents)
+    except ValidationError as exc:
+        report = error_report("documentation_completeness", exc)
+    print_report(report)
+    return 1 if report["status"] == "fail" else 0
 
+
+if __name__ == "__main__":
+    sys.exit(main())

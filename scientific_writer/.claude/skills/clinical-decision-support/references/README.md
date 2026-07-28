@@ -1,129 +1,62 @@
-# Clinical Decision Support Skill
+# Clinical Decision-Support References
 
-Professional clinical decision support documents for medical professionals in pharmaceutical and clinical research settings.
+Version 2.0 is the breaking safety redesign dated 2026-07-23. It replaces
+the former recommendation-oriented templates, references, and scripts with
+offline research-evaluation and governance artifacts.
 
-## Quick Start
+## Boundary
 
-This skill enables generation of three types of clinical documents:
+These references support aggregate or synthetic research evaluation, methods documentation, evidence profiles, privacy review, and governance traceability. They do not support diagnosis, treatment recommendations, dosing, triage, alarms, bedside use, autonomous decisions, or patient-specific output.
 
-1. **Individual Patient Treatment Plans** - Personalized protocols for specific patients
-2. **Patient Cohort Analysis** - Biomarker-stratified group analyses with outcomes
-3. **Treatment Recommendation Reports** - Evidence-based clinical guidelines
+No reference or script establishes regulatory authorization, HIPAA compliance, clinical validity, or fitness for live use. Route care decisions to licensed professionals using validated and appropriately authorized systems.
 
-All documents are generated as compact, professional LaTeX/PDF files.
+## Navigation
 
-## Directory Structure
+| File | Purpose |
+|---|---|
+| `safety_and_scope.md` | Refusal rules, escalation, and intended-use language |
+| `regulatory_and_governance.md` | FDA CDS/AI, ONC HTI-1, and ICH context |
+| `evidence_profiles.md` | Human GRADE evidence-profile workflow |
+| `study_reporting.md` | STROBE/RECORD, TRIPOD+AI, CONSORT-AI, SPIRIT-AI, DECIDE-AI, STARD-AI, REMARK, and PROBAST+AI |
+| `cohort_evaluation.md` | Aggregate cohort reporting and disclosure-aware tables |
+| `survival_analysis.md` | Estimand-led time-to-event planning |
+| `model_biomarker_evaluation.md` | Aggregate validation, calibration, uncertainty, and subgroup review |
+| `privacy_and_disclosure.md` | HHS de-identification methods and output controls |
+| `decision_logic_traceability.md` | Research/governance logic matrices |
+| `sources.md` | Authoritative source ledger checked 2026-07-23 |
+| `security_validation.md` | Baseline remediation, scan results, and accepted LOW findings |
 
-```
-clinical-decision-support/
-├── SKILL.md                     # Main skill definition
-├── README.md                    # This file
-│
-├── references/                  # Clinical guidance documents
-│   ├── patient_cohort_analysis.md
-│   ├── treatment_recommendations.md
-│   ├── clinical_decision_algorithms.md
-│   ├── biomarker_classification.md
-│   ├── outcome_analysis.md
-│   └── evidence_synthesis.md
-│
-├── assets/                      # Templates and examples
-│   ├── cohort_analysis_template.tex
-│   ├── treatment_recommendation_template.tex
-│   ├── clinical_pathway_template.tex
-│   ├── biomarker_report_template.tex
-│   ├── example_gbm_cohort.md
-│   ├── recommendation_strength_guide.md
-│   └── color_schemes.tex
-│
-└── scripts/                     # Analysis and generation tools
-    ├── generate_survival_analysis.py
-    ├── create_cohort_tables.py
-    ├── build_decision_tree.py
-    ├── biomarker_classifier.py
-    └── validate_cds_document.py
-```
+## Assets
 
-## Example Use Cases
+All assets are JSON skeletons. They contain no patient rows or real identifiers:
 
-### Create a Patient Cohort Analysis
-```
-> Analyze a cohort of 45 NSCLC patients stratified by PD-L1 expression 
-  (<1%, 1-49%, ≥50%) including ORR, PFS, and OS outcomes
-```
+- `artifact_intended_use_template.json`
+- `evidence_profile_template.json`
+- `aggregate_model_evaluation_template.json`
+- `aggregate_cohort_table_template.json`
+- `survival_analysis_plan_template.json`
+- `decision_logic_traceability_template.json`
+- `deidentification_checklist_template.json`
 
-### Generate Treatment Recommendations
-```
-> Create evidence-based treatment recommendations for HER2-positive 
-  metastatic breast cancer with GRADE methodology
-```
+Every template includes intended use, prohibited uses, limitations, data level, and human-review fields.
 
-### Build Clinical Pathway
-```
-> Generate a clinical decision algorithm for acute chest pain 
-  management with TIMI risk score
-```
+## Scripts
 
-## Key Features
+The standard-library scripts read bounded local JSON and produce bounded local JSON, Markdown, or CSV:
 
-- **GRADE Methodology**: Evidence quality grading (High/Moderate/Low/Very Low)
-- **Recommendation Strength**: Strong (Grade 1) vs Conditional (Grade 2)
-- **Biomarker Integration**: Genomic, expression, and molecular subtype classification
-- **Statistical Analysis**: Kaplan-Meier, Cox regression, log-rank tests
-- **Guideline Concordance**: NCCN, ASCO, ESMO, AHA/ACC integration
-- **Professional Output**: 0.5in margins, color-coded boxes, publication-ready
+- `validate_cds_artifact.py`
+- `evidence_profile_check.py`
+- `model_biomarker_evaluation.py`
+- `cohort_table_generator.py`
+- `survival_plan_validator.py`
+- `decision_logic_traceability.py`
+- `deidentification_checklist.py`
 
-## Dependencies
+They do not use networks, API keys, environment variables, dynamic evaluation, serialization formats that execute code, LLMs, or image services.
 
-Python scripts require:
-- `pandas`, `numpy`, `scipy`: Data analysis and statistics
-- `lifelines`: Survival analysis (Kaplan-Meier, Cox regression)
-- `matplotlib`: Visualization
-- `pyyaml` (optional): YAML input for decision trees
+## Method Selection
 
-Install with:
-```bash
-pip install pandas numpy scipy lifelines matplotlib pyyaml
-```
+Use the study design and evaluation stage—not the presence of “AI” in a title—to select a framework. Reporting checklists are minimum disclosure guidance. Risk-of-bias tools require informed human judgments. GRADE certainty is outcome-specific and cannot be inferred from text.
 
-## References Included
-
-1. **Patient Cohort Analysis**: Stratification methods, biomarker correlations, statistical comparisons
-2. **Treatment Recommendations**: Evidence grading, treatment sequencing, special populations
-3. **Clinical Decision Algorithms**: Risk scores, decision trees, TikZ flowcharts
-4. **Biomarker Classification**: Genomic alterations, molecular subtypes, companion diagnostics
-5. **Outcome Analysis**: Survival methods, response criteria (RECIST), effect sizes
-6. **Evidence Synthesis**: Guideline integration, systematic reviews, meta-analysis
-
-## Templates Provided
-
-1. **Cohort Analysis**: Demographics table, biomarker profile, outcomes, statistics, recommendations
-2. **Treatment Recommendations**: Evidence review, GRADE-graded options, monitoring, decision algorithm
-3. **Clinical Pathway**: TikZ flowchart with risk stratification and urgency-coded actions
-4. **Biomarker Report**: Genomic profiling with tier-based actionability and therapy matching
-
-## Scripts Included
-
-1. **`generate_survival_analysis.py`**: Create Kaplan-Meier curves with hazard ratios
-2. **`create_cohort_tables.py`**: Generate baseline, efficacy, and safety tables
-3. **`build_decision_tree.py`**: Convert text/JSON to TikZ flowcharts
-4. **`biomarker_classifier.py`**: Stratify patients by PD-L1, HER2, molecular subtypes
-5. **`validate_cds_document.py`**: Quality checks for completeness and compliance
-
-## Integration
-
-Integrates with existing skills:
-- **scientific-writing**: Citation management, statistical reporting
-- **clinical-reports**: Medical terminology, HIPAA compliance
-- **scientific-schematics**: TikZ flowcharts
-
-## Version
-
-Version 1.0 - Initial release
-Created: November 2024
-Last Updated: November 5, 2024
-
-## Questions or Feedback
-
-This skill was designed for pharmaceutical and clinical research professionals creating clinical decision support documents. For questions about usage or suggestions for improvements, contact the Scientific Writer development team.
+For an actual protocol, product, regulated submission, certified health IT module, or data release, obtain review from the relevant methodologist, privacy official, legal/regulatory counsel, governance owner, and domain experts.
 

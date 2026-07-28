@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "pathology_report_scaffold",
+  "draft_status": "BLOCKED_INCOMPLETE_DRAFT_NOT_FOR_CLINICAL_USE_OR_SIGNATURE",
+  "safety_notice": "This scaffold cannot examine specimens or author observations, diagnosis, grade, stage, margins, biomarkers, or recommendations. A qualified pathologist must select current protocols and author the report.",
+  "data_classification": null,
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "protocol_selection": {
+    "cap_protocol_title": null,
+    "cap_protocol_version": null,
+    "specimen_and_procedure_scope_verified": false,
+    "biomarker_protocol_title_and_version": null,
+    "staging_system_and_edition": null,
+    "local_policy_version": null
+  },
+  "report_status": null,
+  "source_system_record": null,
+  "fields": {
+    "specimen_information": {"status": "missing", "source_fact_ids": []},
+    "clinical_information_as_submitted": {"status": "missing", "source_fact_ids": []},
+    "gross_observations_authored_by_pathologist": {"status": "missing", "source_fact_ids": []},
+    "microscopic_observations_authored_by_pathologist": {"status": "missing", "source_fact_ids": []},
+    "diagnosis_authored_by_pathologist": {"status": "missing", "source_fact_ids": []},
+    "synoptic_data_element_response_pairs": {"status": "missing", "source_fact_ids": []},
+    "ancillary_and_biomarker_results": {"status": "missing", "source_fact_ids": []},
+    "correction_or_addendum_linkage": {"status": "missing", "source_fact_ids": []}
+  },
+  "provenance_manifest": null,
+  "review": {
+    "qualified_pathologist_review": "pending",
+    "privacy_review": "pending",
+    "final_report_created_in_authorized_system": false,
+    "signature_present": false
+  }
+}

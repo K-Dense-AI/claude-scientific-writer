@@ -1,182 +1,215 @@
 ---
 name: generate-image
-description: Generate or edit images using AI models (FLUX, Nano Banana 2). Use for general-purpose image generation including photos, illustrations, artwork, visual assets, concept art, and any image that is not a technical diagram or schematic. For flowcharts, circuits, pathways, and technical diagrams, use the scientific-schematics skill instead.
-license: MIT license
-compatibility: Requires an OpenRouter API key
-metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
+description: Generate or edit images with AI models through the OpenRouter Image API (Gemini, FLUX, Seedream, Recraft, GPT-Image). Use for photos, illustrations, artwork, concept art, visual assets, logos, and image editing or compositing from reference images. For flowcharts, circuits, pathways, and other technical diagrams, use the scientific-schematics skill instead.
+license: MIT
+compatibility: Requires Python 3.9+ and network access to openrouter.ai. The bundled script uses only the standard library. Image generation requires the OPENROUTER_API_KEY credential and bills per request; listing models does not. Targets the OpenRouter Image API (POST /api/v1/images) as documented on 2026-07-26.
+allowed-tools: Read Write Edit Bash
+metadata:
+  version: "2.0"
+  skill-author: K-Dense Inc.
+  last-reviewed: "2026-07-26"
+  openclaw:
+    primaryEnv: OPENROUTER_API_KEY
+    envVars:
+      - name: OPENROUTER_API_KEY
+        required: true
+        description: OpenRouter API key used for image generation.
 ---
 
 # Generate Image
 
-Generate and edit high-quality images using OpenRouter's image generation models including FLUX.2 Pro and Gemini 3.1 Flash Image Preview.
+Generate and edit images through OpenRouter's Image API, which reaches Gemini, FLUX, Seedream,
+Recraft, GPT-Image, and roughly thirty other models behind one request shape.
 
-## When to Use This Skill
+## When to use
 
-**Use generate-image for:**
-- Photos and photorealistic images
-- Artistic illustrations and artwork
-- Concept art and visual concepts
-- Visual assets for presentations or documents
-- Image editing and modifications
-- Any general-purpose image generation needs
+**Use this skill for:** photos and photorealistic images, illustrations and artwork, concept art,
+presentation and poster visuals, logos and vector marks, image editing, and compositing from
+reference images.
 
-**Use scientific-schematics instead for:**
-- Flowcharts and process diagrams
-- Circuit diagrams and electrical schematics
-- Biological pathways and signaling cascades
-- System architecture diagrams
-- CONSORT diagrams and methodology flowcharts
-- Any technical/schematic diagrams
+**Use `scientific-schematics` instead for:** flowcharts, circuit diagrams, biological pathways,
+system architecture diagrams, CONSORT diagrams, and other technical schematics.
 
-## Quick Start
+## API key
 
-Use the `scripts/generate_image.py` script to generate or edit images:
+Generation requires an OpenRouter key. The script resolves it in this order:
+
+1. `--api-key`
+2. the `OPENROUTER_API_KEY` environment variable
+3. `OPENROUTER_API_KEY=` in a `.env` file, searching the working directory upward
+
+If none is present the script exits with setup instructions. Keys: https://openrouter.ai/keys
+
+`--list-models` needs no key.
+
+## Quick start
 
 ```bash
-# Generate a new image
+# Generate
 python scripts/generate_image.py "A beautiful sunset over mountains"
 
 # Edit an existing image
-python scripts/generate_image.py "Make the sky purple" --input photo.jpg
+python scripts/generate_image.py "Make the sky purple" -i photo.jpg -o edited.png
 ```
 
-This generates/edits an image and saves it as `generated_image.png` in the current directory.
+Output defaults to `generated_image.<ext>`, where the extension follows the media type the model
+returned. The per-request cost is printed from `usage.cost`.
 
-## API Key Setup
+## Choosing a model
 
-**CRITICAL**: The script requires an OpenRouter API key. Before running, check if the user has configured their API key:
+Default: `google/gemini-3.1-flash-image`.
 
-1. Look for a `.env` file in the project directory or parent directories
-2. Check for `OPENROUTER_API_KEY=<key>` in the `.env` file
-3. If not found, inform the user they need to:
-   - Create a `.env` file with `OPENROUTER_API_KEY=your-api-key-here`
-   - Or set the environment variable: `export OPENROUTER_API_KEY=your-api-key-here`
-   - Get an API key from: https://openrouter.ai/keys
+| Need | Model |
+| --- | --- |
+| General quality, prompt adherence | `google/gemini-3.1-flash-image` |
+| Highest Gemini tier | `google/gemini-3-pro-image` |
+| Photoreal control, reproducible seeds | `black-forest-labs/flux.2-pro` |
+| Cheap iteration | `black-forest-labs/flux.2-klein-4b` |
+| Several images per request | `bytedance-seed/seedream-4.5`, `openai/gpt-image-2` |
+| Vector / SVG output | `recraft/recraft-v4-vector` |
+| Transparent background | `openai/gpt-image-2` with `--background transparent` |
 
-The script will automatically detect the `.env` file and provide clear error messages if the API key is missing.
+`references/models.md` carries the full catalogue with per-model parameter support. The live
+listing is authoritative:
 
-## Model Selection
-
-**Default model**: `google/gemini-3.1-flash-image-preview` (high quality, recommended)
-
-**Available models for generation and editing**:
-- `google/gemini-3.1-flash-image-preview` - High quality, supports generation + editing
-- `black-forest-labs/flux.2-pro` - Fast, high quality, supports generation + editing
-
-**Generation only**:
-- `black-forest-labs/flux.2-flex` - Fast and cheap, but not as high quality as pro
-
-Select based on:
-- **Quality**: Use gemini-3.1-flash-image-preview or flux.2-pro
-- **Editing**: Use gemini-3.1-flash-image-preview or flux.2-pro (both support image editing)
-- **Cost**: Use flux.2-flex for generation only
-
-## Common Usage Patterns
-
-### Basic generation
 ```bash
-python scripts/generate_image.py "Your prompt here"
+python scripts/generate_image.py --list-models
 ```
 
-### Specify model
+## Parameter support varies by model
+
+This is the main thing to get right. Models advertise different parameter sets, and **sending a
+parameter a model does not support is rejected, not ignored**. The script omits every flag you do
+not pass, so pass only what the target model accepts.
+
+- `--resolution` (`512`, `1K`, `2K`, `4K`) — Gemini, Seedream, Riverflow, Krea, Grok. **Not FLUX.**
+- `--output-format` — FLUX and Riverflow 2.5. **Not Gemini.**
+- `--quality`, `--background`, `--output-compression` — the OpenAI family.
+- `--seed` — FLUX, Seedream, Krea. **Not Gemini, not OpenAI.**
+- `--aspect-ratio` — nearly all models, but the allowed enum differs.
+- `--n` — capped per model: 1 for Gemini and FLUX, 6 for Recraft, 10 for Seedream and OpenAI.
+
+On an HTTP 400 the script prints OpenRouter's message and points at `--list-models`.
+
+## Editing and reference images
+
+`-i/--input` is repeatable and accepts local paths, HTTP(S) URLs, or data URLs. Local files are
+base64-encoded and sent as `input_references`.
+
 ```bash
-python scripts/generate_image.py "A cat in space" --model "black-forest-labs/flux.2-pro"
+# Single-image edit
+python scripts/generate_image.py "Add sunglasses to the person" -i portrait.png
+
+# Composite several references
+python scripts/generate_image.py "Blend these two styles" -i style_a.png -i style_b.jpg -o blend.png
+
+# Reference an image already on the web
+python scripts/generate_image.py "Restyle as a watercolor" -i https://example.com/photo.jpg
 ```
 
-### Custom output path
+Reference limits differ: 16 for OpenAI, 14 for Gemini and Seedream, 8 for FLUX, 1 for Recraft and
+MAI. Accepted local formats: PNG, JPEG, GIF, WebP.
+
+## Worked examples
+
 ```bash
-python scripts/generate_image.py "Abstract art" --output artwork.png
+# Wide hero image for a poster
+python scripts/generate_image.py \
+  "Laboratory with modern equipment, photorealistic, well-lit" \
+  -m black-forest-labs/flux.2-pro --aspect-ratio 21:9 -o poster/hero.png
+
+# Conceptual figure for a manuscript
+python scripts/generate_image.py \
+  "Microscopic view of cancer cells attacked by immunotherapy agents, scientific illustration" \
+  --resolution 2K -o figures/immunotherapy_concept.png
+
+# Vector logo
+python scripts/generate_image.py \
+  "Minimal geometric fox logo, two colors" \
+  -m recraft/recraft-v4-vector -o assets/logo.svg
+
+# Slide background with a transparent alpha channel
+python scripts/generate_image.py \
+  "Abstract molecular pattern, subtle, blue and white" \
+  -m openai/gpt-image-2 --background transparent -o slides/bg.png
+
+# Four variations in one request
+python scripts/generate_image.py \
+  "Stylized neuron network illustration" \
+  -m bytedance-seed/seedream-4.5 --n 4 -o variations.png
+# -> variations_1.png ... variations_4.png
+
+# Reproducible output
+python scripts/generate_image.py "A cat astronaut" \
+  -m black-forest-labs/flux.2-pro --seed 42
 ```
 
-### Edit an existing image
+## Script parameters
+
+| Flag | Purpose |
+| --- | --- |
+| `prompt` | Image description, or the edit to apply (required unless `--list-models`) |
+| `-m`, `--model` | Model slug (default `google/gemini-3.1-flash-image`) |
+| `-o`, `--output` | Output path; extension defaults to the returned media type |
+| `-i`, `--input` | Reference image — path, URL, or data URL. Repeatable |
+| `--n` | Images per request, model-capped |
+| `--aspect-ratio` | `1:1`, `16:9`, `9:16`, `4:3`, `3:2`, `21:9`, … |
+| `--resolution` | `512`, `1K`, `2K`, `4K` |
+| `--size` | Explicit pixels, e.g. `2048x2048` |
+| `--quality` | `auto`, `low`, `medium`, `high` |
+| `--output-format` | `png`, `jpeg`, `webp`, `svg` |
+| `--background` | `auto`, `transparent`, `opaque` |
+| `--output-compression` | 0–100, for WebP/JPEG |
+| `--seed` | Deterministic output where supported |
+| `--api-key` | Overrides the environment and `.env` |
+| `--timeout` | Request timeout, seconds (default 300) |
+| `--list-models` | Print the catalogue with parameter support, then exit |
+
+## API shape
+
+For direct requests without the script:
+
 ```bash
-python scripts/generate_image.py "Make the background blue" --input photo.jpg
+curl -s https://openrouter.ai/api/v1/images \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "google/gemini-3.1-flash-image",
+    "prompt": "A red bicycle against a white wall",
+    "aspect_ratio": "16:9"
+  }'
 ```
 
-### Edit with a specific model
-```bash
-python scripts/generate_image.py "Add sunglasses to the person" --input portrait.png --model "black-forest-labs/flux.2-pro"
+Response:
+
+```json
+{
+  "created": 1748372400,
+  "data": [{ "b64_json": "<base64>", "media_type": "image/png" }],
+  "usage": { "prompt_tokens": 0, "completion_tokens": 4175, "total_tokens": 4175, "cost": 0.04 }
+}
 ```
 
-### Edit with custom output
-```bash
-python scripts/generate_image.py "Remove the text from the image" --input screenshot.png --output cleaned.png
-```
+`b64_json` is raw base64, **not** a data URL. `media_type` reflects the real format, so honour it
+when naming files — vector models return `image/svg+xml`.
 
-### Multiple images
-Run the script multiple times with different prompts or output paths:
-```bash
-python scripts/generate_image.py "Image 1 description" --output image1.png
-python scripts/generate_image.py "Image 2 description" --output image2.png
-```
+Streaming (`"stream": true`) emits `image_generation.partial_image`, `image_generation.completed`,
+and `error` events, terminating with `data: [DONE]`. Only the OpenAI models support it, and the
+bundled script does not use it.
 
-## Script Parameters
+Billing is all-or-nothing: a generation is either completed and billed in full, or it fails and is
+not billed. Streaming preview frames are not charged separately.
 
-- `prompt` (required): Text description of the image to generate, or editing instructions
-- `--input` or `-i`: Input image path for editing (enables edit mode)
-- `--model` or `-m`: OpenRouter model ID (default: google/gemini-3.1-flash-image-preview)
-- `--output` or `-o`: Output file path (default: generated_image.png)
-- `--api-key`: OpenRouter API key (overrides .env file)
+## Notes and caveats
 
-## Example Use Cases
+- Generation is a paid API call. Prefer a cheap model while iterating on a prompt.
+- Generation takes roughly 5–60 seconds depending on model and resolution.
+- Reference images are uploaded to OpenRouter. Do not send unpublished or sensitive data.
+- Never hardcode the API key. Keep it in the environment or an ignored `.env`.
+- Prompt specifically when editing: "change the sky to sunset colours" beats "edit the sky".
 
-### For Scientific Documents
-```bash
-# Generate a conceptual illustration for a paper
-python scripts/generate_image.py "Microscopic view of cancer cells being attacked by immunotherapy agents, scientific illustration style" --output figures/immunotherapy_concept.png
+## Related skills
 
-# Create a visual for a presentation
-python scripts/generate_image.py "DNA double helix structure with highlighted mutation site, modern scientific visualization" --output slides/dna_mutation.png
-```
-
-### For Presentations and Posters
-```bash
-# Title slide background
-python scripts/generate_image.py "Abstract blue and white background with subtle molecular patterns, professional presentation style" --output slides/background.png
-
-# Poster hero image
-python scripts/generate_image.py "Laboratory setting with modern equipment, photorealistic, well-lit" --output poster/hero.png
-```
-
-### For General Visual Content
-```bash
-# Website or documentation images
-python scripts/generate_image.py "Professional team collaboration around a digital whiteboard, modern office" --output docs/team_collaboration.png
-
-# Marketing materials
-python scripts/generate_image.py "Futuristic AI brain concept with glowing neural networks" --output marketing/ai_concept.png
-```
-
-## Error Handling
-
-The script provides clear error messages for:
-- Missing API key (with setup instructions)
-- API errors (with status codes)
-- Unexpected response formats
-- Missing dependencies (requests library)
-
-If the script fails, read the error message and address the issue before retrying.
-
-## Notes
-
-- Images are returned as base64-encoded data URLs and automatically saved as PNG files
-- The script supports both `images` and `content` response formats from different OpenRouter models
-- Generation time varies by model (typically 5-30 seconds)
-- For image editing, the input image is encoded as base64 and sent to the model
-- Supported input image formats: PNG, JPEG, GIF, WebP
-- Check OpenRouter pricing for cost information: https://openrouter.ai/models
-
-## Image Editing Tips
-
-- Be specific about what changes you want (e.g., "change the sky to sunset colors" vs "edit the sky")
-- Reference specific elements in the image when possible
-- For best results, use clear and detailed editing instructions
-- Both Gemini 3.1 Flash Image Preview and FLUX.2 Pro support image editing through OpenRouter
-
-## Integration with Other Skills
-
-- **scientific-schematics**: Use for technical diagrams, flowcharts, circuits, pathways
-- **generate-image**: Use for photos, illustrations, artwork, visual concepts
-- **scientific-slides**: Combine with generate-image for visually rich presentations
-- **latex-posters**: Use generate-image for poster visuals and hero images
-
+- `scientific-schematics` — technical diagrams, flowcharts, circuits, pathways
+- `scientific-slides` — presentations that embed generated visuals
+- `latex-posters` — posters that embed hero images

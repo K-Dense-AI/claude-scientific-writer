@@ -4,25 +4,54 @@ sockets may be blocked (e.g., sandboxed VMs).  Detects the restriction
 at runtime and applies an LD_PRELOAD shim if needed.
 
 Usage:
-    from office.soffice import run_soffice, get_soffice_env
+    from office.soffice import run_soffice
 
-    # Option 1 – run soffice directly
     result = run_soffice(["--headless", "--convert-to", "pdf", "input.docx"])
 
-    # Option 2 – get env dict for your own subprocess calls
-    env = get_soffice_env()
-    subprocess.run(["soffice", ...], env=env)
+Call soffice through run_soffice, not through subprocess with get_soffice_env():
+the env dict carries the shim but names no user profile, and a non-root sandbox
+cannot bootstrap the default one -- soffice aborts with "User installation could
+not be completed" and converts nothing. get_soffice_env() stays public for the
+callers that build their own argv (they must pass -env:UserInstallation too).
 """
 
+import contextlib
 import os
 import socket
 import subprocess
 import tempfile
+from collections.abc import Iterable
 from pathlib import Path
 
 
+# soffice inherits only these. LibreOffice needs a working process environment,
+# not the caller's credentials, so the env is built from an allowlist rather than
+# copied: an API key or token exported for the agent must not reach a converter
+# subprocess just because it happened to be in scope.
+FORWARDED_ENV_VARS = (
+    # Locating soffice, its native libraries, and scratch space.
+    "PATH", "HOME", "LD_LIBRARY_PATH", "TMPDIR", "TMP", "TEMP",
+    # Locale decides number, date, and currency formatting in converted output.
+    "LANG", "LANGUAGE", "LC_ALL", "LC_CTYPE", "LC_NUMERIC", "LC_TIME",
+    # soffice writes its profile and cache under these when they are set.
+    "XDG_RUNTIME_DIR", "XDG_CACHE_HOME", "XDG_CONFIG_HOME", "XDG_DATA_HOME",
+    # For callers that run against a real display instead of the svp backend.
+    "DISPLAY", "XAUTHORITY", "WAYLAND_DISPLAY",
+    "USER", "LOGNAME",
+    # Windows needs these for process startup, temp files, and DLL resolution.
+    "SYSTEMROOT", "WINDIR", "COMSPEC", "PATHEXT", "SYSTEMDRIVE",
+    "APPDATA", "LOCALAPPDATA", "USERPROFILE",
+    "PROGRAMFILES", "PROGRAMFILES(X86)", "PROGRAMDATA",
+)
+
+
 def get_soffice_env() -> dict:
-    env = os.environ.copy()
+    """Return a minimal environment for a soffice subprocess.
+
+    Assembled from FORWARDED_ENV_VARS instead of inheriting the parent
+    environment, so secrets in scope for the caller are not passed to soffice.
+    """
+    env = {name: os.environ[name] for name in FORWARDED_ENV_VARS if name in os.environ}
     env["SAL_USE_VCLPLUGIN"] = "svp"
 
     if _needs_shim():
@@ -32,9 +61,15 @@ def get_soffice_env() -> dict:
     return env
 
 
-def run_soffice(args: list[str], **kwargs) -> subprocess.CompletedProcess:
-    env = get_soffice_env()
-    return subprocess.run(["soffice"] + args, env=env, **kwargs)
+def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
+    args = list(args)
+    with contextlib.ExitStack() as stack:
+        if not any(str(a).startswith("-env:UserInstallation") for a in args):
+            profile = stack.enter_context(
+                tempfile.TemporaryDirectory(prefix="lo_profile_", ignore_cleanup_errors=True)
+            )
+            args = [f"-env:UserInstallation={Path(profile).as_uri()}"] + args
+        return subprocess.run(["soffice"] + args, env=get_soffice_env(), **kwargs)
 
 
 

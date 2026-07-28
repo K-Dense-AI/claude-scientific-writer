@@ -1,0 +1,3 @@
+record_id,comparison_group,value,unit,currency,base_year,price_basis,measure_type,geography,period,taxonomy,taxonomy_version,denominator_id,source_id
+R-001,annual-market-spend,60000000,USD per year,USD,2025,nominal,flow,Exampleland,2025,EXAMPLE-INDUSTRY,2026,annual-end-customer-spend,S-002
+R-002,annual-market-spend,40000000,USD per year,USD,2025,nominal,flow,Exampleland,2025,EXAMPLE-INDUSTRY,2026,annual-end-customer-spend,S-002

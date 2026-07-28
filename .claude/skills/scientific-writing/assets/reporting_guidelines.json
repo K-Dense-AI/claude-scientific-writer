@@ -1,0 +1,529 @@
+{
+  "as_of": "2026-07-24",
+  "guidelines": [
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "design-and-randomization",
+          "label": "Trial design, allocation, concealment, and masking"
+        },
+        {
+          "id": "participants-and-flow",
+          "label": "Eligibility, recruitment, analysis populations, and participant flow"
+        },
+        {
+          "id": "outcomes-and-harms",
+          "label": "Prespecified outcomes, estimates, uncertainty, and harms"
+        },
+        {
+          "id": "registration-protocol-analysis-plan",
+          "label": "Registration, protocol, analysis plan, and deviations"
+        },
+        {
+          "id": "open-science-and-funding",
+          "label": "Data sharing, funding, conflicts, and contributor information"
+        }
+      ],
+      "id": "consort-2025",
+      "name": "CONSORT 2025",
+      "official_url": "https://www.consort-spirit.org/",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S07",
+        "SW-S08"
+      ],
+      "study_designs": [
+        "randomized_trial",
+        "pilot_randomized_trial"
+      ],
+      "version": "2025"
+    },
+    {
+      "conditions": {
+        "ai": true
+      },
+      "coverage_topics": [
+        {
+          "id": "ai-intervention-description",
+          "label": "AI intervention, inputs, outputs, version, and intended use"
+        },
+        {
+          "id": "human-ai-interaction",
+          "label": "Human oversight, user expertise, and interaction workflow"
+        },
+        {
+          "id": "error-analysis",
+          "label": "Performance errors, failure cases, and subgroup behavior"
+        }
+      ],
+      "id": "consort-ai-2020",
+      "name": "CONSORT-AI extension",
+      "official_url": "https://www.equator-network.org/reporting-guidelines/consort-artificial-intelligence/",
+      "protocol": false,
+      "role": "extension",
+      "source_ids": [
+        "SW-S07",
+        "SW-S31"
+      ],
+      "study_designs": [
+        "randomized_trial",
+        "pilot_randomized_trial"
+      ],
+      "version": "2020"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "administrative-information",
+          "label": "Registration, version, roles, funding, and governance"
+        },
+        {
+          "id": "design-and-interventions",
+          "label": "Trial design, interventions, allocation, and masking"
+        },
+        {
+          "id": "outcomes-and-analysis",
+          "label": "Outcomes, sample size, analysis plan, and missing data"
+        },
+        {
+          "id": "data-monitoring-and-harms",
+          "label": "Data management, monitoring, auditing, and harms"
+        },
+        {
+          "id": "ethics-dissemination-and-access",
+          "label": "Ethics, consent, confidentiality, dissemination, and access"
+        }
+      ],
+      "id": "spirit-2025",
+      "name": "SPIRIT 2025",
+      "official_url": "https://www.consort-spirit.org/",
+      "protocol": true,
+      "role": "primary",
+      "source_ids": [
+        "SW-S07",
+        "SW-S09"
+      ],
+      "study_designs": [
+        "randomized_trial",
+        "pilot_randomized_trial"
+      ],
+      "version": "2025"
+    },
+    {
+      "conditions": {
+        "ai": true
+      },
+      "coverage_topics": [
+        {
+          "id": "ai-intervention-versioning",
+          "label": "AI intervention version, updates, inputs, outputs, and workflow"
+        },
+        {
+          "id": "human-ai-protocol",
+          "label": "Human oversight, user expertise, and interaction protocol"
+        },
+        {
+          "id": "ai-error-monitoring",
+          "label": "Error handling, performance monitoring, and safety"
+        }
+      ],
+      "id": "spirit-ai-2020",
+      "name": "SPIRIT-AI extension",
+      "official_url": "https://www.equator-network.org/reporting-guidelines/spirit-artificial-intelligence/",
+      "protocol": true,
+      "role": "extension",
+      "source_ids": [
+        "SW-S09",
+        "SW-S32"
+      ],
+      "study_designs": [
+        "randomized_trial",
+        "pilot_randomized_trial"
+      ],
+      "version": "2020"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "eligibility-and-information-sources",
+          "label": "Eligibility criteria, information sources, and complete search strategy"
+        },
+        {
+          "id": "selection-and-data-collection",
+          "label": "Selection, extraction, data items, and reviewer processes"
+        },
+        {
+          "id": "bias-and-certainty",
+          "label": "Risk of bias, reporting bias, and certainty assessment"
+        },
+        {
+          "id": "synthesis-and-heterogeneity",
+          "label": "Effect measures, synthesis methods, heterogeneity, and sensitivity analyses"
+        },
+        {
+          "id": "registration-support-and-availability",
+          "label": "Registration, protocol, amendments, support, conflicts, data, and code"
+        }
+      ],
+      "id": "prisma-2020",
+      "name": "PRISMA 2020",
+      "official_url": "https://www.prisma-statement.org/prisma-2020",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S10"
+      ],
+      "study_designs": [
+        "systematic_review",
+        "meta_analysis"
+      ],
+      "version": "2020"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "design-setting-and-participants",
+          "label": "Design, setting, dates, eligibility, selection, and follow-up"
+        },
+        {
+          "id": "variables-data-sources-and-bias",
+          "label": "Variables, measurement, data sources, and bias"
+        },
+        {
+          "id": "study-size-and-statistics",
+          "label": "Study size, quantitative variables, confounding, missing data, and sensitivity"
+        },
+        {
+          "id": "participants-outcomes-and-estimates",
+          "label": "Participant flow, descriptive data, outcomes, and adjusted estimates"
+        },
+        {
+          "id": "limitations-generalizability-and-funding",
+          "label": "Limitations, interpretation, generalizability, and funding"
+        }
+      ],
+      "id": "strobe-2007",
+      "name": "STROBE",
+      "official_url": "https://www.strobe-statement.org/checklists/",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S11"
+      ],
+      "study_designs": [
+        "cohort",
+        "case_control",
+        "cross_sectional",
+        "observational"
+      ],
+      "version": "2007"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "participants-and-design",
+          "label": "Participant selection, setting, design, and data collection"
+        },
+        {
+          "id": "index-test-and-reference-standard",
+          "label": "Index test, reference standard, thresholds, and blinding"
+        },
+        {
+          "id": "analysis-and-indeterminate-results",
+          "label": "Accuracy estimates, uncertainty, missing, and indeterminate results"
+        },
+        {
+          "id": "flow-and-applicability",
+          "label": "Participant flow, timing, adverse events, and applicability"
+        }
+      ],
+      "id": "stard-2015",
+      "name": "STARD 2015",
+      "official_url": "https://resources.equator-network.org/reporting-guidelines/stard",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S12"
+      ],
+      "study_designs": [
+        "diagnostic_accuracy"
+      ],
+      "version": "2015"
+    },
+    {
+      "conditions": {
+        "ai": true
+      },
+      "coverage_topics": [
+        {
+          "id": "dataset-and-model-provenance",
+          "label": "Dataset provenance, model version, training status, and access"
+        },
+        {
+          "id": "ai-test-conduct",
+          "label": "AI index-test execution, human interaction, thresholds, and reference standard"
+        },
+        {
+          "id": "fairness-failures-and-generalizability",
+          "label": "Subgroups, fairness, failure cases, uncertainty, and generalizability"
+        }
+      ],
+      "id": "stard-ai-2025",
+      "name": "STARD-AI",
+      "official_url": "https://www.nature.com/articles/s41591-025-03953-8",
+      "protocol": false,
+      "role": "extension",
+      "source_ids": [
+        "SW-S13"
+      ],
+      "study_designs": [
+        "diagnostic_accuracy"
+      ],
+      "version": "2025"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "data-source-and-participants",
+          "label": "Data source, participants, setting, and outcome definition"
+        },
+        {
+          "id": "predictors-and-sample-size",
+          "label": "Predictors, sample size, missing data, and class balance"
+        },
+        {
+          "id": "model-development-and-validation",
+          "label": "Model development, tuning, validation, and updating"
+        },
+        {
+          "id": "performance-and-clinical-utility",
+          "label": "Performance, uncertainty, calibration, discrimination, and utility"
+        },
+        {
+          "id": "fairness-transparency-and-access",
+          "label": "Subgroups, fairness, interpretability, model access, data, and code"
+        }
+      ],
+      "id": "tripod-ai-2024",
+      "name": "TRIPOD+AI",
+      "official_url": "https://www.tripod-statement.org/",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S14"
+      ],
+      "study_designs": [
+        "prediction_model",
+        "diagnostic_prediction_model",
+        "prognostic_prediction_model"
+      ],
+      "version": "2024"
+    },
+    {
+      "conditions": {
+        "llm": true
+      },
+      "coverage_topics": [
+        {
+          "id": "llm-task-and-version",
+          "label": "Task definition, model identity, version, prompts, and updates"
+        },
+        {
+          "id": "evaluation-and-human-oversight",
+          "label": "Evaluation design, human oversight, comparators, and failure analysis"
+        },
+        {
+          "id": "llm-safety-and-reproducibility",
+          "label": "Privacy, bias, safety, reproducibility, and access constraints"
+        }
+      ],
+      "id": "tripod-llm-2025",
+      "name": "TRIPOD-LLM",
+      "official_url": "https://www.tripod-statement.org/",
+      "protocol": false,
+      "role": "extension",
+      "source_ids": [
+        "SW-S14"
+      ],
+      "study_designs": [
+        "prediction_model",
+        "diagnostic_prediction_model",
+        "prognostic_prediction_model"
+      ],
+      "version": "2025"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "patient-information-and-consent",
+          "label": "De-identified patient information, consent, and perspective"
+        },
+        {
+          "id": "timeline-and-clinical-findings",
+          "label": "Timeline, clinical findings, diagnostic assessment, and reasoning"
+        },
+        {
+          "id": "intervention-follow-up-and-outcomes",
+          "label": "Interventions, follow-up, outcomes, adverse events, and adherence"
+        },
+        {
+          "id": "discussion-and-limitations",
+          "label": "Context, strengths, limitations, and cautious take-away lessons"
+        }
+      ],
+      "id": "care-2013",
+      "name": "CARE",
+      "official_url": "https://www.care-statement.org/checklist",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S15"
+      ],
+      "study_designs": [
+        "case_report"
+      ],
+      "version": "2013"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "design-sample-size-and-criteria",
+          "label": "Study design, experimental unit, sample size, and inclusion or exclusion"
+        },
+        {
+          "id": "randomization-blinding-and-outcomes",
+          "label": "Randomization, blinding, outcomes, and statistical methods"
+        },
+        {
+          "id": "animals-procedures-and-welfare",
+          "label": "Animal details, procedures, housing, welfare, and adverse events"
+        },
+        {
+          "id": "ethics-interpretation-and-data",
+          "label": "Ethics, limitations, interpretation, protocol, data, and conflicts"
+        }
+      ],
+      "id": "arrive-2.0-2020",
+      "name": "ARRIVE 2.0",
+      "official_url": "https://arriveguidelines.org/arrive-guidelines",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S16"
+      ],
+      "study_designs": [
+        "animal_in_vivo"
+      ],
+      "version": "2.0 (2020)"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "problem-context-and-rationale",
+          "label": "Local problem, available knowledge, context, rationale, and aims"
+        },
+        {
+          "id": "intervention-study-and-measures",
+          "label": "Intervention, study of the intervention, measures, and analysis"
+        },
+        {
+          "id": "ethics-results-and-variation",
+          "label": "Ethical considerations, evolution, outcomes, and variation over time"
+        },
+        {
+          "id": "interpretation-limitations-and-sustainability",
+          "label": "Interpretation, limitations, sustainability, spread, and funding"
+        }
+      ],
+      "id": "squire-2.0-2015",
+      "name": "SQUIRE 2.0",
+      "official_url": "https://www.squire-statement.org/index.cfm?fuseaction=page.viewPage&pageID=471&nodeID=1",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S17"
+      ],
+      "study_designs": [
+        "quality_improvement"
+      ],
+      "version": "2.0 (2015)"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "population-setting-perspective",
+          "label": "Population, setting, perspective, comparators, and time horizon"
+        },
+        {
+          "id": "effects-costs-and-currency",
+          "label": "Health outcomes, resources, costs, currency, and price date"
+        },
+        {
+          "id": "model-assumptions-and-uncertainty",
+          "label": "Model, assumptions, analysis plan, uncertainty, and distributional effects"
+        },
+        {
+          "id": "engagement-results-and-conflicts",
+          "label": "Stakeholder engagement, results, limitations, funding, and conflicts"
+        }
+      ],
+      "id": "cheers-2022",
+      "name": "CHEERS 2022",
+      "official_url": "https://www.ispor.org/heor-resources/good-practices/article/consolidated-health-economic-evaluation-reporting-standards-2022-cheers-2022-statement-updated-reporting-guidance-for-health-economic-evaluations",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S18"
+      ],
+      "study_designs": [
+        "health_economic_evaluation"
+      ],
+      "version": "2022"
+    },
+    {
+      "conditions": {},
+      "coverage_topics": [
+        {
+          "id": "approach-context-and-researchers",
+          "label": "Qualitative approach, context, researcher characteristics, and reflexivity"
+        },
+        {
+          "id": "sampling-ethics-and-data-collection",
+          "label": "Sampling, ethics, consent, data collection, and instruments"
+        },
+        {
+          "id": "analysis-trustworthiness-and-findings",
+          "label": "Analysis, trustworthiness, findings, quotations, and links to data"
+        },
+        {
+          "id": "limitations-implications-and-funding",
+          "label": "Limitations, implications, conflicts, and funding"
+        }
+      ],
+      "id": "srqr-2014",
+      "name": "SRQR",
+      "official_url": "https://www.equator-network.org/reporting-guidelines/srqr/",
+      "protocol": false,
+      "role": "primary",
+      "source_ids": [
+        "SW-S33"
+      ],
+      "study_designs": [
+        "qualitative"
+      ],
+      "version": "2014"
+    }
+  ],
+  "schema_version": "1.0"
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0",
+  "artifact_kind": "aggregate_clinical_research_summary_draft",
+  "draft_status": "BLOCKED_INCOMPLETE_DRAFT_NOT_FOR_CLINICAL_DECISION_MAKING",
+  "safety_notice": "Summarize only verified aggregate research outputs. Do not generate patient-level content, clinical advice, causal conclusions, or unverified interpretations.",
+  "data_classification": "aggregate",
+  "authorized_purpose": null,
+  "authorization_verified": false,
+  "reporting_route": {
+    "study_design": null,
+    "base_reporting_guideline_and_version": null,
+    "applicable_extensions": [],
+    "protocol_reference": null,
+    "sap_reference": null,
+    "registry_reference": null
+  },
+  "sections": {
+    "scope_and_population": {"status": "missing", "source_fact_ids": []},
+    "methods": {"status": "missing", "source_fact_ids": []},
+    "analysis_set_and_estimand": {"status": "missing", "source_fact_ids": []},
+    "results": {"status": "missing", "source_fact_ids": []},
+    "missingness_and_exclusions": {"status": "missing", "source_fact_ids": []},
+    "safety_summary_if_applicable": {"status": "missing", "source_fact_ids": []},
+    "limitations": {"status": "missing", "source_fact_ids": []},
+    "interpretation_by_accountable_authors": {"status": "missing", "source_fact_ids": []},
+    "funding_and_conflicts": {"status": "missing", "source_fact_ids": []}
+  },
+  "provenance_manifest": null,
+  "review": {
+    "accountable_author_review": "pending",
+    "statistical_review": "pending",
+    "clinical_review": "pending",
+    "privacy_review": "pending",
+    "publication_authorized": false
+  }
+}
