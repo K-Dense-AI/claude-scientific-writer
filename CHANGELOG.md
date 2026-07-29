@@ -4,6 +4,15 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ## [Unreleased]
 
+### Added
+
+- **GitHub releases are created by the release workflow** — `release.yml` now creates the GitHub release from the `CHANGELOG.md` section for the tag, after PyPI publishing succeeds. Previously the workflow only published to PyPI and release entries were written by hand, so the releases page drifted (`v2.19.0` shipped to PyPI while the page still showed `v2.18.0` as latest, and several earlier versions have no entry at all). The step is idempotent: re-running a tag refreshes the notes instead of failing.
+- **`scripts/changelog_notes.py`** — extracts the release body for one version from `CHANGELOG.md` and appends a compare link to the previous release. Run it to preview what a tag will publish: `uv run scripts/changelog_notes.py X.Y.Z`.
+
+### Changed
+
+- **A changelog entry is now required to release** — the workflow extracts the notes before running any checks, so a tag whose version has no `## [X.Y.Z]` section (or an empty one) fails immediately, rather than after the package is already on PyPI. `docs/RELEASING.md` documents this, along with why the local `scripts/publish.py` path does not produce a GitHub release.
+
 ---
 
 ## [2.19.0] - 2026-07-28

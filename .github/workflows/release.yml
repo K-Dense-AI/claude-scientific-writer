@@ -16,7 +16,8 @@ jobs:
     environment: pypi
     permissions:
       id-token: write
-      contents: read
+      # contents: write is needed only by the final step, which creates the GitHub release.
+      contents: write
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v9.0.0
@@ -35,6 +36,12 @@ jobs:
               sys.exit(f"tag v{tag} does not match pyproject version {version}")
           print(f"tag matches version {version}")
           EOF
+      - name: Changelog documents this version
+        # Extracted up front so a missing changelog entry fails before anything
+        # is published, rather than after the release is already on PyPI.
+        run: >-
+          uv run --frozen python scripts/changelog_notes.py "${GITHUB_REF_NAME#v}"
+          --output release-notes.md --repo-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
       - name: Ruff
         run: uv run --frozen ruff check .
       - name: Mypy
@@ -65,3 +72,19 @@ jobs:
           EOF
       - name: Publish (trusted publishing)
         run: uv publish --trusted-publishing always
+      - name: Create GitHub release
+        # Runs only after PyPI publishing succeeds, so the releases page never
+        # advertises a version that is not installable. Idempotent so a re-run
+        # of the same tag refreshes the notes instead of failing.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TAG" --notes-file release-notes.md \
+              --latest --draft=false
+          else
+            gh release create "$TAG" --title "$TAG" --notes-file release-notes.md \
+              --latest --verify-tag
+          fi
+          gh release view "$TAG" --json tagName,isDraft,url
