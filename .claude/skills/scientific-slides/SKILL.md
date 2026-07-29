@@ -4,7 +4,7 @@ description: Build slide decks and presentations for research talks. Use this fo
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
-  version: "1.4"
+  version: "1.5"
   skill-author: K-Dense Inc.
   openclaw:
     primaryEnv: OPENROUTER_API_KEY

@@ -15,8 +15,10 @@ not be completed" and converts nothing. get_soffice_env() stays public for the
 callers that build their own argv (they must pass -env:UserInstallation too).
 """
 
+import atexit
 import contextlib
 import os
+import shutil
 import socket
 import subprocess
 import tempfile
@@ -73,7 +75,13 @@ def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 
-_SHIM_SO = Path(tempfile.gettempdir()) / "lo_socket_shim.so"
+#: Compiled once per process, not cached on disk between runs. An earlier version
+#: built the shim at a fixed /tmp/lo_socket_shim.so and reused whatever was already
+#: there, which let any local user pre-plant a shared object at that predictable
+#: path and get it LD_PRELOADed into every subsequent soffice run. mkdtemp gives an
+#: unpredictable directory created 0700 and owned by us, so neither the .c we
+#: compile nor the .so we load can be swapped by another user.
+_shim_so: Path | None = None
 
 
 def _needs_shim() -> bool:
@@ -86,18 +94,24 @@ def _needs_shim() -> bool:
 
 
 def _ensure_shim() -> Path:
-    if _SHIM_SO.exists():
-        return _SHIM_SO
+    global _shim_so
+    if _shim_so is not None and _shim_so.exists():
+        return _shim_so
 
-    src = Path(tempfile.gettempdir()) / "lo_socket_shim.c"
+    shim_dir = Path(tempfile.mkdtemp(prefix="lo-shim-"))
+    atexit.register(shutil.rmtree, shim_dir, True)
+
+    src = shim_dir / "lo_socket_shim.c"
+    so = shim_dir / "lo_socket_shim.so"
     src.write_text(_SHIM_SOURCE)
     subprocess.run(
-        ["gcc", "-shared", "-fPIC", "-o", str(_SHIM_SO), str(src), "-ldl"],
+        ["gcc", "-shared", "-fPIC", "-o", str(so), str(src), "-ldl"],
         check=True,
         capture_output=True,
     )
     src.unlink()
-    return _SHIM_SO
+    _shim_so = so
+    return _shim_so
 
 
 

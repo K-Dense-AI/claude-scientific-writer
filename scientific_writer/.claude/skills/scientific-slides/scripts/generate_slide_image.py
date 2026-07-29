@@ -43,6 +43,43 @@ FORWARDED_ENV_VARS = (
 )
 
 
+def resolve_api_key(explicit=None):
+    """Resolve the OpenRouter key from --api-key, the environment, then any .env file.
+
+    The .env scan walks up from the working directory and finally checks the
+    script's own directory, so running from anywhere inside a project picks up
+    the key at its root. The child process is handed the resolved value through
+    build_subprocess_env, so it never has to repeat this search.
+    """
+    if explicit:
+        return explicit
+
+    from_env = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if from_env:
+        return from_env
+
+    cwd = Path.cwd()
+    for directory in [cwd, *cwd.parents, Path(__file__).resolve().parent]:
+        env_file = directory / ".env"
+        if not env_file.is_file():
+            continue
+        try:
+            content = env_file.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        for raw in content.splitlines():
+            line = raw.strip()
+            if line.startswith("#") or "=" not in line:
+                continue
+            name, _, value = line.partition("=")
+            if name.strip() == "OPENROUTER_API_KEY":
+                value = value.strip().strip('"').strip("'")
+                if value:
+                    return value
+
+    return None
+
+
 def build_subprocess_env(api_key):
     """Return a minimal environment for the AI generation subprocess."""
     env = {name: os.environ[name] for name in FORWARDED_ENV_VARS if name in os.environ}
@@ -108,15 +145,16 @@ Environment Variables:
     
     args = parser.parse_args()
     
-    # Check for API key
-    api_key = args.api_key or os.getenv("OPENROUTER_API_KEY")
+    # Check for API key — resolves --api-key, the environment, then any .env file
+    api_key = resolve_api_key(args.api_key)
     if not api_key:
-        print("Error: OPENROUTER_API_KEY environment variable not set")
+        print("Error: OPENROUTER_API_KEY not found")
         print("\nFor AI generation, you need an OpenRouter API key.")
         print("Get one at: https://openrouter.ai/keys")
         print("\nSet it with:")
         print("  export OPENROUTER_API_KEY='your_api_key'")
-        print("\nOr use --api-key flag")
+        print("\nOr add OPENROUTER_API_KEY=your_api_key to a .env file")
+        print("Or use --api-key flag")
         sys.exit(1)
     
     # Find AI generation script

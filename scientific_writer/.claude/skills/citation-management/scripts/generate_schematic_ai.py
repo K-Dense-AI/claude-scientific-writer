@@ -33,20 +33,42 @@ except ImportError:
     print("Error: requests library not found. Install with: pip install requests")
     sys.exit(1)
 
-# Try to load .env file from multiple potential locations
-def _load_env_file():
-    """Load .env file from current directory or script directory only."""
-    try:
-        from dotenv import load_dotenv
-    except ImportError:
-        return False
+def _resolve_api_key(explicit: Optional[str] = None) -> Optional[str]:
+    """Resolve the OpenRouter key from --api-key, the environment, then any .env file.
 
-    for candidate in [Path.cwd() / ".env", Path(__file__).resolve().parent / ".env"]:
-        if candidate.exists():
-            load_dotenv(dotenv_path=candidate, override=False)
-            return True
+    The .env scan walks up from the working directory and finally checks the
+    script's own directory, so running from anywhere inside a project picks up
+    the key at its root. Only the standard library is used: python-dotenv is a
+    common omission, and a missing optional dependency should not read as a
+    missing credential.
+    """
+    if explicit:
+        return explicit
 
-    return False
+    from_env = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if from_env:
+        return from_env
+
+    cwd = Path.cwd()
+    for directory in [cwd, *cwd.parents, Path(__file__).resolve().parent]:
+        env_file = directory / ".env"
+        if not env_file.is_file():
+            continue
+        try:
+            content = env_file.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        for raw in content.splitlines():
+            line = raw.strip()
+            if line.startswith("#") or "=" not in line:
+                continue
+            name, _, value = line.partition("=")
+            if name.strip() == "OPENROUTER_API_KEY":
+                value = value.strip().strip('"').strip("'")
+                if value:
+                    return value
+
+    return None
 
 
 class ScientificSchematicGenerator:
@@ -125,13 +147,8 @@ IMPORTANT - NO FIGURE NUMBERS:
             verbose: Print detailed progress information
         """
         # Priority: 1) explicit api_key param, 2) environment variable, 3) .env file
-        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
-        
-        # If not found in environment, try loading from .env file
-        if not self.api_key:
-            _load_env_file()
-            self.api_key = os.getenv("OPENROUTER_API_KEY")
-        
+        self.api_key = _resolve_api_key(api_key)
+
         if not self.api_key:
             raise ValueError(
                 "OPENROUTER_API_KEY not found. Please either:\n"
@@ -144,9 +161,11 @@ IMPORTANT - NO FIGURE NUMBERS:
         self.verbose = verbose
         self._last_error = None  # Track last error for better reporting
         self.base_url = "https://openrouter.ai/api/v1"
-        # Nano Banana 2 - Google's advanced image generation model
-        # https://openrouter.ai/google/gemini-3.6-flash
-        self.image_model = "google/gemini-3.1-flash-image-preview"
+        # Nano Banana 2 - Google's advanced image generation model. The slug must
+        # be an image-output model; a text-only chat model is rejected with
+        # "No endpoints found that support the requested output modalities".
+        # https://openrouter.ai/google/gemini-3.1-flash-image
+        self.image_model = "google/gemini-3.1-flash-image"
         # Gemini 3.6 Flash for quality review - excellent vision and reasoning
         self.review_model = "google/gemini-3.6-flash"
         
@@ -776,13 +795,14 @@ Environment:
     
     args = parser.parse_args()
     
-    # Check for API key
-    api_key = args.api_key or os.getenv("OPENROUTER_API_KEY")
+    # Check for API key — resolves --api-key, the environment, then any .env file
+    api_key = _resolve_api_key(args.api_key)
     if not api_key:
-        print("Error: OPENROUTER_API_KEY environment variable not set")
+        print("Error: OPENROUTER_API_KEY not found")
         print("\nSet it with:")
         print("  export OPENROUTER_API_KEY='your_api_key'")
-        print("\nOr provide via --api-key flag")
+        print("\nOr add OPENROUTER_API_KEY=your_api_key to a .env file")
+        print("Or provide via --api-key flag")
         sys.exit(1)
     
     # Validate iterations - enforce max of 2

@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "repository": "https://github.com/K-Dense-AI/scientific-agent-skills",
-  "ref": "v2.60.0",
-  "commit": "223f5a30f8928bb76b2e93db282ebe0d6ff5b2ea",
-  "snapshot_sha256": "493be8334f11bf1ca4c41910a8b49ec116f753c36b93e3ce08cc0de4c91b6c9a",
+  "ref": "ab2f84ab10597c59fac186ecda6d5edd5dcc8b92",
+  "commit": "ab2f84ab10597c59fac186ecda6d5edd5dcc8b92",
+  "snapshot_sha256": "01d64156c9acf8acb0bce8a9a527907a579afcc4306d456da19a91aae852cf2a",
   "skills": [
     {
       "source": "citation-management",
       "destination": "citation-management",
-      "sha256": "68e4425938dde655a3ecb9a2fca14a773cfc50e074eb47d4858dea0d0222fe5a"
+      "sha256": "5809be57bc54ed6b04c629a2c8a231b1d3d81d68f1873c7519cd4bbc7c25c056"
     },
     {
       "source": "clinical-decision-support",
@@ -23,7 +23,7 @@
     {
       "source": "docx",
       "destination": "document-skills/docx",
-      "sha256": "894ee6d6e177a4415e04db3996427d4d29299278e6eba91d7c87152cf51ac220"
+      "sha256": "297eabe17185286e63696c5e99cc263838e00cffb9ad5e44add9b0455487307f"
     },
     {
       "source": "pdf",
@@ -33,12 +33,12 @@
     {
       "source": "pptx",
       "destination": "document-skills/pptx",
-      "sha256": "e2e470674c9e4f191a76689f22b75250029c593625021bb11799af2e8780767a"
+      "sha256": "bdb280197d933df17f4436a3f34be5aa06e1b4e6cf52d73d74b62157c5915915"
     },
     {
       "source": "xlsx",
       "destination": "document-skills/xlsx",
-      "sha256": "3c41d5cb1df12e0566594bc1c53c97aa340e749751df12bcf3554550f3bb57c5"
+      "sha256": "dbb2a5ae521c3e16c0864329bdfd5c8491d7e2e52295bfaefe432b570d67e882"
     },
     {
       "source": "generate-image",
@@ -53,17 +53,17 @@
     {
       "source": "infographics",
       "destination": "infographics",
-      "sha256": "4864cc43c508cf87a070173c9804f06750cc1f25a74e462c04e34378b04a5473"
+      "sha256": "a7f703b672b5211a5b26fb180c25d386310ed74ca6fff4f97b8225403dffe847"
     },
     {
       "source": "latex-posters",
       "destination": "latex-posters",
-      "sha256": "46149bd50691db8002de8538a1e2dfe0355d983029b332e029b472d008570368"
+      "sha256": "06f0c07b758fce3de413c8eb861cf9a9a404436633d452b04220b6396bc9d92c"
     },
     {
       "source": "literature-review",
       "destination": "literature-review",
-      "sha256": "354195c3dd25918bbfc82d2f4702fcfec377f50248fbed3ee9f2b0892c32043a"
+      "sha256": "e7960c4d80794b43df6ad64ce0362d8b1bee95c55d166574b27d108fec4ac8d1"
     },
     {
       "source": "market-research-reports",
@@ -113,12 +113,12 @@
     {
       "source": "scientific-schematics",
       "destination": "scientific-schematics",
-      "sha256": "6ecc55c1e1074916c09be818546ca3305d841cdb169a7dac206168972d6e910f"
+      "sha256": "b35312e248959157be8497ed0dc1252d187aa5ee6fef44dc1333376f680bd4b5"
     },
     {
       "source": "scientific-slides",
       "destination": "scientific-slides",
-      "sha256": "521904cdaf0c3883f712ae471c96ebb6cab43b58baf4f7d168e3400aaebeab35"
+      "sha256": "83ad63b39f8afda6098d0da69978522ae0648b0a4f8328a3a9d0f3d7b4f914fe"
     },
     {
       "source": "scientific-writing",

@@ -6,6 +6,20 @@ All notable changes to the Scientific Writer project will be documented in this 
 
 ---
 
+## [2.19.0] - 2026-07-28
+
+### Changed
+
+- **Vendored skills refreshed to upstream `ab2f84ab1059`** — the writing-skill subset is now pinned to `K-Dense-AI/scientific-agent-skills` commit `ab2f84ab1059` (upstream version 2.61.0), up from release `v2.60.0` at `223f5a30f892`. Pinned to the commit rather than a tag because upstream has not yet published a `v2.61.0` release. `skills.lock.json` and all snapshots (`skills/`, `.claude/skills/`, `scientific_writer/.claude/skills/`) were regenerated; the same 26 selected skills continue to ship.
+
+### Fixed
+
+- **Image generation model slug corrected** — `scientific-schematics`, `infographics`, `latex-posters`, `literature-review`, `citation-management`, and `scientific-slides` now request `google/gemini-3.1-flash-image` instead of the text-only `google/gemini-3.1-flash-image-preview`, which failed with "No endpoints found that support the requested output modalities".
+- **`OPENROUTER_API_KEY` resolution hardened** — the schematic, infographic, and slide-image scripts now resolve the key from `--api-key`, then the environment, then the first `.env` found while walking up from the working directory, using only the standard library. A missing optional `python-dotenv` no longer surfaces as a missing credential.
+- **LibreOffice conversion in `docx`/`pptx`/`xlsx`** — `scripts/office/soffice.py` gained more robust binary discovery and error reporting.
+
+---
+
 ## [2.18.0] - 2026-07-28
 
 ### Changed
