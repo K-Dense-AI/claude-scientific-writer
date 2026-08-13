@@ -2,6 +2,19 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
+## [2.21.0] - 2026-08-12
+
+### Fixed
+
+- **The `docx`, `pdf`, `pptx`, and `xlsx` skills are now discoverable** — they were nested at `skills/document-skills/<name>/`, one level deeper than any client scans. Agent Plugins §7.1 states that "Clients MUST NOT recursively search deeper descendants for additional skills", so all four were invisible to every Agent Plugins client *and* to Claude Code. `skills.lock.json` now maps them to top-level destinations, `.claude-plugin/marketplace.json` registers each individually, and all 26 skills load. `scripts/validate_agent_plugin.py` reports zero warnings across all three plugin roots.
+- **Correction to the v2.20.0 notes** — that entry claimed the fix belonged upstream in `scientific-agent-skills` because `skills/` is a hash-locked snapshot. That was wrong on both counts: upstream has always published these four as top-level skills and has no `document-skills` directory at all, and the nesting came from this repository's own `destination` mapping in `skills.lock.json`. Re-vendoring the same pinned commit with flat destinations fixes it here, and `snapshot_sha256` was regenerated accordingly.
+
+### Changed
+
+- **`scripts/check_consistency.py` no longer special-cases skill bundles** — the `SKILL_BUNDLE_DIRS` escape hatch existed only to let `document-skills/` pass frontmatter checks while hiding its sub-skills from discovery. Every directory under `skills/` is now checked as one skill, which is what the specification requires.
+
+---
+
 ## [2.20.0] - 2026-08-12
 
 ### Added

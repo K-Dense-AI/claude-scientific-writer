@@ -754,7 +754,7 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 ---
 
 ### 15. DOCX (Word Documents)
-**Location**: `.claude/skills/document-skills/docx/`
+**Location**: `.claude/skills/docx/`
 
 **Capabilities**:
 - Create and edit Word documents programmatically
@@ -775,7 +775,7 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 ---
 
 ### 16. PDF Documents
-**Location**: `.claude/skills/document-skills/pdf/`
+**Location**: `.claude/skills/pdf/`
 
 **Capabilities**:
 - Extract text and metadata from PDFs
@@ -798,7 +798,7 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 ---
 
 ### 17. PPTX (PowerPoint Presentations)
-**Location**: `.claude/skills/document-skills/pptx/`
+**Location**: `.claude/skills/pptx/`
 
 **Capabilities**:
 - Create and modify PowerPoint presentations
@@ -821,7 +821,7 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 ---
 
 ### 18. XLSX (Excel Spreadsheets)
-**Location**: `.claude/skills/document-skills/xlsx/`
+**Location**: `.claude/skills/xlsx/`
 
 **Capabilities**:
 - Read and write Excel files

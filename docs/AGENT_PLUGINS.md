@@ -13,7 +13,7 @@ servers, while leaving distribution, installation, permissions, and UX to each c
 | Path | Role |
 |------|------|
 | `plugin.json` | Agent Plugins 1.0.0 manifest at the plugin root (required by §5) |
-| `skills/` | 22 discoverable skills, each a directory with `SKILL.md` (§7.1) |
+| `skills/` | 26 discoverable skills, each a directory with `SKILL.md` (§7.1) |
 | `mcp.json` | Not present — this plugin ships no MCP servers, which §6.2 explicitly permits |
 | `.claude/`, `scientific_writer/.claude/` | Bundled payload copies, each a loadable plugin root of its own |
 | `.claude-plugin/marketplace.json` | Claude Code marketplace metadata (client-specific, outside the portable format) |
@@ -81,19 +81,18 @@ It reports three levels:
 Supporting a future specification version means dropping its schemas into a new
 `scripts/schemas/agent-plugins/<version>/` directory; nothing in the checker hardcodes 1.0.0.
 
-### Known warning: `skills/document-skills`
+### Keep every skill an immediate child of `skills/`
 
-`skills/document-skills/` bundles the `docx`, `pdf`, `pptx`, and `xlsx` skills one level deeper than
-the specification scans. §7.1 is explicit that "Clients MUST NOT recursively search deeper
-descendants for additional skills", so those four are not discovered by any Agent Plugins client —
-and they are not discovered by Claude Code either. The validator reports this as a warning rather
-than silently passing.
+§7.1 is explicit that "Clients MUST NOT recursively search deeper descendants for additional
+skills". A skill nested two levels down is invisible to every Agent Plugins client, and to Claude
+Code as well.
 
-The fix belongs upstream in
-[K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), which is
-where `skills/` is vendored from: those directories need to be flattened to immediate children of
-`skills/`, or the bundle needs its own `SKILL.md`. `skills/` is a hash-locked snapshot
-(`skills.lock.json`), so it cannot be patched in this repository without breaking provenance.
+This bit the `docx`, `pdf`, `pptx`, and `xlsx` skills, which the vendoring step used to rewrite into
+a local `document-skills/` bundle through the `destination` field in `skills.lock.json`. Upstream
+always published them as top-level skills; the nesting was introduced here. The destinations are now
+flat, so all 26 skills are discoverable. If you add a skill to `skills.lock.json`, keep its
+`destination` a single path segment — `scripts/validate_agent_plugin.py` reports any directory under
+`skills/` that has no `SKILL.md`, and names the nested skills it is hiding.
 
 ## Client extensions
 

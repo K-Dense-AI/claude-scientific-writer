@@ -3,7 +3,7 @@
   "repository": "https://github.com/K-Dense-AI/scientific-agent-skills",
   "ref": "ab2f84ab10597c59fac186ecda6d5edd5dcc8b92",
   "commit": "ab2f84ab10597c59fac186ecda6d5edd5dcc8b92",
-  "snapshot_sha256": "01d64156c9acf8acb0bce8a9a527907a579afcc4306d456da19a91aae852cf2a",
+  "snapshot_sha256": "b5a3d19457452148db098bab0620fdefd34302d1d26a8e96c0e90c8204d10bce",
   "skills": [
     {
       "source": "citation-management",
@@ -22,22 +22,22 @@
     },
     {
       "source": "docx",
-      "destination": "document-skills/docx",
+      "destination": "docx",
       "sha256": "297eabe17185286e63696c5e99cc263838e00cffb9ad5e44add9b0455487307f"
     },
     {
       "source": "pdf",
-      "destination": "document-skills/pdf",
+      "destination": "pdf",
       "sha256": "a168863ca17d8d82b10ca343f6d07d91765a14f2a61d7d6ddb6d248dc48aebe9"
     },
     {
       "source": "pptx",
-      "destination": "document-skills/pptx",
+      "destination": "pptx",
       "sha256": "bdb280197d933df17f4436a3f34be5aa06e1b4e6cf52d73d74b62157c5915915"
     },
     {
       "source": "xlsx",
-      "destination": "document-skills/xlsx",
+      "destination": "xlsx",
       "sha256": "dbb2a5ae521c3e16c0864329bdfd5c8491d7e2e52295bfaefe432b570d67e882"
     },
     {

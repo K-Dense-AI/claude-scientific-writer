@@ -23,8 +23,6 @@ SKILLS_DIR = REPO_ROOT / "skills"
 MARKETPLACE = REPO_ROOT / ".claude-plugin" / "marketplace.json"
 PLUGIN_MANIFEST = REPO_ROOT / "plugin.json"
 
-# document-skills is a bundle whose sub-directories are the actual skills
-SKILL_BUNDLE_DIRS = {"document-skills"}
 MAX_DESCRIPTION_LENGTH = 1024
 
 
@@ -65,32 +63,27 @@ def check_marketplace_coverage() -> list[str]:
 def check_skill_frontmatter() -> list[str]:
     problems = []
     for skill_dir in sorted(d for d in SKILLS_DIR.iterdir() if d.is_dir()):
-        if skill_dir.name in SKILL_BUNDLE_DIRS:
-            targets = sorted(d for d in skill_dir.iterdir() if d.is_dir())
-        else:
-            targets = [skill_dir]
-        for target in targets:
-            skill_md = target / "SKILL.md"
-            rel = skill_md.relative_to(REPO_ROOT)
-            if not skill_md.exists():
-                problems.append(f"missing SKILL.md: {rel}")
-                continue
-            fields = parse_frontmatter(skill_md)
-            if not fields:
-                problems.append(f"missing or unparsable frontmatter: {rel}")
-                continue
-            name = fields.get("name", "")
-            if name != target.name:
-                problems.append(
-                    f"frontmatter name {name!r} does not match directory {target.name!r}: {rel}"
-                )
-            description = fields.get("description", "")
-            if not description:
-                problems.append(f"missing description in frontmatter: {rel}")
-            elif len(description) > MAX_DESCRIPTION_LENGTH:
-                problems.append(
-                    f"description too long ({len(description)} > {MAX_DESCRIPTION_LENGTH} chars): {rel}"
-                )
+        skill_md = skill_dir / "SKILL.md"
+        rel = skill_md.relative_to(REPO_ROOT)
+        if not skill_md.exists():
+            problems.append(f"missing SKILL.md: {rel}")
+            continue
+        fields = parse_frontmatter(skill_md)
+        if not fields:
+            problems.append(f"missing or unparsable frontmatter: {rel}")
+            continue
+        name = fields.get("name", "")
+        if name != skill_dir.name:
+            problems.append(
+                f"frontmatter name {name!r} does not match directory {skill_dir.name!r}: {rel}"
+            )
+        description = fields.get("description", "")
+        if not description:
+            problems.append(f"missing description in frontmatter: {rel}")
+        elif len(description) > MAX_DESCRIPTION_LENGTH:
+            problems.append(
+                f"description too long ({len(description)} > {MAX_DESCRIPTION_LENGTH} chars): {rel}"
+            )
     return problems
 
 
