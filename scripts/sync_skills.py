@@ -12,6 +12,10 @@ Local generated snapshots:
 Agent instructions remain sourced from CLAUDE.md and are mirrored to the two
 WRITER.md files and the plugin initialization template.
 
+The root Agent Plugins manifest (plugin.json) is mirrored alongside the skills
+so each payload directory is itself a loadable Agent Plugin package
+(https://agent-plugins.org/specification).
+
 Usage:
     python scripts/sync_skills.py
         Download the commit pinned in skills.lock.json and regenerate snapshots.
@@ -49,19 +53,26 @@ SKILLS_LOCK_MIRRORS = [
     REPO_ROOT / "scientific_writer" / ".claude" / "skills.lock.json",
 ]
 
+PLUGIN_MANIFEST = REPO_ROOT / "plugin.json"
+PLUGIN_MANIFEST_MIRRORS = [
+    REPO_ROOT / ".claude" / "plugin.json",
+    REPO_ROOT / "scientific_writer" / ".claude" / "plugin.json",
+]
+
 INSTRUCTIONS_SOURCE = REPO_ROOT / "CLAUDE.md"
 INSTRUCTIONS_MIRRORS = [
+    # AGENTS.md is the vendor-neutral equivalent of CLAUDE.md; keeping it a
+    # byte-identical generated mirror means the two can never drift.
+    REPO_ROOT / "AGENTS.md",
     REPO_ROOT / ".claude" / "WRITER.md",
     REPO_ROOT / "scientific_writer" / ".claude" / "WRITER.md",
 ]
-INSTRUCTIONS_TEMPLATE = REPO_ROOT / "templates" / "CLAUDE.scientific-writer.md"
-INSTRUCTIONS_TEMPLATE_HEADER = """<!--
-This is the Scientific Writer CLAUDE.md template.
-Generated from the repository-root CLAUDE.md by scripts/sync_skills.py.
-For more information, see: https://github.com/K-Dense-AI/claude-scientific-writer
--->
-
-"""
+# One template per project instruction filename, written into user projects by
+# the scientific-writer-init command.
+INSTRUCTIONS_TEMPLATES = [
+    REPO_ROOT / "templates" / "CLAUDE.scientific-writer.md",
+    REPO_ROOT / "templates" / "AGENTS.scientific-writer.md",
+]
 
 IGNORE_PATTERNS = shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store")
 IGNORE_NAMES = {"__pycache__", ".DS_Store"}
@@ -316,9 +327,22 @@ def diff_trees(source: Path, mirror: Path) -> list[str]:
     return drift
 
 
-def expected_instructions_template() -> str:
-    """Return the generated plugin template content."""
-    return INSTRUCTIONS_TEMPLATE_HEADER + INSTRUCTIONS_SOURCE.read_text(encoding="utf-8")
+def expected_instructions_template(template: Path | None = None) -> str:
+    """Return the generated plugin template content for one instruction filename.
+
+    The template file `templates/<NAME>.scientific-writer.md` becomes `<NAME>.md`
+    in the user's project, so its header names the document it produces.
+    """
+    template = INSTRUCTIONS_TEMPLATES[0] if template is None else template
+    document = f"{template.name.split('.', 1)[0]}.md"
+    header = (
+        "<!--\n"
+        f"This is the Scientific Writer {document} template.\n"
+        "Generated from the repository-root CLAUDE.md by scripts/sync_skills.py.\n"
+        "For more information, see: https://github.com/K-Dense-AI/claude-scientific-writer\n"
+        "-->\n\n"
+    )
+    return header + INSTRUCTIONS_SOURCE.read_text(encoding="utf-8")
 
 
 def check() -> int:
@@ -338,17 +362,23 @@ def check() -> int:
             problems.append(f"{mirror.relative_to(REPO_ROOT)}: missing")
         elif not filecmp.cmp(SKILLS_LOCK, mirror, shallow=False):
             problems.append(f"{mirror.relative_to(REPO_ROOT)}: differs from skills.lock.json")
+    for mirror in PLUGIN_MANIFEST_MIRRORS:
+        if not mirror.exists():
+            problems.append(f"{mirror.relative_to(REPO_ROOT)}: missing")
+        elif not filecmp.cmp(PLUGIN_MANIFEST, mirror, shallow=False):
+            problems.append(f"{mirror.relative_to(REPO_ROOT)}: differs from plugin.json")
     for mirror in INSTRUCTIONS_MIRRORS:
         if not mirror.exists():
             problems.append(f"{mirror.relative_to(REPO_ROOT)}: missing")
         elif not filecmp.cmp(INSTRUCTIONS_SOURCE, mirror, shallow=False):
             problems.append(f"{mirror.relative_to(REPO_ROOT)}: differs from CLAUDE.md")
-    if not INSTRUCTIONS_TEMPLATE.exists():
-        problems.append(f"{INSTRUCTIONS_TEMPLATE.relative_to(REPO_ROOT)}: missing")
-    elif INSTRUCTIONS_TEMPLATE.read_text(encoding="utf-8") != expected_instructions_template():
-        problems.append(
-            f"{INSTRUCTIONS_TEMPLATE.relative_to(REPO_ROOT)}: differs from generated CLAUDE.md template"
-        )
+    for template in INSTRUCTIONS_TEMPLATES:
+        if not template.exists():
+            problems.append(f"{template.relative_to(REPO_ROOT)}: missing")
+        elif template.read_text(encoding="utf-8") != expected_instructions_template(template):
+            problems.append(
+                f"{template.relative_to(REPO_ROOT)}: differs from generated CLAUDE.md template"
+            )
     if problems:
         print("Pinned skill snapshots or mirrors are out of sync:")
         for problem in problems:
@@ -388,13 +418,18 @@ def _sync_mirrors() -> None:
         mirror.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(SKILLS_LOCK, mirror)
         print(f"Synced skills.lock.json -> {mirror.relative_to(REPO_ROOT)}")
+    for mirror in PLUGIN_MANIFEST_MIRRORS:
+        mirror.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(PLUGIN_MANIFEST, mirror)
+        print(f"Synced plugin.json -> {mirror.relative_to(REPO_ROOT)}")
     for mirror in INSTRUCTIONS_MIRRORS:
         mirror.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(INSTRUCTIONS_SOURCE, mirror)
         print(f"Synced CLAUDE.md -> {mirror.relative_to(REPO_ROOT)}")
-    INSTRUCTIONS_TEMPLATE.parent.mkdir(parents=True, exist_ok=True)
-    INSTRUCTIONS_TEMPLATE.write_text(expected_instructions_template(), encoding="utf-8")
-    print(f"Synced CLAUDE.md -> {INSTRUCTIONS_TEMPLATE.relative_to(REPO_ROOT)}")
+    for template in INSTRUCTIONS_TEMPLATES:
+        template.parent.mkdir(parents=True, exist_ok=True)
+        template.write_text(expected_instructions_template(template), encoding="utf-8")
+        print(f"Synced CLAUDE.md -> {template.relative_to(REPO_ROOT)}")
 
 
 def _write_lock(data: dict[str, Any]) -> None:

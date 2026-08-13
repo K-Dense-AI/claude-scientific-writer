@@ -2,15 +2,20 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
-## [Unreleased]
+## [2.20.0] - 2026-08-12
 
 ### Added
 
+- **Agent Plugins support** — the repository is now a conformant [Agent Plugins](https://agent-plugins.org/) 1.0.0 package, so its skills load in any client implementing the standard rather than only in Claude Code. A root `plugin.json` manifest declares the plugin against the canonical `1.0.0` schema, and `scripts/sync_skills.py` mirrors it into `.claude/` and `scientific_writer/.claude/` so each bundled payload is a loadable plugin root of its own — a `pip install scientific-writer` is enough to point another client at the skills. `.claude-plugin/marketplace.json` is unchanged and still drives Claude Code. See [docs/AGENT_PLUGINS.md](docs/AGENT_PLUGINS.md).
+- **`scripts/validate_agent_plugin.py`** — validates any plugin root against the specification: the closed `plugin.json` and `mcp.json` schemas, Agent Skills frontmatter for every discovered skill, plugin-root path containment, MCP transport and command rules, and `${PLUGIN_ROOT}` / `${PLUGIN_DATA}` placeholder expansion. It is dependency-free and offline — the canonical schemas are vendored under `scripts/schemas/agent-plugins/1.0.0/`, as §5.2 requires of clients — and supporting a future spec version means dropping in a new schema directory. CI runs it on every push, and it is the first thing that reports the pre-existing `skills/document-skills` bundle as undiscoverable (§7.1 forbids recursing past immediate children of `skills/`, so `docx`, `pdf`, `pptx`, and `xlsx` are invisible to every client, Claude Code included; the fix belongs upstream in the hash-locked skills repository).
+- **`AGENTS.md` alongside `CLAUDE.md`** — the repository root now carries `AGENTS.md` as a generated, byte-identical mirror of `CLAUDE.md`, enforced by `scripts/sync_skills.py --check` so the two cannot drift. `/claude-scientific-writer:scientific-writer-init` writes both files into a user's project from `templates/CLAUDE.scientific-writer.md` and the new `templates/AGENTS.scientific-writer.md`.
+- **`.agents/` alongside `.claude/`** — `load_system_instructions()` now searches `.claude/` then `.agents/` for `WRITER.md`, `AGENTS.md`, and `CLAUDE.md`, then falls back to root `AGENTS.md` and `CLAUDE.md`, so a project that already documents its agents in either layout is honored. `setup_claude_skills()` still installs into `.claude/` (the Claude Agent SDK discovers skills there) and now also refreshes `.agents/` when the project already has one, and it accepts a bundled payload shipped under either name.
 - **GitHub releases are created by the release workflow** — `release.yml` now creates the GitHub release from the `CHANGELOG.md` section for the tag, after PyPI publishing succeeds. Previously the workflow only published to PyPI and release entries were written by hand, so the releases page drifted (`v2.19.0` shipped to PyPI while the page still showed `v2.18.0` as latest, and several earlier versions have no entry at all). The step is idempotent: re-running a tag refreshes the notes instead of failing.
 - **`scripts/changelog_notes.py`** — extracts the release body for one version from `CHANGELOG.md` and appends a compare link to the previous release. Run it to preview what a tag will publish: `uv run scripts/changelog_notes.py X.Y.Z`.
 
 ### Changed
 
+- **README section for non-Claude agents rewritten** — "Use with Gemini CLI and Other Agents" is now "Use with Antigravity, Pi, and Other Agents", leads with the portable Agent Plugins path, and treats hand-loading a skill as the fallback. The worked example no longer writes to a vendor-specific config path; it appends the skill body to the project's `AGENTS.md`. It also strips YAML frontmatter correctly — the old `tail -n +6` leaked `metadata:`, `version`, `skill-author`, and the closing `---` into the prompt, because the frontmatter in `skills/scientific-writing/SKILL.md` closes at line 9.
 - **A changelog entry is now required to release** — the workflow extracts the notes before running any checks, so a tag whose version has no `## [X.Y.Z]` section (or an empty one) fails immediately, rather than after the package is already on PyPI. `docs/RELEASING.md` documents this, along with why the local `scripts/publish.py` path does not produce a GitHub release.
 
 ---

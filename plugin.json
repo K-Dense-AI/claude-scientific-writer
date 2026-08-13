@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "claude-scientific-writer",
+  "version": "2.20.0",
+  "description": "Deep research and scientific writing skills: publication-ready papers, literature reviews, grant proposals, posters, slides, and clinical reports backed by verified citations.",
+  "author": {
+    "name": "K-Dense Inc.",
+    "email": "contact@k-dense.ai",
+    "url": "https://www.k-dense.ai"
+  },
+  "homepage": "https://github.com/K-Dense-AI/claude-scientific-writer",
+  "repository": "https://github.com/K-Dense-AI/claude-scientific-writer",
+  "license": "MIT",
+  "keywords": [
+    "scientific-writing",
+    "research",
+    "literature-review",
+    "citations",
+    "latex",
+    "agent-skills"
+  ]
+}

@@ -23,6 +23,16 @@ EFFORT_LEVEL_MODELS = {
     "high": "claude-opus-4-8",
 }
 
+# Agent payload directories, in precedence order. ".claude" is the primary because
+# the Claude Agent SDK discovers skills there; ".agents" is the vendor-neutral
+# convention used by other agent clients and is kept in sync when a project has
+# opted into it.
+AGENT_DIR_NAMES = (".claude", ".agents")
+
+# Project instruction files, in precedence order. CLAUDE.md is this toolkit's
+# historical name; AGENTS.md is the cross-vendor equivalent.
+INSTRUCTION_FILE_NAMES = ("WRITER.md", "AGENTS.md", "CLAUDE.md")
+
 
 def create_completion_check_stop_hook(
     auto_continue: bool = True,
@@ -79,63 +89,109 @@ def resolve_auto_continue(requested: bool, env: Mapping[str, str] | None = None)
     return requested
 
 
+def find_bundled_agent_dir(package_dir: Path) -> Path | None:
+    """
+    Locate the bundled agent payload directory inside the installed package.
+
+    Both ``.claude`` and the vendor-neutral ``.agents`` layout are recognized so
+    the wheel can ship either name.
+
+    Args:
+        package_dir: Package installation directory.
+
+    Returns:
+        The payload directory, or None when the package ships no payload.
+    """
+    for name in AGENT_DIR_NAMES:
+        candidate = package_dir / name
+        if candidate.is_dir():
+            return candidate
+    return None
+
+
+def resolve_agent_dirs(work_dir: Path) -> list[Path]:
+    """
+    Return the agent directories the bundled payload should be installed into.
+
+    ``.claude`` is always included because the Claude Agent SDK discovers skills
+    there. ``.agents`` is included only when the project already uses it, so
+    projects that have adopted the vendor-neutral convention keep a working copy
+    of the same skills without every other project gaining an unexpected
+    directory.
+
+    Args:
+        work_dir: User's working directory.
+
+    Returns:
+        Destination directories, primary first.
+    """
+    destinations = [work_dir / ".claude"]
+    agents_dir = work_dir / ".agents"
+    if agents_dir.is_dir():
+        destinations.append(agents_dir)
+    return destinations
+
+
+def _refresh_agent_dir(source: Path, destination: Path) -> None:
+    """Copy bundled instructions, provenance lock, and skills into one agent directory."""
+    if not destination.exists():
+        shutil.copytree(source, destination)
+        return
+
+    # The directory already exists: refresh bundled content, preserve user files.
+    for name in ("WRITER.md", "plugin.json", "skills.lock.json"):
+        bundled = source / name
+        if bundled.is_file():
+            shutil.copyfile(bundled, destination / name)
+
+    source_skills = source / "skills"
+    if source_skills.is_dir():
+        dest_skills = destination / "skills"
+        dest_skills.mkdir(exist_ok=True)
+        for entry in source_skills.iterdir():
+            dest_entry = dest_skills / entry.name
+            if entry.is_dir():
+                if dest_entry.exists():
+                    shutil.rmtree(dest_entry)
+                shutil.copytree(entry, dest_entry)
+            else:
+                shutil.copyfile(entry, dest_entry)
+
+
 def setup_claude_skills(package_dir: Path, work_dir: Path) -> None:
     """
-    Set up skills, provenance lock, and WRITER.md from the packaged .claude directory.
+    Set up skills, provenance lock, plugin manifest, and WRITER.md from the bundled payload.
 
-    If work_dir already has a .claude directory, the bundled WRITER.md and each
-    bundled skill are refreshed in place (so upgrades take effect), while any
-    user-owned files there — settings, custom skills — are left untouched.
-    Bundled skill directories are replaced wholesale on refresh, so local edits
-    to them will be overwritten.
+    The payload is installed into ``.claude`` and, when the project already has
+    one, ``.agents`` as well. If a destination already exists, the bundled files
+    and each bundled skill are refreshed in place (so upgrades take effect),
+    while any user-owned files there — settings, custom skills — are left
+    untouched. Bundled skill directories are replaced wholesale on refresh, so
+    local edits to them will be overwritten.
 
     Failures are logged (never raised or silently swallowed); output stays off
     stdout so API consumers only see ProgressUpdate messages.
 
     Args:
-        package_dir: Package installation directory containing .claude/
-        work_dir: User's working directory where .claude/ should be copied
+        package_dir: Package installation directory containing .claude/ or .agents/
+        work_dir: User's working directory where the payload should be copied
     """
-    source_claude = package_dir / ".claude"
-    dest_claude = work_dir / ".claude"
+    source = find_bundled_agent_dir(package_dir)
 
-    if not source_claude.exists():
+    if source is None:
         logger.warning(
-            "Bundled .claude directory not found at %s; skills and WRITER.md unavailable",
-            source_claude,
+            "Bundled .claude directory not found in %s; skills and WRITER.md unavailable",
+            package_dir,
         )
         return
 
-    try:
-        if not dest_claude.exists():
-            shutil.copytree(source_claude, dest_claude)
-            return
-
-        # .claude already exists: refresh bundled content, preserve user files.
-        source_writer = source_claude / "WRITER.md"
-        if source_writer.exists():
-            shutil.copyfile(source_writer, dest_claude / "WRITER.md")
-
-        source_lock = source_claude / "skills.lock.json"
-        if source_lock.exists():
-            shutil.copyfile(source_lock, dest_claude / "skills.lock.json")
-
-        source_skills = source_claude / "skills"
-        if source_skills.is_dir():
-            dest_skills = dest_claude / "skills"
-            dest_skills.mkdir(exist_ok=True)
-            for entry in source_skills.iterdir():
-                dest_entry = dest_skills / entry.name
-                if entry.is_dir():
-                    if dest_entry.exists():
-                        shutil.rmtree(dest_entry)
-                    shutil.copytree(entry, dest_entry)
-                else:
-                    shutil.copyfile(entry, dest_entry)
-    except Exception:
-        logger.warning(
-            "Failed to set up bundled Claude skills in %s", dest_claude, exc_info=True
-        )
+    for destination in resolve_agent_dirs(work_dir):
+        try:
+            _refresh_agent_dir(source, destination)
+        except Exception:
+            logger.warning(
+                "Failed to set up bundled agent skills in %s", destination, exc_info=True
+            )
 
 
 def get_api_key(
@@ -167,22 +223,57 @@ def get_api_key(
     return env_key
 
 
-def load_system_instructions(work_dir: Path) -> str:
+def find_instructions_file(work_dir: Path) -> Path | None:
     """
-    Load system instructions from .claude/WRITER.md in the working directory.
+    Locate the project's agent instructions.
+
+    Searched in order: ``.claude/WRITER.md``, ``.claude/AGENTS.md``,
+    ``.claude/CLAUDE.md``, then the same three names under ``.agents/``, then
+    ``AGENTS.md`` and ``CLAUDE.md`` at the project root. This honors both the
+    Claude-specific layout and the vendor-neutral AGENTS.md convention.
 
     Args:
-        work_dir: Working directory containing .claude/WRITER.md.
+        work_dir: Working directory to search.
+
+    Returns:
+        The first instructions file that exists, or None.
+    """
+    candidates = [
+        work_dir / directory / name
+        for directory in AGENT_DIR_NAMES
+        for name in INSTRUCTION_FILE_NAMES
+    ]
+    candidates += [work_dir / name for name in INSTRUCTION_FILE_NAMES if name != "WRITER.md"]
+
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def load_system_instructions(work_dir: Path) -> str:
+    """
+    Load system instructions from the working directory.
+
+    Args:
+        work_dir: Working directory to search; see find_instructions_file for
+            the lookup order across .claude/, .agents/, AGENTS.md, and CLAUDE.md.
 
     Returns:
         System instructions string.
     """
-    instructions_file = work_dir / ".claude" / "WRITER.md"
+    instructions_file = find_instructions_file(work_dir)
 
-    if instructions_file.exists():
+    if instructions_file is not None:
         return instructions_file.read_text(encoding="utf-8")
 
-    logger.warning("System instructions not found at %s; using minimal fallback", instructions_file)
+    logger.warning(
+        "System instructions not found in %s (looked for %s under %s, and AGENTS.md/CLAUDE.md "
+        "at the project root); using minimal fallback",
+        work_dir,
+        "/".join(INSTRUCTION_FILE_NAMES),
+        "/".join(AGENT_DIR_NAMES),
+    )
     return (
         "You are a scientific writing assistant. Follow best practices for "
         "scientific communication and always present a plan before execution."

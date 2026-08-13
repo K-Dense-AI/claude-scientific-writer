@@ -184,6 +184,43 @@ def update_marketplace_version(marketplace_path: Path, new_version: str) -> None
     marketplace_path.write_text(json.dumps(data, indent=2) + "\n")
 
 
+def update_plugin_manifest_version(manifest_path: Path, new_version: str) -> list[Path]:
+    """
+    Update version in the Agent Plugins manifest and its bundled mirrors.
+
+    The manifest at the repository root is the source of truth; the copies under
+    .claude/ and scientific_writer/.claude/ are byte-identical mirrors kept in
+    sync by scripts/sync_skills.py, so they are rewritten here too.
+
+    Parameters
+    ----------
+    manifest_path : Path
+        Path to the root plugin.json file.
+    new_version : str
+        New version string to set.
+
+    Returns
+    -------
+    list of Path
+        Every file that was rewritten.
+    """
+    data = json.loads(manifest_path.read_text())
+    data["version"] = new_version
+    rendered = json.dumps(data, indent=2) + "\n"
+
+    root = manifest_path.parent
+    written = []
+    for target in [
+        manifest_path,
+        root / ".claude" / "plugin.json",
+        root / "scientific_writer" / ".claude" / "plugin.json",
+    ]:
+        if target == manifest_path or target.exists():
+            target.write_text(rendered)
+            written.append(target)
+    return written
+
+
 def verify_version_consistency(pyproject_path: Path, init_path: Path) -> bool:
     """
     Verify that versions in both files match.
@@ -244,6 +281,7 @@ def main() -> int:
         pyproject_path = root / "pyproject.toml"
         init_path = root / "scientific_writer" / "__init__.py"
         marketplace_path = root / ".claude-plugin" / "marketplace.json"
+        manifest_path = root / "plugin.json"
 
         # Verify files exist
         if not pyproject_path.exists():
@@ -278,6 +316,10 @@ def main() -> int:
         if marketplace_path.exists():
             update_marketplace_version(marketplace_path, new_version)
             print(f"  ✓ {marketplace_path.relative_to(root)}")
+
+        if manifest_path.exists():
+            for written in update_plugin_manifest_version(manifest_path, new_version):
+                print(f"  ✓ {written.relative_to(root)}")
 
         # Verify consistency after update
         if not verify_version_consistency(pyproject_path, init_path):

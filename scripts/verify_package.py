@@ -59,6 +59,13 @@ def check_version_consistency() -> Dict[str, str]:
         if version:
             versions['marketplace.json'] = version
 
+    # Check the Agent Plugins manifest
+    manifest = root / "plugin.json"
+    if manifest.exists():
+        version = json.loads(manifest.read_text()).get("version")
+        if version:
+            versions['plugin.json'] = version
+
     return versions
 
 
@@ -121,6 +128,7 @@ def check_package_structure() -> Dict[str, bool]:
         'uv.lock': root / "uv.lock",
         'README.md': root / "README.md",
         'LICENSE': root / "LICENSE",
+        'plugin.json': root / "plugin.json",
         '__init__.py': root / "scientific_writer" / "__init__.py",
         'api.py': root / "scientific_writer" / "api.py",
         'cli.py': root / "scientific_writer" / "cli.py",
@@ -135,7 +143,7 @@ def check_package_structure() -> Dict[str, bool]:
 
 def check_claude_payload() -> Dict[str, object]:
     """
-    Check the bundled .claude payload the runtime depends on.
+    Check the bundled .claude payload the runtime and Agent Plugins clients depend on.
 
     Returns
     -------
@@ -160,6 +168,7 @@ def check_claude_payload() -> Dict[str, object]:
     return {
         'writer_exists': writer.exists(),
         'skills_lock_exists': skills_lock.exists(),
+        'plugin_manifest_exists': (claude_dir / "plugin.json").exists(),
         'skill_count': skill_count,
         'skill_file_count': skill_file_count,
     }
@@ -234,17 +243,19 @@ def main() -> int:
             print(f"    - {name}")
         all_checks_passed = False
 
-    # Check bundled .claude payload (WRITER.md + skills) that ships in the wheel
+    # Check bundled .claude payload (WRITER.md + manifest + skills) that ships in the wheel
     print("\n5. Bundled .claude Payload Check")
     payload = check_claude_payload()
 
     if (payload['writer_exists'] and payload['skills_lock_exists']
+            and payload['plugin_manifest_exists']
             and payload['skill_count'] >= 20 and payload['skill_file_count'] >= 100):
-        print(f"  ✓ WRITER.md and skills.lock.json present; {payload['skill_count']} skills "
-              f"({payload['skill_file_count']} files) bundled")
+        print(f"  ✓ WRITER.md, skills.lock.json, and plugin.json present; "
+              f"{payload['skill_count']} skills ({payload['skill_file_count']} files) bundled")
     else:
         print(f"  ✗ Bundled payload incomplete: WRITER.md={payload['writer_exists']}, "
               f"skills.lock.json={payload['skills_lock_exists']}, "
+              f"plugin.json={payload['plugin_manifest_exists']}, "
               f"skills={payload['skill_count']}, files={payload['skill_file_count']}")
         print("    Run: python3 scripts/sync_skills.py")
         all_checks_passed = False

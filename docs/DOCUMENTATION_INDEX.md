@@ -30,6 +30,7 @@
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | Dev setup, tests, lint, PR guidelines | Contributors |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Architecture, plugin development, contributing | Contributors, maintainers |
 | [SKILL_AUTHORING.md](SKILL_AUTHORING.md) | How to write and register a new skill | Skill authors |
+| [AGENT_PLUGINS.md](AGENT_PLUGINS.md) | Agent Plugins conformance, validation, AGENTS.md and `.agents/` support | Contributors, other-client users |
 | [RELEASING.md](RELEASING.md) | Version management, PyPI publishing | Maintainers |
 | [example_api_usage.py](../example_api_usage.py) | Working Python examples | API users |
 
@@ -38,6 +39,7 @@
 | Document | Content | Audience |
 |----------|---------|----------|
 | [CLAUDE.md](../CLAUDE.md) | System instructions for the AI agent | Advanced users, developers |
+| [AGENTS.md](../AGENTS.md) | Same instructions under the vendor-neutral filename (generated mirror) | Non-Claude agent clients |
 
 ---
 

@@ -23,6 +23,7 @@ The script automatically updates version in:
 - `pyproject.toml`
 - `scientific_writer/__init__.py`
 - `.claude-plugin/marketplace.json`
+- `plugin.json` and its mirrors in `.claude/` and `scientific_writer/.claude/`
 
 After bumping:
 1. Review changes with `git diff`
@@ -112,6 +113,25 @@ uv tool install scientific-writer
 # Using uvx (one-off CLI usage)
 uvx scientific-writer
 ```
+
+## Validating Agent Plugins Conformance
+
+`validate_agent_plugin.py` checks a plugin directory against the
+[Agent Plugins](https://agent-plugins.org/specification) specification using the schemas vendored in
+`scripts/schemas/agent-plugins/`. It runs offline and needs no dependencies.
+
+```bash
+# Repository root plus the bundled .claude payloads (what CI runs)
+uv run python scripts/validate_agent_plugin.py
+
+# Any other plugin directory
+uv run python scripts/validate_agent_plugin.py ../some-plugin
+
+# Treat warnings as failures
+uv run python scripts/validate_agent_plugin.py --strict
+```
+
+See [docs/AGENT_PLUGINS.md](../docs/AGENT_PLUGINS.md) for what it checks and the one known warning.
 
 ## Verifying Package Structure
 

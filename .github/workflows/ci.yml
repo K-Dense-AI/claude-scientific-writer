@@ -33,11 +33,11 @@ jobs:
         if: matrix.python-version == '3.12'
         run: >-
           uv run --frozen codespell README.md CHANGELOG.md CONTRIBUTING.md
-          example_api_usage.py CLAUDE.md pyproject.toml
+          example_api_usage.py CLAUDE.md AGENTS.md pyproject.toml
           .env.example scientific_writer scripts tests docs commands templates .github
 
   integrity:
-    name: Skill mirrors, consistency, package build
+    name: Skill mirrors, consistency, plugin conformance, package build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -50,6 +50,8 @@ jobs:
         run: uv run --frozen python scripts/sync_skills.py --check
       - name: Repository consistency
         run: uv run --frozen python scripts/check_consistency.py
+      - name: Agent Plugins conformance
+        run: uv run --frozen python scripts/validate_agent_plugin.py
       - name: Package verification
         run: uv run --frozen python scripts/verify_package.py
       - name: Build wheel

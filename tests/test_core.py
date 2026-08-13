@@ -9,8 +9,12 @@ from scientific_writer.core import (
     create_completion_check_stop_hook,
     create_output_project,
     ensure_output_folder,
+    find_bundled_agent_dir,
+    find_instructions_file,
     get_data_files,
+    load_system_instructions,
     process_data_files,
+    resolve_agent_dirs,
     resolve_auto_continue,
     setup_claude_skills,
 )
@@ -82,6 +86,95 @@ def test_preserves_user_files_when_refreshing(tmp_path):
     # And the bundled content still arrived
     assert (work_dir / ".claude" / "WRITER.md").read_text() == "writer v2"
     assert (work_dir / ".claude" / "skills" / "demo-skill" / "SKILL.md").read_text() == "skill v2"
+
+
+def test_agents_dir_receives_the_payload_when_the_project_uses_it(tmp_path):
+    """Projects that adopted the vendor-neutral .agents/ layout get the same skills."""
+    package_dir = tmp_path / "package"
+    work_dir = tmp_path / "work"
+    package_dir.mkdir()
+    _make_bundled_claude(package_dir, "writer v2", "skill v2")
+    (work_dir / ".agents").mkdir(parents=True)
+
+    setup_claude_skills(package_dir, work_dir)
+
+    for agent_dir in (".claude", ".agents"):
+        assert (work_dir / agent_dir / "WRITER.md").read_text() == "writer v2"
+        assert (work_dir / agent_dir / "skills" / "demo-skill" / "SKILL.md").read_text() == "skill v2"
+
+
+def test_agents_dir_is_not_created_when_absent(tmp_path):
+    """A project without .agents/ does not suddenly grow one."""
+    package_dir = tmp_path / "package"
+    work_dir = tmp_path / "work"
+    package_dir.mkdir()
+    work_dir.mkdir()
+    _make_bundled_claude(package_dir, "writer v2", "skill v2")
+
+    setup_claude_skills(package_dir, work_dir)
+
+    assert resolve_agent_dirs(work_dir) == [work_dir / ".claude"]
+    assert not (work_dir / ".agents").exists()
+
+
+def test_bundled_payload_can_be_shipped_as_dot_agents(tmp_path):
+    package_dir = tmp_path / "package"
+    work_dir = tmp_path / "work"
+    (package_dir / ".agents" / "skills" / "demo-skill").mkdir(parents=True)
+    (package_dir / ".agents" / "WRITER.md").write_text("writer v3")
+    (package_dir / ".agents" / "skills" / "demo-skill" / "SKILL.md").write_text("skill v3")
+
+    assert find_bundled_agent_dir(package_dir) == package_dir / ".agents"
+
+    setup_claude_skills(package_dir, work_dir)
+
+    assert (work_dir / ".claude" / "WRITER.md").read_text() == "writer v3"
+
+
+def test_plugin_manifest_is_refreshed_on_upgrade(tmp_path):
+    package_dir = tmp_path / "package"
+    work_dir = tmp_path / "work"
+    package_dir.mkdir()
+    _make_bundled_claude(package_dir, "writer v2", "skill v2")
+    (package_dir / ".claude" / "plugin.json").write_text('{"name": "v2"}')
+    (work_dir / ".claude").mkdir(parents=True)
+    (work_dir / ".claude" / "plugin.json").write_text('{"name": "v1"}')
+
+    setup_claude_skills(package_dir, work_dir)
+
+    assert (work_dir / ".claude" / "plugin.json").read_text() == '{"name": "v2"}'
+
+
+def test_instructions_are_found_across_layouts(tmp_path):
+    """.claude/ wins over .agents/, which wins over root AGENTS.md and CLAUDE.md."""
+    work_dir = tmp_path / "work"
+    work_dir.mkdir()
+    assert find_instructions_file(work_dir) is None
+
+    (work_dir / "CLAUDE.md").write_text("root claude")
+    assert load_system_instructions(work_dir) == "root claude"
+
+    (work_dir / "AGENTS.md").write_text("root agents")
+    assert load_system_instructions(work_dir) == "root agents"
+
+    (work_dir / ".agents").mkdir()
+    (work_dir / ".agents" / "WRITER.md").write_text("agents writer")
+    assert load_system_instructions(work_dir) == "agents writer"
+
+    (work_dir / ".claude").mkdir()
+    (work_dir / ".claude" / "WRITER.md").write_text("claude writer")
+    assert load_system_instructions(work_dir) == "claude writer"
+
+
+def test_missing_instructions_fall_back_with_a_warning(tmp_path, caplog):
+    work_dir = tmp_path / "work"
+    work_dir.mkdir()
+
+    with caplog.at_level("WARNING", logger="scientific_writer.core"):
+        instructions = load_system_instructions(work_dir)
+
+    assert "scientific writing assistant" in instructions
+    assert any("AGENTS.md" in record.getMessage() for record in caplog.records)
 
 
 def test_missing_bundle_logs_warning_instead_of_silence(tmp_path, caplog):

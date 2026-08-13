@@ -360,27 +360,50 @@ Want to see what Scientific Writer can create? Check out real examples in the [`
 - [🛠️ Skill Authoring Guide](docs/SKILL_AUTHORING.md) - How to write and register a new skill
 - [📦 Releasing Guide](docs/RELEASING.md) - Versioning and publishing
 - [📋 Release Notes](CHANGELOG.md) - Version history and updates
-- [🤖 System Instructions](CLAUDE.md) - Agent instructions (advanced)
+- [🔌 Agent Plugins Support](docs/AGENT_PLUGINS.md) - Using and validating this repo as a portable Agent Plugin
+- [🤖 System Instructions](CLAUDE.md) - Agent instructions (advanced), mirrored to [AGENTS.md](AGENTS.md)
 - [📝 Zotero DOCX Extension](extensions/docx-editor-zotero/README.md) - Optional citation-preserving Word workflow
 
-## Use with Gemini CLI and Other Agents
+## Use with Antigravity, Pi, and Other Agents
 
-The skills in this repository follow the [Claude Code SKILL.md format](https://docs.anthropic.com/en/docs/claude-code/skills). Each skill is a self-contained prompt file that tells an AI agent how to perform a specific task.
+This repository is a conformant [Agent Plugins](https://agent-plugins.org/) 1.0.0 package, the
+vendor-neutral standard for packaging [Agent Skills](https://agentskills.io/specification) and MCP
+servers. Its skills follow the Agent Skills format, so they load in Claude Code and in any other
+Agent Plugins client without modification.
+
+### Agent Plugins clients (recommended)
+
+Point your client at any of these plugin roots — each has a `plugin.json` manifest and a `skills/`
+directory:
+
+```bash
+# From a checkout
+git clone https://github.com/K-Dense-AI/claude-scientific-writer.git
+
+# Or from the published package — the installed payload is a plugin root too
+pip install scientific-writer
+python -c "import scientific_writer, pathlib; print(pathlib.Path(scientific_writer.__file__).parent / '.claude')"
+```
+
+Project instructions are available under both filenames: `CLAUDE.md` and the byte-identical
+`AGENTS.md`. Running `/claude-scientific-writer:scientific-writer-init` writes both into your
+project, and the CLI reads instructions from `.claude/` or `.agents/` — see
+[docs/AGENT_PLUGINS.md](docs/AGENT_PLUGINS.md) for the full lookup order and how to validate a plugin
+root with `scripts/validate_agent_plugin.py`.
 
 ### Manual approach
 
-To use any skill with another agent (Gemini CLI, Aider, Continue, etc.):
+For an agent that does not load Agent Plugins packages (Antigravity, Pi, Aider, Continue, etc.), load a single skill by hand:
 
 1. Open the relevant `skills/<skill-name>/SKILL.md` file.
 2. Copy the content below the YAML frontmatter (everything after the closing `---`).
 3. Paste it into your agent's system prompt, custom instructions file, or equivalent configuration.
 
-For example, to use the `scientific-writing` skill in Gemini CLI:
+Most agents read `AGENTS.md` from the project root, so appending the skill body there is usually enough:
 
 ```bash
-# Copy skill content to Gemini CLI system prompt file
-tail -n +6 skills/scientific-writing/SKILL.md > ~/.gemini/system_prompt.md
-gemini "Write a Nature paper on CRISPR off-target effects"
+# Append the scientific-writing skill (frontmatter stripped) to the project's AGENTS.md
+awk 'f; /^---$/ && NR>1 {f=1}' skills/scientific-writing/SKILL.md >> AGENTS.md
 ```
 
 ### Claude Code-specific features

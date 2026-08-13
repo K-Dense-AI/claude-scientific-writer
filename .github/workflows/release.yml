@@ -51,7 +51,7 @@ jobs:
       - name: Codespell
         run: >-
           uv run --frozen codespell README.md CHANGELOG.md CONTRIBUTING.md
-          example_api_usage.py CLAUDE.md pyproject.toml
+          example_api_usage.py CLAUDE.md AGENTS.md pyproject.toml
           .env.example scientific_writer scripts tests docs commands templates .github
       - name: Skill mirrors in sync
         run: uv run --frozen python scripts/sync_skills.py --check

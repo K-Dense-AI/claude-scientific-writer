@@ -147,7 +147,7 @@ def build_package(root: Path) -> None:
 
 def verify_wheel_payload(dist_dir: Path) -> None:
     """
-    Assert the wheel ships WRITER.md, the skill provenance lock, and skills.
+    Assert the wheel ships WRITER.md, the skill lock, the plugin manifest, and skills.
 
     The entire runtime depends on these non-.py data files; if the build tooling
     ever drops them, the package would silently degrade to a generic prompt with
@@ -173,18 +173,22 @@ def verify_wheel_payload(dist_dir: Path) -> None:
     claude_files = [n for n in names if "/.claude/" in n or n.startswith("scientific_writer/.claude/")]
     has_writer = any(n.endswith(".claude/WRITER.md") for n in names)
     has_skills_lock = any(n.endswith(".claude/skills.lock.json") for n in names)
+    # The bundled payload is also an Agent Plugins package; without the manifest
+    # no Agent Plugins client can load the skills out of an installed wheel.
+    has_plugin_manifest = any(n.endswith(".claude/plugin.json") for n in names)
     skill_files = [n for n in claude_files if "/skills/" in n]
 
-    if not has_writer or not has_skills_lock or len(skill_files) < 100:
+    if not has_writer or not has_skills_lock or not has_plugin_manifest or len(skill_files) < 100:
         raise RuntimeError(
             f"Wheel {wheel.name} is missing the bundled .claude payload "
             f"(WRITER.md found: {has_writer}, skills.lock.json found: {has_skills_lock}, "
+            f"plugin.json found: {has_plugin_manifest}, "
             f"skill files: {len(skill_files)}). "
             "Check the hatchling build configuration before publishing."
         )
     print(
         f"  ✓ Wheel contains .claude payload ({len(claude_files)} files, "
-        "WRITER.md and skills.lock.json present)"
+        "WRITER.md, skills.lock.json, and plugin.json present)"
     )
 
 

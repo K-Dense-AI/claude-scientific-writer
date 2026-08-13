@@ -23,19 +23,29 @@ def test_documented_example_files_exist():
     assert (ROOT / "docs" / "examples" / "grants" / "NSF_draft1.pdf").is_file()
 
 
-def test_plugin_template_is_generated_from_canonical_instructions():
+def test_plugin_templates_are_generated_from_canonical_instructions():
     sync_skills = _load_sync_module()
-    template = ROOT / "templates" / "CLAUDE.scientific-writer.md"
 
-    assert template.read_text(encoding="utf-8") == sync_skills.expected_instructions_template()
+    for template in sync_skills.INSTRUCTIONS_TEMPLATES:
+        expected = sync_skills.expected_instructions_template(template)
+        assert template.read_text(encoding="utf-8") == expected
+
+
+def test_agents_md_mirrors_claude_md():
+    """AGENTS.md is the vendor-neutral copy of the same instructions."""
+    assert (ROOT / "AGENTS.md").read_text(encoding="utf-8") == (
+        ROOT / "CLAUDE.md"
+    ).read_text(encoding="utf-8")
 
 
 def test_instruction_surfaces_do_not_reference_removed_parallel_wrapper():
     paths = [
         ROOT / "CLAUDE.md",
+        ROOT / "AGENTS.md",
         ROOT / ".claude" / "WRITER.md",
         ROOT / "scientific_writer" / ".claude" / "WRITER.md",
         ROOT / "templates" / "CLAUDE.scientific-writer.md",
+        ROOT / "templates" / "AGENTS.scientific-writer.md",
     ]
     for path in paths:
         text = path.read_text(encoding="utf-8")
