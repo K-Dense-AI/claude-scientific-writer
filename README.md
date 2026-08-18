@@ -6,14 +6,15 @@
 [![X](https://img.shields.io/badge/Follow_on_X-%40k__dense__ai-000000?logo=x)](https://x.com/k_dense_ai)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-K--Dense_Inc.-0A66C2?logo=linkedin)](https://www.linkedin.com/company/k-dense-inc)
 [![YouTube](https://img.shields.io/badge/YouTube-K--Dense_Inc.-FF0000?logo=youtube)](https://www.youtube.com/@K-Dense-Inc)
+[![Blog](https://img.shields.io/badge/Blog-k--dense.ai-1a1a1a)](https://www.k-dense.ai/blog)
 
 > 🚀 **Looking for more advanced capabilities?** For end-to-end scientific writing, deep scientific search, advanced image generation and enterprise solutions, visit **[www.k-dense.ai](https://www.k-dense.ai)**
 
-> **Stay up to date:** Follow K-Dense on [X](https://x.com/k_dense_ai), [LinkedIn](https://www.linkedin.com/company/k-dense-inc), and [YouTube](https://www.youtube.com/@K-Dense-Inc) for new features, release announcements, walkthroughs, research workflow demos, and examples you can use with Scientific Writer.
+> **Stay up to date:** Read the [K-Dense blog](https://www.k-dense.ai/blog), and follow us on [X](https://x.com/k_dense_ai), [LinkedIn](https://www.linkedin.com/company/k-dense-inc), and [YouTube](https://www.youtube.com/@K-Dense-Inc) for new features, release announcements, walkthroughs, research workflow demos, and examples you can use with Scientific Writer. See [From the K-Dense Blog](#from-the-k-dense-blog) for posts that map to this tool.
 
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
-Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup through Parallel Search and Extract, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation. You can use it as a Claude Code plugin, Python package, or native CLI.
+Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup through Parallel Search and Extract, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation. You can use it as a Claude Code plugin, Python package, or native CLI. The announcement post, [Claude Scientific Writer: Our Open Source Tool for AI-Powered Research Writing](https://www.k-dense.ai/blog/claude-scientific-writer-open-source), covers why we built it and what it produces.
 
 ## Quick Start
 
@@ -186,8 +187,8 @@ asyncio.run(main())
 
 ### Available Skills
 
-When installed as a plugin, you get instant access to a reproducible subset of [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), pinned in `skills.lock.json`:
-- `scientific-schematics` - AI diagram generation with Nano Banana 2 (CONSORT, neural networks, pathways)
+When installed as a plugin, you get instant access to a reproducible subset of [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), pinned in `skills.lock.json`. Background on the skills model is in [Agent Skills: The Final Piece for AI-Powered Scientific Research](https://www.k-dense.ai/blog/agent-skills-final-piece-for-ai-powered-research) and [K-Dense Web vs Scientific Agent Skills](https://www.k-dense.ai/blog/k-dense-web-vs-scientific-agent-skills). Read [Security in the Science Agent Era](https://www.k-dense.ai/blog/skill-security-before-you-install) before installing skills in a lab environment.
+- `scientific-schematics` - AI diagram generation with Nano Banana 2 (CONSORT, neural networks, pathways); see [Benchmarking Nano Banana 2 Lite for Scientific Image Generation](https://www.k-dense.ai/blog/benchmarking-nano-banana-2-lite-scientific-image-model)
 - `research-lookup` - Real-time literature search
 - `peer-review` - Systematic manuscript evaluation
 - `citation-management` - BibTeX and reference handling
@@ -209,10 +210,10 @@ For local plugin development and testing, see the [Development Guide](docs/DEVEL
 - **Research posters** using LaTeX (beamerposter, tikzposter, baposter)
 - **Grant proposals** (NSF, NIH, DOE, DARPA) with agency-specific formatting
 - **Literature reviews** with systematic citation management
-- **Scientific schematics** powered by Nano Banana 2 (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
+- **Scientific schematics** powered by Nano Banana 2 (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams) — [image-model benchmark](https://www.k-dense.ai/blog/benchmarking-nano-banana-2-lite-scientific-image-model)
 
 ### 🤖 AI-Powered Capabilities
-- **Real-time research lookup** powered by Parallel Search and Extract
+- **Real-time research lookup** powered by Parallel Search and Extract; why verification matters is covered in [The AI Co-Scientist Is Here. The Bottleneck Is Verification.](https://www.k-dense.ai/blog/ai-co-scientist-verification-bottleneck)
 - **AI-powered diagram generation** - create scientific diagrams from natural-language descriptions
 - **Intelligent paper detection** - automatically identifies references to existing papers
 - **Peer review feedback** with quantitative ScholarEval framework (8-dimension scoring)
@@ -353,6 +354,7 @@ Want to see what Scientific Writer can create? Check out real examples in the [`
 - [🔧 API Reference](docs/API.md) - Full programmatic API documentation
 - [🎯 Skills Overview](docs/SKILLS.md) - All available skills and tools
 - [🐛 Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [📰 From the K-Dense Blog](#from-the-k-dense-blog) - Related posts on writing, skills, citations, grants, and the hosted sibling product
 
 ### Developer Resources
 - [🤝 Contributing Guide](CONTRIBUTING.md) - Dev setup, tests, and PR guidelines
@@ -363,6 +365,56 @@ Want to see what Scientific Writer can create? Check out real examples in the [`
 - [🔌 Agent Plugins Support](docs/AGENT_PLUGINS.md) - Using and validating this repo as a portable Agent Plugin
 - [🤖 System Instructions](CLAUDE.md) - Agent instructions (advanced), mirrored to [AGENTS.md](AGENTS.md)
 - [📝 Zotero DOCX Extension](extensions/docx-editor-zotero/README.md) - Optional citation-preserving Word workflow
+
+## From the K-Dense Blog
+
+Tutorials, comparisons, and research notes from the [K-Dense blog](https://www.k-dense.ai/blog) that relate to this repository. The hosted product that includes a deeper version of this writing engine is [K-Dense Web](https://www.k-dense.ai).
+
+### This tool
+
+| Post | Why it is relevant |
+|------|-------------------|
+| [Claude Scientific Writer: Our Open Source Tool for AI-Powered Research Writing](https://www.k-dense.ai/blog/claude-scientific-writer-open-source) | Announcement: research-first writing, venue-specific outputs, data/figure integration, and MIT license |
+| [K-Dense Web vs Scientific Agent Skills: Why We Built Both](https://www.k-dense.ai/blog/k-dense-web-vs-scientific-agent-skills) | When to use this open-source plugin versus the hosted platform |
+| [K-Dense Web vs Claude Code: Different Tools for Different Jobs](https://www.k-dense.ai/blog/k-dense-web-vs-claude-code) | How the Claude Code plugin fits next to the hosted multi-agent product |
+| [Your AI Assistant Reasons Like a Generalist. Science Needs a Specialist.](https://www.k-dense.ai/blog/introducing-scientific-agents) | Places Scientific Writer in the broader open-source science-agent stack |
+
+### Skills, figures, and other agents
+
+| Post | Why it is relevant |
+|------|-------------------|
+| [Agent Skills: The Final Piece for AI-Powered Scientific Research](https://www.k-dense.ai/blog/agent-skills-final-piece-for-ai-powered-research) | The skills model behind the plugin (`scientific-schematics`, `research-lookup`, grants, posters, and the rest) |
+| [Security in the Science Agent Era: What Every Lab Needs to Know Before Installing Skills](https://www.k-dense.ai/blog/skill-security-before-you-install) | Prompt-injection, poisoned `SKILL.md` files, auditing, and version pinning |
+| [Benchmarking Nano Banana 2 Lite for Scientific Image Generation](https://www.k-dense.ai/blog/benchmarking-nano-banana-2-lite-scientific-image-model) | Figure-generation quality for schematics, slides, and infographics |
+| [How to Use Multica for Scientific Research](https://www.k-dense.ai/blog/multica-scientific-research) | Loading scientific-writing, literature-review, and related skills in another Agent Skills host |
+| [The Sandboxed AI Scientist: Pairing NVIDIA OpenShell with Scientific Agent Skills](https://www.k-dense.ai/blog/sandboxed-ai-scientist-openshell-skills) | Running skills in a policy-governed sandbox |
+
+### Research, citations, and writing quality
+
+| Post | Why it is relevant |
+|------|-------------------|
+| [The AI Co-Scientist Is Here. The Bottleneck Is Verification.](https://www.k-dense.ai/blog/ai-co-scientist-verification-bottleneck) | Why this tool researches and verifies before it writes |
+| [Reproduction, Not Generation, Is AI's Killer App for Science](https://www.k-dense.ai/blog/reproduction-not-generation-ai-for-science) | Auditable, checkable outputs rather than unchecked generation |
+| [K-Dense Web vs ChatGPT: Why Traditional AI Assistants Fall Short for Research](https://www.k-dense.ai/blog/k-dense-web-vs-chatgpt) | Research-backed writing versus conversational drafting |
+| [K-Dense Web vs OpenAI Prism: Task Execution vs Writing Assistance](https://www.k-dense.ai/blog/k-dense-web-vs-openai-prism) | Execution-plus-writing versus a writing-only assistant |
+| [Guide to Prompting K-Dense Web: Get Better Results in Minutes](https://www.k-dense.ai/blog/guide-to-prompting-k-dense-web) | Prompt patterns that transfer to the CLI, API, and plugin |
+
+### Grants, proposals, and long-form reports
+
+| Post | Why it is relevant |
+|------|-------------------|
+| [From Blank Page to Research Roadmap: How AI Helps Define New Scientific Directions](https://www.k-dense.ai/blog/ai-research-direction-discovery-phd-proposal) | Literature synthesis and a 26-page PhD-style proposal |
+| [Catalyzing Breakthroughs: A 42-Page ARPA-H Policy Report, Generated in One Session](https://www.k-dense.ai/blog/arpa-h-policy-report-analysis) | Long-form report with figures and verified citations |
+
+### Hosted sibling and FAQ
+
+| Post | Why it is relevant |
+|------|-------------------|
+| [Introducing K-Dense Web: Research. Analyze. Synthesize.](https://www.k-dense.ai/blog/introducing-k-dense-web) | The hosted product for end-to-end research plus writing |
+| [AI Co-Scientists, Answered: 20 Questions from a Live Session](https://www.k-dense.ai/blog/ai-co-scientists-answered-20-questions) | What the stack does today, and where it still falls short |
+| [K-Dense Web vs. Claude Science](https://www.k-dense.ai/blog/k-dense-web-vs-claude-science) | Execution and scientific-quality scores on 20 research tasks |
+
+Browse every post at [www.k-dense.ai/blog](https://www.k-dense.ai/blog).
 
 ## Use with Antigravity, Pi, and Other Agents
 
@@ -393,7 +445,7 @@ root with `scripts/validate_agent_plugin.py`.
 
 ### Manual approach
 
-For an agent that does not load Agent Plugins packages (Antigravity, Pi, Aider, Continue, etc.), load a single skill by hand:
+For an agent that does not load Agent Plugins packages (Antigravity, Pi, Aider, Continue, etc.), load a single skill by hand. A worked example of importing scientific-writing and literature-review skills into another host is [How to Use Multica for Scientific Research](https://www.k-dense.ai/blog/multica-scientific-research).
 
 1. Open the relevant `skills/<skill-name>/SKILL.md` file.
 2. Copy the content below the YAML frontmatter (everything after the closing `---`).
@@ -441,10 +493,11 @@ MIT - see LICENSE.
 ## Support
 - Open an issue on GitHub
 - See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common problems
+- Read related walkthroughs on the [K-Dense blog](https://www.k-dense.ai/blog)
 
 ## 💬 Join Our Community!
 
-**Follow us for updates:** [X](https://x.com/k_dense_ai) · [LinkedIn](https://www.linkedin.com/company/k-dense-inc) · [YouTube](https://www.youtube.com/@K-Dense-Inc)
+**Follow us for updates:** [Blog](https://www.k-dense.ai/blog) · [X](https://x.com/k_dense_ai) · [LinkedIn](https://www.linkedin.com/company/k-dense-inc) · [YouTube](https://www.youtube.com/@K-Dense-Inc)
 
 **Want to connect with other researchers, share tips, and get help in real-time?** Join our vibrant Slack community! 🎉
 
