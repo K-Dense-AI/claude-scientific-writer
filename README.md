@@ -12,6 +12,8 @@
 
 > **Stay up to date:** Read the [K-Dense blog](https://www.k-dense.ai/blog), and follow us on [X](https://x.com/k_dense_ai), [LinkedIn](https://www.linkedin.com/company/k-dense-inc), and [YouTube](https://www.youtube.com/@K-Dense-Inc) for new features, release announcements, walkthroughs, research workflow demos, and examples you can use with Scientific Writer. See [From the K-Dense Blog](#from-the-k-dense-blog) for posts that map to this tool.
 
+> 🎬 **Prefer to watch first?** [The Open Source, Locally-Hosted Scientific Writer Workflow](https://youtu.be/tsPsbAYfCFI) shows the writer researching and drafting a paper end to end. More walkthroughs on the [K-Dense YouTube channel](https://www.youtube.com/@K-Dense-Inc).
+
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
 Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup through Parallel Search and Extract, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation. You can use it as a Claude Code plugin, Python package, or native CLI. The announcement post, [Claude Scientific Writer: Our Open Source Tool for AI-Powered Research Writing](https://www.k-dense.ai/blog/claude-scientific-writer-open-source), covers why we built it and what it produces.
