@@ -44,9 +44,7 @@ python scripts/format_bibtex.py combined.bib \
 
 # Step 6: Validate
 python scripts/validate_citations.py formatted.bib \
-  --auto-fix \
-  --report validation.json \
-  --output final_references.bib
+  --report validation.json
 
 # Step 7: Review any issues
 cat validation.json | grep -A 3 '"errors"'
@@ -86,13 +84,12 @@ python scripts/format_bibtex.py step1_formatted.bib \
   --deduplicate \
   --output step2_deduplicated.bib
 
-# Step 3: Validate and auto-fix
+# Step 3: Check what is still wrong before sorting
 python scripts/validate_citations.py step2_deduplicated.bib \
-  --auto-fix \
-  --output step3_validated.bib
+  --report step3_validation.json
 
 # Step 4: Sort by year
-python scripts/format_bibtex.py step3_validated.bib \
+python scripts/format_bibtex.py step2_deduplicated.bib \
   --sort year \
   --descending \
   --output clean_references.bib

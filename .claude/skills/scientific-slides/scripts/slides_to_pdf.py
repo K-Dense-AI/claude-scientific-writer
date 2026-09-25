@@ -24,7 +24,7 @@ from typing import List
 try:
     from PIL import Image
 except ImportError:
-    print("Error: Pillow library not found. Install with: pip install Pillow")
+    print("Error: Pillow library not found. Install with: uv pip install Pillow")
     sys.exit(1)
 
 

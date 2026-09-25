@@ -27,13 +27,88 @@ import re
 import sys
 import time
 from pathlib import Path
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List, NamedTuple
 
 try:
     import requests
 except ImportError:
-    print("Error: requests library not found. Install with: pip install requests")
+    print("Error: requests library not found. Install with: uv pip install requests")
     sys.exit(1)
+
+
+class ReviewResult(NamedTuple):
+    """The outcome of one quality review.
+
+    A named tuple rather than a bare tuple because the review has several
+    failure modes -- the model returns no choices, the request raises, the
+    answer arrives in an unexpected shape -- and each of them used to be a
+    chance to return the wrong number of values to the caller.
+
+    `score` is None whenever no usable number was parsed, and `reviewed` is
+    False whenever the review never produced an answer at all. Neither case
+    invents a score: an infographic whose quality was not measured is reported
+    as unmeasured, not as passing.
+    """
+
+    critique: str
+    score: Optional[float]
+    needs_improvement: bool
+    reviewed: bool
+    error: Optional[str] = None
+
+
+# Markdown decoration the reviewer routinely wraps its answer in. Gemini writes
+# "**SCORE:** 8.5" far more often than the bare "SCORE: 8.5" the rubric asks
+# for, and a pattern that does not allow for it silently scores every image
+# at whatever the default happens to be.
+_MARKUP = re.compile(r"[*_`#]")
+
+_SCORE_PATTERN = re.compile(r"\bSCORE\s*:?\s*(\d+(?:\.\d+)?)", re.IGNORECASE)
+_LOOSE_SCORE_PATTERN = re.compile(
+    r"(?:score|rating|quality)\s*[:\s]\s*(\d+(?:\.\d+)?)\s*(?:/\s*10)?", re.IGNORECASE
+)
+# The underscore is optional because normalization strips it out of
+# NEEDS_IMPROVEMENT along with the surrounding markdown.
+_VERDICT_PATTERN = re.compile(
+    r"^\s*VERDICT\s*:?\s*(ACCEPTABLE|NEEDS[_ ]?IMPROVEMENT)", re.IGNORECASE | re.MULTILINE
+)
+
+
+def _normalize_review_text(text: str) -> str:
+    """Strip markdown decoration so the rubric's fields can be found."""
+    return _MARKUP.sub("", text or "")
+
+
+def _parse_score(text: str) -> Optional[float]:
+    """Return the reviewer's 0-10 score, or None when there isn't a usable one.
+
+    None rather than a default: a fabricated score is indistinguishable from a
+    real one once it reaches the review log, and a default near the middle of
+    the range quietly passes lenient document types while failing strict ones.
+    """
+    normalized = _normalize_review_text(text)
+    match = _SCORE_PATTERN.search(normalized) or _LOOSE_SCORE_PATTERN.search(normalized)
+    if not match:
+        return None
+    score = float(match.group(1))
+    # A number outside the rubric's range means something other than the score
+    # was matched -- a figure count, a percentage, an iteration number.
+    return score if 0.0 <= score <= 10.0 else None
+
+
+def _parse_verdict(text: str) -> Optional[str]:
+    """Return ACCEPTABLE / NEEDS_IMPROVEMENT from the verdict line, or None.
+
+    Anchored to the start of a line. The rubric prompt spells out both tokens
+    when it explains the response format, so a reviewer that echoes those
+    instructions back would fail a perfectly good image under a plain
+    substring search.
+    """
+    match = _VERDICT_PATTERN.search(_normalize_review_text(text))
+    if not match:
+        return None
+    verdict = match.group(1).upper().replace(" ", "").replace("_", "")
+    return "NEEDS_IMPROVEMENT" if verdict == "NEEDSIMPROVEMENT" else "ACCEPTABLE"
 
 
 def _resolve_api_key(explicit: Optional[str] = None) -> Optional[str]:
@@ -358,7 +433,7 @@ IMPORTANT - NO META CONTENT:
         # https://openrouter.ai/google/gemini-3.1-flash-image
         self.image_model = "google/gemini-3.1-flash-image"
         # Gemini 3.6 Flash for quality review - reads the image, answers in text
-        self.review_model = "google/gemini-3.6-flash"
+        self.review_model = "google/gemini-3.7-flash"
         
     def _log(self, message: str):
         """Log message if verbose mode is enabled."""
@@ -807,7 +882,7 @@ Incorporate specific numbers, percentages, and dates from the research."""
     def review_image(self, image_path: str, original_prompt: str,
                     infographic_type: Optional[str],
                     iteration: int, doc_type: str = "default",
-                    max_iterations: int = 3) -> Tuple[str, Optional[float], bool]:
+                    max_iterations: int = 3) -> ReviewResult:
         """
         Review generated infographic using Gemini 3.6 Flash for quality analysis.
         
@@ -909,50 +984,64 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
             
             choices = response.get("choices", [])
             if not choices:
-                return "Image generated successfully", 7.5, False
-            
+                # A normal enough outcome -- a rate limit, a content filter, a
+                # provider hiccup. The image itself is fine; only its review is
+                # missing, and saying so beats inventing a score.
+                reason = "the review model returned no choices"
+                self._log(f"⚠ Review unavailable: {reason}")
+                return ReviewResult(
+                    f"Review unavailable: {reason}.",
+                    None, False, reviewed=False, error=reason,
+                )
+
             message = choices[0].get("message", {})
             content = message.get("content", "")
-            
+
             reasoning = message.get("reasoning", "")
             if reasoning and not content:
                 content = reasoning
-            
+
             if isinstance(content, list):
                 text_parts = []
                 for block in content:
                     if isinstance(block, dict) and block.get("type") == "text":
                         text_parts.append(block.get("text", ""))
                 content = "\n".join(text_parts)
-            
-            # Extract score
-            score = 7.5
-            import re
-            
-            score_match = re.search(r'SCORE:\s*(\d+(?:\.\d+)?)', content, re.IGNORECASE)
-            if score_match:
-                score = float(score_match.group(1))
-            else:
-                score_match = re.search(r'(?:score|rating|quality)[:\s]+(\d+(?:\.\d+)?)\s*(?:/\s*10)?', content, re.IGNORECASE)
-                if score_match:
-                    score = float(score_match.group(1))
-            
-            # Determine if improvement is needed
-            needs_improvement = False
-            if "NEEDS_IMPROVEMENT" in content.upper():
-                needs_improvement = True
-            elif score < threshold:
-                needs_improvement = True
-            
-            self._log(f"✓ Review complete (Score: {score}/10, Threshold: {threshold}/10)")
+
+            score = _parse_score(content)
+            verdict = _parse_verdict(content)
+
+            if score is None and verdict is None:
+                reason = "no score or verdict found in the review"
+                self._log(f"⚠ Review unusable: {reason}")
+                return ReviewResult(
+                    content if content else f"Review unusable: {reason}.",
+                    None, False, reviewed=True, error=reason,
+                )
+
+            needs_improvement = verdict == "NEEDS_IMPROVEMENT" or (
+                score is not None and score < threshold
+            )
+
+            shown = f"{score}/10" if score is not None else "not stated"
+            self._log(f"✓ Review complete (Score: {shown}, Threshold: {threshold}/10)")
             self._log(f"  Verdict: {'Needs improvement' if needs_improvement else 'Acceptable'}")
-            
-            return (content if content else "Image generated successfully", 
-                    score, 
-                    needs_improvement)
+
+            return ReviewResult(
+                content if content else "Review returned no text",
+                score,
+                needs_improvement,
+                reviewed=True,
+                error=None if score is not None else "no score found in the review",
+            )
         except Exception as e:
-            self._log(f"Review failed: {str(e)}")
-            return "Review failed", None, True
+            # A failed review must not fail the run -- the image is already
+            # generated and saved -- but it must not read as a pass either.
+            self._log(f"⚠ Review failed: {str(e)}")
+            return ReviewResult(
+                f"Review failed: {str(e)}",
+                None, False, reviewed=False, error=str(e),
+            )
     
     def improve_prompt(self, original_prompt: str, critique: str, 
                       infographic_type: Optional[str],
@@ -1066,7 +1155,10 @@ Generate an improved version that:
             "context_images": context_images,
             "iterations": [],
             "final_image": None,
-            "final_score": 0.0,
+            # None, not 0.0 -- a run whose review never completed has no score,
+            # and a number here would be read as one the reviewer gave.
+            "final_score": None,
+            "final_reviewed": False,
             "success": False,
             "early_stop": False,
             "early_stop_reason": None
@@ -1139,55 +1231,63 @@ Generate an improved version that:
                 f.write(image_data)
             print(f"✓ Saved: {iter_path}")
             
-            # Review image using Gemini 3.6 Flash
-            print(f"Reviewing with Gemini 3.6 Flash...")
-            critique, score, needs_improvement = self.review_image(
+            # Review the image with the vision review model
+            print(f"Reviewing with {self.review_model}...")
+            review = self.review_image(
                 str(iter_path), user_prompt, infographic_type, i, doc_type, iterations
             )
-            if score is None:
-                print(f"✗ Review failed (threshold: {threshold}/10)")
+            if review.score is not None:
+                print(f"✓ Score: {review.score}/10 (threshold: {threshold}/10)")
             else:
-                print(f"✓ Score: {score}/10 (threshold: {threshold}/10)")
-            
+                print(f"⚠ Review unavailable — image kept, quality not verified")
+                print(f"  Reason: {review.error}")
+
             # Save iteration results
             iteration_result = {
                 "iteration": i,
                 "image_path": str(iter_path),
                 "prompt_length": len(current_prompt),
-                "critique": critique,
-                "score": score,
-                "needs_improvement": needs_improvement,
+                "critique": review.critique,
+                "score": review.score,
+                "reviewed": review.reviewed,
+                "review_error": review.error,
+                "needs_improvement": review.needs_improvement,
                 "success": True
             }
             results["iterations"].append(iteration_result)
-            
+
             # Check if quality is acceptable
-            if score is not None and score >= threshold and not needs_improvement:
-                print(f"\n✓ Quality meets threshold ({score} >= {threshold})")
-                print(f"  No further iterations needed!")
+            if not review.needs_improvement:
+                if review.score is not None:
+                    print(f"\n✓ Quality meets threshold ({review.score} >= {threshold})")
+                    print(f"  No further iterations needed!")
+                    reason = f"Quality score {review.score} meets threshold {threshold}"
+                else:
+                    # Regenerating cannot fix a reviewer that did not answer.
+                    print(f"\n⚠ Stopping without a verified score — review the image yourself")
+                    reason = f"Review did not produce a score: {review.error}"
                 results["final_image"] = str(iter_path)
-                results["final_score"] = score
+                results["final_score"] = review.score
+                results["final_reviewed"] = review.reviewed and review.score is not None
                 results["success"] = True
                 results["early_stop"] = True
-                results["early_stop_reason"] = f"Quality score {score} meets threshold {threshold}"
+                results["early_stop_reason"] = reason
                 break
-            
+
             # If this is the last iteration, we're done
             if i == iterations:
                 print(f"\n⚠ Maximum iterations reached")
                 results["final_image"] = str(iter_path)
-                results["final_score"] = score
+                results["final_score"] = review.score
+                results["final_reviewed"] = review.reviewed and review.score is not None
                 results["success"] = True
                 break
-            
+
             # Quality below threshold - improve prompt
-            if score is None:
-                print(f"\n⚠ Review failed; regenerating with review feedback if available")
-            else:
-                print(f"\n⚠ Quality below threshold ({score} < {threshold})")
+            print(f"\n⚠ Quality below threshold ({review.score} < {threshold})")
             print(f"Improving prompt based on feedback...")
             current_prompt = self.improve_prompt(
-                user_prompt, critique, infographic_type, style, palette, background, i + 1,
+                user_prompt, review.critique, infographic_type, style, palette, background, i + 1,
                 len(context_images)
             )
         
@@ -1207,7 +1307,10 @@ Generate an improved version that:
         
         print(f"\n{'='*60}")
         print(f"Generation Complete!")
-        print(f"Final Score: {results['final_score']}/10")
+        if results["final_score"] is not None:
+            print(f"Final Score: {results['final_score']}/10")
+        else:
+            print(f"Final Score: unavailable (the review did not produce one)")
         if results["early_stop"]:
             iterations_used = len([r for r in results['iterations'] if r.get('success')])
             print(f"Iterations Used: {iterations_used}/{iterations} (early stop)")

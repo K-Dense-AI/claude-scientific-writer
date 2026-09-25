@@ -338,10 +338,11 @@ python scripts/format_bibtex.py references.bib \
   --deduplicate \
   --output clean_references.bib
 
-# Validate and report issues
+# Merge sources: one key scheme, then drop duplicates
 python scripts/format_bibtex.py references.bib \
-  --validate \
-  --report validation_report.txt
+  --rekey \
+  --deduplicate \
+  --output merged_references.bib
 ```
 
 **Formatting Operations**:
@@ -506,9 +507,7 @@ python scripts/format_bibtex.py crispr_refs.bib \
 
 # 5. Validate all citations
 python scripts/validate_citations.py references.bib \
-  --auto-fix \
-  --report validation.json \
-  --output final_references.bib
+  --report validation.json
 
 # 6. Review validation report and fix any remaining issues
 cat validation.json
@@ -535,9 +534,8 @@ This skill complements the `literature-review` skill:
 # Verify all citations in the review document
 python scripts/validate_citations.py my_review_references.bib --report review_validation.json
 
-# Format for specific citation style if needed
+# Normalise formatting (venue style is chosen by the .bst at build time)
 python scripts/format_bibtex.py my_review_references.bib \
-  --style nature \
   --output formatted_refs.bib
 ```
 
@@ -563,9 +561,8 @@ When the user already keeps references in Zotero, treat the Zotero library as th
 # 3. Validate the exported bibliography
 python scripts/validate_citations.py zotero_export.bib --report zotero_validation.json
 
-# 4. Format for the target venue
+# 4. Normalise the export (venue style comes from the .bst at build time)
 python scripts/format_bibtex.py zotero_export.bib \
-  --style nature \
   --output formatted_refs.bib
 ```
 

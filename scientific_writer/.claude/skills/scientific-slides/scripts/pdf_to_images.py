@@ -60,7 +60,7 @@ class PDFToImagesConverter:
         else:
             raise RuntimeError(
                 "PyMuPDF not installed. Install it with:\n"
-                "  pip install pymupdf\n\n"
+                "  uv pip install pymupdf\n\n"
                 "PyMuPDF is a self-contained library - no external dependencies needed."
             )
     
@@ -130,7 +130,7 @@ Resolution:
 
 Requirements:
   Install PyMuPDF (no external dependencies needed):
-    pip install pymupdf
+    uv pip install pymupdf
         """
     )
     

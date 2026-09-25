@@ -4,7 +4,7 @@ description: "Create, edit, analyze, or convert Excel spreadsheets (.xlsx, .xlsm
 allowed-tools: Read Write Edit Bash Grep Glob
 license: Proprietary. LICENSE.txt has complete terms
 metadata:
-  version: "2.1"
+  version: "2.2"
   skill-author: Anthropic, PBC
   adapted-by: K-Dense Inc.
   source: https://github.com/anthropics/skills/tree/main/skills/xlsx
@@ -20,7 +20,7 @@ compatibility: Requires Python 3.8+, LibreOffice (soffice on PATH), and gcc only
 | **Quick look** at a sheet | `markitdown file.xlsx` — `## SheetName` per sheet; reads `.xlsm` too. No cell coordinates, so don't plan edits from it |
 | **Read** a model (formulas *and* values) | two `load_workbook` passes — see gotchas |
 
-> `openpyxl`, `pandas`, and `markitdown` are preinstalled — do not run `pip install` first; write the script and import directly. Only if an import fails (or the `markitdown` command is missing): `pip install` the missing package.
+> `openpyxl`, `pandas`, and `markitdown` are preinstalled — do not run `uv pip install` first; write the script and import directly. Only if an import fails (or the `markitdown` command is missing): `uv pip install` the missing package.
 
 > Script paths below are relative to this skill's directory.
 

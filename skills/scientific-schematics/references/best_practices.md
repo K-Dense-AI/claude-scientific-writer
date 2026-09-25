@@ -4,6 +4,20 @@
 
 This guide provides publication standards, accessibility guidelines, and best practices for creating high-quality scientific diagrams that meet journal requirements and communicate effectively to all readers.
 
+### How this relates to the generator
+
+These are the standards a figure is judged against — not a description of what
+`scripts/generate_schematic.py` does for you. The generator produces a **PNG** and nothing else.
+Read this file for two purposes:
+
+- **To write the prompt.** Typography, colour, contrast, layout, labelling, and accessibility are
+  all things the image model will attempt if you ask for them specifically. The sections below are
+  the vocabulary for asking.
+- **To judge the result, and to plan post-processing.** File format, resolution, colour space, and
+  physical dimensions are fixed once the PNG exists. Where a journal's requirement differs from what
+  came out, that is a conversion step you perform afterwards — the skill has no vector path, no DPI
+  control, and no CMYK output.
+
 ## Publication Standards
 
 ### 1. File Format Requirements

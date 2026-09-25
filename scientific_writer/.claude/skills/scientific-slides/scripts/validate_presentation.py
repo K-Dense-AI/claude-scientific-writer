@@ -104,7 +104,7 @@ class PresentationValidator:
         """Validate PDF presentation."""
         if not HAS_PDF_READER:
             self.warnings.append(
-                "pypdf not installed. Install with: pip install pypdf"
+                "pypdf not installed. Install with: uv pip install pypdf"
             )
             return
 
@@ -153,7 +153,7 @@ class PresentationValidator:
         """Validate PowerPoint presentation."""
         if not HAS_PPTX:
             self.warnings.append(
-                "python-pptx not installed. Install with: pip install python-pptx"
+                "python-pptx not installed. Install with: uv pip install python-pptx"
             )
             return
         

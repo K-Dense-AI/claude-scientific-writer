@@ -2,6 +2,19 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
+## [2.22.0] - 2026-09-25
+
+### Changed
+
+- **Vendored skills refreshed to upstream `v2.69.0`** (`45af7aefb40e`), up from `ab2f84ab1059` (upstream 2.61.0), which had been the pin since v2.19.0. `skills.lock.json` and all three snapshots (`skills/`, `.claude/skills/`, `scientific_writer/.claude/skills/`) were regenerated with `scripts/sync_skills.py`, and `--check` confirms they match the lock. The set of 26 skills is unchanged. 24 of them have new content; `docx` and `pptx` are identical upstream between the two pins. Notable upstream changes:
+  - **`citation-management` 1.6 → 2.1** — fixes BibTeX corruption: the field parser stopped at the first closing brace, so titles with protected terms such as `{AlphaFold}` were truncated and written back with unbalanced braces. Also fixes page ranges (`583--589` no longer becomes `583----589`), adds OpenAlex search (`scripts/search_openalex.py`), and corrects twelve documented flags that the scripts reject. `format_bibtex.py` now writes to stdout unless `--output` or `--in-place` is given. The unrelated `generate_schematic*.py` copies were removed from this skill; use `scientific-schematics`.
+  - **`generate-image` 2.0 → 3.1** — the model reference and `generate_image.py` were substantially revised.
+  - **`scientific-schematics`, `scientific-slides`, `latex-posters`, `literature-review`, `infographics`** — the AI review model moved from `google/gemini-3.6-flash` to `google/gemini-3.7-flash`.
+  - **`research-grants`, `scientific-critical-thinking`, `scientific-slides`** — broken internal script and reference links fixed.
+  - Package installation instructions now use `uv pip install`, and several skills now include citation guidance for the Scientific Agent Skills paper.
+
+---
+
 ## [2.21.0] - 2026-08-12
 
 ### Fixed

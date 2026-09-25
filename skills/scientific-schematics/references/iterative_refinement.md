@@ -90,17 +90,53 @@ All iterations are saved with a JSON review log that includes early-stop informa
       "iteration": 1,
       "image_path": "figures/consort_v1.png",
       "score": 7.5,
+      "reviewed": true,
+      "review_error": null,
       "needs_improvement": false,
       "critique": "SCORE: 7.5\nSTRENGTHS:..."
     }
   ],
   "final_score": 7.5,
+  "final_reviewed": true,
   "early_stop": true,
   "early_stop_reason": "Quality score 7.5 meets threshold 7.0 for poster"
 }
 ```
 
 **Note:** With smart iteration, you may see only 1 iteration instead of the full 2 if quality is achieved early!
+
+### When the review does not run
+
+The reviewer is a second model call, and it can fail on its own — a rate limit, a content filter,
+an answer in a shape the parser cannot read. The image is generated first and is kept regardless;
+what is missing in that case is the *measurement*, so the log says so rather than substituting a
+number:
+
+```json
+{
+  "iterations": [
+    {
+      "iteration": 1,
+      "image_path": "figures/consort_v1.png",
+      "score": null,
+      "reviewed": false,
+      "review_error": "the review model returned no choices",
+      "needs_improvement": false,
+      "critique": "Review unavailable: the review model returned no choices."
+    }
+  ],
+  "final_score": null,
+  "final_reviewed": false
+}
+```
+
+The run exits 0 — the diagram is real — and prints
+`Review unavailable — image kept, quality not verified`. It does **not** regenerate: a reviewer that
+did not answer says nothing about the diagram, so another generation would be guesswork. Look at the
+image yourself, and re-run if you want a score; these failures are usually transient.
+
+`final_reviewed` is the field to check in automation. `final_score` alone cannot distinguish
+"scored 7.5" from "never scored".
 
 ## Advanced AI Generation Usage
 
@@ -156,6 +192,28 @@ python scripts/generate_schematic.py "diagram" -o out.png --api-key "sk-or-v1-..
 # Combine options
 python scripts/generate_schematic.py "neural network" -o nn.png --doc-type journal --iterations 2 -v
 ```
+
+### Setup and Cost
+
+```bash
+# Get a key at https://openrouter.ai/keys
+export OPENROUTER_API_KEY='sk-or-v1-your_key_here'
+
+# Or persist it in the shell profile
+echo 'export OPENROUTER_API_KEY="sk-or-v1-your_key"' >> ~/.zshrc
+
+# Or drop it in a .env file at the project root
+echo "OPENROUTER_API_KEY=sk-or-v1-..." >> .env
+
+# The only Python dependency
+uv pip install requests
+```
+
+Each iteration costs **two API calls**: one image generation and one vision review. A diagram that
+passes on the first try therefore costs two calls, and the maximum for any single run is four. The
+image model dominates the bill. Check current per-token pricing for
+`google/gemini-3.1-flash-image` and `google/gemini-3.7-flash` on OpenRouter — it changes, and any
+figure written here would go stale.
 
 ### Prompt Engineering Tips
 

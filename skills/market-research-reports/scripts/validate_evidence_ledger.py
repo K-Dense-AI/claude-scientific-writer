@@ -177,14 +177,14 @@ def validate_records(records: list[dict[str, Any]]) -> dict[str, Any]:
             retrieval = parse_iso_date(
                 record["retrieval_date"], f"{context}.retrieval_date"
             )
-            if len(publication) == 10 and date.fromisoformat(retrieval) < date.fromisoformat(
-                publication
-            ):
+            if publication == "not-stated":
+                warnings.append(f"{source_id}: publication date is not stated")
+            elif len(publication) == 10 and date.fromisoformat(
+                retrieval
+            ) < date.fromisoformat(publication):
                 raise ValidationError(
                     f"{context}.retrieval_date precedes publication_date"
                 )
-            if publication == "not-stated":
-                warnings.append(f"{source_id}: publication date is not stated")
 
             require_text(record["geography"], f"{context}.geography")
             currency = parse_currency(
