@@ -528,11 +528,18 @@ machine learning
 # Check arXiv, bioRxiv versions
 ```
 
-**In script**:
+**In script**: the Scholar client has no open-access filter, but each result
+carries an `eprint_url` when a free copy exists, so filter the JSON:
+
 ```bash
-python scripts/search_google_scholar.py "topic" \
-  --open-access-only \
-  --output open_access_papers.json
+python scripts/search_google_scholar.py "topic" --output papers.json
+python -c "import json;d=json.load(open('papers.json'));print(json.dumps([r for r in d['results'] if r['eprint_url']],indent=2))" > open_access_papers.json
+```
+
+OpenAlex exposes this directly as a field:
+
+```bash
+python scripts/search_openalex.py "topic" --output papers.json   # each result has is_open_access
 ```
 
 ### Tracking Research Impact

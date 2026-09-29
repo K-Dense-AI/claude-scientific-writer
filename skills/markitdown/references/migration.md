@@ -252,8 +252,8 @@ Use `pyproject.toml`; old `setup.py`-only examples are no longer the preferred p
 Outdated:
 
 ```bash
-pip install markitdown
-pip install "markitdown[all]"
+uv pip install markitdown
+uv pip install "markitdown[all]"
 ```
 
 Repository-standard reproducible install:

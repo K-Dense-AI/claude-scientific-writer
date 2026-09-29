@@ -147,7 +147,12 @@ Environment Variables:
                        help="Verbose output")
     
     args = parser.parse_args()
-    
+
+    # Validated here rather than clamped silently, and before the credential
+    # lookup so an out-of-range value reports itself rather than an absent key.
+    if not 1 <= args.iterations <= 2:
+        parser.error("--iterations must be 1 or 2")
+
     # Check for API key — resolves --api-key, the environment, then any .env file
     api_key = resolve_api_key(args.api_key)
     if not api_key:
@@ -173,12 +178,9 @@ Environment Variables:
     
     if args.doc_type != "default":
         cmd.extend(["--doc-type", args.doc_type])
-    
-    # Enforce max 2 iterations
-    iterations = min(args.iterations, 2)
-    if iterations != 2:
-        cmd.extend(["--iterations", str(iterations)])
-    
+
+    cmd.extend(["--iterations", str(args.iterations)])
+
     if args.verbose:
         cmd.append("-v")
     

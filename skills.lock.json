@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
   "repository": "https://github.com/K-Dense-AI/scientific-agent-skills",
-  "ref": "ab2f84ab10597c59fac186ecda6d5edd5dcc8b92",
-  "commit": "ab2f84ab10597c59fac186ecda6d5edd5dcc8b92",
-  "snapshot_sha256": "b5a3d19457452148db098bab0620fdefd34302d1d26a8e96c0e90c8204d10bce",
+  "ref": "v2.69.0",
+  "commit": "45af7aefb40e0ef12fda62c6f01d1067ea1e1222",
+  "snapshot_sha256": "96c0121d53aeeb907e08d30d8386b4c025c5dd96f4ce338edc86b9a58c47891f",
   "skills": [
     {
       "source": "citation-management",
       "destination": "citation-management",
-      "sha256": "5809be57bc54ed6b04c629a2c8a231b1d3d81d68f1873c7519cd4bbc7c25c056"
+      "sha256": "af92fb76b9425e1b9b4150ce51ea9d7d1e4d3cb77748ceb61d66ea5e0ff26220"
     },
     {
       "source": "clinical-decision-support",
       "destination": "clinical-decision-support",
-      "sha256": "0c7151b529a908846de67a408dff8f9e0704101ce223e4a9c556f23df941fe55"
+      "sha256": "d2409f81ff9e7872a7b2683459c998912834971b7cfa9569d2d30bb55bdce7f5"
     },
     {
       "source": "clinical-reports",
       "destination": "clinical-reports",
-      "sha256": "56336dcc1f5f17148fa1319362ad40b1fc8062198affd1a9156908598ba8e7ff"
+      "sha256": "bf17a6a673b5e71df6b83da3e90d75b0dcecf5839c00f8fedd59da815ced43ea"
     },
     {
       "source": "docx",
@@ -28,7 +28,7 @@
     {
       "source": "pdf",
       "destination": "pdf",
-      "sha256": "a168863ca17d8d82b10ca343f6d07d91765a14f2a61d7d6ddb6d248dc48aebe9"
+      "sha256": "3968cc2ea044bb0899e63ddf590592aa7f54e9db994bdeadeeedfd88898c1464"
     },
     {
       "source": "pptx",
@@ -38,102 +38,102 @@
     {
       "source": "xlsx",
       "destination": "xlsx",
-      "sha256": "dbb2a5ae521c3e16c0864329bdfd5c8491d7e2e52295bfaefe432b570d67e882"
+      "sha256": "6d66e02956e5aec9c5ba9738f0487f6d376f0e5db82d8881211373e2e7eadc34"
     },
     {
       "source": "generate-image",
       "destination": "generate-image",
-      "sha256": "df3a2db1841a0b6d4bb91f454abaf0da70f02ebe502f88f16920266ab7081ec5"
+      "sha256": "0d9aa085bea8e0aa046ee2b76933570c889c0267f4bc919c487ba17912b37390"
     },
     {
       "source": "hypothesis-generation",
       "destination": "hypothesis-generation",
-      "sha256": "bd64cf3802351fc627cdfc7862c0ed4aa77a1046828f280b1467b748b403e109"
+      "sha256": "34e79f7db9259843f7ec143151ccae22d5abd06234a9d2f93211ec85e22016fe"
     },
     {
       "source": "infographics",
       "destination": "infographics",
-      "sha256": "a7f703b672b5211a5b26fb180c25d386310ed74ca6fff4f97b8225403dffe847"
+      "sha256": "486ffd4397b05e26cc50c4b2c02f691283418e086c5fa1d453f97ff585a97c29"
     },
     {
       "source": "latex-posters",
       "destination": "latex-posters",
-      "sha256": "06f0c07b758fce3de413c8eb861cf9a9a404436633d452b04220b6396bc9d92c"
+      "sha256": "d4531277cab6b7b4381c863ea56bb0affaca9ab7635d1f89ccb01593c2f71cb6"
     },
     {
       "source": "literature-review",
       "destination": "literature-review",
-      "sha256": "e7960c4d80794b43df6ad64ce0362d8b1bee95c55d166574b27d108fec4ac8d1"
+      "sha256": "df783facfa45eec9c00cd51a28ccf3fd0ad74fb294c405f4e322a523de559854"
     },
     {
       "source": "market-research-reports",
       "destination": "market-research-reports",
-      "sha256": "42061c99c0ddd02c15a1a6c35233b7dc9db74e6c3543c1a3b33e41a9fb4401b2"
+      "sha256": "f8923865f5290688eaf7a7034969c5271bea70a0997c0203f5893de97cd57900"
     },
     {
       "source": "markitdown",
       "destination": "markitdown",
-      "sha256": "27d1f7de5c3f283c4b7e68463e4960ee00b947e36521246e9127ac711283cda9"
+      "sha256": "e5fb55d395157679604efc71c6ede4d5c3a8f3b83670a4a845b4e2251c2f8e74"
     },
     {
       "source": "parallel-web",
       "destination": "parallel-web",
-      "sha256": "6b1dd5347a4e8820a2aae197988a24f781cd8d3c3a697782be8c22c66e994045"
+      "sha256": "c06fb888e2e86f1fd1cf5265097bef9a46d009fd19971d639b497afb22c987be"
     },
     {
       "source": "peer-review",
       "destination": "peer-review",
-      "sha256": "abc6322ce688a74c0280bc673f6a4ec5d4f35630ef6fc5669e970f6d996bc5f0"
+      "sha256": "49f4513a1269eb6cd3dda608d982cc7a9d4fb9ba04ec9c757116752e322d0655"
     },
     {
       "source": "pptx-posters",
       "destination": "pptx-posters",
-      "sha256": "a55bf83cb445e688836da059ae8d0287c32452df0234d2d1bfb733fd04d54481"
+      "sha256": "e599f0f810784831a0e0b300ade5020a4cffb4379c1b2bf50656feedb0557dde"
     },
     {
       "source": "research-grants",
       "destination": "research-grants",
-      "sha256": "51ee36659a62386eed0cf1feccb146a289e996017b1b721c3eab9e90c3a8b342"
+      "sha256": "646702fb898684e22536006d96f4807345042c71994c39442b1ee3a42de2ab07"
     },
     {
       "source": "research-lookup",
       "destination": "research-lookup",
-      "sha256": "c7862d98768a51e814f44ed768c22b06dbee8f6f6f303e788aa8a25775a0551b"
+      "sha256": "aac7981ddcc52f403f849215e4cb2582ab7f7bc9e61b9bde8e76bb925c2e54e0"
     },
     {
       "source": "scholar-evaluation",
       "destination": "scholar-evaluation",
-      "sha256": "896c61c2875e590a6725b548cacdd1156de8ce51256b25894676b333e0244f73"
+      "sha256": "ca306bf88cd646c066adb914f16c39ace4469674d46d959a7257b29b998df8de"
     },
     {
       "source": "scientific-critical-thinking",
       "destination": "scientific-critical-thinking",
-      "sha256": "e325f75c16a739d4fe984881bef097f5394d4ac2d377455eb7fc5940b7b100c1"
+      "sha256": "992073c4f37c76e23aee1b2e09f0df988f8419accd8ac98439be11c090962938"
     },
     {
       "source": "scientific-schematics",
       "destination": "scientific-schematics",
-      "sha256": "b35312e248959157be8497ed0dc1252d187aa5ee6fef44dc1333376f680bd4b5"
+      "sha256": "35401198891709bd0133a1531997b6e4821ec87511b9cc46dcd4c63381a8c9c1"
     },
     {
       "source": "scientific-slides",
       "destination": "scientific-slides",
-      "sha256": "83ad63b39f8afda6098d0da69978522ae0648b0a4f8328a3a9d0f3d7b4f914fe"
+      "sha256": "2f274e085a8aded1cdf43d247b66bb9aa248ae6eb16d6dd1ed622cf36ae115b7"
     },
     {
       "source": "scientific-writing",
       "destination": "scientific-writing",
-      "sha256": "3affacf18f64ad3061aea7973e222d9bea5a67cf0fbb4829d44170e015a4082b"
+      "sha256": "872eb699549a970fab0897b86df31328b773d18b95e551d7502bec5c9b1836c3"
     },
     {
       "source": "treatment-plans",
       "destination": "treatment-plans",
-      "sha256": "3b9435612c9e18b416706211034345a92525e4f589cace00d386509402eaabaf"
+      "sha256": "e1db4d9fcfd98f0207483e2b2d7dfd3648b010a952d9b2b0132094e31d5221f5"
     },
     {
       "source": "venue-templates",
       "destination": "venue-templates",
-      "sha256": "7a1ca2bb6f7980d89cdb3a467a840d3a7d7666f2de691fafd9d8f62c84583486"
+      "sha256": "3a5cb2338a4118ef5fc17d0b0857329d8c58dfb967d97c6282a097d60d77ca00"
     }
   ]
 }

@@ -4,7 +4,7 @@
 # Prerequisites:
 # 1. Set OPENROUTER_API_KEY environment variable
 # 2. Ensure Python 3.10+ is installed
-# 3. Install requests: pip install requests
+# 3. Install requests: uv pip install requests
 
 set -e
 
@@ -12,6 +12,9 @@ echo "=========================================="
 echo "Scientific Schematics - AI Generation"
 echo "Example Usage Demonstrations"
 echo "=========================================="
+echo ""
+echo "This runs three real generations against OpenRouter and will be billed"
+echo "to your account: 2 API calls per iteration, up to 4 per example."
 echo ""
 
 # Check for API key
@@ -41,7 +44,7 @@ python scripts/generate_schematic.py \
 
 echo ""
 echo "✓ Generated: figures/consort_example.png"
-echo "  - Also created: consort_example_v1.png, v2.png, v3.png"
+echo "  - Also created: consort_example_v1.png (and v2.png if it needed a second pass)"
 echo "  - Review log: consort_example_review_log.json"
 echo ""
 

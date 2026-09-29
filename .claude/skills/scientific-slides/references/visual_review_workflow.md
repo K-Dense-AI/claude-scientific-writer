@@ -75,7 +75,7 @@ The script uses PyMuPDF, a self-contained Python library - no poppler or other s
 **Installation**:
 ```bash
 # PyMuPDF is included as a project dependency
-pip install pymupdf
+uv pip install pymupdf
 ```
 
 **Basic Conversion**:
@@ -175,7 +175,7 @@ doc.close()
 
 **Install PyMuPDF**:
 ```bash
-pip install pymupdf
+uv pip install pymupdf
 # No external dependencies needed!
 ```
 
