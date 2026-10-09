@@ -57,6 +57,8 @@ jobs:
         run: uv run --frozen python scripts/sync_skills.py --check
       - name: Repository consistency
         run: uv run --frozen python scripts/check_consistency.py
+      - name: Agent Plugins conformance
+        run: uv run --frozen python scripts/validate_agent_plugin.py
       - name: Package verification
         run: uv run --frozen python scripts/verify_package.py
       - name: Build
