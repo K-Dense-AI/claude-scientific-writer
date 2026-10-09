@@ -17,7 +17,7 @@ repos:
         name: Codespell
         entry: >-
           uv run --frozen codespell README.md CHANGELOG.md CONTRIBUTING.md
-          example_api_usage.py CLAUDE.md pyproject.toml
+          example_api_usage.py CLAUDE.md AGENTS.md pyproject.toml
           .env.example scientific_writer scripts tests docs commands templates .github
         language: system
         pass_filenames: false

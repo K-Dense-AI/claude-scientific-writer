@@ -134,7 +134,7 @@ ignore_missing_imports = true
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git,.gitignore,.gitattributes,.claude,skills,scientific_writer/.claude,extensions,docs/examples,*.pdf,*.svg,*.css,*.xsd'
+skip = '.git,.venv,.mypy_cache,.ruff_cache,.pytest_cache,dist,build,.gitignore,.gitattributes,.claude,skills,scientific_writer/.claude,extensions,docs/examples,*.pdf,*.svg,*.css,*.xsd'
 check-hidden = true
 # Ignore camelCase/PascalCase identifiers, and word fragments from bold formatting
 # (**S**pecific, \textbf{F}requency, etc.)
