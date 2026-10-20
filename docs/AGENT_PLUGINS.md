@@ -90,7 +90,7 @@ Code as well.
 This bit the `docx`, `pdf`, `pptx`, and `xlsx` skills, which the vendoring step used to rewrite into
 a local `document-skills/` bundle through the `destination` field in `skills.lock.json`. Upstream
 always published them as top-level skills; the nesting was introduced here. The destinations are now
-flat, so all 26 skills are discoverable. If you add a skill to `skills.lock.json`, keep its
+flat, so every vendored skill is discoverable. If you add a skill to `skills.lock.json`, keep its
 `destination` a single path segment — `scripts/validate_agent_plugin.py` reports any directory under
 `skills/` that has no `SKILL.md`, and names the nested skills it is hiding.
 

@@ -2,6 +2,23 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
+## [2.23.0] - 2026-10-20
+
+### Removed
+
+- **The `docx`, `pdf`, `pptx`, and `xlsx` skills are no longer bundled.** They were modified copies of Anthropic's document skills, which Anthropic licenses under its own terms, not this package's MIT license. Upstream `scientific-agent-skills` removed them for the same reason in `f7a50ed2` (first released in `v2.72.0`). They have been dropped from `skills.lock.json`, all three snapshots, and `.claude-plugin/marketplace.json`, so the package now ships 22 skills. To use them, install them from [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills). `markitdown` still converts PDF, DOCX, PPTX, and XLSX files to Markdown.
+
+### Changed
+
+- **Vendored skills refreshed to upstream `v2.72.0`** (`526ebce143bc`), up from `v2.69.0` (`45af7aefb40e`). `skills.lock.json` and all three snapshots were regenerated with `scripts/sync_skills.py`, and `--check` confirms they match the lock. All 22 remaining skills have new upstream content. Notable upstream changes:
+  - **`scientific-slides` 1.8 → 1.12** — no longer calls the removed `pptx` skill's scripts. PowerPoint decks are built with PptxGenJS, or python-pptx for an existing template, and reviewed by rendering through LibreOffice with the bundled `pdf_to_images.py` and `validate_presentation.py`.
+  - **`infographics`, `latex-posters`, `literature-review`, `scientific-schematics`, `scientific-slides`, `venue-templates`** — console diagnostics no longer crash on Windows terminals that use the cp1252 code page.
+  - Upstream refreshed API endpoints, package pins, and documentation across all skills.
+- **CLI welcome text** — "Document manipulation (docx, pdf, pptx, xlsx)" now reads "Document conversion to Markdown (PDF, DOCX, PPTX, XLSX via MarkItDown)", which matches what the bundled skills do.
+- **Docs** — `docs/SKILLS.md`, `docs/FEATURES.md`, and `docs/README.md` no longer describe the four removed skills, and point to `anthropics/skills` instead. The remaining sections of `docs/SKILLS.md` are renumbered.
+
+---
+
 ## [2.22.0] - 2026-09-25
 
 ### Changed

@@ -753,88 +753,11 @@ Claude will generate competitive analysis with strategic frameworks and visualiz
 
 ---
 
-### 15. DOCX (Word Documents)
-**Location**: `.claude/skills/docx/`
-
-**Capabilities**:
-- Create and edit Word documents programmatically
-- Work with OOXML format
-- Manage comments and track changes
-- Validate document structure
-- Handle templates
-
-**Scripts**:
-- `document.py`: Core document manipulation
-- `utilities.py`: Helper functions
-- OOXML validation and manipulation tools
-
-**References**:
-- `docx-js.md`: JavaScript integration guide
-- `ooxml.md`: OOXML format specification
+Earlier releases also bundled `docx`, `pdf`, `pptx`, and `xlsx`. Those skills are Anthropic's, and they are not bundled from 2.23.0. If you need them, install them from [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills).
 
 ---
 
-### 16. PDF Documents
-**Location**: `.claude/skills/pdf/`
-
-**Capabilities**:
-- Extract text and metadata from PDFs
-- Check bounding boxes and layout
-- Work with fillable PDF forms
-- Convert PDFs to images
-- Extract form field information
-
-**Scripts**:
-- `check_bounding_boxes.py`: Analyze PDF layout
-- `check_fillable_fields.py`: Identify form fields
-- `fill_fillable_fields.py`: Populate PDF forms
-- `convert_pdf_to_images.py`: PDF to image conversion
-- `extract_form_field_info.py`: Extract form metadata
-
-**References**:
-- `forms.md`: Working with PDF forms
-- `reference.md`: PDF manipulation reference
-
----
-
-### 17. PPTX (PowerPoint Presentations)
-**Location**: `.claude/skills/pptx/`
-
-**Capabilities**:
-- Create and modify PowerPoint presentations
-- Convert HTML to PowerPoint
-- Manage slides and layouts
-- Work with OOXML format
-- Generate thumbnails
-
-**Scripts**:
-- `html2pptx.js`: HTML to PowerPoint conversion
-- `inventory.py`: Presentation inventory management
-- `rearrange.py`: Slide reordering
-- `replace.py`: Content replacement
-- `thumbnail.py`: Thumbnail generation
-
-**References**:
-- `html2pptx.md`: HTML conversion guide
-- `ooxml.md`: OOXML format specification
-
----
-
-### 18. XLSX (Excel Spreadsheets)
-**Location**: `.claude/skills/xlsx/`
-
-**Capabilities**:
-- Read and write Excel files
-- Manage formulas and calculations
-- Handle complex spreadsheet operations
-- Recalculate formulas
-
-**Scripts**:
-- `recalc.py`: Formula recalculation utility
-
----
-
-### 19. Research Lookup
+### 15. Research Lookup
 **Location**: `.claude/skills/research-lookup/`
 
 Compiles manuscript-ready scholarly evidence packets with Parallel Search and Extract,
@@ -842,7 +765,7 @@ academic-domain filtering, source verification, and saved research artifacts.
 
 ---
 
-### 20. Parallel Web
+### 16. Parallel Web
 **Location**: `.claude/skills/parallel-web/`
 
 Provides current web search, URL extraction, deep research, data enrichment, entity
@@ -850,7 +773,7 @@ discovery, and monitoring through `parallel-cli`.
 
 ---
 
-### 21. Generate Image
+### 17. Generate Image
 **Location**: `.claude/skills/generate-image/`
 
 Generates or edits non-technical visual assets with OpenRouter image models. Technical
@@ -859,7 +782,7 @@ flowcharts, pathways, and architectures remain the responsibility of
 
 ---
 
-### 22. Infographics
+### 18. Infographics
 **Location**: `.claude/skills/infographics/`
 
 Creates standalone PNG infographics with iterative visual review, accessible palettes,
@@ -867,7 +790,7 @@ and optional researched content. This route does not use LaTeX or PDF compilatio
 
 ---
 
-### 23. Hypothesis Generation
+### 19. Hypothesis Generation
 **Location**: `.claude/skills/hypothesis-generation/`
 
 Turns observations into competing, falsifiable hypotheses with mechanisms, predictions,
@@ -875,7 +798,7 @@ and experiments that distinguish among alternatives.
 
 ---
 
-### 24. Scientific Critical Thinking
+### 20. Scientific Critical Thinking
 **Location**: `.claude/skills/scientific-critical-thinking/`
 
 Evaluates claims, experimental design, bias, confounding, statistical pitfalls, and
@@ -883,7 +806,7 @@ evidence quality using established critical-appraisal frameworks.
 
 ---
 
-### 25. Treatment Plans
+### 21. Treatment Plans
 **Location**: `.claude/skills/treatment-plans/`
 
 Produces concise clinical treatment plans with SMART goals, evidence-based interventions,
@@ -891,7 +814,7 @@ monitoring, safety considerations, and regulatory-aware formatting.
 
 ---
 
-### 26. PPTX Posters
+### 22. PPTX Posters
 **Location**: `.claude/skills/pptx-posters/`
 
 Creates research posters in editable PowerPoint format when PPTX is explicitly requested.
@@ -925,12 +848,6 @@ Claude will use the scientific-writing skill to provide IMRaD-compliant guidance
 > Create a literature review on CRISPR gene editing in agriculture
 ```
 Claude will use literature-review skill to structure a comprehensive review.
-
-### Using Document Skills
-```
-> Extract the data from Table 1 in results.pdf and create a summary
-```
-Claude will use the PDF skill to extract data and potentially the XLSX skill to organize it.
 
 ### Using MarkItDown Skill
 ```
