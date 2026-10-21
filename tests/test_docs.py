@@ -1,6 +1,7 @@
 """Regression tests for documentation and generated instruction consistency."""
 
 import importlib.util
+import json
 from pathlib import Path
 import re
 from urllib.parse import unquote
@@ -56,8 +57,9 @@ def test_instruction_surfaces_do_not_reference_removed_parallel_wrapper():
 def test_skills_document_has_one_section_per_locked_skill():
     text = (ROOT / "docs" / "SKILLS.md").read_text(encoding="utf-8")
     sections = re.findall(r"^### (\d+)\.", text, flags=re.MULTILINE)
+    locked = json.loads((ROOT / "skills.lock.json").read_text(encoding="utf-8"))["skills"]
 
-    assert sections == [str(index) for index in range(1, 27)]
+    assert sections == [str(index) for index in range(1, len(locked) + 1)]
 
 
 def test_first_party_markdown_file_links_resolve():

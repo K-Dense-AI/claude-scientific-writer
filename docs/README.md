@@ -110,7 +110,7 @@ Scientific Writer can be used in three ways:
 
 4. **[SKILLS.md](SKILLS.md)** - Available skills and capabilities
    - Writing Skills (scientific writing, literature review, peer review, scholar evaluation, grants, posters, schematics)
-   - Document Manipulation Skills (MarkItDown, DOCX, PDF, PPTX, XLSX)
+   - Document Manipulation Skills (MarkItDown)
    - Usage Examples
 
 5. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and solutions

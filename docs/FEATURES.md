@@ -396,28 +396,7 @@ Convert 15+ file formats to Markdown for LLM processing.
 
 ### Document Manipulation
 
-#### DOCX (Word Documents)
-- Create and edit Word documents programmatically
-- Manage comments and track changes
-- Validate document structure
-- Work with templates
-
-#### PDF Documents
-- Extract text and metadata
-- Analyze PDF layout and bounding boxes
-- Fill PDF forms
-- Convert PDFs to images
-
-#### PPTX (PowerPoint)
-- Create and modify presentations
-- Convert HTML to PowerPoint
-- Generate thumbnails
-- Manage slides and layouts
-
-#### XLSX (Excel)
-- Read and write Excel files
-- Recalculate formulas
-- Handle complex spreadsheet operations
+Earlier releases also bundled `docx`, `pdf`, `pptx`, and `xlsx`. Those skills are Anthropic's, and they are not bundled from 2.23.0. If you need them, install them from [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills).
 
 ---
 
