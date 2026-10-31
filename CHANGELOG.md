@@ -2,6 +2,20 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- **The writer takes far fewer turns for the same document.** Every tool call re-reads the whole conversation, so a run's cost tracks its number of turns, and the instructions required several redundant ones. Document length, citation counts, figure minimums, the verification standard and the PDF review are unchanged; only the mechanics are:
+  - **"Token usage is unlimited" now reads "never shorten the document to save tokens"**, and a new *Working Efficiently* section asks for batched tool calls, whole-section writes, selective reads of saved research, and a complete document in `final/` before polishing.
+  - **Citations are verified in batches.** Metadata for every entry with a DOI comes from the DOI registry in one `doi_to_bibtex.py` call, titles are checked against the papers actually read, and one `validate_citations.py --check-dois --manuscript` call covers resolution, unresolved and unused keys, and the venue count. A publisher search and extract per paper is still required for entries with no DOI and for any entry that fails a check, and every cited claim must still be supported by content the writer has read.
+  - **One image per figure** instead of 2–3 candidates: `generate_schematic.py` already reviews each image and regenerates it below the quality threshold.
+  - **The PDF page-image review runs once, on the final PDF**, at 100 dpi, with every issue fixed in one batch and only changed pages re-checked.
+  - **`progress.md` is updated at milestones** rather than every 1–2 minutes.
+  - **Revision requests are scoped to the change**: unchanged, already-verified citations, figures and pages are not re-checked, and a request that rewrites most of the document still gets every check.
+
+---
+
 ## [2.22.0] - 2026-09-25
 
 ### Changed
