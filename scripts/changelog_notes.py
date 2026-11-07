@@ -35,25 +35,54 @@ class ChangelogError(RuntimeError):
 
 def iter_sections(text: str) -> list[tuple[str, str]]:
     """Return (label, body) for every `## [label]` section, in document order."""
-    matches = list(SECTION_HEADING.finditer(text))
+    if type(text) is not str:
+        matches = list(SECTION_HEADING.finditer(text))
+        sections = []
+        for index, match in enumerate(matches):
+            end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+            _, _, body = text[match.end() : end].partition("\n")
+            sections.append((match.group(1), _strip_separators(body)))
+        return sections
+
     sections = []
-    for index, match in enumerate(matches):
-        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
-        body = text[match.end() : end]
-        # Drop the remainder of the heading line (the ` - YYYY-MM-DD` date suffix).
-        _, _, body = body.partition("\n")
-        sections.append((match.group(1), _strip_separators(body)))
+    label = None
+    body_start = 0
+    position = 0
+    while position >= 0:
+        match = SECTION_HEADING.match(text, position)
+        if match is not None:
+            if label is not None:
+                sections.append((label, _strip_separators(text[body_start:position])))
+            label = match.group(1)
+            # Skip multiline labels before looking for the next heading.
+            position = match.end()
+            newline = text.find("\n", position)
+            body_start = newline + 1 if newline >= 0 else len(text)
+        position = text.find("\n##", position)
+        if position >= 0:
+            position += 1
+    if label is not None:
+        sections.append((label, _strip_separators(text[body_start:])))
     return sections
 
 
 def _strip_separators(body: str) -> str:
     """Strip surrounding whitespace and the `---` rules that divide changelog entries."""
-    lines = body.strip().splitlines()
-    while lines and lines[-1].strip() in {"", "---"}:
-        lines.pop()
-    while lines and lines[0].strip() in {"", "---"}:
-        lines.pop(0)
-    return "\n".join(lines).strip()
+    if type(body) is not str:
+        lines = body.strip().splitlines()
+        while lines and lines[-1].strip() in {"", "---"}:
+            lines.pop()
+        while lines and lines[0].strip() in {"", "---"}:
+            lines.pop(0)
+        return "\n".join(lines).strip()
+
+    lines = body.splitlines()
+    start, end = 0, len(lines)
+    while start < end and lines[start].strip() in {"", "---"}:
+        start += 1
+    while end > start and lines[end - 1].strip() in {"", "---"}:
+        end -= 1
+    return "\n".join(lines[start:end]).strip()
 
 
 def previous_version(text: str, version: str) -> str | None:
