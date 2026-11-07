@@ -6,6 +6,8 @@ This guide explains how to contribute a skill through the canonical [Scientific 
 
 The **canonical source of truth** is the `skills/` tree in [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills). This repository vendors a selected, reproducible snapshot at the revision recorded in `skills.lock.json`.
 
+The `docx`, `pdf`, `pptx`, and `xlsx` office skills are the exception: they are pinned to Anthropic's [anthropics/skills](https://github.com/anthropics/skills) (Apache License 2.0, with each skill's `LICENSE.txt` kept), and K-Dense's changes to them live as whole-file overrides in `skill-overrides/`. Re-pin them with `python3 scripts/sync_skills.py --update-ref <commit> --repository https://github.com/anthropics/skills`.
+
 The following three directories are generated and must never be edited directly:
 
 - `skills/` (Claude Code plugin payload)

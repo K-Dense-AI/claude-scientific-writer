@@ -3,7 +3,7 @@
   "repository": "https://github.com/K-Dense-AI/scientific-agent-skills",
   "ref": "v2.69.0",
   "commit": "45af7aefb40e0ef12fda62c6f01d1067ea1e1222",
-  "snapshot_sha256": "96c0121d53aeeb907e08d30d8386b4c025c5dd96f4ce338edc86b9a58c47891f",
+  "snapshot_sha256": "86168ea262378b62c7edcf8c128ef384b6439f626ab24809b71a56a24f36d9d2",
   "skills": [
     {
       "source": "citation-management",
@@ -23,22 +23,51 @@
     {
       "source": "docx",
       "destination": "docx",
-      "sha256": "297eabe17185286e63696c5e99cc263838e00cffb9ad5e44add9b0455487307f"
+      "repository": "https://github.com/anthropics/skills",
+      "ref": "main",
+      "commit": "2c5958ecac7cee2b583967a2c4981d0f4a75c579",
+      "license": "Apache-2.0",
+      "overrides": {
+        "scripts/office/soffice.py": "df2c8d7249c132a4512d744482e4b5ed0ecbe885f0bcfb1295e7e6a7ced0432c"
+      },
+      "sha256": "e03eeaa4069c5dbfe946dba6e3bab4cbd867746961ae998a8d2485bda540dadb"
     },
     {
       "source": "pdf",
       "destination": "pdf",
-      "sha256": "3968cc2ea044bb0899e63ddf590592aa7f54e9db994bdeadeeedfd88898c1464"
+      "repository": "https://github.com/anthropics/skills",
+      "ref": "main",
+      "commit": "2c5958ecac7cee2b583967a2c4981d0f4a75c579",
+      "license": "Apache-2.0",
+      "overrides": {
+        "SKILL.md": "d1c7caf5f35eb7d37877dd7fc33a095037be2b34fb5d2f7f4d43bde3165bb4ee"
+      },
+      "sha256": "d7d29d913d0fc850d9ecc664381504d4c83071faf754ffb5e96a2e761f666fa1"
     },
     {
       "source": "pptx",
       "destination": "pptx",
-      "sha256": "bdb280197d933df17f4436a3f34be5aa06e1b4e6cf52d73d74b62157c5915915"
+      "repository": "https://github.com/anthropics/skills",
+      "ref": "main",
+      "commit": "2c5958ecac7cee2b583967a2c4981d0f4a75c579",
+      "license": "Apache-2.0",
+      "overrides": {
+        "scripts/office/soffice.py": "df2c8d7249c132a4512d744482e4b5ed0ecbe885f0bcfb1295e7e6a7ced0432c"
+      },
+      "sha256": "fd5f268dad4f977e4e3a30d14cace005146f3c5f481d3c5f9885fb80877fab5f"
     },
     {
       "source": "xlsx",
       "destination": "xlsx",
-      "sha256": "6d66e02956e5aec9c5ba9738f0487f6d376f0e5db82d8881211373e2e7eadc34"
+      "repository": "https://github.com/anthropics/skills",
+      "ref": "main",
+      "commit": "2c5958ecac7cee2b583967a2c4981d0f4a75c579",
+      "license": "Apache-2.0",
+      "overrides": {
+        "SKILL.md": "caa1e1c29cf974c8d874bf3d0a70838445e7342b570f856ddb3e4a21ef7c7e8b",
+        "scripts/office/soffice.py": "df2c8d7249c132a4512d744482e4b5ed0ecbe885f0bcfb1295e7e6a7ced0432c"
+      },
+      "sha256": "a64ec81ff1347a02f6464dcf1c6494ac42c6793daaa7232947a87ae8698cda7d"
     },
     {
       "source": "generate-image",

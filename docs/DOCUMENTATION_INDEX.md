@@ -157,6 +157,7 @@ claude-scientific-writer/
 │   ├── RELEASING.md             # Release process
 │   └── examples/                # Example outputs
 ├── skills.lock.json             # Pinned upstream skill provenance
+├── skill-overrides/             # K-Dense overrides on upstream skills
 └── skills/                      # 26 generated upstream skills
 ```
 
