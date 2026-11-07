@@ -3,7 +3,10 @@ alwaysApply: true
 ---
 
 Skills are sourced from `https://github.com/K-Dense-AI/scientific-agent-skills`
-at the revision pinned in `skills.lock.json`.
+at the revision pinned in `skills.lock.json`. The `docx`, `pdf`, `pptx`, and
+`xlsx` office skills are pinned per skill to `https://github.com/anthropics/skills`
+(Apache-2.0); K-Dense changes to them go in `skill-overrides/<skill>/` and are
+declared under `overrides` in `skills.lock.json`.
 
 Never edit `skills/`, `.claude/skills/`, or
 `scientific_writer/.claude/skills/` directly. Make skill-content changes in

@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
-"""Vendor pinned writing skills from scientific-agent-skills and sync mirrors.
+"""Vendor pinned writing skills from their upstream repositories and sync mirrors.
 
-Skill content source of truth:
-    https://github.com/K-Dense-AI/scientific-agent-skills
+Skill content sources of truth:
+    https://github.com/K-Dense-AI/scientific-agent-skills (default upstream)
+    https://github.com/anthropics/skills (docx, pdf, pptx, xlsx; Apache-2.0)
+
+The top-level repository/ref/commit in skills.lock.json is the default
+upstream. A skill entry may carry its own repository/ref/commit to pin it to a
+different upstream. An entry may also list "overrides": repository-local files
+under skill-overrides/<destination>/ that replace upstream files after
+extraction. Each override records the SHA-256 of the upstream file it replaces,
+so a sync fails loudly instead of silently masking a changed upstream file.
 
 Local generated snapshots:
     skills/
@@ -23,6 +31,9 @@ Usage:
         Verify the vendored snapshot and mirrors without network access.
     python scripts/sync_skills.py --update-ref <tag-or-commit>
         Resolve a new upstream tag/ref, refresh content, and rewrite the lock.
+    python scripts/sync_skills.py --update-ref <ref> --repository <url>
+        Re-pin only the skills whose effective upstream is <url>
+        (for example https://github.com/anthropics/skills).
 """
 
 import argparse
@@ -44,6 +55,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 SKILLS_LOCK = REPO_ROOT / "skills.lock.json"
 SKILLS_SOURCE = REPO_ROOT / "skills"
+SKILLS_OVERRIDES = REPO_ROOT / "skill-overrides"
 SKILLS_MIRRORS = [
     REPO_ROOT / ".claude" / "skills",
     REPO_ROOT / "scientific_writer" / ".claude" / "skills",
@@ -143,9 +155,130 @@ def load_lock() -> dict[str, Any]:
             raise SyncError(f"Duplicate upstream skill in lock: {source}")
         if destination in destinations:
             raise SyncError(f"Duplicate local skill destination in lock: {destination}")
+        _validate_entry_upstream(entry)
+        _validate_entry_overrides(entry, destination)
         sources.add(source)
         destinations.add(destination)
     return data
+
+
+def _validate_entry_upstream(entry: dict[str, Any]) -> None:
+    """Check an entry's optional per-skill upstream pin (all three fields or none)."""
+    fields = [key for key in ("repository", "ref", "commit") if key in entry]
+    if not fields:
+        return
+    if len(fields) != 3:
+        raise SyncError(
+            f"Skill {entry['source']!r} must set repository, ref, and commit together "
+            f"in {SKILLS_LOCK.name}"
+        )
+    if not isinstance(entry["repository"], str) or not entry["repository"]:
+        raise SyncError(f"Missing repository for skill {entry['source']!r}")
+    if not isinstance(entry["ref"], str) or not entry["ref"]:
+        raise SyncError(f"Missing ref for skill {entry['source']!r}")
+    if not isinstance(entry["commit"], str) or len(entry["commit"]) != 40:
+        raise SyncError(f"Expected a 40-character commit for skill {entry['source']!r}")
+
+
+def _validate_entry_overrides(entry: dict[str, Any], destination: Path) -> None:
+    """Check an entry's optional {relative path: upstream sha256} override map."""
+    overrides = entry.get("overrides")
+    if overrides is None:
+        return
+    if not isinstance(overrides, dict) or not overrides:
+        raise SyncError(f"overrides for skill {entry['source']!r} must be a non-empty mapping")
+    for relative, base_sha256 in overrides.items():
+        _validate_relative_path(relative, "override")
+        if not isinstance(base_sha256, str) or len(base_sha256) != 64:
+            raise SyncError(
+                f"Override {destination}/{relative} must record the 64-character SHA-256 "
+                "of the upstream file it replaces"
+            )
+
+
+def entry_upstream(data: dict[str, Any], entry: dict[str, Any]) -> tuple[str, str, str]:
+    """Return the effective (repository, ref, commit) for one skill entry."""
+    if "repository" in entry:
+        return entry["repository"], entry["ref"], entry["commit"]
+    return data["repository"], data["ref"], data["commit"]
+
+
+def group_by_upstream(
+    data: dict[str, Any],
+) -> dict[tuple[str, str], list[dict[str, Any]]]:
+    """Group skill entries by the (repository, commit) archive they come from."""
+    groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for entry in data["skills"]:
+        repository, _ref, commit = entry_upstream(data, entry)
+        groups.setdefault((repository, commit), []).append(entry)
+    return groups
+
+
+def file_sha256(path: Path) -> str:
+    """Return the SHA-256 of one file's contents."""
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while chunk := handle.read(COPY_BUFFER_SIZE):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def apply_overrides(
+    entries: list[dict[str, Any]],
+    root: Path,
+    overrides_root: Path = SKILLS_OVERRIDES,
+) -> None:
+    """Replace upstream files in an extracted tree with repository-local overrides.
+
+    Each override is applied only when the upstream file still has the SHA-256
+    recorded in the lock, so an upstream change to an overridden file is
+    surfaced instead of being silently discarded.
+    """
+    for entry in entries:
+        destination = _validate_relative_path(entry["destination"], "destination")
+        for relative, base_sha256 in (entry.get("overrides") or {}).items():
+            relative_path = _validate_relative_path(relative, "override")
+            source = overrides_root / destination / relative_path
+            target = root / destination / relative_path
+            if not source.is_file():
+                raise SyncError(f"Missing override file: {source.relative_to(overrides_root.parent)}")
+            if not target.is_file():
+                raise SyncError(
+                    f"Override target is not an upstream file: skills/{destination}/{relative}"
+                )
+            if file_sha256(target) != base_sha256:
+                raise SyncError(
+                    f"Upstream changed skills/{destination}/{relative}, which has a local "
+                    "override. Re-apply the override to the new upstream file, then update "
+                    "its base SHA-256 in the lock."
+                )
+            mode = target.stat().st_mode & 0o777
+            shutil.copyfile(source, target)
+            os.chmod(target, mode)
+
+
+def override_problems(data: dict[str, Any], root: Path) -> list[str]:
+    """Return override files that are missing or not reflected in the snapshot."""
+    problems: list[str] = []
+    for entry in data["skills"]:
+        destination = _validate_relative_path(entry["destination"], "destination")
+        for relative in entry.get("overrides") or {}:
+            source = SKILLS_OVERRIDES / destination / relative
+            target = root / destination / relative
+            if not source.is_file():
+                problems.append(f"missing override file: skill-overrides/{destination}/{relative}")
+            elif not target.is_file() or not filecmp.cmp(source, target, shallow=False):
+                problems.append(f"override not applied: skills/{destination}/{relative}")
+    if SKILLS_OVERRIDES.is_dir():
+        declared = {
+            Path(entry["destination"]) / relative
+            for entry in data["skills"]
+            for relative in entry.get("overrides") or {}
+        }
+        for relative in _iter_files(SKILLS_OVERRIDES):
+            if relative not in declared:
+                problems.append(f"undeclared override file: skill-overrides/{relative.as_posix()}")
+    return problems
 
 
 def _repository_parts(repository: str) -> tuple[str, str]:
@@ -354,6 +487,7 @@ def check() -> int:
         return 1
 
     problems = snapshot_problems(data, SKILLS_SOURCE)
+    problems += override_problems(data, SKILLS_SOURCE)
     for mirror in SKILLS_MIRRORS:
         for entry in diff_trees(SKILLS_SOURCE, mirror):
             problems.append(f"{mirror.relative_to(REPO_ROOT)}: {entry}")
@@ -385,11 +519,21 @@ def check() -> int:
             print(f"  {problem}")
         print("\nRun `python scripts/sync_skills.py` to regenerate them.")
         return 1
-    print(
-        "Pinned upstream skill snapshot and mirrors are in sync "
-        f"({data['ref']} at {data['commit'][:12]})."
+    pins = ", ".join(
+        f"{_repository_label(repository)} at {commit[:12]}"
+        for repository, commit in group_by_upstream(data)
     )
+    print(f"Pinned upstream skill snapshot and mirrors are in sync ({data['ref']}; {pins}).")
     return 0
+
+
+def _repository_label(repository: str) -> str:
+    """Return owner/name for a GitHub repository URL, for log messages."""
+    try:
+        owner, name = _repository_parts(repository)
+    except SyncError:
+        return repository
+    return f"{owner}/{name}"
 
 
 def _replace_skills_tree(staged: Path, temporary_root: Path) -> None:
@@ -439,28 +583,50 @@ def _write_lock(data: dict[str, Any]) -> None:
     os.replace(temporary, SKILLS_LOCK)
 
 
-def sync(update_ref: str | None = None) -> int:
-    """Fetch the pinned upstream snapshot, verify it, and regenerate mirrors."""
+def _retarget(data: dict[str, Any], update_ref: str, repository: str | None) -> int:
+    """Re-pin the default upstream, or every entry on `repository`, to update_ref.
+
+    Returns the number of re-pinned skill entries.
+    """
+    if repository is None or repository == data["repository"]:
+        commit = resolve_ref(data["repository"], update_ref)
+        data["ref"] = update_ref
+        data["commit"] = commit
+        return sum(1 for entry in data["skills"] if "repository" not in entry)
+
+    matching = [entry for entry in data["skills"] if entry.get("repository") == repository]
+    if not matching:
+        raise SyncError(f"No skill in {SKILLS_LOCK.name} is pinned to {repository}")
+    commit = resolve_ref(repository, update_ref)
+    for entry in matching:
+        entry["ref"] = update_ref
+        entry["commit"] = commit
+    return len(matching)
+
+
+def sync(update_ref: str | None = None, repository: str | None = None) -> int:
+    """Fetch the pinned upstream snapshots, verify them, and regenerate mirrors."""
     try:
         data = load_lock()
         if update_ref:
-            data["ref"] = update_ref
-            data["commit"] = resolve_ref(data["repository"], update_ref)
+            count = _retarget(data, update_ref, repository)
+        elif repository:
+            raise SyncError("--repository requires --update-ref")
 
         with tempfile.TemporaryDirectory(
             prefix=".skills-sync-",
             dir=REPO_ROOT,
         ) as temporary_name:
             temporary_root = Path(temporary_name)
-            archive = temporary_root / "upstream.tar.gz"
             staged = temporary_root / "skills"
 
-            print(
-                f"Fetching {data['repository']} {data['ref']} "
-                f"({data['commit'][:12]})..."
-            )
-            _download_archive(data["repository"], data["commit"], archive)
-            _extract_selected_skills(archive, staged, data["skills"])
+            for index, ((upstream, commit), entries) in enumerate(group_by_upstream(data).items()):
+                archive = temporary_root / f"upstream-{index}.tar.gz"
+                ref = entry_upstream(data, entries[0])[1]
+                print(f"Fetching {upstream} {ref} ({commit[:12]})...")
+                _download_archive(upstream, commit, archive)
+                _extract_selected_skills(archive, staged, entries)
+                apply_overrides(entries, staged)
 
             if update_ref:
                 update_hashes(data, staged)
@@ -476,7 +642,10 @@ def sync(update_ref: str | None = None) -> int:
 
         if update_ref:
             _write_lock(data)
-            print(f"Updated {SKILLS_LOCK.name} to {data['ref']} ({data['commit']})")
+            print(
+                f"Updated {SKILLS_LOCK.name}: {count} skill(s) now pinned to "
+                f"{update_ref} of {repository or data['repository']}"
+            )
         _sync_mirrors()
         return 0
     except (OSError, SyncError) as exc:
@@ -497,8 +666,20 @@ def main() -> int:
         metavar="REF",
         help="pin and vendor a new upstream branch, tag, or commit",
     )
+    parser.add_argument(
+        "--repository",
+        metavar="URL",
+        help=(
+            "with --update-ref, re-pin only the skills pinned to this upstream "
+            "repository instead of the default one"
+        ),
+    )
     args = parser.parse_args()
-    return check() if args.check else sync(update_ref=args.update_ref)
+    if args.check:
+        if args.repository:
+            parser.error("--repository cannot be combined with --check")
+        return check()
+    return sync(update_ref=args.update_ref, repository=args.repository)
 
 
 if __name__ == "__main__":

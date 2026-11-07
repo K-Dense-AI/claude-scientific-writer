@@ -1,14 +1,7 @@
 ---
 name: xlsx
-description: "Create, edit, analyze, or convert Excel spreadsheets (.xlsx, .xlsm, .xltx) where the workbook file is the primary deliverable. Use for formulas, formatting, financial models, multi-sheet workbooks, and tabular cleanup exported to Excel. Also applies to .csv/.tsv when the user wants spreadsheet output. Do NOT use for Word documents, HTML reports, standalone Python scripts, database pipelines, or Google Sheets API work."
-allowed-tools: Read Write Edit Bash Grep Glob
-license: Proprietary. LICENSE.txt has complete terms
-metadata:
-  version: "2.2"
-  skill-author: Anthropic, PBC
-  adapted-by: K-Dense Inc.
-  source: https://github.com/anthropics/skills/tree/main/skills/xlsx
-compatibility: Requires Python 3.8+, LibreOffice (soffice on PATH), and gcc only when Unix sockets are restricted
+description: "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .xltx, .csv, or .tsv file (e.g., adding columns, computing formulas, formatting, charting, cleaning messy data); create a new spreadsheet from scratch or from other data sources; or convert between tabular file formats. Trigger especially when the user references a spreadsheet file by name or path — even casually (like \"the xlsx in my downloads\") — and wants something done to it or produced from it. Also trigger for cleaning or restructuring messy tabular data files (malformed rows, misplaced headers, junk data) into proper spreadsheets. The deliverable must be a spreadsheet file. Do NOT trigger when the primary deliverable is a Word document, HTML report, standalone Python script, database pipeline, or Google Sheets API integration, even if tabular data is involved."
+license: Complete terms in LICENSE.txt
 ---
 
 # XLSX creation, editing, and analysis
@@ -104,7 +97,3 @@ lone edited cell mid-row is the commonest silent error · guard denominators tha
 ## Dependencies
 
 `openpyxl`, `pandas`, `markitdown` (pip, preinstalled — install only if an import fails or the command is missing) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`)
-
----
-
-*This skill is created and maintained by [Anthropic](https://github.com/anthropics/skills/tree/main/skills/xlsx). Vendored here unmodified except for frontmatter metadata; see LICENSE.txt for terms.*

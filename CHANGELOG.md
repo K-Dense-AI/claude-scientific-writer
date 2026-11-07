@@ -2,6 +2,16 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- **Office skills now come from Anthropic under Apache 2.0.** `docx`, `pdf`, `pptx`, and `xlsx` are vendored from [anthropics/skills](https://github.com/anthropics/skills) at `2c5958ecac7c` ("Move Office skills to the Apache 2.0 license", #2146), replacing the copies that came through `scientific-agent-skills` `v2.69.0` under Anthropic's earlier proprietary terms. Upstream has since dropped those copies, at `v2.72.0`. Each skill keeps its upstream Apache License 2.0 `LICENSE.txt`, and its frontmatter now reads `license: Complete terms in LICENSE.txt`. The skill bodies match the earlier copies apart from K-Dense's edits.
+- **`skills.lock.json` supports more than one upstream.** A skill entry can carry its own `repository`/`ref`/`commit`, and `scripts/sync_skills.py` downloads one archive for each upstream. `--update-ref <ref> --repository <url>` re-pins only the skills on that upstream. Entries can also declare `overrides`: whole-file replacements from `skill-overrides/<skill>/`, each recorded with the SHA-256 of the upstream file it replaces. Sync stops if that upstream file changes, and `--check` verifies the overrides are applied.
+- **K-Dense edits kept as overrides.** In `docx`, `pptx`, and `xlsx`, `scripts/office/soffice.py` keeps K-Dense's hardening: soffice gets an allowlisted environment, so API keys are not passed to the converter, and the socket shim is compiled in a private `mkdtemp` directory instead of a predictable `/tmp` path. In `pdf/SKILL.md`, links to `reference.md` and `forms.md` stay lowercase to match the files, so they also resolve on case-sensitive filesystems. `pdf/SKILL.md` and `xlsx/SKILL.md` still use `uv pip install`. Dropped: the old proprietary `license:` line, the `metadata` blocks (`version`, `skill-author`, `source`, `adapted-by`), the "vendored unmodified" footers, and the rewritten `xlsx` description, `allowed-tools`, and `compatibility` fields. Provenance now lives in `skills.lock.json`, and `xlsx` uses Anthropic's current description.
+
+---
+
 ## [2.22.0] - 2026-09-25
 
 ### Changed

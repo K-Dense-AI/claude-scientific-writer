@@ -910,7 +910,7 @@ When you interact with the Scientific Writer CLI, Claude automatically:
 
 ## Skill Integration
 
-Skills are loaded from `.claude/skills/` when the CLI runs. The bundled set is selected from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) and pinned in `skills.lock.json` for reproducible plugin and package builds. You don't need to manually activate them; Claude selects the appropriate skills based on your request.
+Skills are loaded from `.claude/skills/` when the CLI runs. The bundled set is selected from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), plus the `docx`, `pdf`, `pptx`, and `xlsx` skills from Anthropic's [anthropics/skills](https://github.com/anthropics/skills) (Apache License 2.0), and pinned in `skills.lock.json` for reproducible plugin and package builds. You don't need to manually activate them; Claude selects the appropriate skills based on your request.
 
 ## Example Usage
 

@@ -97,6 +97,7 @@ exclude = [
     "/docs/examples",
     "/extensions",
     "/skills",
+    "/skill-overrides",
 ]
 
 [dependency-groups]
@@ -115,6 +116,7 @@ target-version = "py310"
 # lint only the package, scripts, and tests.
 extend-exclude = [
     "skills",
+    "skill-overrides",
     ".claude",
     "scientific_writer/.claude",
     "extensions",
@@ -134,7 +136,7 @@ ignore_missing_imports = true
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git,.gitignore,.gitattributes,.claude,skills,scientific_writer/.claude,extensions,docs/examples,*.pdf,*.svg,*.css,*.xsd'
+skip = '.git,.gitignore,.gitattributes,.claude,skills,skill-overrides,scientific_writer/.claude,extensions,docs/examples,*.pdf,*.svg,*.css,*.xsd'
 check-hidden = true
 # Ignore camelCase/PascalCase identifiers, and word fragments from bold formatting
 # (**S**pecific, \textbf{F}requency, etc.)

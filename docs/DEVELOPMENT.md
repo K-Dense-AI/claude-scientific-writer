@@ -25,7 +25,8 @@ claude-scientific-writer/
 │   └── marketplace.json     # Defines the claude-scientific-writer plugin and its skills
 ├── commands/                # Plugin commands
 │   └── scientific-writer-init.md
-├── skills.lock.json         # Pinned upstream revision, selection, and hashes
+├── skills.lock.json         # Pinned upstream revisions, selection, and hashes
+├── skill-overrides/         # K-Dense file overrides applied on top of upstream skills
 ├── skills/                  # Generated snapshot of 26 upstream skills
 │   ├── citation-management/
 │   ├── clinical-reports/
@@ -39,7 +40,7 @@ claude-scientific-writer/
 └── scientific_writer/       # Python package
 ```
 
-There is no `.claude-plugin/plugin.json`; the repository itself acts as a plugin marketplace via `.claude-plugin/marketplace.json`. The root `plugin.json` is a separate, vendor-neutral manifest that makes the repository (and each bundled `.claude/` payload) a loadable [Agent Plugins](https://agent-plugins.org/) package — see [AGENT_PLUGINS.md](AGENT_PLUGINS.md). Skill content is sourced from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), pinned by `skills.lock.json`, and vendored into `skills/` for deterministic plugin and package builds. `CLAUDE.md` is the instruction source for `AGENTS.md`, both runtime `WRITER.md` mirrors, and both `templates/*.scientific-writer.md` files; `scripts/sync_skills.py --check` enforces all of them, and `scripts/validate_agent_plugin.py` enforces Agent Plugins conformance.
+There is no `.claude-plugin/plugin.json`; the repository itself acts as a plugin marketplace via `.claude-plugin/marketplace.json`. The root `plugin.json` is a separate, vendor-neutral manifest that makes the repository (and each bundled `.claude/` payload) a loadable [Agent Plugins](https://agent-plugins.org/) package — see [AGENT_PLUGINS.md](AGENT_PLUGINS.md). Skill content is sourced from [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills), except the `docx`, `pdf`, `pptx`, and `xlsx` office skills, which come from Anthropic's [anthropics/skills](https://github.com/anthropics/skills) under the Apache License 2.0 (each keeps its upstream `LICENSE.txt`). Every skill is pinned by `skills.lock.json` (a skill entry may carry its own `repository`/`ref`/`commit`) and vendored into `skills/` for deterministic plugin and package builds. K-Dense changes to the Anthropic skills are whole-file overrides in `skill-overrides/`, declared in the lock with the SHA-256 of the upstream file they replace. `CLAUDE.md` is the instruction source for `AGENTS.md`, both runtime `WRITER.md` mirrors, and both `templates/*.scientific-writer.md` files; `scripts/sync_skills.py --check` enforces all of them, and `scripts/validate_agent_plugin.py` enforces Agent Plugins conformance.
 
 The 26 selected skills are: citation-management, clinical-decision-support, clinical-reports, docx, pdf, pptx, xlsx, generate-image, hypothesis-generation, infographics, latex-posters, literature-review, market-research-reports, markitdown, parallel-web, peer-review, pptx-posters, research-grants, research-lookup, scholar-evaluation, scientific-critical-thinking, scientific-schematics, scientific-slides, scientific-writing, treatment-plans, and venue-templates. Every skill is an immediate child of `skills/`, as the Agent Plugins specification requires; keep `destination` in `skills.lock.json` a single path segment.
 

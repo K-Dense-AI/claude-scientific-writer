@@ -37,7 +37,9 @@ Ruff configuration lives in `pyproject.toml`. Fix all lint errors before opening
 
 ## Skills: Source of Truth
 
-The canonical source of truth for skill content is [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills). `skills.lock.json` pins the exact upstream release and content hashes selected for Scientific Writer.
+The canonical source of truth for skill content is [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills). The four office skills (`docx`, `pdf`, `pptx`, `xlsx`) are the exception: they come from Anthropic's [anthropics/skills](https://github.com/anthropics/skills) under the Apache License 2.0, each with its own `LICENSE.txt`. `skills.lock.json` pins the exact upstream revision of each skill and its content hashes.
+
+K-Dense's changes to the Anthropic office skills live in `skill-overrides/<skill>/` as whole-file replacements, declared under `overrides` in `skills.lock.json` together with the SHA-256 of the upstream file each one replaces. `scripts/sync_skills.py` applies them after download and stops if the upstream file has changed, so an override is never silently stale.
 
 - `skills/` is the generated plugin snapshot
 - `.claude/skills/`
@@ -49,6 +51,8 @@ Similarly, `CLAUDE.md` at the root is the source of truth for the agent instruct
 
 ```bash
 python3 scripts/sync_skills.py --update-ref <tag-or-commit>
+# Office skills from anthropics/skills:
+python3 scripts/sync_skills.py --update-ref <commit> --repository https://github.com/anthropics/skills
 ```
 
 To verify the pinned snapshot and mirrors without using the network (this is what CI checks):
