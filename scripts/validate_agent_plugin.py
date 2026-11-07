@@ -308,6 +308,32 @@ def load_vendored_schema(canonical_id: str) -> tuple[str, dict[str, Any]]:
 def _unquote(value: str) -> str:
     """Strip matching YAML quotes from a scalar and unescape its contents."""
     value = value.strip()
+    if type(value) is str:
+        if not value:
+            return value
+        quote = value[0]
+        if quote not in {'"', "'"} or len(value) < 2 or quote != value[-1]:
+            return value
+        inner = value[1:-1]
+        if quote == "'":
+            return inner.replace("''", "'")
+        if "\\" not in inner:
+            return inner
+        index = inner.find("\\")
+        out = [inner[:index]]
+        escapes = {"n": "\n", "t": "\t", "r": "\r"}
+        size = len(inner)
+        while index + 1 < size:
+            following = inner[index + 1]
+            out.append(escapes.get(following, following))
+            start = index + 2
+            index = inner.find("\\", start)
+            if index < 0:
+                out.append(inner[start:])
+                return "".join(out)
+            out.append(inner[start:index])
+        out.append("\\")
+        return "".join(out)
     if len(value) < 2 or value[0] != value[-1] or value[0] not in "\"'":
         return value
     inner = value[1:-1]
