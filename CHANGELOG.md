@@ -2,7 +2,7 @@
 
 All notable changes to the Scientific Writer project will be documented in this file.
 
-## [Unreleased]
+## [2.23.0] - 2026-11-07
 
 ### Changed
 
