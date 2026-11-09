@@ -3,7 +3,9 @@
 Version bumping script for scientific-writer package.
 
 This script handles semantic version bumping (major, minor, patch) and ensures
-version consistency across pyproject.toml and __init__.py.
+version consistency across pyproject.toml, __init__.py,
+.claude-plugin/marketplace.json, and the root plugin.json with its two mirrors
+(.claude/plugin.json and scientific_writer/.claude/plugin.json).
 """
 
 import json
